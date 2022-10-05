@@ -17,28 +17,34 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.example.demospringrest.entities.Book;
 import com.example.demospringrest.repositories.BookRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/books")
+@Tag(name = "Books")
 public class BookController {
 	@Autowired
 	private BookRepository bookRepository;
 
-	@GetMapping
+	@GetMapping(produces = "application/json")
+	@Operation(summary = "Get a list of books")
 	public ResponseEntity<List<Book>> findAll() {
 		List<Book> books = bookRepository.findAll();
 
 		return ResponseEntity.ok(books);
 	}
 
-	@GetMapping("/{id}")
+	@GetMapping(value = "/{id}", produces = "application/json")
+	@Operation(summary = "Get a book by its id")
 	public ResponseEntity<Book> findById(@PathVariable Long id) {
 		Book book = bookRepository.findById(id).orElseThrow();
 
 		return ResponseEntity.ok(book);
 	}
 
-	@PostMapping
+	@PostMapping(consumes = "application/json", produces = "application/json")
+	@Operation(summary = "Stores a book")
 	public ResponseEntity<Book> store(@RequestBody Book book, UriComponentsBuilder b) {
 		Book createdBook = bookRepository.save(book);
 
@@ -47,8 +53,9 @@ public class BookController {
 		return ResponseEntity.created(uriComponents.toUri()).body(createdBook);
 	}
 
-	@PutMapping("/{id}")
-	public ResponseEntity<Book> update(@PathVariable Long id, @RequestBody Book book) {
+	@PutMapping(value = "/{id}", consumes = "application/json", produces = "application/json")
+	@Operation(summary = "Updates a book by its id")
+	public ResponseEntity<Book> update(@PathVariable Long id, @RequestBody Book book) throws Exception {
 		Book findById = bookRepository.findById(id).orElseThrow();
 
 		findById.setTitle(book.getTitle());
@@ -63,6 +70,7 @@ public class BookController {
 	}
 
 	@DeleteMapping("/{id}")
+	@Operation(summary = "Deletes a book by its id")
 	public ResponseEntity<?> destroy(@PathVariable Long id) {
 		bookRepository.deleteById(id);
 

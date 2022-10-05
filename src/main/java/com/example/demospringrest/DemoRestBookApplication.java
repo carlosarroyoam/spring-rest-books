@@ -27,4 +27,15 @@ public class DemoRestBookApplication implements CommandLineRunner {
 		bookRepository.save(book1);
 		bookRepository.save(book2);
 	}
+
+	@Bean
+	public OpenAPI customOpenAPI(@Value("${springdoc.version}") String appVersion) {
+		String appTitle = "Books service";
+		String appDescription = "Book service demo API";
+		Contact contactInfo = new Contact().email("carlosarroyoam@gmail.com");
+		License license = new License().name("Apache 2.0").url("https://www.apache.org/licenses/LICENSE-2.0.html");
+
+		return new OpenAPI().info(new Info().title(appTitle).version(appVersion).description(appDescription)
+				.contact(contactInfo).license(license));
+	}
 }
