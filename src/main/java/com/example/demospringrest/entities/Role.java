@@ -1,42 +1,36 @@
 package com.example.demospringrest.entities;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.With;
 
 @Entity
-@Table(name = "users")
+@Table(name = "roles")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+@With
+public class Role {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@Column
-	private String firstName;
+	private String title;
 
 	@Column
-	private String lastName;
+	private String description;
 
-	@Column
-	private String email;
-
-	@Column
-	private String password;
-
-	@OneToOne(cascade = CascadeType.MERGE)
-	@JoinColumn(name = "role_id", referencedColumnName = "id")
-	private Role role;
+	public Role(String title, String description) {
+		this.title = title;
+		this.description = description;
+	}
 }

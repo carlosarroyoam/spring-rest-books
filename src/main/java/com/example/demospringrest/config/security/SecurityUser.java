@@ -1,4 +1,4 @@
-package com.example.demospringrest.entities;
+package com.example.demospringrest.config.security;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -6,6 +6,8 @@ import java.util.Collection;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import com.example.demospringrest.entities.User;
 
 public class SecurityUser implements UserDetails {
 	private static final long serialVersionUID = -1857850701218478299L;
@@ -28,7 +30,7 @@ public class SecurityUser implements UserDetails {
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return Arrays.stream(user.getRoles().split(",")).map(SimpleGrantedAuthority::new).toList();
+		return Arrays.asList(new SimpleGrantedAuthority(user.getRole().getTitle()));
 	}
 
 	@Override
