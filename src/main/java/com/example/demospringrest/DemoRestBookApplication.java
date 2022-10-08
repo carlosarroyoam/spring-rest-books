@@ -3,17 +3,33 @@ package com.example.demospringrest;
 import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.example.demospringrest.entities.Book;
+import com.example.demospringrest.entities.User;
 import com.example.demospringrest.repositories.BookRepository;
+import com.example.demospringrest.repositories.UserRepository;
+
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Contact;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.info.License;
 
 @SpringBootApplication
 public class DemoRestBookApplication implements CommandLineRunner {
 	@Autowired
 	private BookRepository bookRepository;
+
+	@Autowired
+	private UserRepository userRepository;
+
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	public static void main(String[] args) {
 		SpringApplication.run(DemoRestBookApplication.class, args);
@@ -26,6 +42,11 @@ public class DemoRestBookApplication implements CommandLineRunner {
 
 		bookRepository.save(book1);
 		bookRepository.save(book2);
+
+		User user1 = new User(null, "Carlos Alberto", "Arroyo Martínez", "carlosarroyoam@gmail.com",
+				passwordEncoder.encode("pass"), "App\\User");
+
+		userRepository.save(user1);
 	}
 
 	@Bean
