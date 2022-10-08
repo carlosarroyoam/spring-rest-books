@@ -10,19 +10,4 @@ public class AppController {
 	public String root(Model model) {
 		return "home";
 	}
-
-	@GetMapping("/home")
-	public String home(Model model) {
-		return "home";
-	}
-
-	@GetMapping("/hello")
-	public String hello(Model model) {
-		return "hello";
-	}
-
-	@GetMapping("/login")
-	public String login(Model model) {
-		return "login";
-	}
 }
