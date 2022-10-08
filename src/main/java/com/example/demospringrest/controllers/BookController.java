@@ -2,6 +2,8 @@ package com.example.demospringrest.controllers;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,7 +18,8 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.example.demospringrest.entities.Book;
-import com.example.demospringrest.repositories.BookRepository;
+import com.example.demospringrest.services.BookService;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -24,13 +27,15 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RequestMapping("/books")
 @Tag(name = "Books")
 public class BookController {
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
 	@Autowired
-	private BookRepository bookRepository;
+	private BookService bookService;
 
 	@GetMapping(produces = "application/json")
 	@Operation(summary = "Get a list of books")
 	public ResponseEntity<List<Book>> findAll() {
-		List<Book> books = bookRepository.findAll();
+		List<Book> books = bookService.findAll();
 
 		return ResponseEntity.ok(books);
 	}
@@ -38,7 +43,7 @@ public class BookController {
 	@GetMapping(value = "/{id}", produces = "application/json")
 	@Operation(summary = "Get a book by its id")
 	public ResponseEntity<Book> findById(@PathVariable Long id) {
-		Book book = bookRepository.findById(id).orElseThrow();
+		Book book = bookService.findById(id);
 
 		return ResponseEntity.ok(book);
 	}
@@ -46,9 +51,11 @@ public class BookController {
 	@PostMapping(consumes = "application/json", produces = "application/json")
 	@Operation(summary = "Stores a book")
 	public ResponseEntity<Book> store(@RequestBody Book book, UriComponentsBuilder b) {
-		Book createdBook = bookRepository.save(book);
+		Book createdBook = bookService.save(book);
 
 		UriComponents uriComponents = b.path("/books/{id}").buildAndExpand(createdBook.getId());
+
+		logger.info("Stored new book: {}", createdBook);
 
 		return ResponseEntity.created(uriComponents.toUri()).body(createdBook);
 	}
@@ -56,15 +63,9 @@ public class BookController {
 	@PutMapping(value = "/{id}", consumes = "application/json", produces = "application/json")
 	@Operation(summary = "Updates a book by its id")
 	public ResponseEntity<Book> update(@PathVariable Long id, @RequestBody Book book) throws Exception {
-		Book findById = bookRepository.findById(id).orElseThrow();
+		Book updatedBook = bookService.update(id, book);
 
-		findById.setTitle(book.getTitle());
-		findById.setAuthor(book.getAuthor());
-		findById.setPrice(book.getPrice());
-		findById.setPublishedAt(book.getPublishedAt());
-		findById.setAvailableOnline(book.isAvailableOnline());
-
-		Book updatedBook = bookRepository.save(findById);
+		logger.info("Updated book: {}", updatedBook);
 
 		return ResponseEntity.ok(updatedBook);
 	}
@@ -72,7 +73,9 @@ public class BookController {
 	@DeleteMapping("/{id}")
 	@Operation(summary = "Deletes a book by its id")
 	public ResponseEntity<?> destroy(@PathVariable Long id) {
-		bookRepository.deleteById(id);
+		bookService.deleteById(id);
+
+		logger.info("Deleted book with id: {}", id);
 
 		return ResponseEntity.noContent().build();
 	}
