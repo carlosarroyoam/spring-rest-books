@@ -2,6 +2,7 @@ package com.example.demospringrest.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
@@ -29,13 +30,17 @@ public class WebSecurityConfig {
 	public SecurityFilterChain securityFilterChain(HttpSecurity http, UserService userService) throws Exception {
 		http.csrf(csrf -> csrf.disable());
 
-		http.authorizeHttpRequests(requests -> requests.anyRequest().authenticated());
+		http.authorizeHttpRequests(requests -> requests.antMatchers("/").permitAll().antMatchers("/auth/**").permitAll()
+				.antMatchers("/swagger-ui/**").permitAll().antMatchers("/api-docs/**").permitAll().anyRequest()
+				.authenticated());
+
+		http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+		http.httpBasic(Customizer.withDefaults());
 
 		http.oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt);
 
 		http.userDetailsService(userService);
-
-		http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).httpBasic();
 
 		return http.build();
 	}
