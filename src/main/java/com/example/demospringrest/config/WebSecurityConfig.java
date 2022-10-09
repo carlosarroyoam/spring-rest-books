@@ -2,7 +2,8 @@ package com.example.demospringrest.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
@@ -36,13 +37,17 @@ public class WebSecurityConfig {
 
 		http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-		http.httpBasic(Customizer.withDefaults());
-
 		http.oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt);
 
 		http.userDetailsService(userService);
 
 		return http.build();
+	}
+
+	@Bean
+	public AuthenticationManager authenticationManagerBean(AuthenticationConfiguration authenticationConfiguration)
+			throws Exception {
+		return authenticationConfiguration.getAuthenticationManager();
 	}
 
 	@Bean
