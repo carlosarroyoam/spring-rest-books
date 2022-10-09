@@ -3,12 +3,10 @@ package com.example.demospringrest;
 import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.example.demospringrest.config.RsaKeyProperties;
@@ -18,11 +16,6 @@ import com.example.demospringrest.entities.User;
 import com.example.demospringrest.repositories.BookRepository;
 import com.example.demospringrest.repositories.RoleRepository;
 import com.example.demospringrest.repositories.UserRepository;
-
-import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.info.Contact;
-import io.swagger.v3.oas.models.info.Info;
-import io.swagger.v3.oas.models.info.License;
 
 @SpringBootApplication
 @EnableConfigurationProperties(RsaKeyProperties.class)
@@ -64,16 +57,5 @@ public class DemoRestBookApplication implements CommandLineRunner {
 
 		userRepository.save(user1);
 		userRepository.save(user2);
-	}
-
-	@Bean
-	public OpenAPI customOpenAPI(@Value("${springdoc.app.version}") String appVersion) {
-		String appTitle = "Books service";
-		String appDescription = "Book service demo API";
-		Contact contactInfo = new Contact().email("carlosarroyoam@gmail.com");
-		License license = new License().name("Apache 2.0").url("https://www.apache.org/licenses/LICENSE-2.0.html");
-
-		return new OpenAPI().info(new Info().title(appTitle).version(appVersion).description(appDescription)
-				.contact(contactInfo).license(license));
 	}
 }

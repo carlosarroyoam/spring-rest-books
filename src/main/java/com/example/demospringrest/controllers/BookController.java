@@ -17,15 +17,18 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.example.demospringrest.config.OpenApiConfig;
 import com.example.demospringrest.entities.Book;
 import com.example.demospringrest.services.BookService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/books")
 @Tag(name = "Books")
+@SecurityRequirement(name = OpenApiConfig.SECURITY_SCHEME_NAME)
 public class BookController {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
