@@ -32,14 +32,12 @@ public class WebSecurityConfig {
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http, UserService userService) throws Exception {
 		http.csrf(csrf -> csrf.disable());
+		http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+		http.oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt);
 
 		http.authorizeHttpRequests(requests -> requests.antMatchers("/").permitAll().antMatchers("/auth/**").permitAll()
 				.antMatchers("/swagger-ui/**").permitAll().antMatchers("/api-docs/**").permitAll().anyRequest()
 				.authenticated());
-
-		http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-
-		http.oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt);
 
 		return http.build();
 	}
