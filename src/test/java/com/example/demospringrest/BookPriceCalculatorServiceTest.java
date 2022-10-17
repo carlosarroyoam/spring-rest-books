@@ -7,8 +7,8 @@ import java.time.LocalDate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.example.demospringrest.entities.Book;
-import com.example.demospringrest.services.BookPriceCalculatorService;
+import com.carlosarroyoam.bookservice.entities.Book;
+import com.carlosarroyoam.bookservice.services.BookPriceCalculatorService;
 
 class BookPriceCalculatorServiceTest {
 	@Test
