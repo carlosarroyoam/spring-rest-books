@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.carlosarroyoam.bookservice.configurations.OpenApiConfig;
+import com.carlosarroyoam.bookservice.config.OpenApiConfig;
 import com.carlosarroyoam.bookservice.entities.Book;
 import com.carlosarroyoam.bookservice.services.BookService;
 
@@ -43,10 +43,10 @@ public class BookController {
 		return ResponseEntity.ok(books);
 	}
 
-	@GetMapping(value = "/{id}", produces = "application/json")
+	@GetMapping(value = "/{bookId}", produces = "application/json")
 	@Operation(summary = "Get a book by its id")
-	public ResponseEntity<Book> findById(@PathVariable Long id) {
-		Book book = bookService.findById(id);
+	public ResponseEntity<Book> findById(@PathVariable Long bookId) {
+		Book book = bookService.findById(bookId);
 
 		return ResponseEntity.ok(book);
 	}
@@ -63,22 +63,22 @@ public class BookController {
 		return ResponseEntity.created(uriComponents.toUri()).body(createdBook);
 	}
 
-	@PutMapping(value = "/{id}", consumes = "application/json", produces = "application/json")
+	@PutMapping(value = "/{bookId}", consumes = "application/json", produces = "application/json")
 	@Operation(summary = "Updates a book by its id")
-	public ResponseEntity<Book> update(@PathVariable Long id, @RequestBody Book book) throws Exception {
-		Book updatedBook = bookService.update(id, book);
+	public ResponseEntity<Book> update(@PathVariable Long bookId, @RequestBody Book book) throws Exception {
+		Book updatedBook = bookService.update(bookId, book);
 
 		logger.info("Updated book: {}", updatedBook);
 
 		return ResponseEntity.ok(updatedBook);
 	}
 
-	@DeleteMapping("/{id}")
+	@DeleteMapping("/{bookId}")
 	@Operation(summary = "Deletes a book by its id")
-	public ResponseEntity<?> destroy(@PathVariable Long id) {
-		bookService.deleteById(id);
+	public ResponseEntity<?> destroy(@PathVariable Long bookId) {
+		bookService.deleteById(bookId);
 
-		logger.info("Deleted book with id: {}", id);
+		logger.info("Deleted book with id: {}", bookId);
 
 		return ResponseEntity.noContent().build();
 	}

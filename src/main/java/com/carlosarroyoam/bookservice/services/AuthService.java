@@ -32,11 +32,6 @@ public class AuthService {
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 
-		LoginResponse loginResponse = new LoginResponse();
-
-		loginResponse.setEmail(userByEmail.getEmail());
-		loginResponse.setJwt(tokenService.generateToken(authentication));
-
-		return loginResponse;
+		return new LoginResponse(userByEmail.getEmail(), tokenService.generateToken(authentication));
 	}
 }

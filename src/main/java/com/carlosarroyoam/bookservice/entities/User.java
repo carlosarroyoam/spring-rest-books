@@ -20,23 +20,32 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	@Column
-	private String firstName;
+    @Column(length = 64, nullable = false)
+    private String firstName;
 
-	@Column
-	private String lastName;
+    @Column(length = 64, nullable = false)
+    private String lastName;
 
-	@Column
-	private String email;
+    @Column(length = 128, nullable = false)
+    private String email;
 
-	@Column
-	private String password;
+    @Column(length = 128, nullable = false)
+    private String password;
 
-	@OneToOne(cascade = CascadeType.MERGE)
-	@JoinColumn(name = "role_id", referencedColumnName = "id")
-	private Role role;
+    @OneToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "role_id", referencedColumnName = "id")
+    private Role role;
+
+    public User(String firstName, String lastName, String email, String password, Role role) {
+        super();
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+    }
 }

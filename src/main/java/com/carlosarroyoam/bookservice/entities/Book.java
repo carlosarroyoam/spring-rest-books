@@ -19,22 +19,31 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Book {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	@Column
-	private String title;
+    @Column(length = 128, nullable = false)
+    private String title;
 
-	@Column
-	private String author;
+    @Column(length = 128, nullable = false)
+    private String author;
 
-	@Column
-	private Double price;
+    @Column(nullable = false)
+    private Double price;
 
-	@Column
-	private LocalDate publishedAt;
+    @Column(nullable = false)
+    private LocalDate publishedAt;
 
-	@Column
-	private boolean isAvailableOnline;
+    @Column(nullable = false)
+    private boolean isAvailableOnline;
+
+    public Book(String title, String author, Double price, LocalDate publishedAt, boolean isAvailableOnline) {
+        super();
+        this.title = title;
+        this.author = author;
+        this.price = price;
+        this.publishedAt = publishedAt;
+        this.isAvailableOnline = isAvailableOnline;
+    }
 }

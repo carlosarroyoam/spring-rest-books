@@ -1,4 +1,4 @@
-package com.carlosarroyoam.bookservice.configurations.security;
+package com.carlosarroyoam.bookservice.config.security;
 
 import java.util.Arrays;
 import java.util.Collection;

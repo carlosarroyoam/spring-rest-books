@@ -8,9 +8,11 @@ import com.carlosarroyoam.bookservice.entities.Book;
 
 @Service
 public class BookPriceCalculatorService {
-	private final Logger logger = LoggerFactory.getLogger(BookPriceCalculatorService.class);
+    private final Logger logger = LoggerFactory.getLogger(BookPriceCalculatorService.class);
 
-	public double calculatePrice(Book book) {
-		return book.getPrice() + 10;
-	}
+    public double calculatePrice(Book book) {
+        logger.debug("Calculated price: {}", book.getPrice() + 10);
+
+        return book.getPrice() + 10;
+    }
 }

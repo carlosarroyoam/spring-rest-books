@@ -1,4 +1,4 @@
-package com.carlosarroyoam.bookservice.configurations;
+package com.carlosarroyoam.bookservice.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,9 +28,9 @@ import com.nimbusds.jose.proc.SecurityContext;
 
 @Configuration
 @EnableWebSecurity
-public class WebSecurityConfig {
+class WebSecurityConfig {
 	@Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity http, UserService userService) throws Exception {
+	SecurityFilterChain securityFilterChain(HttpSecurity http, UserService userService) throws Exception {
 		http.csrf(csrf -> csrf.disable());
 		http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 		http.oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt);
@@ -46,7 +46,7 @@ public class WebSecurityConfig {
 	}
 
 	@Bean
-	public AuthenticationManager authenticationManager(UserDetailsService userDetailsService,
+	AuthenticationManager authenticationManager(UserDetailsService userDetailsService,
 			PasswordEncoder passwordEncoder) {
 		var authenticationProvider = new DaoAuthenticationProvider();
 		authenticationProvider.setUserDetailsService(userDetailsService);
@@ -56,17 +56,17 @@ public class WebSecurityConfig {
 	}
 
 	@Bean
-	public PasswordEncoder encoder() {
+	PasswordEncoder encoder() {
 		return new BCryptPasswordEncoder();
 	}
 
 	@Bean
-	public JwtDecoder jwtDecoder(RsaKeyProperties rsaKeyProperties) {
+	JwtDecoder jwtDecoder(RsaKeyProperties rsaKeyProperties) {
 		return NimbusJwtDecoder.withPublicKey(rsaKeyProperties.publicKey()).build();
 	}
 
 	@Bean
-	public JwtEncoder jwtEncode(RsaKeyProperties rsaKeyProperties) {
+	JwtEncoder jwtEncode(RsaKeyProperties rsaKeyProperties) {
 		JWK jwk = new RSAKey.Builder(rsaKeyProperties.publicKey())
 				.privateKey(rsaKeyProperties.privateKey())
 				.build();

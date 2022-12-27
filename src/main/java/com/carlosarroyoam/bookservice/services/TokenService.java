@@ -16,21 +16,21 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class TokenService {
-	private final Logger logger = LoggerFactory.getLogger(TokenService.class);
+    private final Logger logger = LoggerFactory.getLogger(TokenService.class);
 
-	@Autowired
-	private JwtEncoder jwtEncoder;
+    @Autowired
+    private JwtEncoder jwtEncoder;
 
-	public String generateToken(Authentication authentication) {
-		Instant now = Instant.now();
+    public String generateToken(Authentication authentication) {
+        Instant now = Instant.now();
 
-		String scope = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority)
-				.collect(Collectors.joining(" "));
+        String scope = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(" "));
 
-		JwtClaimsSet claims = JwtClaimsSet.builder().issuer("self").issuedAt(now)
-				.expiresAt(now.plus(1, ChronoUnit.HOURS)).subject(authentication.getName()).claim("scope", scope)
-				.build();
+        JwtClaimsSet claims = JwtClaimsSet.builder().issuer("self").issuedAt(now)
+                .expiresAt(now.plus(1, ChronoUnit.HOURS)).subject(authentication.getName()).claim("scope", scope)
+                .build();
 
-		return this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
-	}
+        return this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+    }
 }

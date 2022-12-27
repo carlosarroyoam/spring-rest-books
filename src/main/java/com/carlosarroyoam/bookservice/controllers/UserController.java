@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.carlosarroyoam.bookservice.configurations.OpenApiConfig;
+import com.carlosarroyoam.bookservice.config.OpenApiConfig;
 import com.carlosarroyoam.bookservice.entities.User;
 import com.carlosarroyoam.bookservice.services.UserService;
 

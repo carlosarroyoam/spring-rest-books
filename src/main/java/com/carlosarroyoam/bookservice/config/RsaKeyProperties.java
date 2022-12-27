@@ -1,4 +1,4 @@
-package com.carlosarroyoam.bookservice.configurations;
+package com.carlosarroyoam.bookservice.config;
 
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
