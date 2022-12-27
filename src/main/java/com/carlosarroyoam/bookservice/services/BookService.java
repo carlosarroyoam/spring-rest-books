@@ -12,7 +12,7 @@ import com.carlosarroyoam.bookservice.repositories.BookRepository;
 
 @Service
 public class BookService {
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(BookService.class);
 
 	@Autowired
 	private BookRepository bookRepository;

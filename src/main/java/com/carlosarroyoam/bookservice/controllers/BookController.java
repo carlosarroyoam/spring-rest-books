@@ -30,7 +30,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "Books")
 @SecurityRequirement(name = OpenApiConfig.SECURITY_SCHEME_NAME)
 public class BookController {
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(BookController.class);
 
 	@Autowired
 	private BookService bookService;

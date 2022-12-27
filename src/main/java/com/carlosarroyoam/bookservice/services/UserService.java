@@ -16,7 +16,7 @@ import com.carlosarroyoam.bookservice.repositories.UserRepository;
 
 @Service
 public class UserService implements UserDetailsService {
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(UserService.class);
 
 	@Autowired
 	private UserRepository userRepository;

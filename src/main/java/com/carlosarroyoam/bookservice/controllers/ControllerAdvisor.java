@@ -16,7 +16,7 @@ import com.carlosarroyoam.bookservice.dtos.ExceptionResponse;
 
 @ControllerAdvice
 public class ControllerAdvisor extends ResponseEntityExceptionHandler {
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(ControllerAdvisor.class);
 
 	@ExceptionHandler(RuntimeException.class)
 	public ResponseEntity<ExceptionResponse> exception(RuntimeException ex, WebRequest request) {

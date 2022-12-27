@@ -15,7 +15,7 @@ import com.carlosarroyoam.bookservice.repositories.UserRepository;
 
 @Service
 public class AuthService {
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(AuthService.class);
 
 	@Autowired
 	private AuthenticationManager authenticationManager;

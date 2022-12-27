@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class TokenService {
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(TokenService.class);
 
 	@Autowired
 	private JwtEncoder jwtEncoder;
