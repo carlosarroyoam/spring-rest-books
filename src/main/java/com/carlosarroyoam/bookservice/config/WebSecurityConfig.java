@@ -5,9 +5,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -17,8 +17,8 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import com.carlosarroyoam.bookservice.services.UserService;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
@@ -29,18 +29,18 @@ import com.nimbusds.jose.proc.SecurityContext;
 @Configuration
 @EnableWebSecurity
 class WebSecurityConfig {
+
 	@Bean
-	SecurityFilterChain securityFilterChain(HttpSecurity http, UserService userService) throws Exception {
+	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http.csrf(csrf -> csrf.disable());
 		http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-		http.oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt);
+		http.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
 
-		http.authorizeHttpRequests(requests -> requests
-				.antMatchers("/").permitAll()
-				.antMatchers("/auth/**").permitAll()
-				.antMatchers("/swagger-ui/**").permitAll()
-				.antMatchers("/api-docs/**").permitAll()
-				.anyRequest().authenticated());
+		http.authorizeHttpRequests(requests -> requests.requestMatchers(AntPathRequestMatcher.antMatcher("/"))
+				.permitAll().requestMatchers(AntPathRequestMatcher.antMatcher(("/auth/**"))).permitAll()
+				.requestMatchers(AntPathRequestMatcher.antMatcher("/swagger-ui/**")).permitAll()
+				.requestMatchers(AntPathRequestMatcher.antMatcher("/api-docs/**")).permitAll().anyRequest()
+				.authenticated());
 
 		return http.build();
 	}
@@ -67,10 +67,7 @@ class WebSecurityConfig {
 
 	@Bean
 	JwtEncoder jwtEncode(RsaKeyProperties rsaKeyProperties) {
-		JWK jwk = new RSAKey.Builder(rsaKeyProperties.publicKey())
-				.privateKey(rsaKeyProperties.privateKey())
-				.build();
-
+		JWK jwk = new RSAKey.Builder(rsaKeyProperties.publicKey()).privateKey(rsaKeyProperties.privateKey()).build();
 		JWKSource<SecurityContext> jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
 
 		return new NimbusJwtEncoder(jwks);

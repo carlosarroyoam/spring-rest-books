@@ -30,56 +30,56 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "Books")
 @SecurityRequirement(name = OpenApiConfig.SECURITY_SCHEME_NAME)
 public class BookController {
-	private final Logger logger = LoggerFactory.getLogger(BookController.class);
+    private final Logger logger = LoggerFactory.getLogger(BookController.class);
 
-	@Autowired
-	private BookService bookService;
+    @Autowired
+    private BookService bookService;
 
-	@GetMapping(produces = "application/json")
-	@Operation(summary = "Get a list of books")
-	public ResponseEntity<List<Book>> findAll() {
-		List<Book> books = bookService.findAll();
+    @GetMapping(produces = "application/json")
+    @Operation(summary = "Get a list of books")
+    public ResponseEntity<List<Book>> findAll() {
+        List<Book> books = bookService.findAll();
 
-		return ResponseEntity.ok(books);
-	}
+        return ResponseEntity.ok(books);
+    }
 
-	@GetMapping(value = "/{bookId}", produces = "application/json")
-	@Operation(summary = "Get a book by its id")
-	public ResponseEntity<Book> findById(@PathVariable Long bookId) {
-		Book book = bookService.findById(bookId);
+    @GetMapping(value = "/{bookId}", produces = "application/json")
+    @Operation(summary = "Get a book by its id")
+    public ResponseEntity<Book> findById(@PathVariable Long bookId) {
+        Book book = bookService.findById(bookId);
 
-		return ResponseEntity.ok(book);
-	}
+        return ResponseEntity.ok(book);
+    }
 
-	@PostMapping(consumes = "application/json", produces = "application/json")
-	@Operation(summary = "Stores a book")
-	public ResponseEntity<Book> store(@RequestBody Book book, UriComponentsBuilder b) {
-		Book createdBook = bookService.save(book);
+    @PostMapping(consumes = "application/json", produces = "application/json")
+    @Operation(summary = "Stores a book")
+    public ResponseEntity<Book> store(@RequestBody Book book, UriComponentsBuilder b) {
+        Book createdBook = bookService.save(book);
 
-		UriComponents uriComponents = b.path("/books/{id}").buildAndExpand(createdBook.getId());
+        UriComponents uriComponents = b.path("/books/{id}").buildAndExpand(createdBook.getId());
 
-		logger.info("Stored new book: {}", createdBook);
+        logger.info("Stored new book: {}", createdBook);
 
-		return ResponseEntity.created(uriComponents.toUri()).body(createdBook);
-	}
+        return ResponseEntity.created(uriComponents.toUri()).body(createdBook);
+    }
 
-	@PutMapping(value = "/{bookId}", consumes = "application/json", produces = "application/json")
-	@Operation(summary = "Updates a book by its id")
-	public ResponseEntity<Book> update(@PathVariable Long bookId, @RequestBody Book book) throws Exception {
-		Book updatedBook = bookService.update(bookId, book);
+    @PutMapping(value = "/{bookId}", consumes = "application/json", produces = "application/json")
+    @Operation(summary = "Updates a book by its id")
+    public ResponseEntity<Book> update(@PathVariable Long bookId, @RequestBody Book book) {
+        Book updatedBook = bookService.update(bookId, book);
 
-		logger.info("Updated book: {}", updatedBook);
+        logger.info("Updated book: {}", updatedBook);
 
-		return ResponseEntity.ok(updatedBook);
-	}
+        return ResponseEntity.ok(updatedBook);
+    }
 
-	@DeleteMapping("/{bookId}")
-	@Operation(summary = "Deletes a book by its id")
-	public ResponseEntity<?> destroy(@PathVariable Long bookId) {
-		bookService.deleteById(bookId);
+    @DeleteMapping("/{bookId}")
+    @Operation(summary = "Deletes a book by its id")
+    public ResponseEntity<?> destroy(@PathVariable Long bookId) {
+        bookService.deleteById(bookId);
 
-		logger.info("Deleted book with id: {}", bookId);
+        logger.info("Deleted book with id: {}", bookId);
 
-		return ResponseEntity.noContent().build();
-	}
+        return ResponseEntity.noContent().build();
+    }
 }

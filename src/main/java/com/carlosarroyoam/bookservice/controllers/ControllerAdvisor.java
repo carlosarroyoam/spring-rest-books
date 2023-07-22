@@ -5,10 +5,9 @@ import java.time.ZonedDateTime;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -19,43 +18,35 @@ import com.carlosarroyoam.bookservice.dtos.ExceptionResponse;
 
 @ControllerAdvice
 public class ControllerAdvisor extends ResponseEntityExceptionHandler {
-    private final Logger logger = LoggerFactory.getLogger(ControllerAdvisor.class);
+	private final Logger logger = LoggerFactory.getLogger(ControllerAdvisor.class);
 
-    @Override
-    protected ResponseEntity<Object> handleExceptionInternal(Exception ex, @Nullable Object body, HttpHeaders headers,
-            HttpStatus status, WebRequest request) {
-        ExceptionResponse exceptionResponse = getExceptionResponse(ex, status, request);
+	@ExceptionHandler(ResponseStatusException.class)
+	public ResponseEntity<Object> handleSQLException(WebRequest request, ResponseStatusException ex) {
+		ExceptionResponse exceptionResponse = getExceptionResponse(ex, ex.getStatusCode(), request);
 
-        return super.handleExceptionInternal(ex, exceptionResponse, headers, status, request);
-    }
+		exceptionResponse.setMessage(ex.getReason());
 
-    @ExceptionHandler(ResponseStatusException.class)
-    public ResponseEntity<Object> handleSQLException(WebRequest request, ResponseStatusException ex) {
-        ExceptionResponse exceptionResponse = getExceptionResponse(ex, ex.getStatus(), request);
+		return new ResponseEntity<>(exceptionResponse, ex.getStatusCode());
+	}
 
-        exceptionResponse.setMessage(ex.getReason());
+	@ExceptionHandler(Exception.class)
+	public ResponseEntity<ExceptionResponse> exception(Exception ex, WebRequest request) {
+		ExceptionResponse exceptionResponse = getExceptionResponse(ex, HttpStatus.INTERNAL_SERVER_ERROR, request);
 
-        return new ResponseEntity<>(exceptionResponse, ex.getStatus());
-    }
+		logger.error("Exception: {}", ex.getMessage());
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ExceptionResponse> exception(Exception ex, WebRequest request) {
-        ExceptionResponse exceptionResponse = getExceptionResponse(ex, HttpStatus.INTERNAL_SERVER_ERROR, request);
+		return ResponseEntity.internalServerError().body(exceptionResponse);
+	}
 
-        logger.error("Exception: {}", ex.getMessage());
+	private ExceptionResponse getExceptionResponse(Exception ex, HttpStatusCode statusCode, WebRequest request) {
+		ExceptionResponse exceptionResponse = new ExceptionResponse();
 
-        return ResponseEntity.internalServerError().body(exceptionResponse);
-    }
+		exceptionResponse.setMessage(ex.getMessage());
+		exceptionResponse.setError(HttpStatus.valueOf(statusCode.value()).getReasonPhrase());
+		exceptionResponse.setStatus(statusCode.value());
+		exceptionResponse.setPath(request.getDescription(false).replace("uri=", ""));
+		exceptionResponse.setTimestamp(ZonedDateTime.now(ZoneId.of("UTC")));
 
-    private ExceptionResponse getExceptionResponse(Exception ex, HttpStatus status, WebRequest request) {
-        ExceptionResponse exceptionResponse = new ExceptionResponse();
-
-        exceptionResponse.setMessage(ex.getMessage());
-        exceptionResponse.setError(status.getReasonPhrase());
-        exceptionResponse.setStatus(status.value());
-        exceptionResponse.setPath(request.getDescription(false).replace("uri=", ""));
-        exceptionResponse.setTimestamp(ZonedDateTime.now(ZoneId.of("UTC")));
-
-        return exceptionResponse;
-    }
+		return exceptionResponse;
+	}
 }

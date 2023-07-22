@@ -1,5 +1,6 @@
 package com.carlosarroyoam.bookservice.services;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -26,6 +27,7 @@ public class BookService {
 	}
 
 	public Book save(Book book) {
+		book.setPublishedAt(LocalDate.now());
 		return bookRepository.save(book);
 	}
 
