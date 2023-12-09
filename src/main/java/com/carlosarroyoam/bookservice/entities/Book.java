@@ -8,41 +8,38 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "books")
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class Book {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
-    @Column(length = 128, nullable = false)
-    private String title;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @Column(length = 128, nullable = false)
-    private String author;
+	@Column(length = 128, nullable = false)
+	private String title;
 
-    @Column(nullable = false)
-    private Double price;
+	@Column(length = 128, nullable = false)
+	private String author;
 
-    @Column(nullable = false)
-    private LocalDate publishedAt;
+	@Column(nullable = false)
+	private Double price;
 
-    @Column(nullable = false)
-    private boolean isAvailableOnline;
+	@Column(nullable = false)
+	private LocalDate publishedAt;
 
-    public Book(String title, String author, Double price, LocalDate publishedAt, boolean isAvailableOnline) {
-        super();
-        this.title = title;
-        this.author = author;
-        this.price = price;
-        this.publishedAt = publishedAt;
-        this.isAvailableOnline = isAvailableOnline;
-    }
+	@Column(nullable = false)
+	private boolean isAvailableOnline;
+
+	public Book(String title, String author, Double price, LocalDate publishedAt, boolean isAvailableOnline) {
+		this.title = title;
+		this.author = author;
+		this.price = price;
+		this.publishedAt = publishedAt;
+		this.isAvailableOnline = isAvailableOnline;
+	}
+
 }

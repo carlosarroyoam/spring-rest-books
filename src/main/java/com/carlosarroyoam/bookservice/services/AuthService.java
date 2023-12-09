@@ -1,6 +1,5 @@
 package com.carlosarroyoam.bookservice.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -14,14 +13,16 @@ import com.carlosarroyoam.bookservice.repositories.UserRepository;
 @Service
 public class AuthService {
 
-	@Autowired
-	private AuthenticationManager authenticationManager;
+	private final AuthenticationManager authenticationManager;
+	private final TokenService tokenService;
+	private final UserRepository userRepository;
 
-	@Autowired
-	private TokenService tokenService;
-
-	@Autowired
-	private UserRepository userRepository;
+	public AuthService(AuthenticationManager authenticationManager, TokenService tokenService,
+			UserRepository userRepository) {
+		this.authenticationManager = authenticationManager;
+		this.tokenService = tokenService;
+		this.userRepository = userRepository;
+	}
 
 	public LoginResponse auth(LoginRequest loginRequest) {
 		User userByEmail = userRepository.findByEmail(loginRequest.getEmail()).orElseThrow();
@@ -31,4 +32,5 @@ public class AuthService {
 
 		return new LoginResponse(userByEmail.getEmail(), tokenService.generateToken(authentication));
 	}
+
 }

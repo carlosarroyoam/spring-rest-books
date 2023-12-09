@@ -18,12 +18,12 @@ import com.carlosarroyoam.bookservice.dtos.ExceptionResponse;
 
 @ControllerAdvice
 public class ControllerAdvisor extends ResponseEntityExceptionHandler {
-	private final Logger logger = LoggerFactory.getLogger(ControllerAdvisor.class);
+
+	private static final Logger log = LoggerFactory.getLogger(ControllerAdvisor.class);
 
 	@ExceptionHandler(ResponseStatusException.class)
 	public ResponseEntity<Object> handleSQLException(WebRequest request, ResponseStatusException ex) {
 		ExceptionResponse exceptionResponse = getExceptionResponse(ex, ex.getStatusCode(), request);
-
 		exceptionResponse.setMessage(ex.getReason());
 
 		return new ResponseEntity<>(exceptionResponse, ex.getStatusCode());
@@ -32,15 +32,13 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<ExceptionResponse> exception(Exception ex, WebRequest request) {
 		ExceptionResponse exceptionResponse = getExceptionResponse(ex, HttpStatus.INTERNAL_SERVER_ERROR, request);
-
-		logger.error("Exception: {}", ex.getMessage());
+		log.error("Exception: {}", ex.getMessage());
 
 		return ResponseEntity.internalServerError().body(exceptionResponse);
 	}
 
 	private ExceptionResponse getExceptionResponse(Exception ex, HttpStatusCode statusCode, WebRequest request) {
 		ExceptionResponse exceptionResponse = new ExceptionResponse();
-
 		exceptionResponse.setMessage(ex.getMessage());
 		exceptionResponse.setError(HttpStatus.valueOf(statusCode.value()).getReasonPhrase());
 		exceptionResponse.setStatus(statusCode.value());
@@ -49,4 +47,5 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
 
 		return exceptionResponse;
 	}
+
 }

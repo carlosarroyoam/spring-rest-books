@@ -10,9 +10,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.carlosarroyoam.bookservice.entities.User;
 
 public class SecurityUser implements UserDetails {
-	private static final long serialVersionUID = -1857850701218478299L;
 
-	private final User user;
+	private final transient User user;
 
 	public SecurityUser(User user) {
 		this.user = user;
@@ -52,4 +51,5 @@ public class SecurityUser implements UserDetails {
 	public boolean isEnabled() {
 		return true;
 	}
+
 }

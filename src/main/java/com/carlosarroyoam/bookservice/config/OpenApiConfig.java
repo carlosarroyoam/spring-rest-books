@@ -14,6 +14,7 @@ import io.swagger.v3.oas.models.info.License;
 @Configuration
 @SecurityScheme(name = OpenApiConfig.SECURITY_SCHEME_NAME, type = SecuritySchemeType.HTTP, bearerFormat = "JWT", scheme = "bearer")
 public class OpenApiConfig {
+
 	public static final String SECURITY_SCHEME_NAME = "Bearer Authentication";
 
 	@Bean
@@ -26,4 +27,5 @@ public class OpenApiConfig {
 		return new OpenAPI().info(new Info().title(appTitle).version(appVersion).description(appDescription)
 				.contact(contactInfo).license(license));
 	}
+
 }

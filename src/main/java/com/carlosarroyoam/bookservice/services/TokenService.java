@@ -4,9 +4,6 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
@@ -16,21 +13,23 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class TokenService {
-    private final Logger logger = LoggerFactory.getLogger(TokenService.class);
 
-    @Autowired
-    private JwtEncoder jwtEncoder;
+	private final JwtEncoder jwtEncoder;
 
-    public String generateToken(Authentication authentication) {
-        Instant now = Instant.now();
+	public TokenService(JwtEncoder jwtEncoder) {
+		this.jwtEncoder = jwtEncoder;
+	}
 
-        String scope = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(" "));
+	public String generateToken(Authentication authentication) {
+		Instant now = Instant.now();
 
-        JwtClaimsSet claims = JwtClaimsSet.builder().issuer("self").issuedAt(now)
-                .expiresAt(now.plus(1, ChronoUnit.HOURS)).subject(authentication.getName()).claim("scope", scope)
-                .build();
+		String scope = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority)
+				.collect(Collectors.joining(" "));
 
-        return this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
-    }
+		JwtClaimsSet claims = JwtClaimsSet.builder().issuer("self").issuedAt(now)
+				.expiresAt(now.plus(1, ChronoUnit.HOURS)).subject(authentication.getName()).claim("scope", scope)
+				.build();
+
+		return this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+	}
 }

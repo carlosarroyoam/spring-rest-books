@@ -72,4 +72,5 @@ class WebSecurityConfig {
 
 		return new NimbusJwtEncoder(jwks);
 	}
+
 }
