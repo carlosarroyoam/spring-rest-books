@@ -18,7 +18,7 @@ public class OpenApiConfig {
 	public static final String SECURITY_SCHEME_NAME = "Bearer Authentication";
 
 	@Bean
-	OpenAPI customOpenAPI(@Value("${springdoc.app.version}") String appVersion) {
+	OpenAPI customOpenAPI(@Value("${app.version}") String appVersion) {
 		String appTitle = "Books service";
 		String appDescription = "Book service demo API";
 		Contact contactInfo = new Contact().email("carlosarroyoam@gmail.com");
