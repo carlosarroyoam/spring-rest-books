@@ -15,6 +15,9 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.carlosarroyoam.rest.books.config.OpenApiConfig;
+import com.carlosarroyoam.rest.books.dtos.BookResponse;
+import com.carlosarroyoam.rest.books.dtos.CreateBookRequest;
+import com.carlosarroyoam.rest.books.dtos.UpdateBookRequest;
 import com.carlosarroyoam.rest.books.entities.Book;
 import com.carlosarroyoam.rest.books.services.BookService;
 
@@ -43,23 +46,24 @@ public class BookController {
 
 	@GetMapping(value = "/{bookId}", produces = "application/json")
 	@Operation(summary = "Gets a book by its id")
-	public ResponseEntity<Book> findById(@PathVariable Long bookId) {
-		Book bookById = bookService.findById(bookId);
+	public ResponseEntity<BookResponse> findById(@PathVariable Long bookId) {
+		BookResponse bookById = bookService.findById(bookId);
 		return ResponseEntity.ok(bookById);
 	}
 
 	@PostMapping(consumes = "application/json", produces = "application/json")
 	@Operation(summary = "Stores a new book")
-	public ResponseEntity<Book> store(@RequestBody Book book, UriComponentsBuilder b) {
-		Book createdBook = bookService.save(book);
-		UriComponents uriComponents = b.path("/books/{id}").buildAndExpand(createdBook.getId());
+	public ResponseEntity<BookResponse> store(@RequestBody CreateBookRequest createBookRequest,
+			UriComponentsBuilder builder) {
+		BookResponse createdBook = bookService.save(createBookRequest);
+		UriComponents uriComponents = builder.path("/books/{id}").buildAndExpand(createdBook.getId());
 		return ResponseEntity.created(uriComponents.toUri()).body(createdBook);
 	}
 
 	@PutMapping(value = "/{bookId}", consumes = "application/json", produces = "application/json")
 	@Operation(summary = "Updates a book by its id")
-	public ResponseEntity<Book> update(@PathVariable Long bookId, @RequestBody Book book) {
-		Book updatedBook = bookService.update(bookId, book);
+	public ResponseEntity<BookResponse> update(@PathVariable Long bookId, @RequestBody UpdateBookRequest updateBookRequest) {
+		BookResponse updatedBook = bookService.update(bookId, updateBookRequest);
 		return ResponseEntity.ok(updatedBook);
 	}
 
