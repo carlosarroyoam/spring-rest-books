@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.carlosarroyoam.rest.books.config.OpenApiConfig;
-import com.carlosarroyoam.rest.books.entities.User;
+import com.carlosarroyoam.rest.books.dtos.UserResponse;
 import com.carlosarroyoam.rest.books.services.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,15 +30,15 @@ public class UserController {
 
 	@GetMapping(produces = "application/json")
 	@Operation(summary = "Gets the list of users")
-	public ResponseEntity<List<User>> findAll() {
-		List<User> users = userService.findAll();
+	public ResponseEntity<List<UserResponse>> findAll() {
+		List<UserResponse> users = userService.findAll();
 		return ResponseEntity.ok(users);
 	}
 
-	@GetMapping(path = "/{id}", produces = "application/json")
+	@GetMapping(path = "/{userId}", produces = "application/json")
 	@Operation(summary = "Gets a user by its id")
-	public ResponseEntity<User> findById(@PathVariable Long id) {
-		User userById = userService.findById(id);
+	public ResponseEntity<UserResponse> findById(@PathVariable Long userId) {
+		UserResponse userById = userService.findById(userId);
 		return ResponseEntity.ok(userById);
 	}
 

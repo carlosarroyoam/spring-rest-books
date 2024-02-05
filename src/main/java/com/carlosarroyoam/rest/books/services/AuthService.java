@@ -30,7 +30,8 @@ public class AuthService {
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 
-		return new LoginResponse(userByEmail.getEmail(), tokenService.generateToken(authentication));
+		return LoginResponse.builder().email(userByEmail.getEmail())
+				.accessToken(tokenService.generateToken(authentication)).build();
 	}
 
 }
