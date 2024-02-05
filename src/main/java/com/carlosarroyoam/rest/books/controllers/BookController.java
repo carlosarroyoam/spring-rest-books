@@ -18,7 +18,6 @@ import com.carlosarroyoam.rest.books.config.OpenApiConfig;
 import com.carlosarroyoam.rest.books.dtos.BookResponse;
 import com.carlosarroyoam.rest.books.dtos.CreateBookRequest;
 import com.carlosarroyoam.rest.books.dtos.UpdateBookRequest;
-import com.carlosarroyoam.rest.books.entities.Book;
 import com.carlosarroyoam.rest.books.services.BookService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -39,8 +38,8 @@ public class BookController {
 
 	@GetMapping(produces = "application/json")
 	@Operation(summary = "Gets the list of books")
-	public ResponseEntity<List<Book>> findAll() {
-		List<Book> books = bookService.findAll();
+	public ResponseEntity<List<BookResponse>> findAll() {
+		List<BookResponse> books = bookService.findAll();
 		return ResponseEntity.ok(books);
 	}
 
@@ -62,7 +61,8 @@ public class BookController {
 
 	@PutMapping(value = "/{bookId}", consumes = "application/json", produces = "application/json")
 	@Operation(summary = "Updates a book by its id")
-	public ResponseEntity<BookResponse> update(@PathVariable Long bookId, @RequestBody UpdateBookRequest updateBookRequest) {
+	public ResponseEntity<BookResponse> update(@PathVariable Long bookId,
+			@RequestBody UpdateBookRequest updateBookRequest) {
 		BookResponse updatedBook = bookService.update(bookId, updateBookRequest);
 		return ResponseEntity.ok(updatedBook);
 	}

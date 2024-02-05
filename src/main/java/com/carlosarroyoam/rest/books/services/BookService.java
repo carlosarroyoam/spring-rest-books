@@ -24,8 +24,9 @@ public class BookService {
 		this.bookMapper = bookMapper;
 	}
 
-	public List<Book> findAll() {
-		return bookRepository.findAll();
+	public List<BookResponse> findAll() {
+		List<Book> books = bookRepository.findAll();
+		return bookMapper.toDtos(books);
 	}
 
 	public BookResponse findById(Long id) {

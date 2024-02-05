@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.carlosarroyoam.rest.books.dtos.BookResponse;
 import com.carlosarroyoam.rest.books.entities.Book;
 import com.carlosarroyoam.rest.books.repositories.BookRepository;
 
@@ -31,7 +32,7 @@ class BookServiceTest {
 		List<Book> expectedBooks = Collections.emptyList();
 		Mockito.when(bookRepository.findAll()).thenReturn(expectedBooks);
 
-		List<Book> books = bookService.findAll();
+		List<BookResponse> books = bookService.findAll();
 
 		Assertions.assertThat(books).isNotNull().isEmpty();
 	}
@@ -43,7 +44,7 @@ class BookServiceTest {
 				new Book("Homo Deus", "Yuval Noah", 12.99d, LocalDate.of(2018, 12, 1), true));
 		Mockito.when(bookRepository.findAll()).thenReturn(expectedBooks);
 
-		List<Book> books = bookService.findAll();
+		List<BookResponse> books = bookService.findAll();
 
 		Assertions.assertThat(books).isNotNull().isNotEmpty().size().isEqualTo(2);
 	}
