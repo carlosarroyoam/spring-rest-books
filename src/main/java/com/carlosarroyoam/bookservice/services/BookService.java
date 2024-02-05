@@ -3,7 +3,9 @@ package com.carlosarroyoam.bookservice.services;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.carlosarroyoam.bookservice.entities.Book;
 import com.carlosarroyoam.bookservice.repositories.BookRepository;
@@ -22,7 +24,8 @@ public class BookService {
 	}
 
 	public Book findById(Long id) {
-		return bookRepository.findById(id).orElseThrow();
+		return bookRepository.findById(id)
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found"));
 	}
 
 	public Book save(Book book) {
@@ -31,7 +34,8 @@ public class BookService {
 	}
 
 	public Book update(Long id, Book book) {
-		Book findById = bookRepository.findById(id).orElseThrow();
+		Book findById = bookRepository.findById(id)
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found"));
 
 		findById.setTitle(book.getTitle());
 		findById.setAuthor(book.getAuthor());
@@ -43,7 +47,9 @@ public class BookService {
 	}
 
 	public void deleteById(Long id) {
-		Book findById = bookRepository.findById(id).orElseThrow();
+		Book findById = bookRepository.findById(id)
+				.orElseThrow(() 
+						-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found"));
 
 		bookRepository.delete(findById);
 	}

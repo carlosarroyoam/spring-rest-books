@@ -2,8 +2,6 @@ package com.carlosarroyoam.bookservice.controllers;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,7 +22,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @SecurityRequirement(name = OpenApiConfig.SECURITY_SCHEME_NAME)
 public class UserController {
 
-	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 	private final UserService userService;
 
 	public UserController(UserService userService) {
@@ -32,17 +29,17 @@ public class UserController {
 	}
 
 	@GetMapping(produces = "application/json")
-	@Operation(summary = "Gets a list of users")
+	@Operation(summary = "Gets the list of users")
 	public ResponseEntity<List<User>> findAll() {
-		logger.info("Getting all users");
-		return ResponseEntity.ok(userService.findAll());
+		List<User> users = userService.findAll();
+		return ResponseEntity.ok(users);
 	}
 
 	@GetMapping(path = "/{id}", produces = "application/json")
 	@Operation(summary = "Gets a user by its id")
 	public ResponseEntity<User> findById(@PathVariable Long id) {
-		logger.info("Getting user with id: {}", id);
-		return ResponseEntity.ok(userService.findById(id));
+		User userById = userService.findById(id);
+		return ResponseEntity.ok(userById);
 	}
 
 }

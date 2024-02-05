@@ -5,10 +5,8 @@ import java.time.LocalDate;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.carlosarroyoam.bookservice.config.RsaKeyProperties;
 import com.carlosarroyoam.bookservice.entities.Book;
 import com.carlosarroyoam.bookservice.entities.Role;
 import com.carlosarroyoam.bookservice.entities.User;
@@ -17,7 +15,6 @@ import com.carlosarroyoam.bookservice.repositories.RoleRepository;
 import com.carlosarroyoam.bookservice.repositories.UserRepository;
 
 @SpringBootApplication
-@EnableConfigurationProperties(RsaKeyProperties.class)
 public class BookServiceApplication implements CommandLineRunner {
 
 	private final BookRepository bookRepository;

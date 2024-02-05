@@ -2,10 +2,14 @@ package com.carlosarroyoam.bookservice.services;
 
 import java.util.List;
 
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.carlosarroyoam.bookservice.config.security.SecurityUser;
 import com.carlosarroyoam.bookservice.entities.User;
@@ -31,7 +35,7 @@ public class UserService implements UserDetailsService {
 	}
 
 	public User findById(Long id) {
-		return userRepository.findById(id).orElseThrow();
+		return userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ""));
 	}
 
 }

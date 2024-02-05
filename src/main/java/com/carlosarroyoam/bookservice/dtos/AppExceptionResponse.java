@@ -5,7 +5,7 @@ import java.time.ZonedDateTime;
 import lombok.Data;
 
 @Data
-public class ExceptionResponse {
+public class AppExceptionResponse {
 
 	private String message;
 	private String error;

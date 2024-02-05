@@ -1,4 +1,4 @@
-package com.carlosarroyoam.bookservice.config;
+package com.carlosarroyoam.bookservice.config.security;
 
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
@@ -6,5 +6,5 @@ import java.security.interfaces.RSAPublicKey;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "rsa")
-public record RsaKeyProperties(RSAPublicKey publicKey, RSAPrivateKey privateKey) {
+public record RsaKeys(RSAPublicKey publicKey, RSAPrivateKey privateKey) {
 }

@@ -19,6 +19,7 @@ import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import com.carlosarroyoam.bookservice.config.security.RsaKeys;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
@@ -64,13 +65,13 @@ class WebSecurityConfig {
 	}
 
 	@Bean
-	JwtDecoder jwtDecoder(RsaKeyProperties rsaKeyProperties) {
-		return NimbusJwtDecoder.withPublicKey(rsaKeyProperties.publicKey()).build();
+	JwtDecoder jwtDecoder(RsaKeys rsaKeys) {
+		return NimbusJwtDecoder.withPublicKey(rsaKeys.publicKey()).build();
 	}
 
 	@Bean
-	JwtEncoder jwtEncode(RsaKeyProperties rsaKeyProperties) {
-		JWK jwk = new RSAKey.Builder(rsaKeyProperties.publicKey()).privateKey(rsaKeyProperties.privateKey()).build();
+	JwtEncoder jwtEncode(RsaKeys rsaKeys) {
+		JWK jwk = new RSAKey.Builder(rsaKeys.publicKey()).privateKey(rsaKeys.privateKey()).build();
 		JWKSource<SecurityContext> jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
 
 		return new NimbusJwtEncoder(jwks);

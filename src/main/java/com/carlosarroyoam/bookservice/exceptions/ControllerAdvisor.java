@@ -14,7 +14,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import com.carlosarroyoam.bookservice.dtos.ExceptionResponse;
+import com.carlosarroyoam.bookservice.dtos.AppExceptionResponse;
 
 @ControllerAdvice
 public class ControllerAdvisor extends ResponseEntityExceptionHandler {
@@ -22,31 +22,31 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
 	private static final Logger log = LoggerFactory.getLogger(ControllerAdvisor.class);
 
 	@ExceptionHandler(ResponseStatusException.class)
-	public ResponseEntity<ExceptionResponse> handleResponseStatusException(ResponseStatusException ex,
+	public ResponseEntity<AppExceptionResponse> handleResponseStatusException(ResponseStatusException ex,
 			WebRequest request) {
-		ExceptionResponse exceptionResponse = getExceptionResponse(ex, ex.getStatusCode(), request);
-		exceptionResponse.setMessage(ex.getReason());
+		AppExceptionResponse appExceptionResponse = getExceptionResponse(ex, ex.getStatusCode(), request);
+		appExceptionResponse.setMessage(ex.getReason());
 
-		return new ResponseEntity<>(exceptionResponse, ex.getStatusCode());
+		return new ResponseEntity<>(appExceptionResponse, ex.getStatusCode());
 	}
 
 	@ExceptionHandler(Exception.class)
-	public ResponseEntity<ExceptionResponse> handleAllException(Exception ex, WebRequest request) {
-		ExceptionResponse exceptionResponse = getExceptionResponse(ex, HttpStatus.INTERNAL_SERVER_ERROR, request);
+	public ResponseEntity<AppExceptionResponse> handleAllException(Exception ex, WebRequest request) {
+		AppExceptionResponse appExceptionResponse = getExceptionResponse(ex, HttpStatus.INTERNAL_SERVER_ERROR, request);
 		log.error("Exception: {}", ex.getMessage());
 
-		return ResponseEntity.internalServerError().body(exceptionResponse);
+		return ResponseEntity.internalServerError().body(appExceptionResponse);
 	}
 
-	private ExceptionResponse getExceptionResponse(Exception ex, HttpStatusCode statusCode, WebRequest request) {
-		ExceptionResponse exceptionResponse = new ExceptionResponse();
-		exceptionResponse.setMessage(ex.getMessage());
-		exceptionResponse.setError(HttpStatus.valueOf(statusCode.value()).getReasonPhrase());
-		exceptionResponse.setStatus(statusCode.value());
-		exceptionResponse.setPath(request.getDescription(false).replace("uri=", ""));
-		exceptionResponse.setTimestamp(ZonedDateTime.now(ZoneId.of("UTC")));
+	private AppExceptionResponse getExceptionResponse(Exception ex, HttpStatusCode statusCode, WebRequest request) {
+		AppExceptionResponse appExceptionResponse = new AppExceptionResponse();
+		appExceptionResponse.setMessage(ex.getMessage());
+		appExceptionResponse.setError(HttpStatus.valueOf(statusCode.value()).getReasonPhrase());
+		appExceptionResponse.setStatus(statusCode.value());
+		appExceptionResponse.setPath(request.getDescription(false).replace("uri=", ""));
+		appExceptionResponse.setTimestamp(ZonedDateTime.now(ZoneId.of("UTC")));
 
-		return exceptionResponse;
+		return appExceptionResponse;
 	}
 
 }
