@@ -1,6 +1,5 @@
 package com.carlosarroyoam.bookservice.config;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -18,9 +17,10 @@ public class OpenApiConfig {
 	public static final String SECURITY_SCHEME_NAME = "Bearer Authentication";
 
 	@Bean
-	OpenAPI customOpenAPI(@Value("${app.version}") String appVersion) {
+	OpenAPI customOpenAPI() {
 		String appTitle = "Books service";
 		String appDescription = "Book service demo API";
+		String appVersion = "0.0.1-SNAPSHOT";
 		Contact contactInfo = new Contact().email("carlosarroyoam@gmail.com");
 		License license = new License().name("Apache 2.0").url("https://www.apache.org/licenses/LICENSE-2.0.html");
 

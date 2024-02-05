@@ -1,4 +1,4 @@
-package com.carlosarroyoam.bookservice.controllers;
+package com.carlosarroyoam.bookservice.exceptions;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -22,7 +22,8 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
 	private static final Logger log = LoggerFactory.getLogger(ControllerAdvisor.class);
 
 	@ExceptionHandler(ResponseStatusException.class)
-	public ResponseEntity<Object> handleSQLException(WebRequest request, ResponseStatusException ex) {
+	public ResponseEntity<ExceptionResponse> handleResponseStatusException(ResponseStatusException ex,
+			WebRequest request) {
 		ExceptionResponse exceptionResponse = getExceptionResponse(ex, ex.getStatusCode(), request);
 		exceptionResponse.setMessage(ex.getReason());
 
@@ -30,7 +31,7 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
 	}
 
 	@ExceptionHandler(Exception.class)
-	public ResponseEntity<ExceptionResponse> exception(Exception ex, WebRequest request) {
+	public ResponseEntity<ExceptionResponse> handleAllException(Exception ex, WebRequest request) {
 		ExceptionResponse exceptionResponse = getExceptionResponse(ex, HttpStatus.INTERNAL_SERVER_ERROR, request);
 		log.error("Exception: {}", ex.getMessage());
 

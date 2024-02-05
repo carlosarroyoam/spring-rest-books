@@ -36,11 +36,14 @@ class WebSecurityConfig {
 		http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 		http.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
 
-		http.authorizeHttpRequests(requests -> requests.requestMatchers(AntPathRequestMatcher.antMatcher("/"))
-				.permitAll().requestMatchers(AntPathRequestMatcher.antMatcher(("/auth/**"))).permitAll()
+		// @formatter:off
+		http.authorizeHttpRequests(requests -> requests.requestMatchers(AntPathRequestMatcher
+				.antMatcher("/")).permitAll()
+				.requestMatchers(AntPathRequestMatcher.antMatcher(("/auth/**"))).permitAll()
 				.requestMatchers(AntPathRequestMatcher.antMatcher("/swagger-ui/**")).permitAll()
-				.requestMatchers(AntPathRequestMatcher.antMatcher("/api-docs/**")).permitAll().anyRequest()
-				.authenticated());
+				.requestMatchers(AntPathRequestMatcher.antMatcher("/api-docs/**")).permitAll()
+				.anyRequest().authenticated());
+		// @formatter:on
 
 		return http.build();
 	}
