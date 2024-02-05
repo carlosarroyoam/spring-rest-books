@@ -21,6 +21,7 @@ import com.carlosarroyoam.bookservice.repositories.UserRepository;
 
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
+
 	@Mock
 	private UserRepository userRepository;
 
@@ -31,11 +32,11 @@ class AuthServiceTest {
 	private TokenService tokenService;
 
 	@InjectMocks
-	AuthService authService;
+	private AuthService authService;
 
 	@Test
 	@DisplayName("Test method throws NoSuchElementException when user not exists")
-	void testAuthThrowsExceptionWhenUserNotExists() {
+	void authThrowsExceptionWhenUserNotExists() {
 		LoginRequest loginRequest = new LoginRequest("non_existing_user@gmail.com", "secret");
 
 		Mockito.when(userRepository.findByEmail(loginRequest.getEmail())).thenThrow(NoSuchElementException.class);
@@ -45,18 +46,16 @@ class AuthServiceTest {
 
 	@Test
 	@DisplayName("Test method when user exists")
-	void testAuthWhenUserExists() {
+	void authWhenUserExists() {
+		LoginRequest loginRequest = new LoginRequest("carlosarroyoam@gmail.com", "secret");
 		Role role = new Role("App//Admin", "Role for admins users");
-
 		Optional<User> expectedUser = Optional
 				.of(new User("Carlos Alberto", "Arroyo Martínez", "carlosarroyoam@gmail.com", "", role));
-
-		LoginRequest loginRequest = new LoginRequest("carlosarroyoam@gmail.com", "secret");
-
 		Mockito.when(userRepository.findByEmail(loginRequest.getEmail())).thenReturn(expectedUser);
 
 		LoginResponse response = authService.auth(loginRequest);
 
 		Assertions.assertThat(response.getEmail()).isEqualTo(expectedUser.get().getEmail());
 	}
+
 }
