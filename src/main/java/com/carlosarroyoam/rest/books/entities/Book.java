@@ -1,5 +1,6 @@
 package com.carlosarroyoam.rest.books.entities;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import jakarta.persistence.Column;
@@ -28,7 +29,7 @@ public class Book {
 	private String author;
 
 	@Column(nullable = false)
-	private Double price;
+	private BigDecimal price;
 
 	@Column(nullable = false)
 	private LocalDate publishedAt;
@@ -36,7 +37,7 @@ public class Book {
 	@Column(nullable = false)
 	private boolean isAvailableOnline;
 
-	public Book(String title, String author, Double price, LocalDate publishedAt, boolean isAvailableOnline) {
+	public Book(String title, String author, BigDecimal price, LocalDate publishedAt, boolean isAvailableOnline) {
 		this.title = title;
 		this.author = author;
 		this.price = price;

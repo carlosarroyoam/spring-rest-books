@@ -1,5 +1,6 @@
 package com.carlosarroyoam.rest.books.services;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
@@ -40,8 +41,9 @@ class BookServiceTest {
 	@Test
 	@DisplayName("Tests findAll return list of books")
 	void findAllReturnBooks() {
-		List<Book> expectedBooks = List.of(new Book("Homo Deus", "Yuval Noah", 12.99d, LocalDate.of(2018, 12, 1), true),
-				new Book("Homo Deus", "Yuval Noah", 12.99d, LocalDate.of(2018, 12, 1), true));
+		List<Book> expectedBooks = List.of(
+				new Book("Homo Deus", "Yuval Noah", BigDecimal.valueOf(12.99d), LocalDate.of(2018, 12, 1), true),
+				new Book("Homo Deus", "Yuval Noah", BigDecimal.valueOf(12.99d), LocalDate.of(2018, 12, 1), true));
 		Mockito.when(bookRepository.findAll()).thenReturn(expectedBooks);
 
 		List<BookResponse> books = bookService.findAll();

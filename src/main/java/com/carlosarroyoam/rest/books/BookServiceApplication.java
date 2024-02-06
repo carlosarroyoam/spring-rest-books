@@ -1,5 +1,6 @@
 package com.carlosarroyoam.rest.books;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import org.springframework.boot.CommandLineRunner;
@@ -36,8 +37,8 @@ public class BookServiceApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		Book book1 = new Book("Homo Deus", "Yuval Noah", 12.99d, LocalDate.of(2018, 12, 1), true);
-		Book book2 = new Book("Homo Sapiens", "Yuval Noah", 17.99d, LocalDate.of(2013, 12, 1), true);
+		Book book1 = new Book("Homo Deus", "Yuval Noah", BigDecimal.valueOf(12.99d), LocalDate.of(2018, 12, 1), true);
+		Book book2 = new Book("Homo Sapiens", "Yuval Noah", BigDecimal.valueOf(17.99d), LocalDate.of(2013, 12, 1), true);
 
 		bookRepository.save(book1);
 		bookRepository.save(book2);
