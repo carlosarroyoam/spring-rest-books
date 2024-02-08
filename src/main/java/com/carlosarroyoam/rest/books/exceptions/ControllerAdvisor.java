@@ -29,7 +29,7 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
 		HttpStatus statusCode = HttpStatus.valueOf(status.value());
 
 		AppExceptionResponse appExceptionResponse = new AppExceptionResponse();
-		appExceptionResponse.setMessage("The request data is not valid");
+		appExceptionResponse.setMessage("Request data is not valid");
 		appExceptionResponse.setError(statusCode.getReasonPhrase());
 		appExceptionResponse.setStatus(statusCode.value());
 		appExceptionResponse.setPath(request.getDescription(false).replace("uri=", ""));
