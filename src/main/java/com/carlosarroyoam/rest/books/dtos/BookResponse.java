@@ -1,6 +1,7 @@
 package com.carlosarroyoam.rest.books.dtos;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import lombok.Data;
@@ -12,7 +13,9 @@ public class BookResponse {
 	private String title;
 	private List<AuthorResponse> authors;
 	private Double price;
-	private LocalDate publishedAt;
 	private boolean isAvailableOnline;
+	private LocalDate publishedAt;
+	private LocalDateTime createdAt;
+	private LocalDateTime updatedAt;
 
 }

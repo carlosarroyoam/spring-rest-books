@@ -32,10 +32,10 @@ class BookServiceTest {
 	@DisplayName("Should return a list of books")
 	void shouldReturnListBooks() {
 		List<Book> expectedBooks = List.of(
-				new Book("Homo Deus", BigDecimal.valueOf(12.99d), LocalDate.of(2018, 12, 1), LocalDateTime.now(),
-						LocalDateTime.now(), true),
-				new Book("Homo Sapiens", BigDecimal.valueOf(12.99d), LocalDate.of(2018, 12, 1), LocalDateTime.now(),
-						LocalDateTime.now(), true));
+				new Book("Homo Deus", BigDecimal.valueOf(12.99d), true, LocalDate.of(2018, 12, 1), LocalDateTime.now(),
+						LocalDateTime.now()),
+				new Book("Homo Sapiens", BigDecimal.valueOf(12.99d), true, LocalDate.of(2018, 12, 1),
+						LocalDateTime.now(), LocalDateTime.now()));
 		Mockito.when(bookRepository.findAll()).thenReturn(expectedBooks);
 
 		List<BookResponse> books = bookService.findAll();

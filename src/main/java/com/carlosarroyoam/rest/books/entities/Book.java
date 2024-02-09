@@ -35,9 +35,12 @@ public class Book {
 	@Column(name = "price", nullable = false)
 	private BigDecimal price;
 
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "book_authors", joinColumns = @JoinColumn(name = "book_id"), inverseJoinColumns = @JoinColumn(name = "author_id"))
 	private List<Author> authors = new ArrayList<>();
+
+	@Column(name = "is_available_online", nullable = false)
+	private boolean isAvailableOnline;
 
 	@Column(name = "published_at", nullable = false)
 	private LocalDate publishedAt;
@@ -48,17 +51,14 @@ public class Book {
 	@Column(name = "updated_at", nullable = false)
 	private LocalDateTime updatedAt;
 
-	@Column(name = "is_available_online", nullable = false)
-	private boolean isAvailableOnline;
-
-	public Book(String title, BigDecimal price, LocalDate publishedAt, LocalDateTime createdAt, LocalDateTime updatedAt,
-			boolean isAvailableOnline) {
+	public Book(String title, BigDecimal price, boolean isAvailableOnline, LocalDate publishedAt,
+			LocalDateTime createdAt, LocalDateTime updatedAt) {
 		this.title = title;
 		this.price = price;
+		this.isAvailableOnline = isAvailableOnline;
 		this.publishedAt = publishedAt;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
-		this.isAvailableOnline = isAvailableOnline;
 	}
 
 	public void addAuthor(Author author) {

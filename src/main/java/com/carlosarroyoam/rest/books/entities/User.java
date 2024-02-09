@@ -2,7 +2,6 @@ package com.carlosarroyoam.rest.books.entities;
 
 import java.time.LocalDateTime;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -40,7 +39,7 @@ public class User {
 	@Column(name = "role_id", nullable = false, insertable = false, updatable = false)
 	private Long roleId;
 
-	@OneToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false)
 	private Role role;
 
