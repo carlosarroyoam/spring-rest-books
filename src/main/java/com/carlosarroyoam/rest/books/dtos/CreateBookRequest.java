@@ -28,7 +28,6 @@ public class CreateBookRequest {
 	@PastOrPresent
 	private LocalDate publishedAt;
 
-	@NotNull
 	private boolean isAvailableOnline;
 
 }

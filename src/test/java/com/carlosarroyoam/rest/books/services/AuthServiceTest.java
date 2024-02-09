@@ -4,6 +4,7 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -43,8 +44,8 @@ class AuthServiceTest {
 	void shouldReturnLoginResponseWhenAuthWithExistingUser() {
 		LoginRequest loginRequest = new LoginRequest("carlosarroyoam@gmail.com", "secret");
 		Role role = new Role("App//Admin", "Role for admins users");
-		Optional<User> expectedUser = Optional
-				.of(new User("Carlos Alberto", "Arroyo Martínez", "carlosarroyoam@gmail.com", "", role));
+		Optional<User> expectedUser = Optional.of(new User("Carlos Alberto", "Arroyo Martínez",
+				"carlosarroyoam@gmail.com", "", role, LocalDateTime.now(), LocalDateTime.now()));
 		Mockito.when(userRepository.findByEmail(loginRequest.getEmail())).thenReturn(expectedUser);
 
 		LoginResponse response = authService.auth(loginRequest);

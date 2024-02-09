@@ -13,11 +13,13 @@ import com.carlosarroyoam.rest.books.dtos.CreateBookRequest;
 import com.carlosarroyoam.rest.books.dtos.UpdateBookRequest;
 import com.carlosarroyoam.rest.books.entities.Book;
 
-@Mapper(componentModel = MappingConstants.ComponentModel.SPRING, nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING, nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, uses = AuthorMapper.class)
 public interface BookMapper {
 
+	@BeanMapping(unmappedTargetPolicy = ReportingPolicy.IGNORE)
 	BookResponse toDto(Book book);
 
+	@BeanMapping(unmappedTargetPolicy = ReportingPolicy.IGNORE)
 	List<BookResponse> toDtos(List<Book> books);
 
 	@BeanMapping(unmappedTargetPolicy = ReportingPolicy.IGNORE)

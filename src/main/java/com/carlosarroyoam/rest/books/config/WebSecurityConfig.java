@@ -34,6 +34,7 @@ class WebSecurityConfig {
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http.csrf(csrf -> csrf.disable());
+		http.headers(headers -> headers.frameOptions(frameOptions -> frameOptions.sameOrigin()));
 		http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 		http.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
 
@@ -43,6 +44,7 @@ class WebSecurityConfig {
 				.requestMatchers(AntPathRequestMatcher.antMatcher(("/auth/**"))).permitAll()
 				.requestMatchers(AntPathRequestMatcher.antMatcher("/swagger-ui/**")).permitAll()
 				.requestMatchers(AntPathRequestMatcher.antMatcher("/api-docs/**")).permitAll()
+				.requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()
 				.anyRequest().authenticated());
 		// @formatter:on
 

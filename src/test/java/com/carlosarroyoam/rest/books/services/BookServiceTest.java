@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
@@ -31,8 +32,10 @@ class BookServiceTest {
 	@DisplayName("Should return a list of books")
 	void shouldReturnListBooks() {
 		List<Book> expectedBooks = List.of(
-				new Book("Homo Deus", "Yuval Noah", BigDecimal.valueOf(12.99d), LocalDate.of(2018, 12, 1), true),
-				new Book("Homo Deus", "Yuval Noah", BigDecimal.valueOf(12.99d), LocalDate.of(2018, 12, 1), true));
+				new Book("Homo Deus", BigDecimal.valueOf(12.99d), LocalDate.of(2018, 12, 1), LocalDateTime.now(),
+						LocalDateTime.now(), true),
+				new Book("Homo Sapiens", BigDecimal.valueOf(12.99d), LocalDate.of(2018, 12, 1), LocalDateTime.now(),
+						LocalDateTime.now(), true));
 		Mockito.when(bookRepository.findAll()).thenReturn(expectedBooks);
 
 		List<BookResponse> books = bookService.findAll();

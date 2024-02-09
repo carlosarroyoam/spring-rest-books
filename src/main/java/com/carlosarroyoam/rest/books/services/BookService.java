@@ -1,5 +1,6 @@
 package com.carlosarroyoam.rest.books.services;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -38,6 +39,9 @@ public class BookService {
 
 	public BookResponse save(CreateBookRequest createBookRequest) {
 		Book book = bookMapper.createRequestToEntity(createBookRequest);
+		book.setCreatedAt(LocalDateTime.now());
+		book.setUpdatedAt(LocalDateTime.now());
+
 		Book savedBook = bookRepository.save(book);
 		return bookMapper.toDto(savedBook);
 	}
@@ -47,7 +51,6 @@ public class BookService {
 				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found"));
 
 		findById.setTitle(updateBookRequest.getTitle());
-		findById.setAuthor(updateBookRequest.getAuthor());
 		findById.setPrice(updateBookRequest.getPrice());
 		findById.setPublishedAt(updateBookRequest.getPublishedAt());
 		findById.setAvailableOnline(updateBookRequest.isAvailableOnline());
