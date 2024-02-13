@@ -3,8 +3,6 @@ package com.carlosarroyoam.rest.books.entities;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -33,7 +31,6 @@ public class Author {
 	private String lastName;
 
 	@ManyToMany(mappedBy = "authors", fetch = FetchType.LAZY)
-	@JsonIgnore
 	private List<Book> books;
 
 	@Column(name = "created_at", nullable = false)
