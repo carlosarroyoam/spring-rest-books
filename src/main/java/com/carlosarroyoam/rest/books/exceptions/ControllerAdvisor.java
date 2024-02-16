@@ -3,8 +3,6 @@ package com.carlosarroyoam.rest.books.exceptions;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -20,8 +18,6 @@ import com.carlosarroyoam.rest.books.dtos.AppExceptionResponse;
 
 @ControllerAdvice
 public class ControllerAdvisor extends ResponseEntityExceptionHandler {
-
-	private static final Logger log = LoggerFactory.getLogger(ControllerAdvisor.class);
 
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
@@ -66,7 +62,7 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
 		appExceptionResponse.setPath(request.getDescription(false).replace("uri=", ""));
 		appExceptionResponse.setTimestamp(ZonedDateTime.now(ZoneId.of("UTC")));
 
-		log.error("Exception: {}", ex.getMessage());
+		ex.printStackTrace();
 
 		return ResponseEntity.internalServerError().body(appExceptionResponse);
 	}
