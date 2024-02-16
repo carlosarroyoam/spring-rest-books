@@ -1,12 +1,20 @@
 package com.carlosarroyoam.rest.books.entities;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,27 +29,40 @@ public class Book {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(length = 128, nullable = false)
+	@Column(name = "title", length = 128, nullable = false)
 	private String title;
 
-	@Column(length = 128, nullable = false)
-	private String author;
+	@Column(name = "price", nullable = false)
+	private BigDecimal price;
 
-	@Column(nullable = false)
-	private Double price;
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "book_authors", joinColumns = @JoinColumn(name = "book_id"), inverseJoinColumns = @JoinColumn(name = "author_id"))
+	private List<Author> authors = new ArrayList<>();
 
-	@Column(nullable = false)
-	private LocalDate publishedAt;
-
-	@Column(nullable = false)
+	@Column(name = "is_available_online", nullable = false)
 	private boolean isAvailableOnline;
 
-	public Book(String title, String author, Double price, LocalDate publishedAt, boolean isAvailableOnline) {
+	@Column(name = "published_at", nullable = false)
+	private LocalDate publishedAt;
+
+	@Column(name = "created_at", nullable = false)
+	private LocalDateTime createdAt;
+
+	@Column(name = "updated_at", nullable = false)
+	private LocalDateTime updatedAt;
+
+	public Book(String title, BigDecimal price, boolean isAvailableOnline, LocalDate publishedAt,
+			LocalDateTime createdAt, LocalDateTime updatedAt) {
 		this.title = title;
-		this.author = author;
 		this.price = price;
-		this.publishedAt = publishedAt;
 		this.isAvailableOnline = isAvailableOnline;
+		this.publishedAt = publishedAt;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
+	}
+
+	public void addAuthor(Author author) {
+		this.authors.add(author);
 	}
 
 }

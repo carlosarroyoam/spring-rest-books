@@ -11,6 +11,7 @@ import com.carlosarroyoam.rest.books.entities.User;
 
 public class SecurityUser implements UserDetails {
 
+	private static final long serialVersionUID = -2504285061755069191L;
 	private final transient User user;
 
 	public SecurityUser(User user) {

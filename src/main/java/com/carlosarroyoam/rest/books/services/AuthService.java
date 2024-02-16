@@ -1,9 +1,11 @@
 package com.carlosarroyoam.rest.books.services;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.carlosarroyoam.rest.books.dtos.LoginRequest;
 import com.carlosarroyoam.rest.books.dtos.LoginResponse;
@@ -25,13 +27,16 @@ public class AuthService {
 	}
 
 	public LoginResponse auth(LoginRequest loginRequest) {
-		User userByEmail = userRepository.findByEmail(loginRequest.getEmail()).orElseThrow();
+		User userByEmail = userRepository.findByEmail(loginRequest.getEmail())
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 
-		return LoginResponse.builder().email(userByEmail.getEmail())
-				.accessToken(tokenService.generateToken(authentication)).build();
+		LoginResponse loginResponse = new LoginResponse();
+		loginResponse.setEmail(userByEmail.getEmail());
+		loginResponse.setAccessToken(tokenService.generateToken(authentication));
+		return loginResponse;
 	}
 
 }

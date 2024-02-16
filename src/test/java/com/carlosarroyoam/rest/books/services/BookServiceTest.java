@@ -1,10 +1,12 @@
 package com.carlosarroyoam.rest.books.services;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Collections;
+import java.time.LocalDateTime;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,26 +29,18 @@ class BookServiceTest {
 	private BookService bookService;
 
 	@Test
-	@DisplayName("Test method return empty list when there's no books")
-	void findAll() {
-		List<Book> expectedBooks = Collections.emptyList();
+	@DisplayName("Should return a list of books")
+	void shouldReturnListBooks() {
+		List<Book> expectedBooks = List.of(
+				new Book("Homo Deus", BigDecimal.valueOf(12.99d), true, LocalDate.of(2018, 12, 1), LocalDateTime.now(),
+						LocalDateTime.now()),
+				new Book("Homo Sapiens", BigDecimal.valueOf(12.99d), true, LocalDate.of(2018, 12, 1),
+						LocalDateTime.now(), LocalDateTime.now()));
 		Mockito.when(bookRepository.findAll()).thenReturn(expectedBooks);
 
 		List<BookResponse> books = bookService.findAll();
 
-		Assertions.assertThat(books).isNotNull().isEmpty();
-	}
-
-	@Test
-	@DisplayName("Tests findAll return list of books")
-	void findAllReturnBooks() {
-		List<Book> expectedBooks = List.of(new Book("Homo Deus", "Yuval Noah", 12.99d, LocalDate.of(2018, 12, 1), true),
-				new Book("Homo Deus", "Yuval Noah", 12.99d, LocalDate.of(2018, 12, 1), true));
-		Mockito.when(bookRepository.findAll()).thenReturn(expectedBooks);
-
-		List<BookResponse> books = bookService.findAll();
-
-		Assertions.assertThat(books).isNotNull().isNotEmpty().size().isEqualTo(2);
+		assertThat(books).isNotNull().isNotEmpty().size().isEqualTo(2);
 	}
 
 }

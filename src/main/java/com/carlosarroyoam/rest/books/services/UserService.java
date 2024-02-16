@@ -40,6 +40,7 @@ public class UserService implements UserDetailsService {
 	public UserResponse findById(Long userId) {
 		User userById = userRepository.findById(userId)
 				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
 		return userMapper.toDto(userById);
 	}
 

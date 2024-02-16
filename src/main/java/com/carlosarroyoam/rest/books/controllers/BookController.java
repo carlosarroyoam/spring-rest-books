@@ -23,6 +23,7 @@ import com.carlosarroyoam.rest.books.services.BookService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/books")
@@ -52,7 +53,7 @@ public class BookController {
 
 	@PostMapping(consumes = "application/json", produces = "application/json")
 	@Operation(summary = "Stores a new book")
-	public ResponseEntity<BookResponse> store(@RequestBody CreateBookRequest createBookRequest,
+	public ResponseEntity<BookResponse> store(@Valid @RequestBody CreateBookRequest createBookRequest,
 			UriComponentsBuilder builder) {
 		BookResponse createdBook = bookService.save(createBookRequest);
 		UriComponents uriComponents = builder.path("/books/{id}").buildAndExpand(createdBook.getId());
@@ -62,7 +63,7 @@ public class BookController {
 	@PutMapping(value = "/{bookId}", consumes = "application/json", produces = "application/json")
 	@Operation(summary = "Updates a book by its id")
 	public ResponseEntity<BookResponse> update(@PathVariable Long bookId,
-			@RequestBody UpdateBookRequest updateBookRequest) {
+			@Valid @RequestBody UpdateBookRequest updateBookRequest) {
 		BookResponse updatedBook = bookService.update(bookId, updateBookRequest);
 		return ResponseEntity.ok(updatedBook);
 	}
