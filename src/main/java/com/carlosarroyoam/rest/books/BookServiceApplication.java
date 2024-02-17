@@ -42,16 +42,16 @@ public class BookServiceApplication implements CommandLineRunner {
 		bookRepository.save(book1);
 		bookRepository.save(book2);
 
-		Role role1 = new Role("App//Admin", "Role for admins users");
-		Role role2 = new Role("App//Customer", "Role for customer users");
+		Role adminRole = new Role("App//Admin", "Role for admins users");
+		Role customerRole = new Role("App//Customer", "Role for customer users");
 
-		roleRepository.save(role1);
-		roleRepository.save(role2);
+		roleRepository.save(adminRole);
+		roleRepository.save(customerRole);
 
-		User user1 = new User("Carlos Alberto", "Arroyo Martínez", "carlosarroyoam@gmail.com",
-				passwordEncoder.encode("secret"), role1);
-		User user2 = new User("Cathy Stefania", "Guido Rojas", "fanipato1995@gmail.com",
-				passwordEncoder.encode("secret"), role2);
+		String encodedPassword = passwordEncoder.encode("secret");
+
+		User user1 = new User("Carlos Alberto", "Arroyo Martínez", "carroyom@mail.com", encodedPassword, adminRole);
+		User user2 = new User("Cathy Stefania", "Guido Rojas", "sguidor@mail.com", encodedPassword, customerRole);
 
 		userRepository.save(user1);
 		userRepository.save(user2);
