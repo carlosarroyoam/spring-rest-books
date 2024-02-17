@@ -10,17 +10,28 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.carlosarroyoam.rest.books.dtos.BookResponse;
 import com.carlosarroyoam.rest.books.entities.Book;
+import com.carlosarroyoam.rest.books.mappers.AuthorMapper;
+import com.carlosarroyoam.rest.books.mappers.BookMapper;
 import com.carlosarroyoam.rest.books.repositories.BookRepository;
 
 @ExtendWith(MockitoExtension.class)
 class BookServiceTest {
+
+	@Spy
+	private AuthorMapper authorMapper = Mappers.getMapper(AuthorMapper.class);
+
+	@Spy
+	@InjectMocks
+	private BookMapper bookMapper = Mappers.getMapper(BookMapper.class);
 
 	@Mock
 	private BookRepository bookRepository;
