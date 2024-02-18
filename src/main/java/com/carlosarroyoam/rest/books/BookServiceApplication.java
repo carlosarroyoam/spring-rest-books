@@ -42,19 +42,19 @@ public class BookServiceApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		Author author1 = new Author("Yuval", "Noah", LocalDateTime.now(), LocalDateTime.now());
-		Author author2 = new Author("Yuval", "Noah2", LocalDateTime.now(), LocalDateTime.now());
+		Author author1 = new Author("Yuval", "Noah Harari", LocalDateTime.now(), LocalDateTime.now());
+		Author author2 = new Author("Itzik", "Yahav", LocalDateTime.now(), LocalDateTime.now());
 
 		authorRepository.save(author1);
 		authorRepository.save(author2);
 
-		Book book1 = new Book("Homo Deus", BigDecimal.valueOf(12.99d), true, LocalDate.of(2018, 12, 1),
-				LocalDateTime.now(), LocalDateTime.now());
+		Book book1 = new Book("978-1-3035-0529-4", "Homo Deus", BigDecimal.valueOf(12.99d), false,
+				LocalDate.of(2017, 1, 1), LocalDateTime.now(), LocalDateTime.now());
 		book1.addAuthor(author1);
 		book1.addAuthor(author2);
 
-		Book book2 = new Book("Homo Sapiens", BigDecimal.valueOf(12.99d), true, LocalDate.of(2018, 12, 1),
-				LocalDateTime.now(), LocalDateTime.now());
+		Book book2 = new Book("978-9-7389-4434-3", "Sapiens", BigDecimal.valueOf(12.99d), true,
+				LocalDate.of(2022, 12, 1), LocalDateTime.now(), LocalDateTime.now());
 		book2.addAuthor(author1);
 
 		bookRepository.save(book1);
@@ -67,9 +67,9 @@ public class BookServiceApplication implements CommandLineRunner {
 		roleRepository.save(customerRole);
 
 		String encodedPassword = passwordEncoder.encode("secret");
-		User user1 = new User("Carlos Alberto", "Arroyo Martínez", "carlosarroyoam@gmail.com", encodedPassword,
-				adminRole, LocalDateTime.now(), LocalDateTime.now());
-		User user2 = new User("Cathy Stefania", "Guido Rojas", "fanipato1995@gmail.com", encodedPassword, customerRole,
+		User user1 = new User("Carlos Alberto", "Arroyo Martínez", "carroyom@gmail.com", encodedPassword, adminRole,
+				LocalDateTime.now(), LocalDateTime.now());
+		User user2 = new User("Cathy Stefania", "Guido Rojas", "cguidor@mail.com", encodedPassword, customerRole,
 				LocalDateTime.now(), LocalDateTime.now());
 
 		userRepository.save(user1);

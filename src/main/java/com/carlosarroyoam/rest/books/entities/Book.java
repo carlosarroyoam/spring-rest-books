@@ -29,6 +29,9 @@ public class Book {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@Column(name = "isbn", length = 17, nullable = false)
+	private String isbn;
+
 	@Column(name = "title", length = 128, nullable = false)
 	private String title;
 
@@ -51,8 +54,9 @@ public class Book {
 	@Column(name = "updated_at", nullable = false)
 	private LocalDateTime updatedAt;
 
-	public Book(String title, BigDecimal price, boolean isAvailableOnline, LocalDate publishedAt,
+	public Book(String isbn, String title, BigDecimal price, boolean isAvailableOnline, LocalDate publishedAt,
 			LocalDateTime createdAt, LocalDateTime updatedAt) {
+		this.isbn = isbn;
 		this.title = title;
 		this.price = price;
 		this.isAvailableOnline = isAvailableOnline;

@@ -53,9 +53,9 @@ public class BookController {
 
 	@PostMapping(consumes = "application/json", produces = "application/json")
 	@Operation(summary = "Stores a new book")
-	public ResponseEntity<BookResponse> store(@Valid @RequestBody CreateBookRequest createBookRequest,
+	public ResponseEntity<BookResponse> create(@Valid @RequestBody CreateBookRequest createBookRequest,
 			UriComponentsBuilder builder) {
-		BookResponse createdBook = bookService.save(createBookRequest);
+		BookResponse createdBook = bookService.create(createBookRequest);
 		UriComponents uriComponents = builder.path("/books/{id}").buildAndExpand(createdBook.getId());
 		return ResponseEntity.created(uriComponents.toUri()).body(createdBook);
 	}
@@ -70,7 +70,7 @@ public class BookController {
 
 	@DeleteMapping("/{bookId}")
 	@Operation(summary = "Deletes a book by its id")
-	public ResponseEntity<Object> destroy(@PathVariable Long bookId) {
+	public ResponseEntity<Void> deleteById(@PathVariable Long bookId) {
 		bookService.deleteById(bookId);
 		return ResponseEntity.noContent().build();
 	}

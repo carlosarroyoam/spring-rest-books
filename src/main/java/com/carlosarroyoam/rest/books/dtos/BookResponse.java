@@ -10,6 +10,7 @@ import lombok.Data;
 public class BookResponse {
 
 	private Long id;
+	private String isbn;
 	private String title;
 	private List<AuthorResponse> authors;
 	private Double price;

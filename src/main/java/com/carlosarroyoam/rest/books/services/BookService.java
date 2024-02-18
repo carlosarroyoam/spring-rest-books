@@ -40,7 +40,7 @@ public class BookService {
 	}
 
 	@Transactional
-	public BookResponse save(CreateBookRequest createBookRequest) {
+	public BookResponse create(CreateBookRequest createBookRequest) {
 		LocalDateTime now = LocalDateTime.now();
 		Book book = bookMapper.createRequestToEntity(createBookRequest);
 		book.setCreatedAt(now);

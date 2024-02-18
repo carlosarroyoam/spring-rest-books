@@ -42,10 +42,10 @@ class AuthServiceTest {
 	@Test
 	@DisplayName("Should return LoginResponse when attempt to auth with existing user")
 	void shouldReturnLoginResponseWhenAuthWithExistingUser() {
-		LoginRequest loginRequest = new LoginRequest("carlosarroyoam@gmail.com", "secret");
+		LoginRequest loginRequest = new LoginRequest("carroyom@mail.com", "secret");
 		Role role = new Role("App//Admin", "Role for admins users");
-		Optional<User> expectedUser = Optional.of(new User("Carlos Alberto", "Arroyo Martínez",
-				"carlosarroyoam@gmail.com", "", role, LocalDateTime.now(), LocalDateTime.now()));
+		Optional<User> expectedUser = Optional.of(new User("Carlos Alberto", "Arroyo Martínez", "carroyom@mail.com",
+				"secret", role, LocalDateTime.now(), LocalDateTime.now()));
 		Mockito.when(userRepository.findByEmail(loginRequest.getEmail())).thenReturn(expectedUser);
 
 		LoginResponse response = authService.auth(loginRequest);
