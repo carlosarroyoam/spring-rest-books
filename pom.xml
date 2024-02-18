@@ -13,7 +13,7 @@
 	<artifactId>spring-rest-books</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Spring Rest Books</name>
-	<description>Rest Api using Spring Boot and Java</description>
+	<description>Spring Boot Rest Api</description>
 	<properties>
 		<java.version>17</java.version>
 		<org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
