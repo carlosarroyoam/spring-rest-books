@@ -1,14 +1,13 @@
 package com.carlosarroyoam.rest.books;
 
-import static org.junit.jupiter.api.Assertions.fail;
-
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 
+@SpringBootTest
 class BookServiceApplicationTest {
 
 	@Test
 	void test() {
-		fail("Not yet implemented");
 	}
 
 }
