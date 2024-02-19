@@ -67,7 +67,7 @@ public class BookServiceApplication implements CommandLineRunner {
 		roleRepository.save(customerRole);
 
 		String encodedPassword = passwordEncoder.encode("secret");
-		User user1 = new User("Carlos Alberto", "Arroyo Martínez", "carroyom@gmail.com", encodedPassword, adminRole,
+		User user1 = new User("Carlos Alberto", "Arroyo Martínez", "carroyom@mail.com", encodedPassword, adminRole,
 				LocalDateTime.now(), LocalDateTime.now());
 		User user2 = new User("Cathy Stefania", "Guido Rojas", "cguidor@mail.com", encodedPassword, customerRole,
 				LocalDateTime.now(), LocalDateTime.now());

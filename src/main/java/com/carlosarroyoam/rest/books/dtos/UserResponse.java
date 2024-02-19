@@ -11,6 +11,7 @@ public class UserResponse {
 	private String firstName;
 	private String lastName;
 	private String email;
+	private boolean isActive = false;
 	private Long roleId;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;

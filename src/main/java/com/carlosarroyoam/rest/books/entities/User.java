@@ -36,6 +36,9 @@ public class User {
 	@Column(name = "password", length = 128, nullable = false)
 	private String password;
 
+	@Column(name = "is_active", nullable = false)
+	private boolean isActive = true;
+
 	@Column(name = "role_id", nullable = false, insertable = false, updatable = false)
 	private Long roleId;
 

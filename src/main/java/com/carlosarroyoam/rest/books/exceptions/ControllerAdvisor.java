@@ -7,6 +7,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -49,6 +50,21 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
 		appExceptionResponse.setTimestamp(ZonedDateTime.now(ZoneId.of("UTC")));
 
 		return new ResponseEntity<>(appExceptionResponse, ex.getStatusCode());
+	}
+
+	@ExceptionHandler(AuthenticationException.class)
+	public ResponseEntity<AppExceptionResponse> handleAuthenticationException(AuthenticationException ex,
+			WebRequest request) {
+		HttpStatus statusCode = HttpStatus.UNAUTHORIZED;
+
+		AppExceptionResponse appExceptionResponse = new AppExceptionResponse();
+		appExceptionResponse.setMessage(ex.getMessage());
+		appExceptionResponse.setError(statusCode.getReasonPhrase());
+		appExceptionResponse.setStatus(statusCode.value());
+		appExceptionResponse.setPath(request.getDescription(false).replace("uri=", ""));
+		appExceptionResponse.setTimestamp(ZonedDateTime.now(ZoneId.of("UTC")));
+
+		return new ResponseEntity<>(appExceptionResponse, statusCode);
 	}
 
 	@ExceptionHandler(Exception.class)
