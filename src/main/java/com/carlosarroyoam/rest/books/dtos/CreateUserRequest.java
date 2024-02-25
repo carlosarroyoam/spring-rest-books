@@ -8,6 +8,6 @@ public class CreateUserRequest {
 	private String firstName;
 	private String lastName;
 	private String email;
-	private Long roleId;
+	private Integer roleId;
 
 }

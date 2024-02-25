@@ -36,8 +36,8 @@ public class User {
 	@Column(name = "password", length = 128, nullable = false)
 	private String password;
 
-	@Column(name = "role_id", nullable = false, insertable = false, updatable = false)
-	private Long roleId;
+	@Column(name = "role_id", insertable = false, updatable = false)
+	private Integer roleId;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false)
