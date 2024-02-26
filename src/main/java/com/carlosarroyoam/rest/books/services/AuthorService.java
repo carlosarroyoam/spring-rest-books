@@ -28,10 +28,10 @@ public class AuthorService {
 	}
 
 	public AuthorResponse findById(Long authorId) {
-		Author findById = authorRepository.findById(authorId)
+		Author authorById = authorRepository.findById(authorId)
 				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Author not found"));
 
-		return authorMapper.toDto(findById);
+		return authorMapper.toDto(authorById);
 	}
 
 }

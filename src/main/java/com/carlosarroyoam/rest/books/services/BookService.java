@@ -52,25 +52,25 @@ public class BookService {
 
 	@Transactional
 	public BookResponse update(Long id, UpdateBookRequest updateBookRequest) {
-		Book findById = bookRepository.findById(id)
+		Book bookById = bookRepository.findById(id)
 				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found"));
 
-		findById.setTitle(updateBookRequest.getTitle());
-		findById.setPrice(updateBookRequest.getPrice());
-		findById.setPublishedAt(updateBookRequest.getPublishedAt());
-		findById.setAvailableOnline(updateBookRequest.isAvailableOnline());
-		findById.setUpdatedAt(LocalDateTime.now());
+		bookById.setTitle(updateBookRequest.getTitle());
+		bookById.setPrice(updateBookRequest.getPrice());
+		bookById.setPublishedAt(updateBookRequest.getPublishedAt());
+		bookById.setAvailableOnline(updateBookRequest.isAvailableOnline());
+		bookById.setUpdatedAt(LocalDateTime.now());
 
-		Book updatedBook = bookRepository.save(findById);
+		Book updatedBook = bookRepository.save(bookById);
 		return bookMapper.toDto(updatedBook);
 	}
 
 	@Transactional
 	public void deleteById(Long id) {
-		Book findById = bookRepository.findById(id)
+		Book bookById = bookRepository.findById(id)
 				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found"));
 
-		bookRepository.delete(findById);
+		bookRepository.delete(bookById);
 	}
 
 }
