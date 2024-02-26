@@ -5,7 +5,6 @@ import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -27,7 +26,7 @@ public class Author {
 	@Column(name = "name", length = 128, nullable = false)
 	private String name;
 
-	@ManyToMany(mappedBy = "authors", fetch = FetchType.LAZY)
+	@ManyToMany(mappedBy = "authors")
 	private List<Book> books;
 
 	@Column(name = "created_at", nullable = false)
