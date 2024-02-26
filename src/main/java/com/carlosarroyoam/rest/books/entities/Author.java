@@ -24,11 +24,8 @@ public class Author {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "first_name", length = 64, nullable = false)
-	private String firstName;
-
-	@Column(name = "last_name", length = 64, nullable = false)
-	private String lastName;
+	@Column(name = "name", length = 128, nullable = false)
+	private String name;
 
 	@ManyToMany(mappedBy = "authors", fetch = FetchType.LAZY)
 	private List<Book> books;
@@ -39,9 +36,8 @@ public class Author {
 	@Column(name = "updated_at", nullable = false)
 	private LocalDateTime updatedAt;
 
-	public Author(String firstName, String lastName, LocalDateTime createdAt, LocalDateTime updatedAt) {
-		this.firstName = firstName;
-		this.lastName = lastName;
+	public Author(String name, LocalDateTime createdAt, LocalDateTime updatedAt) {
+		this.name = name;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
 	}

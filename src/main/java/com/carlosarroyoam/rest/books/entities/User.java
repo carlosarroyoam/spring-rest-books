@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -24,27 +23,30 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "first_name", length = 64, nullable = false)
-	private String firstName;
+	@Column(name = "name", length = 128, nullable = false)
+	private String name;
 
-	@Column(name = "last_name", length = 64, nullable = false)
-	private String lastName;
+	@Column(name = "age")
+	private Byte age;
 
-	@Column(name = "email", length = 128, nullable = false)
+	@Column(name = "email", length = 128, nullable = false, unique = true)
 	private String email;
+
+	@Column(name = "username", length = 128, nullable = false, unique = true)
+	private String username;
 
 	@Column(name = "password", length = 128, nullable = false)
 	private String password;
 
-	@Column(name = "role_id", insertable = false, updatable = false)
+	@Column(name = "is_active", nullable = false)
+	private boolean isActive;
+
+	@Column(name = "role_id", nullable = false)
 	private Integer roleId;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false)
+	@ManyToOne
+	@JoinColumn(name = "role_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private Role role;
-
-	@Column(name = "is_active", nullable = false)
-	private boolean isActive = true;
 
 	@Column(name = "created_at", nullable = false)
 	private LocalDateTime createdAt;
@@ -52,13 +54,13 @@ public class User {
 	@Column(name = "updated_at", nullable = false)
 	private LocalDateTime updatedAt;
 
-	public User(String firstName, String lastName, String email, String password, Role role, LocalDateTime createdAt,
-			LocalDateTime updatedAt) {
-		this.firstName = firstName;
-		this.lastName = lastName;
+	public User(String name, String email, String username, String password, Integer roleId,
+			LocalDateTime createdAt, LocalDateTime updatedAt) {
+		this.name = name;
 		this.email = email;
+		this.username = username;
 		this.password = password;
-		this.role = role;
+		this.roleId = roleId;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
 	}

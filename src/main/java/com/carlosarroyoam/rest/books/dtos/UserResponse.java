@@ -8,10 +8,12 @@ import lombok.Data;
 public class UserResponse {
 
 	private Long id;
-	private String firstName;
-	private String lastName;
+	private String name;
+	private Byte age;
 	private String email;
-	private boolean isActive = false;
+	private String username;
+	private String password;
+	private boolean isActive;
 	private Integer roleId;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
