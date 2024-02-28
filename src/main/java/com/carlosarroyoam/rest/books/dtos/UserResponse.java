@@ -12,7 +12,6 @@ public class UserResponse {
 	private Byte age;
 	private String email;
 	private String username;
-	private String password;
 	private boolean isActive;
 	private Integer roleId;
 	private LocalDateTime createdAt;
