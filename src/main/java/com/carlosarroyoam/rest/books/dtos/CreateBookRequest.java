@@ -21,13 +21,15 @@ public class CreateBookRequest {
 	@Size(min = 10, max = 17)
 	private String isbn;
 
-	@Digits(integer = 3, fraction = 2)
+	@NotNull
+	@Digits(integer = 5, fraction = 2)
 	private BigDecimal price;
+
+	@NotNull
+	private Boolean isAvailableOnline;
 
 	@NotNull
 	@PastOrPresent
 	private LocalDate publishedAt;
-
-	private boolean isAvailableOnline;
 
 }

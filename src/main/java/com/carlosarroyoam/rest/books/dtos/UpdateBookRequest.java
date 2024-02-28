@@ -5,6 +5,7 @@ import java.time.LocalDate;
 
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -20,12 +21,15 @@ public class UpdateBookRequest {
 	@Size(min = 10, max = 17)
 	private String isbn;
 
-	@Digits(integer = 3, fraction = 2)
+	@NotNull
+	@Digits(integer = 5, fraction = 2)
 	private BigDecimal price;
 
+	@NotNull
+	private Boolean isAvailableOnline;
+
+	@NotNull
 	@PastOrPresent
 	private LocalDate publishedAt;
-
-	private boolean isAvailableOnline;
 
 }

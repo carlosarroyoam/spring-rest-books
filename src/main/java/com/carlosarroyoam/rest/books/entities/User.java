@@ -26,7 +26,7 @@ public class User {
 	@Column(name = "name", length = 128, nullable = false)
 	private String name;
 
-	@Column(name = "age")
+	@Column(name = "age", nullable = false)
 	private Byte age;
 
 	@Column(name = "email", length = 128, nullable = false, unique = true)
@@ -54,8 +54,8 @@ public class User {
 	@Column(name = "updated_at", nullable = false)
 	private LocalDateTime updatedAt;
 
-	public User(String name, String email, String username, String password, Integer roleId,
-			LocalDateTime createdAt, LocalDateTime updatedAt) {
+	public User(String name, String email, String username, String password, Integer roleId, LocalDateTime createdAt,
+			LocalDateTime updatedAt) {
 		this.name = name;
 		this.email = email;
 		this.username = username;
