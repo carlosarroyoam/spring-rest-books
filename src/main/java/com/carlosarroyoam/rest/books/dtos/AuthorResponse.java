@@ -8,8 +8,7 @@ import lombok.Data;
 public class AuthorResponse {
 
 	private Long id;
-	private String firstName;
-	private String lastName;
+	private String name;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
 

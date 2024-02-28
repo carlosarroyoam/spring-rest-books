@@ -18,8 +18,8 @@ public class CreateBookRequest {
 	private String title;
 
 	@NotBlank
-	@Size(min = 3, max = 128)
-	private String author;
+	@Size(min = 10, max = 17)
+	private String isbn;
 
 	@Digits(integer = 3, fraction = 2)
 	private BigDecimal price;
