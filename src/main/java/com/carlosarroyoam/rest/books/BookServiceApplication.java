@@ -9,14 +9,14 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.carlosarroyoam.rest.books.entities.Author;
-import com.carlosarroyoam.rest.books.entities.Book;
-import com.carlosarroyoam.rest.books.entities.Role;
-import com.carlosarroyoam.rest.books.entities.User;
-import com.carlosarroyoam.rest.books.repositories.AuthorRepository;
-import com.carlosarroyoam.rest.books.repositories.BookRepository;
-import com.carlosarroyoam.rest.books.repositories.RoleRepository;
-import com.carlosarroyoam.rest.books.repositories.UserRepository;
+import com.carlosarroyoam.rest.books.entity.Author;
+import com.carlosarroyoam.rest.books.entity.Book;
+import com.carlosarroyoam.rest.books.entity.Role;
+import com.carlosarroyoam.rest.books.entity.User;
+import com.carlosarroyoam.rest.books.repository.AuthorRepository;
+import com.carlosarroyoam.rest.books.repository.BookRepository;
+import com.carlosarroyoam.rest.books.repository.RoleRepository;
+import com.carlosarroyoam.rest.books.repository.UserRepository;
 
 @SpringBootApplication
 public class BookServiceApplication implements CommandLineRunner {

@@ -7,7 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.carlosarroyoam.rest.books.entities.User;
+import com.carlosarroyoam.rest.books.entity.User;
 
 public class SecurityUser implements UserDetails {
 
