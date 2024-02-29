@@ -38,7 +38,7 @@ public class Book {
 	private BigDecimal price;
 
 	@Column(name = "is_available_online", nullable = false)
-	private boolean isAvailableOnline;
+	private Boolean isAvailableOnline;
 
 	@ManyToMany
 	@JoinTable(name = "book_authors", joinColumns = @JoinColumn(name = "book_id"), inverseJoinColumns = @JoinColumn(name = "author_id"))

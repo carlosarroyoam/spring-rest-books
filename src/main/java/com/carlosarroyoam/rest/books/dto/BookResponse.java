@@ -14,7 +14,7 @@ public class BookResponse {
 	private String title;
 	private List<AuthorResponse> authors;
 	private Double price;
-	private boolean isAvailableOnline;
+	private Boolean isAvailableOnline;
 	private LocalDate publishedAt;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;

@@ -58,7 +58,7 @@ public class BookService {
 		bookById.setTitle(updateBookRequest.getTitle());
 		bookById.setPrice(updateBookRequest.getPrice());
 		bookById.setPublishedAt(updateBookRequest.getPublishedAt());
-		bookById.setAvailableOnline(updateBookRequest.getIsAvailableOnline());
+		bookById.setIsAvailableOnline(updateBookRequest.getIsAvailableOnline());
 		bookById.setUpdatedAt(LocalDateTime.now());
 
 		Book updatedBook = bookRepository.save(bookById);
