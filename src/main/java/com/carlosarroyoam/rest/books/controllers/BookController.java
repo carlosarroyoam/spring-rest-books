@@ -46,7 +46,7 @@ public class BookController {
 
 	@GetMapping(value = "/{bookId}", produces = "application/json")
 	@Operation(summary = "Gets a book by its id")
-	public ResponseEntity<BookResponse> findById(@PathVariable Long bookId) {
+	public ResponseEntity<BookResponse> findById(@PathVariable("bookId") Long bookId) {
 		BookResponse bookById = bookService.findById(bookId);
 		return ResponseEntity.ok(bookById);
 	}
@@ -62,7 +62,7 @@ public class BookController {
 
 	@PutMapping(value = "/{bookId}", consumes = "application/json", produces = "application/json")
 	@Operation(summary = "Updates a book by its id")
-	public ResponseEntity<BookResponse> update(@PathVariable Long bookId,
+	public ResponseEntity<BookResponse> update(@PathVariable("bookId") Long bookId,
 			@Valid @RequestBody UpdateBookRequest updateBookRequest) {
 		BookResponse updatedBook = bookService.update(bookId, updateBookRequest);
 		return ResponseEntity.ok(updatedBook);
@@ -70,7 +70,7 @@ public class BookController {
 
 	@DeleteMapping("/{bookId}")
 	@Operation(summary = "Deletes a book by its id")
-	public ResponseEntity<Void> deleteById(@PathVariable Long bookId) {
+	public ResponseEntity<Void> deleteById(@PathVariable("bookId") Long bookId) {
 		bookService.deleteById(bookId);
 		return ResponseEntity.noContent().build();
 	}

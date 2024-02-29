@@ -12,6 +12,7 @@ import com.carlosarroyoam.rest.books.services.AuthService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/auth")
@@ -26,7 +27,7 @@ public class AuthController {
 
 	@PostMapping(produces = "application/json")
 	@Operation(summary = "Auths a user")
-	public ResponseEntity<LoginResponse> auth(@RequestBody LoginRequest loginRequest) {
+	public ResponseEntity<LoginResponse> auth(@Valid @RequestBody LoginRequest loginRequest) {
 		LoginResponse loginResponse = authService.auth(loginRequest);
 		return ResponseEntity.ok(loginResponse);
 	}

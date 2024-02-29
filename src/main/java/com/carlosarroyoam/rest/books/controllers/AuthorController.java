@@ -37,7 +37,7 @@ public class AuthorController {
 
 	@GetMapping(path = "/{authorId}", produces = "application/json")
 	@Operation(summary = "Gets an author by its id")
-	public ResponseEntity<AuthorResponse> findById(@PathVariable Long authorId) {
+	public ResponseEntity<AuthorResponse> findById(@PathVariable("authorId") Long authorId) {
 		AuthorResponse authorById = authorService.findById(authorId);
 		return ResponseEntity.ok(authorById);
 	}

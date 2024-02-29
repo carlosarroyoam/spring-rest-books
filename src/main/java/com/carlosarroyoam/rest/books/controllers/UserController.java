@@ -37,7 +37,7 @@ public class UserController {
 
 	@GetMapping(path = "/{userId}", produces = "application/json")
 	@Operation(summary = "Gets a user by its id")
-	public ResponseEntity<UserResponse> findById(@PathVariable Long userId) {
+	public ResponseEntity<UserResponse> findById(@PathVariable("userId") Long userId) {
 		UserResponse userById = userService.findById(userId);
 		return ResponseEntity.ok(userById);
 	}
