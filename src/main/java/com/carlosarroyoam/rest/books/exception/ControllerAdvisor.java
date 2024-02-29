@@ -2,12 +2,14 @@ package com.carlosarroyoam.rest.books.exception;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -31,8 +33,8 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
 		appExceptionResponse.setStatus(statusCode.value());
 		appExceptionResponse.setPath(request.getDescription(false).replace("uri=", ""));
 		appExceptionResponse.setTimestamp(ZonedDateTime.now(ZoneId.of("UTC")));
-		appExceptionResponse.setDetails(ex.getBindingResult().getFieldErrors().stream()
-				.map(e -> e.getField() + ":" + e.getDefaultMessage()).toList());
+		appExceptionResponse.setDetails(ex.getBindingResult().getFieldErrors().stream().collect(
+				Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage, (first, second) -> second)));
 
 		return ResponseEntity.unprocessableEntity().body(appExceptionResponse);
 	}
