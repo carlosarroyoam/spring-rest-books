@@ -23,8 +23,6 @@ import com.carlosarroyoam.rest.books.dto.LoginResponse;
 import com.carlosarroyoam.rest.books.entity.Role;
 import com.carlosarroyoam.rest.books.entity.User;
 import com.carlosarroyoam.rest.books.repository.UserRepository;
-import com.carlosarroyoam.rest.books.service.AuthService;
-import com.carlosarroyoam.rest.books.service.TokenService;
 
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {

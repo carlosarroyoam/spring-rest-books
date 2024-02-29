@@ -56,7 +56,7 @@ public class BookController {
 	public ResponseEntity<BookResponse> create(@Valid @RequestBody CreateBookRequest createBookRequest,
 			UriComponentsBuilder builder) {
 		BookResponse createdBook = bookService.create(createBookRequest);
-		UriComponents uriComponents = builder.path("/books/{id}").buildAndExpand(createdBook.getId());
+		UriComponents uriComponents = builder.path("/books/{bookId}").buildAndExpand(createdBook.getId());
 		return ResponseEntity.created(uriComponents.toUri()).body(createdBook);
 	}
 

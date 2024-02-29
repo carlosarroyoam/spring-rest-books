@@ -22,7 +22,6 @@ import com.carlosarroyoam.rest.books.entity.Book;
 import com.carlosarroyoam.rest.books.mapper.AuthorMapper;
 import com.carlosarroyoam.rest.books.mapper.BookMapper;
 import com.carlosarroyoam.rest.books.repository.BookRepository;
-import com.carlosarroyoam.rest.books.service.BookService;
 
 @ExtendWith(MockitoExtension.class)
 class BookServiceTest {
