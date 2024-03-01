@@ -88,7 +88,7 @@ public class UserService implements UserDetailsService {
 	}
 
 	@Transactional
-	public UserResponse update(Long userId, UpdateUserRequest updateUserRequest) {
+	public void update(Long userId, UpdateUserRequest updateUserRequest) {
 		User userById = userRepository.findById(userId).orElseThrow(() -> {
 			log.warn(AppMessages.USER_NOT_FOUND_EXCEPTION);
 			return new ResponseStatusException(HttpStatus.NOT_FOUND, AppMessages.USER_NOT_FOUND_EXCEPTION);
@@ -102,7 +102,6 @@ public class UserService implements UserDetailsService {
 
 		userById.setUpdatedAt(LocalDateTime.now());
 		userRepository.save(userById);
-		return userMapper.toDto(userById);
 	}
 
 	@Transactional

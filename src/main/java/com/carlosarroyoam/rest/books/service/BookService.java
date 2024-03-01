@@ -57,7 +57,7 @@ public class BookService {
 	}
 
 	@Transactional
-	public BookResponse update(Long id, UpdateBookRequest updateBookRequest) {
+	public void update(Long id, UpdateBookRequest updateBookRequest) {
 		Book bookById = bookRepository.findById(id).orElseThrow(() -> {
 			log.warn(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
 			return new ResponseStatusException(HttpStatus.NOT_FOUND, AppMessages.BOOK_NOT_FOUND_EXCEPTION);
@@ -69,8 +69,7 @@ public class BookService {
 		bookById.setIsAvailableOnline(updateBookRequest.getIsAvailableOnline());
 		bookById.setUpdatedAt(LocalDateTime.now());
 
-		Book updatedBook = bookRepository.save(bookById);
-		return bookMapper.toDto(updatedBook);
+		bookRepository.save(bookById);
 	}
 
 	@Transactional
