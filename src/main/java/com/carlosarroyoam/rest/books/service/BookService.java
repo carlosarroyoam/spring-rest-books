@@ -10,10 +10,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.carlosarroyoam.rest.books.constant.AppMessages;
+import com.carlosarroyoam.rest.books.dto.AuthorResponse;
 import com.carlosarroyoam.rest.books.dto.BookResponse;
 import com.carlosarroyoam.rest.books.dto.CreateBookRequest;
 import com.carlosarroyoam.rest.books.dto.UpdateBookRequest;
 import com.carlosarroyoam.rest.books.entity.Book;
+import com.carlosarroyoam.rest.books.mapper.AuthorMapper;
 import com.carlosarroyoam.rest.books.mapper.BookMapper;
 import com.carlosarroyoam.rest.books.repository.BookRepository;
 
@@ -25,10 +27,12 @@ public class BookService {
 	private static final Logger log = LoggerFactory.getLogger(BookService.class);
 	private final BookRepository bookRepository;
 	private final BookMapper bookMapper;
+	private final AuthorMapper authorMapper;
 
-	public BookService(BookRepository bookRepository, BookMapper bookMapper) {
+	public BookService(BookRepository bookRepository, BookMapper bookMapper, AuthorMapper authorMapper) {
 		this.bookRepository = bookRepository;
 		this.bookMapper = bookMapper;
+		this.authorMapper = authorMapper;
 	}
 
 	public List<BookResponse> findAll() {
@@ -81,6 +85,15 @@ public class BookService {
 		}
 
 		bookRepository.deleteById(bookId);
+	}
+
+	public List<AuthorResponse> findAuthorsByBookId(Long bookId) {
+		Book bookById = bookRepository.findById(bookId).orElseThrow(() -> {
+			log.warn(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
+			return new ResponseStatusException(HttpStatus.NOT_FOUND, AppMessages.BOOK_NOT_FOUND_EXCEPTION);
+		});
+
+		return authorMapper.toDtos(bookById.getAuthors());
 	}
 
 }

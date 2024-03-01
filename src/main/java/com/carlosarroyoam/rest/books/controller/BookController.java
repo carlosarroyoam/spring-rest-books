@@ -15,6 +15,7 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.carlosarroyoam.rest.books.config.OpenApiConfig;
+import com.carlosarroyoam.rest.books.dto.AuthorResponse;
 import com.carlosarroyoam.rest.books.dto.BookResponse;
 import com.carlosarroyoam.rest.books.dto.CreateBookRequest;
 import com.carlosarroyoam.rest.books.dto.UpdateBookRequest;
@@ -73,6 +74,12 @@ public class BookController {
 	public ResponseEntity<Void> deleteById(@PathVariable("bookId") Long bookId) {
 		bookService.deleteById(bookId);
 		return ResponseEntity.noContent().build();
+	}
+
+	@GetMapping(path = "/{bookId}/authors", produces = "application/json")
+	public ResponseEntity<List<AuthorResponse>> findBookAuthors(@PathVariable("bookId") Long bookId) {
+		List<AuthorResponse> authors = bookService.findAuthorsByBookId(bookId);
+		return ResponseEntity.ok(authors);
 	}
 
 }
