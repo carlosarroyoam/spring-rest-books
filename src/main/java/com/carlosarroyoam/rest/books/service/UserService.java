@@ -83,8 +83,8 @@ public class UserService implements UserDetailsService {
 		user.setCreatedAt(now);
 		user.setUpdatedAt(now);
 
-		userRepository.save(user);
-		return userMapper.toDto(user);
+		User savedUser = userRepository.save(user);
+		return userMapper.toDto(savedUser);
 	}
 
 	@Transactional

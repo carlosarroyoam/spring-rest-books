@@ -36,8 +36,8 @@ public class BookService {
 		return bookMapper.toDtos(books);
 	}
 
-	public BookResponse findById(Long id) {
-		Book bookById = bookRepository.findById(id).orElseThrow(() -> {
+	public BookResponse findById(Long bookId) {
+		Book bookById = bookRepository.findById(bookId).orElseThrow(() -> {
 			log.warn(AppMessages.USER_NOT_FOUND_EXCEPTION);
 			return new ResponseStatusException(HttpStatus.NOT_FOUND, AppMessages.BOOK_NOT_FOUND_EXCEPTION);
 		});
@@ -57,8 +57,8 @@ public class BookService {
 	}
 
 	@Transactional
-	public void update(Long id, UpdateBookRequest updateBookRequest) {
-		Book bookById = bookRepository.findById(id).orElseThrow(() -> {
+	public void update(Long bookId, UpdateBookRequest updateBookRequest) {
+		Book bookById = bookRepository.findById(bookId).orElseThrow(() -> {
 			log.warn(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
 			return new ResponseStatusException(HttpStatus.NOT_FOUND, AppMessages.BOOK_NOT_FOUND_EXCEPTION);
 		});
