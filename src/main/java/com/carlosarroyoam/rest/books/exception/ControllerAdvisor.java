@@ -4,9 +4,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.stream.Collectors;
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
@@ -15,29 +13,11 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.carlosarroyoam.rest.books.dto.AppExceptionResponse;
 
 @ControllerAdvice
-class ControllerAdvisor extends ResponseEntityExceptionHandler {
-
-	@Override
-	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
-			HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-		HttpStatus statusCode = HttpStatus.valueOf(status.value());
-
-		AppExceptionResponse appExceptionResponse = new AppExceptionResponse();
-		appExceptionResponse.setMessage("Request data is not valid");
-		appExceptionResponse.setError(statusCode.getReasonPhrase());
-		appExceptionResponse.setStatus(statusCode.value());
-		appExceptionResponse.setPath(request.getDescription(false).replace("uri=", ""));
-		appExceptionResponse.setTimestamp(ZonedDateTime.now(ZoneId.of("UTC")));
-		appExceptionResponse.setDetails(ex.getBindingResult().getFieldErrors().stream().collect(
-				Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage, (first, second) -> second)));
-
-		return ResponseEntity.unprocessableEntity().body(appExceptionResponse);
-	}
+class ControllerAdvisor {
 
 	@ExceptionHandler(ResponseStatusException.class)
 	public ResponseEntity<AppExceptionResponse> handleResponseStatusException(ResponseStatusException ex,
@@ -52,6 +32,23 @@ class ControllerAdvisor extends ResponseEntityExceptionHandler {
 		appExceptionResponse.setTimestamp(ZonedDateTime.now(ZoneId.of("UTC")));
 
 		return new ResponseEntity<>(appExceptionResponse, ex.getStatusCode());
+	}
+
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity<AppExceptionResponse> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+			WebRequest request) {
+		HttpStatus statusCode = HttpStatus.BAD_REQUEST;
+
+		AppExceptionResponse appExceptionResponse = new AppExceptionResponse();
+		appExceptionResponse.setMessage("Request data is not valid");
+		appExceptionResponse.setError(statusCode.getReasonPhrase());
+		appExceptionResponse.setStatus(statusCode.value());
+		appExceptionResponse.setPath(request.getDescription(false).replace("uri=", ""));
+		appExceptionResponse.setTimestamp(ZonedDateTime.now(ZoneId.of("UTC")));
+		appExceptionResponse.setDetails(ex.getBindingResult().getFieldErrors().stream().collect(
+				Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage, (first, second) -> second)));
+
+		return new ResponseEntity<>(appExceptionResponse, statusCode);
 	}
 
 	@ExceptionHandler(AuthenticationException.class)
@@ -82,7 +79,7 @@ class ControllerAdvisor extends ResponseEntityExceptionHandler {
 
 		ex.printStackTrace();
 
-		return ResponseEntity.internalServerError().body(appExceptionResponse);
+		return new ResponseEntity<>(appExceptionResponse, statusCode);
 	}
 
 }
