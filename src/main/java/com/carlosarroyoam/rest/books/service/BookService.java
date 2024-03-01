@@ -66,11 +66,14 @@ public class BookService {
 	}
 
 	@Transactional
-	public void deleteById(Long id) {
-		Book bookById = bookRepository.findById(id)
-				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found"));
+	public void deleteById(Long bookId) {
+		boolean existsBook = bookRepository.existsById(bookId);
 
-		bookRepository.delete(bookById);
+		if (Boolean.FALSE.equals(existsBook)) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found");
+		}
+
+		bookRepository.deleteById(bookId);
 	}
 
 }
