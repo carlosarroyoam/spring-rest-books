@@ -8,7 +8,6 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 
 import com.carlosarroyoam.rest.books.dto.CreateUserRequest;
-import com.carlosarroyoam.rest.books.dto.UpdateUserRequest;
 import com.carlosarroyoam.rest.books.dto.UserResponse;
 import com.carlosarroyoam.rest.books.entity.User;
 
@@ -19,8 +18,6 @@ public interface UserMapper {
 
 	List<UserResponse> toDtos(List<User> users);
 
-	User createRequestToEntity(CreateUserRequest createUserRequest);
-
-	User updateRequestToEntity(UpdateUserRequest updateUserRequest);
+	User toEntity(CreateUserRequest createUserRequest);
 
 }

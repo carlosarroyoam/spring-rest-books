@@ -70,12 +70,12 @@ public class BookServiceApplication implements CommandLineRunner {
 		User user1 = new User("Carlos Alberto Arroyo Martínez", "carroyom@mail.com", "carroyom", encodedPassword,
 				adminRole.getId(), LocalDateTime.now(), LocalDateTime.now());
 		user1.setAge(Byte.valueOf("28"));
-		user1.setActive(Boolean.TRUE);
+		user1.setIsActive(Boolean.TRUE);
 
 		User user2 = new User("Cathy Stefania Guido Rojas", "cguidor@mail.com", "cguidor", encodedPassword,
 				customerRole.getId(), LocalDateTime.now(), LocalDateTime.now());
 		user2.setAge(Byte.valueOf("28"));
-		user2.setActive(Boolean.TRUE);
+		user2.setIsActive(Boolean.TRUE);
 
 		userRepository.save(user1);
 		userRepository.save(user2);

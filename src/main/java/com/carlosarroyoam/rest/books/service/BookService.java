@@ -3,10 +3,13 @@ package com.carlosarroyoam.rest.books.service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.carlosarroyoam.rest.books.constant.AppMessages;
 import com.carlosarroyoam.rest.books.dto.BookResponse;
 import com.carlosarroyoam.rest.books.dto.CreateBookRequest;
 import com.carlosarroyoam.rest.books.dto.UpdateBookRequest;
@@ -19,6 +22,7 @@ import jakarta.transaction.Transactional;
 @Service
 public class BookService {
 
+	private static final Logger log = LoggerFactory.getLogger(BookService.class);
 	private final BookRepository bookRepository;
 	private final BookMapper bookMapper;
 
@@ -33,8 +37,10 @@ public class BookService {
 	}
 
 	public BookResponse findById(Long id) {
-		Book bookById = bookRepository.findById(id)
-				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found"));
+		Book bookById = bookRepository.findById(id).orElseThrow(() -> {
+			log.warn(AppMessages.USER_NOT_FOUND_EXCEPTION);
+			return new ResponseStatusException(HttpStatus.NOT_FOUND, AppMessages.BOOK_NOT_FOUND_EXCEPTION);
+		});
 
 		return bookMapper.toDto(bookById);
 	}
@@ -52,8 +58,10 @@ public class BookService {
 
 	@Transactional
 	public BookResponse update(Long id, UpdateBookRequest updateBookRequest) {
-		Book bookById = bookRepository.findById(id)
-				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found"));
+		Book bookById = bookRepository.findById(id).orElseThrow(() -> {
+			log.warn(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
+			return new ResponseStatusException(HttpStatus.NOT_FOUND, AppMessages.BOOK_NOT_FOUND_EXCEPTION);
+		});
 
 		bookById.setTitle(updateBookRequest.getTitle());
 		bookById.setPrice(updateBookRequest.getPrice());
@@ -67,10 +75,10 @@ public class BookService {
 
 	@Transactional
 	public void deleteById(Long bookId) {
-		boolean existsBook = bookRepository.existsById(bookId);
-
-		if (Boolean.FALSE.equals(existsBook)) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found");
+		boolean existsBookById = bookRepository.existsById(bookId);
+		if (Boolean.FALSE.equals(existsBookById)) {
+			log.warn(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, AppMessages.BOOK_NOT_FOUND_EXCEPTION);
 		}
 
 		bookRepository.deleteById(bookId);

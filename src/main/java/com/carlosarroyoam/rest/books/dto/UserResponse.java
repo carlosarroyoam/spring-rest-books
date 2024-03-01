@@ -12,7 +12,7 @@ public class UserResponse {
 	private Byte age;
 	private String email;
 	private String username;
-	private boolean isActive;
+	private Boolean isActive;
 	private Integer roleId;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
