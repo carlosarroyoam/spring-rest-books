@@ -5,6 +5,9 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -47,9 +50,10 @@ public class UserService implements UserDetailsService {
 		});
 	}
 
-	public List<UserResponse> findAll() {
-		List<User> users = userRepository.findAll();
-		return userMapper.toDtos(users);
+	public List<UserResponse> findAll(Integer page, Integer size) {
+		Pageable pageable = PageRequest.of(page, size);
+		Page<User> users = userRepository.findAll(pageable);
+		return userMapper.toDtos(users.getContent());
 	}
 
 	public UserResponse findById(Long userId) {

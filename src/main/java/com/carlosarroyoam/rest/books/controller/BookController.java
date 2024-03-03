@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -40,8 +41,9 @@ public class BookController {
 
 	@GetMapping(produces = "application/json")
 	@Operation(summary = "Gets the list of books")
-	public ResponseEntity<List<BookResponse>> findAll() {
-		List<BookResponse> books = bookService.findAll();
+	public ResponseEntity<List<BookResponse>> findAll(@RequestParam(required = false, defaultValue = "0") Integer page,
+			@RequestParam(required = false, defaultValue = "25") Integer size) {
+		List<BookResponse> books = bookService.findAll(page, size);
 		return ResponseEntity.ok(books);
 	}
 

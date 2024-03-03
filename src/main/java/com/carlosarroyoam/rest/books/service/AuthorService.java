@@ -5,6 +5,9 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -36,9 +39,10 @@ public class AuthorService {
 		this.bookMapper = bookMapper;
 	}
 
-	public List<AuthorResponse> findAll() {
-		List<Author> authors = authorRepository.findAll();
-		return authorMapper.toDtos(authors);
+	public List<AuthorResponse> findAll(Integer page, Integer size) {
+		Pageable pageable = PageRequest.of(page, size);
+		Page<Author> authors = authorRepository.findAll(pageable);
+		return authorMapper.toDtos(authors.getContent());
 	}
 
 	public AuthorResponse findById(Long authorId) {

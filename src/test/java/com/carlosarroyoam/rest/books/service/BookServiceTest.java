@@ -49,7 +49,7 @@ class BookServiceTest {
 						LocalDateTime.now(), LocalDateTime.now()));
 		Mockito.when(bookRepository.findAll()).thenReturn(expectedBooks);
 
-		List<BookResponse> books = bookService.findAll();
+		List<BookResponse> books = bookService.findAll(0, 25);
 
 		assertThat(books).isNotNull().isNotEmpty().size().isEqualTo(2);
 	}

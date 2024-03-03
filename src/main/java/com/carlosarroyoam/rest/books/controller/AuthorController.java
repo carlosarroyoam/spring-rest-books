@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -40,8 +41,10 @@ public class AuthorController {
 
 	@GetMapping(produces = "application/json")
 	@Operation(summary = "Gets the list of authors")
-	public ResponseEntity<List<AuthorResponse>> findAll() {
-		List<AuthorResponse> authors = authorService.findAll();
+	public ResponseEntity<List<AuthorResponse>> findAll(
+			@RequestParam(required = false, defaultValue = "0") Integer page,
+			@RequestParam(required = false, defaultValue = "25") Integer size) {
+		List<AuthorResponse> authors = authorService.findAll(page, size);
 		return ResponseEntity.ok(authors);
 	}
 

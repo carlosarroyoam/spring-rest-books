@@ -25,7 +25,7 @@ public class AuthController {
 		this.authService = authService;
 	}
 
-	@PostMapping(produces = "application/json")
+	@PostMapping(consumes = "application/json", produces = "application/json")
 	@Operation(summary = "Auths a user")
 	public ResponseEntity<LoginResponse> auth(@Valid @RequestBody LoginRequest loginRequest) {
 		LoginResponse loginResponse = authService.auth(loginRequest);
