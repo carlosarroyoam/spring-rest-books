@@ -1,6 +1,7 @@
 package com.carlosarroyoam.rest.books.entity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -27,7 +28,7 @@ public class Author {
 	private String name;
 
 	@ManyToMany(mappedBy = "authors")
-	private List<Book> books;
+	private List<Book> books = new ArrayList<>();
 
 	@Column(name = "created_at", nullable = false)
 	private LocalDateTime createdAt;

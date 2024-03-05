@@ -7,7 +7,6 @@ import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.FrameOptionsConfig;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -30,19 +29,18 @@ import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 
 @Configuration
-@EnableWebSecurity
 class WebSecurityConfig {
 
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http.csrf(CsrfConfigurer::disable);
 		http.headers(headers -> headers.frameOptions(FrameOptionsConfig::sameOrigin));
-		http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+		http.sessionManagement(sessions -> sessions.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 		http.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
 
 		// @formatter:off
-		http.authorizeHttpRequests(requests -> requests.requestMatchers(AntPathRequestMatcher
-				.antMatcher("/")).permitAll()
+		http.authorizeHttpRequests(requests -> requests
+				.requestMatchers(AntPathRequestMatcher.antMatcher("/")).permitAll()
 				.requestMatchers(AntPathRequestMatcher.antMatcher(("/auth/**"))).permitAll()
 				.requestMatchers(AntPathRequestMatcher.antMatcher("/swagger-ui/**")).permitAll()
 				.requestMatchers(AntPathRequestMatcher.antMatcher("/api-docs/**")).permitAll()
@@ -74,7 +72,7 @@ class WebSecurityConfig {
 	}
 
 	@Bean
-	JwtEncoder jwtEncode(RsaKeys rsaKeys) {
+	JwtEncoder jwtEncoder(RsaKeys rsaKeys) {
 		JWK jwk = new RSAKey.Builder(rsaKeys.publicKey()).privateKey(rsaKeys.privateKey()).build();
 		JWKSource<SecurityContext> jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
 
