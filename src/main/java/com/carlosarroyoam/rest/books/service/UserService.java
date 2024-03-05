@@ -67,14 +67,12 @@ public class UserService implements UserDetailsService {
 
 	@Transactional
 	public UserResponse create(CreateUserRequest createUserRequest) {
-		boolean existsUserByUsername = userRepository.existsByUsername(createUserRequest.getUsername());
-		if (Boolean.TRUE.equals(existsUserByUsername)) {
+		if (userRepository.existsByUsername(createUserRequest.getUsername())) {
 			log.warn(AppMessages.USERNAME_ALREADY_EXISTS_EXCEPTION);
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, AppMessages.USERNAME_ALREADY_EXISTS_EXCEPTION);
 		}
 
-		boolean existsUserByEmail = userRepository.existsByEmail(createUserRequest.getEmail());
-		if (Boolean.TRUE.equals(existsUserByEmail)) {
+		if (userRepository.existsByEmail(createUserRequest.getEmail())) {
 			log.warn(AppMessages.EMAIL_ALREADY_EXISTS_EXCEPTION);
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, AppMessages.EMAIL_ALREADY_EXISTS_EXCEPTION);
 		}

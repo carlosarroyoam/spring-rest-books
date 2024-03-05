@@ -55,6 +55,11 @@ public class BookService {
 
 	@Transactional
 	public BookResponse create(CreateBookRequest createBookRequest) {
+		if (bookRepository.existsByIsbn(createBookRequest.getIsbn())) {
+			log.warn(AppMessages.ISBN_ALREADY_EXISTS_EXCEPTION);
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, AppMessages.ISBN_ALREADY_EXISTS_EXCEPTION);
+		}
+
 		LocalDateTime now = LocalDateTime.now();
 		Book book = bookMapper.createRequestToEntity(createBookRequest);
 		book.setCreatedAt(now);
@@ -82,8 +87,7 @@ public class BookService {
 
 	@Transactional
 	public void deleteById(Long bookId) {
-		boolean existsBookById = bookRepository.existsById(bookId);
-		if (Boolean.FALSE.equals(existsBookById)) {
+		if (Boolean.FALSE.equals(bookRepository.existsById(bookId))) {
 			log.warn(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, AppMessages.BOOK_NOT_FOUND_EXCEPTION);
 		}

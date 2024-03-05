@@ -80,8 +80,7 @@ public class AuthorService {
 
 	@Transactional
 	public void deleteById(Long authorId) {
-		boolean existsAuthorById = authorRepository.existsById(authorId);
-		if (Boolean.FALSE.equals(existsAuthorById)) {
+		if (Boolean.FALSE.equals(authorRepository.existsById(authorId))) {
 			log.warn(AppMessages.AUTHOR_NOT_FOUND_EXCEPTION);
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, AppMessages.AUTHOR_NOT_FOUND_EXCEPTION);
 		}
