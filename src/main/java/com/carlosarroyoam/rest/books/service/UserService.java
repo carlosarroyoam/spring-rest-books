@@ -78,7 +78,6 @@ public class UserService implements UserDetailsService {
 		}
 
 		LocalDateTime now = LocalDateTime.now();
-
 		User user = userMapper.toEntity(createUserRequest);
 		user.setPassword(passwordEncoder.encode(createUserRequest.getPassword()));
 		user.setIsActive(Boolean.FALSE);
