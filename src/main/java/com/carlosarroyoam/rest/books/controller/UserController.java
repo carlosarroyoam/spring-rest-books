@@ -49,7 +49,7 @@ public class UserController {
 
 	@GetMapping(path = "/{userId}", produces = "application/json")
 	@Operation(summary = "Gets a user by its id")
-	public ResponseEntity<UserResponse> findById(@PathVariable("userId") Long userId) {
+	public ResponseEntity<UserResponse> findById(@PathVariable Long userId) {
 		UserResponse userById = userService.findById(userId);
 		return ResponseEntity.ok(userById);
 	}
@@ -65,7 +65,7 @@ public class UserController {
 
 	@PutMapping(value = "/{userId}", consumes = "application/json")
 	@Operation(summary = "Updates a user by its id")
-	public ResponseEntity<Void> update(@PathVariable("userId") Long userId,
+	public ResponseEntity<Void> update(@PathVariable Long userId,
 			@Valid @RequestBody UpdateUserRequest updateUserRequest) {
 		userService.update(userId, updateUserRequest);
 		return ResponseEntity.noContent().build();
@@ -73,14 +73,14 @@ public class UserController {
 
 	@DeleteMapping("/{userId}")
 	@Operation(summary = "Deletes a user by its id")
-	public ResponseEntity<Void> deleteById(@PathVariable("userId") Long userId) {
+	public ResponseEntity<Void> deleteById(@PathVariable Long userId) {
 		userService.deleteById(userId);
 		return ResponseEntity.noContent().build();
 	}
 
 	@PostMapping(path = "/{userId}/change-password", consumes = "application/json")
 	@Operation(summary = "Changes a user password")
-	public ResponseEntity<UserResponse> changePassword(@PathVariable("userId") Long userId,
+	public ResponseEntity<UserResponse> changePassword(@PathVariable Long userId,
 			@Valid @RequestBody ChangePasswordRequest changePasswordRequest) {
 		userService.changePassword(userId, changePasswordRequest);
 		return ResponseEntity.noContent().build();

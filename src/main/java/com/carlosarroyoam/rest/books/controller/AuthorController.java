@@ -50,7 +50,7 @@ public class AuthorController {
 
 	@GetMapping(path = "/{authorId}", produces = "application/json")
 	@Operation(summary = "Gets an author by its id")
-	public ResponseEntity<AuthorResponse> findById(@PathVariable("authorId") Long authorId) {
+	public ResponseEntity<AuthorResponse> findById(@PathVariable Long authorId) {
 		AuthorResponse authorById = authorService.findById(authorId);
 		return ResponseEntity.ok(authorById);
 	}
@@ -66,7 +66,7 @@ public class AuthorController {
 
 	@PutMapping(value = "/{authorId}", consumes = "application/json")
 	@Operation(summary = "Updates a author by its id")
-	public ResponseEntity<Void> update(@PathVariable("authorId") Long authorId,
+	public ResponseEntity<Void> update(@PathVariable Long authorId,
 			@Valid @RequestBody UpdateAuthorRequest updateAuthorRequest) {
 		authorService.update(authorId, updateAuthorRequest);
 		return ResponseEntity.noContent().build();
@@ -74,13 +74,13 @@ public class AuthorController {
 
 	@DeleteMapping("/{authorId}")
 	@Operation(summary = "Deletes a author by its id")
-	public ResponseEntity<Void> deleteById(@PathVariable("authorId") Long authorId) {
+	public ResponseEntity<Void> deleteById(@PathVariable Long authorId) {
 		authorService.deleteById(authorId);
 		return ResponseEntity.noContent().build();
 	}
 
 	@GetMapping(path = "/{authorId}/books", produces = "application/json")
-	public ResponseEntity<List<BookResponse>> findBookAuthors(@PathVariable("authorId") Long authorId) {
+	public ResponseEntity<List<BookResponse>> findBookAuthors(@PathVariable Long authorId) {
 		List<BookResponse> books = authorService.findBooksByAuthorId(authorId);
 		return ResponseEntity.ok(books);
 	}
