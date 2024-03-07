@@ -23,7 +23,6 @@ import com.carlosarroyoam.rest.books.mapper.BookMapper;
 import com.carlosarroyoam.rest.books.repository.AuthorRepository;
 
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 
 @Service
 public class AuthorService {
@@ -55,7 +54,7 @@ public class AuthorService {
 	}
 
 	@Transactional
-	public AuthorResponse create(@Valid CreateAuthorRequest createAuthorRequest) {
+	public AuthorResponse create(CreateAuthorRequest createAuthorRequest) {
 		LocalDateTime now = LocalDateTime.now();
 		Author author = authorMapper.toEntity(createAuthorRequest);
 		author.setCreatedAt(now);
@@ -66,7 +65,7 @@ public class AuthorService {
 	}
 
 	@Transactional
-	public void update(Long authorId, @Valid UpdateAuthorRequest updateAuthorRequest) {
+	public void update(Long authorId, UpdateAuthorRequest updateAuthorRequest) {
 		Author authorById = authorRepository.findById(authorId).orElseThrow(() -> {
 			log.warn(AppMessages.AUTHOR_NOT_FOUND_EXCEPTION);
 			return new ResponseStatusException(HttpStatus.NOT_FOUND, AppMessages.AUTHOR_NOT_FOUND_EXCEPTION);
