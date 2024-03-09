@@ -23,8 +23,8 @@ public class OpenApiConfig {
 
 	@Bean
 	OpenAPI customOpenAPI() {
-		String appTitle = "Books service";
-		String appDescription = "Book service demo API";
+		String appTitle = "Spring Boot Rest Api";
+		String appDescription = "Spring Boot Rest Api";
 		String appVersion = "0.0.1-SNAPSHOT";
 		Contact contactInfo = new Contact().email("carlosarroyoam@gmail.com");
 		License license = new License().name("Apache 2.0").url("https://www.apache.org/licenses/LICENSE-2.0.html");
