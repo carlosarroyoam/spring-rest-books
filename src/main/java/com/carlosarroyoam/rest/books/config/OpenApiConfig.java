@@ -3,6 +3,11 @@ package com.carlosarroyoam.rest.books.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+
+import io.swagger.v3.core.jackson.ModelResolver;
+import io.swagger.v3.core.util.Json;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -26,6 +31,12 @@ public class OpenApiConfig {
 
 		return new OpenAPI().info(new Info().title(appTitle).version(appVersion).description(appDescription)
 				.contact(contactInfo).license(license));
+	}
+
+	@Bean
+	ModelResolver modelResolverDefault() {
+		ObjectMapper copy = Json.mapper().copy();
+		return new ModelResolver(copy.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE));
 	}
 
 }
