@@ -29,7 +29,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/authors")
-@Tag(name = "Author")
+@Tag(name = "Authors", description = "Operations about authors")
 @SecurityRequirement(name = OpenApiConfig.SECURITY_SCHEME_NAME)
 public class AuthorController {
 

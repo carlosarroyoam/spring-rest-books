@@ -29,7 +29,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/books")
-@Tag(name = "Books")
+@Tag(name = "Books", description = "Operations about books")
 @SecurityRequirement(name = OpenApiConfig.SECURITY_SCHEME_NAME)
 public class BookController {
 

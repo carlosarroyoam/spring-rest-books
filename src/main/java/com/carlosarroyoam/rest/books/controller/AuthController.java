@@ -16,7 +16,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/auth")
-@Tag(name = "Auth")
+@Tag(name = "Auth", description = "Operations about auth")
 public class AuthController {
 
 	private final AuthService authService;
