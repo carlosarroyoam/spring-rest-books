@@ -38,7 +38,7 @@ public class AuthorService {
 		this.bookMapper = bookMapper;
 	}
 
-	public List<AuthorResponse> findAll(Integer page, Integer size) {
+	public List<AuthorResponse> findAll(int page, int size) {
 		Pageable pageable = PageRequest.of(page, size);
 		Page<Author> authors = authorRepository.findAll(pageable);
 		return authorMapper.toDtos(authors.getContent());

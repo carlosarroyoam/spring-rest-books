@@ -41,9 +41,8 @@ public class AuthorController {
 
 	@GetMapping(produces = "application/json")
 	@Operation(summary = "Gets the list of authors")
-	public ResponseEntity<List<AuthorResponse>> findAll(
-			@RequestParam(required = false, defaultValue = "0") Integer page,
-			@RequestParam(required = false, defaultValue = "25") Integer size) {
+	public ResponseEntity<List<AuthorResponse>> findAll(@RequestParam(required = false, defaultValue = "0") int page,
+			@RequestParam(required = false, defaultValue = "25") int size) {
 		List<AuthorResponse> authors = authorService.findAll(page, size);
 		return ResponseEntity.ok(authors);
 	}

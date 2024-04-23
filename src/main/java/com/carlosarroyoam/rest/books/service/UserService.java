@@ -50,7 +50,7 @@ public class UserService implements UserDetailsService {
 		});
 	}
 
-	public List<UserResponse> findAll(Integer page, Integer size) {
+	public List<UserResponse> findAll(int page, int size) {
 		Pageable pageable = PageRequest.of(page, size);
 		Page<User> users = userRepository.findAll(pageable);
 		return userMapper.toDtos(users.getContent());
