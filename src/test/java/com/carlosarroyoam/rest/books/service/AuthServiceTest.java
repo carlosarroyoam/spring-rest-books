@@ -50,7 +50,9 @@ class AuthServiceTest {
 
 		LoginResponse response = authService.auth(loginRequest);
 
+		Assertions.assertThat(response.getUsername()).isEqualTo(expectedUser.get().getUsername());
 		Assertions.assertThat(response.getEmail()).isEqualTo(expectedUser.get().getEmail());
+		Assertions.assertThat(response.getName()).isEqualTo(expectedUser.get().getName());
 	}
 
 	@Test

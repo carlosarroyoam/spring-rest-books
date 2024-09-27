@@ -31,16 +31,22 @@ public class AuthService {
 	}
 
 	public LoginResponse auth(LoginRequest loginRequest) {
+		Authentication authentication = authenticationManager.authenticate(
+				new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+
 		User userByEmail = userRepository.findByEmail(loginRequest.getEmail()).orElseThrow(() -> {
 			log.warn(AppMessages.USER_NOT_FOUND_EXCEPTION);
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, AppMessages.USER_NOT_FOUND_EXCEPTION);
 		});
 
-		Authentication authentication = authenticationManager.authenticate(
-				new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
-
 		LoginResponse loginResponse = new LoginResponse();
+		loginResponse.setId(userByEmail.getId());
+		loginResponse.setName(userByEmail.getName());
 		loginResponse.setEmail(userByEmail.getEmail());
+		loginResponse.setUsername(userByEmail.getUsername());
+		loginResponse.setRoleId(userByEmail.getRoleId());
+		loginResponse.setCreatedAt(userByEmail.getCreatedAt());
+		loginResponse.setUpdatedAt(userByEmail.getUpdatedAt());
 		loginResponse.setAccessToken(tokenService.generateToken(authentication));
 		return loginResponse;
 	}
