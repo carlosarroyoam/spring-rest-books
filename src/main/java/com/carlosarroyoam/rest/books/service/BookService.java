@@ -77,6 +77,7 @@ public class BookService {
 		});
 
 		bookById.setTitle(updateBookRequest.getTitle());
+		bookById.setCoverUrl(updateBookRequest.getCoverUrl());
 		bookById.setPrice(updateBookRequest.getPrice());
 		bookById.setPublishedAt(updateBookRequest.getPublishedAt());
 		bookById.setIsAvailableOnline(updateBookRequest.getIsAvailableOnline());

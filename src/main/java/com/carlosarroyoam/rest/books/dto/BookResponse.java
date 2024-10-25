@@ -12,6 +12,7 @@ public class BookResponse {
 	private Long id;
 	private String isbn;
 	private String title;
+	private String coverUrl;
 	private List<AuthorResponse> authors;
 	private Double price;
 	private Boolean isAvailableOnline;

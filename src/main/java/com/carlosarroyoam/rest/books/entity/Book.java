@@ -34,6 +34,9 @@ public class Book {
 	@Column(name = "title", length = 128, nullable = false)
 	private String title;
 
+	@Column(name = "cover_url", length = 512, nullable = false)
+	private String coverUrl;
+
 	@Column(name = "price", nullable = false)
 	private BigDecimal price;
 
@@ -53,10 +56,11 @@ public class Book {
 	@Column(name = "updated_at", nullable = false)
 	private LocalDateTime updatedAt;
 
-	public Book(String isbn, String title, BigDecimal price, boolean isAvailableOnline, LocalDate publishedAt,
+	public Book(String isbn, String title, String coverUrl, BigDecimal price, boolean isAvailableOnline, LocalDate publishedAt,
 			LocalDateTime createdAt, LocalDateTime updatedAt) {
 		this.isbn = isbn;
 		this.title = title;
+		this.coverUrl = coverUrl;
 		this.price = price;
 		this.isAvailableOnline = isAvailableOnline;
 		this.publishedAt = publishedAt;

@@ -18,6 +18,10 @@ public class CreateBookRequest {
 	private String title;
 
 	@NotBlank
+	@Size(min = 3, max = 512)
+	private String coverUrl;
+
+	@NotBlank
 	@Size(min = 10, max = 17)
 	private String isbn;
 
