@@ -23,7 +23,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class Book {
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -71,5 +70,4 @@ public class Book {
 	public void addAuthor(Author author) {
 		this.authors.add(author);
 	}
-
 }

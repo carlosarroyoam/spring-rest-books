@@ -17,7 +17,6 @@ import com.carlosarroyoam.rest.books.repository.UserRepository;
 
 @Service
 public class AuthService {
-
 	private static final Logger log = LoggerFactory.getLogger(AuthService.class);
 	private final AuthenticationManager authenticationManager;
 	private final TokenService tokenService;
@@ -50,5 +49,4 @@ public class AuthService {
 		loginResponse.setAccessToken(tokenService.generateToken(authentication));
 		return loginResponse;
 	}
-
 }

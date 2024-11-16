@@ -8,7 +8,6 @@ import lombok.Data;
 
 @Data
 public class BookResponse {
-
 	private Long id;
 	private String isbn;
 	private String title;
@@ -19,5 +18,4 @@ public class BookResponse {
 	private LocalDate publishedAt;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
-
 }

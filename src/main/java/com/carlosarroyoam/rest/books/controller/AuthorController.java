@@ -32,7 +32,6 @@ import jakarta.validation.Valid;
 @Tag(name = "Authors", description = "Operations about authors")
 @SecurityRequirement(name = OpenApiConfig.SECURITY_SCHEME_NAME)
 public class AuthorController {
-
 	private final AuthorService authorService;
 
 	public AuthorController(AuthorService authorService) {
@@ -83,5 +82,4 @@ public class AuthorController {
 		List<BookResponse> books = authorService.findBooksByAuthorId(authorId);
 		return ResponseEntity.ok(books);
 	}
-
 }

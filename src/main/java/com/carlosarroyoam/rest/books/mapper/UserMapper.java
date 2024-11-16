@@ -13,11 +13,9 @@ import com.carlosarroyoam.rest.books.entity.User;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface UserMapper {
-
 	UserResponse toDto(User user);
 
 	List<UserResponse> toDtos(List<User> users);
 
 	User toEntity(CreateUserRequest createUserRequest);
-
 }

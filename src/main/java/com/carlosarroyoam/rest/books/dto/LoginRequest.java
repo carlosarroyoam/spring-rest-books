@@ -9,7 +9,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class LoginRequest {
-
 	@NotBlank
 	@Size(min = 3, max = 128)
 	@Email
@@ -18,5 +17,4 @@ public class LoginRequest {
 	@NotBlank
 	@Size(min = 3, max = 128)
 	private String password;
-
 }

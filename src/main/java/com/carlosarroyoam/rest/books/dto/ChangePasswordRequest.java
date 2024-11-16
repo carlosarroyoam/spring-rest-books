@@ -6,7 +6,6 @@ import lombok.Data;
 
 @Data
 public class ChangePasswordRequest {
-
 	@NotBlank(message = "Current password should not be blank")
 	private String currentPassword;
 
@@ -17,5 +16,4 @@ public class ChangePasswordRequest {
 	@NotBlank(message = "Confirm password  should not be blank")
 	@Size(min = 3, max = 32, message = "Confirm password  should be between 3 and 32")
 	private String confirmPassword;
-
 }

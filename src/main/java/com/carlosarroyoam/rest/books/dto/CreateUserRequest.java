@@ -8,7 +8,6 @@ import lombok.Data;
 
 @Data
 public class CreateUserRequest {
-
 	@NotBlank
 	@Size(min = 3, max = 128)
 	private String name;
@@ -31,5 +30,4 @@ public class CreateUserRequest {
 
 	@NotNull
 	private Integer roleId;
-
 }

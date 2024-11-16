@@ -23,7 +23,6 @@ import com.carlosarroyoam.rest.books.repository.UserRepository;
 @SpringBootApplication
 @EnableConfigurationProperties(RsaKeysProperties.class)
 public class BookServiceApplication implements CommandLineRunner {
-
 	private final AuthorRepository authorRepository;
 	private final BookRepository bookRepository;
 	private final RoleRepository roleRepository;
@@ -85,5 +84,4 @@ public class BookServiceApplication implements CommandLineRunner {
 		userRepository.save(user1);
 		userRepository.save(user2);
 	}
-
 }

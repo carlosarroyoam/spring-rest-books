@@ -26,7 +26,6 @@ import jakarta.transaction.Transactional;
 
 @Service
 public class BookService {
-
 	private static final Logger log = LoggerFactory.getLogger(BookService.class);
 	private final BookRepository bookRepository;
 	private final BookMapper bookMapper;
@@ -104,5 +103,4 @@ public class BookService {
 
 		return authorMapper.toDtos(bookById.getAuthors());
 	}
-
 }

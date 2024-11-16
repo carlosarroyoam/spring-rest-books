@@ -18,7 +18,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class Role {
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
@@ -36,5 +35,4 @@ public class Role {
 		this.title = title;
 		this.description = description;
 	}
-
 }

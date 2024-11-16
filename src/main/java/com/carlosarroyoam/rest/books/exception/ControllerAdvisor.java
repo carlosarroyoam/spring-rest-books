@@ -21,7 +21,6 @@ import com.carlosarroyoam.rest.books.dto.AppExceptionResponse;
 
 @ControllerAdvice
 class ControllerAdvisor {
-
 	@ExceptionHandler(ResponseStatusException.class)
 	public ResponseEntity<AppExceptionResponse> handleResponseStatusException(ResponseStatusException ex,
 			WebRequest request) {
@@ -129,5 +128,4 @@ class ControllerAdvisor {
 
 		return new ResponseEntity<>(appExceptionResponse, statusCode);
 	}
-
 }

@@ -26,7 +26,6 @@ import com.carlosarroyoam.rest.books.repository.UserRepository;
 
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
-
 	@Mock
 	private UserRepository userRepository;
 
@@ -65,5 +64,4 @@ class AuthServiceTest {
 
 		assertThat(ex, instanceOf(NoSuchElementException.class));
 	}
-
 }

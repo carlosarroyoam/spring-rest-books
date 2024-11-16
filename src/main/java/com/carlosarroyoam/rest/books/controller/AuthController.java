@@ -18,7 +18,6 @@ import jakarta.validation.Valid;
 @RequestMapping("/auth")
 @Tag(name = "Auth", description = "Operations about auth")
 public class AuthController {
-
 	private final AuthService authService;
 
 	public AuthController(AuthService authService) {
@@ -31,5 +30,4 @@ public class AuthController {
 		LoginResponse loginResponse = authService.auth(loginRequest);
 		return ResponseEntity.ok(loginResponse);
 	}
-
 }

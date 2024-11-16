@@ -10,7 +10,6 @@ import com.carlosarroyoam.rest.books.entity.Role;
 
 @DataJpaTest
 class RoleRepositoryTest {
-
 	@Autowired
 	private RoleRepository roleRepository;
 
@@ -25,5 +24,4 @@ class RoleRepositoryTest {
 		assertThat(savedRole.getTitle()).isEqualTo(adminRole.getTitle());
 		assertThat(savedRole.getDescription()).isEqualTo(adminRole.getDescription());
 	}
-
 }

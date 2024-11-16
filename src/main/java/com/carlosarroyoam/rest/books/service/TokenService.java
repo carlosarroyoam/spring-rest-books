@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class TokenService {
-
 	private final JwtEncoder jwtEncoder;
 
 	public TokenService(JwtEncoder jwtEncoder) {
@@ -32,5 +31,4 @@ public class TokenService {
 
 		return this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
 	}
-
 }

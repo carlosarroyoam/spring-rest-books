@@ -25,7 +25,6 @@ import com.carlosarroyoam.rest.books.repository.BookRepository;
 
 @ExtendWith(MockitoExtension.class)
 class BookServiceTest {
-
 	@Spy
 	private AuthorMapper authorMapper = Mappers.getMapper(AuthorMapper.class);
 
@@ -55,5 +54,4 @@ class BookServiceTest {
 
 		assertThat(books).isNotNull().isNotEmpty().size().isEqualTo(2);
 	}
-
 }

@@ -6,9 +6,7 @@ import lombok.Data;
 
 @Data
 public class UpdateAuthorRequest {
-
 	@NotBlank
 	@Size(min = 3, max = 128)
 	private String name;
-
 }

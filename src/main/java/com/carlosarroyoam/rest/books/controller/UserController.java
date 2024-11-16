@@ -32,7 +32,6 @@ import jakarta.validation.Valid;
 @Tag(name = "Users", description = "Operations about users")
 @SecurityRequirement(name = OpenApiConfig.SECURITY_SCHEME_NAME)
 public class UserController {
-
 	private final UserService userService;
 
 	public UserController(UserService userService) {
@@ -85,5 +84,4 @@ public class UserController {
 		userService.changePassword(userId, changePasswordRequest);
 		return ResponseEntity.noContent().build();
 	}
-
 }

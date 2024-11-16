@@ -14,7 +14,6 @@ import com.carlosarroyoam.rest.books.entity.Book;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = AuthorMapper.class)
 public interface BookMapper {
-
 	BookResponse toDto(Book book);
 
 	List<BookResponse> toDtos(List<Book> books);
@@ -22,5 +21,4 @@ public interface BookMapper {
 	Book createRequestToEntity(CreateBookRequest createBookRequest);
 
 	Book updateRequestToEntity(UpdateBookRequest updateBookRequest);
-
 }

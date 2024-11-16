@@ -18,7 +18,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class User {
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -64,5 +63,4 @@ public class User {
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
 	}
-
 }

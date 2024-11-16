@@ -17,7 +17,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @WebMvcTest(AuthController.class)
 class AuthControllerTest {
-
 	@Autowired
 	ObjectMapper objectMapper;
 
@@ -35,5 +34,4 @@ class AuthControllerTest {
 				post("/auth").accept(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(loginRequest)))
 				.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON));
 	}
-
 }

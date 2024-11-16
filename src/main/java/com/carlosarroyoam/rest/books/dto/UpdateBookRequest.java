@@ -12,7 +12,6 @@ import lombok.Data;
 
 @Data
 public class UpdateBookRequest {
-
 	@NotBlank
 	@Size(min = 3, max = 128)
 	private String title;
@@ -35,5 +34,4 @@ public class UpdateBookRequest {
 	@NotNull
 	@PastOrPresent
 	private LocalDate publishedAt;
-
 }

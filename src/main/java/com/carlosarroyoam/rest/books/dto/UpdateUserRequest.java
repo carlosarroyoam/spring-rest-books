@@ -7,12 +7,10 @@ import lombok.Data;
 
 @Data
 public class UpdateUserRequest {
-
 	@NotBlank
 	@Size(min = 3, max = 128)
 	private String name;
 
 	@NotNull
 	private Byte age;
-
 }

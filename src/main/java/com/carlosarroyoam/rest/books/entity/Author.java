@@ -19,7 +19,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class Author {
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -41,5 +40,4 @@ public class Author {
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
 	}
-
 }
