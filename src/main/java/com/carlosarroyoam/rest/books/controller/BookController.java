@@ -40,8 +40,8 @@ public class BookController {
 
 	@GetMapping(produces = "application/json")
 	@Operation(summary = "Gets the list of books")
-	public ResponseEntity<List<BookResponse>> findAll(@RequestParam(required = false, defaultValue = "0") int page,
-			@RequestParam(required = false, defaultValue = "25") int size) {
+	public ResponseEntity<List<BookResponse>> findAll(@RequestParam(required = false, defaultValue = "0") Integer page,
+			@RequestParam(required = false, defaultValue = "25") Integer size) {
 		List<BookResponse> books = bookService.findAll(page, size);
 		return ResponseEntity.ok(books);
 	}

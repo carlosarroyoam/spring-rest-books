@@ -44,7 +44,7 @@ public class User {
 	private Integer roleId;
 
 	@ManyToOne
-	@JoinColumn(name = "role_id", referencedColumnName = "id", insertable = false, updatable = false)
+	@JoinColumn(name = "role_id", referencedColumnName = "id", insertable = false, updatable = false, nullable = false)
 	private Role role;
 
 	@Column(name = "created_at", nullable = false)

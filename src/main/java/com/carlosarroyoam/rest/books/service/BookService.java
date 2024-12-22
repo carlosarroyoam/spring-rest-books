@@ -37,7 +37,7 @@ public class BookService {
 		this.authorMapper = authorMapper;
 	}
 
-	public List<BookResponse> findAll(int page, int size) {
+	public List<BookResponse> findAll(Integer page, Integer size) {
 		Pageable pageable = PageRequest.of(page, size);
 		Page<Book> books = bookRepository.findAll(pageable);
 		return bookMapper.toDtos(books.getContent());
@@ -76,7 +76,6 @@ public class BookService {
 		});
 
 		bookById.setTitle(updateBookRequest.getTitle());
-		bookById.setCoverUrl(updateBookRequest.getCoverUrl());
 		bookById.setPrice(updateBookRequest.getPrice());
 		bookById.setPublishedAt(updateBookRequest.getPublishedAt());
 		bookById.setIsAvailableOnline(updateBookRequest.getIsAvailableOnline());

@@ -40,8 +40,8 @@ public class UserController {
 
 	@GetMapping(produces = "application/json")
 	@Operation(summary = "Gets the list of users")
-	public ResponseEntity<List<UserResponse>> findAll(@RequestParam(required = false, defaultValue = "0") int page,
-			@RequestParam(required = false, defaultValue = "25") int size) {
+	public ResponseEntity<List<UserResponse>> findAll(@RequestParam(required = false, defaultValue = "0") Integer page,
+			@RequestParam(required = false, defaultValue = "25") Integer size) {
 		List<UserResponse> users = userService.findAll(page, size);
 		return ResponseEntity.ok(users);
 	}

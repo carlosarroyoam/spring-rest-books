@@ -53,7 +53,7 @@ public class UserService implements UserDetailsService {
 		return buildUserDetails(userByUsername);
 	}
 
-	public List<UserResponse> findAll(int page, int size) {
+	public List<UserResponse> findAll(Integer page, Integer size) {
 		Pageable pageable = PageRequest.of(page, size);
 		Page<User> users = userRepository.findAll(pageable);
 		return userMapper.toDtos(users.getContent());
