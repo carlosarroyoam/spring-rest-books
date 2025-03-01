@@ -2,9 +2,15 @@ package com.carlosarroyoam.rest.books.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class ChangePasswordRequest {
   @NotBlank(message = "Current password should not be blank")
   private String currentPassword;
