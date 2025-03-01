@@ -9,6 +9,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -16,6 +18,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "users")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class User {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,15 +55,4 @@ public class User {
 
   @Column(name = "updated_at", nullable = false)
   private LocalDateTime updatedAt;
-
-  public User(String name, String email, String username, String password, Integer roleId,
-      LocalDateTime createdAt, LocalDateTime updatedAt) {
-    this.name = name;
-    this.email = email;
-    this.username = username;
-    this.password = password;
-    this.roleId = roleId;
-    this.createdAt = createdAt;
-    this.updatedAt = updatedAt;
-  }
 }

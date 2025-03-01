@@ -40,42 +40,85 @@ public class BookServiceApplication implements CommandLineRunner {
 
   @Override
   public void run(String... args) throws Exception {
-    Author author1 = new Author("Yuval Noah Harari", LocalDateTime.now(), LocalDateTime.now());
-    Author author2 = new Author("Itzik Yahav", LocalDateTime.now(), LocalDateTime.now());
+    Author author1 = Author.builder()
+        .name("Yuval Noah Harari")
+        .createdAt(LocalDateTime.now())
+        .updatedAt(LocalDateTime.now())
+        .build();
+
+    Author author2 = Author.builder()
+        .name("Itzik Yahav")
+        .createdAt(LocalDateTime.now())
+        .updatedAt(LocalDateTime.now())
+        .build();
 
     authorRepository.save(author1);
     authorRepository.save(author2);
 
-    Book book1 = new Book("978-1-3035-0529-4", "Homo Deus: A Brief History of Tomorrow",
-        "https://images.isbndb.com/covers/39/36/9781784703936.jpg", BigDecimal.valueOf(22.99d),
-        false, LocalDate.of(2017, 1, 1), LocalDateTime.now(), LocalDateTime.now());
+    Book book1 = Book.builder()
+        .isbn("978-1-3035-0529-4")
+        .title("Homo Deus: A Brief History of Tomorrow")
+        .coverUrl("https://images.isbndb.com/covers/39/36/9781784703936.jpg")
+        .price(new BigDecimal("22.99"))
+        .isAvailableOnline(false)
+        .publishedAt(LocalDate.parse("2017-01-01"))
+        .createdAt(LocalDateTime.now())
+        .updatedAt(LocalDateTime.now())
+        .build();
     book1.addAuthor(author1);
     book1.addAuthor(author2);
 
-    Book book2 = new Book("978-9-7389-4434-3", "Sapiens: A Brief History of Humankind",
-        "https://images.isbndb.com/covers/60/97/9780062316097.jpg", BigDecimal.valueOf(20.79d),
-        true, LocalDate.of(2022, 12, 1), LocalDateTime.now(), LocalDateTime.now());
+    Book book2 = Book.builder()
+        .isbn("978-9-7389-4434-3")
+        .title("Sapiens: A Brief History of Humankind")
+        .coverUrl("https://images.isbndb.com/covers/60/97/9780062316097.jpg")
+        .price(new BigDecimal("20.79"))
+        .isAvailableOnline(false)
+        .publishedAt(LocalDate.parse("2022-12-01"))
+        .createdAt(LocalDateTime.now())
+        .updatedAt(LocalDateTime.now())
+        .build();
     book2.addAuthor(author1);
 
     bookRepository.save(book1);
     bookRepository.save(book2);
 
-    Role adminRole = new Role("App//Admin", "Role for admins users");
-    Role customerRole = new Role("App//Customer", "Role for customer users");
+    Role adminRole = Role.builder()
+        .title("App//Admin")
+        .description("Role for admins users")
+        .build();
+
+    Role customerRole = Role.builder()
+        .title("App//Customer")
+        .description("Role for customer users")
+        .build();
 
     roleRepository.save(adminRole);
     roleRepository.save(customerRole);
 
-    String encodedPassword = passwordEncoder.encode("secret");
-    User user1 = new User("Carlos Alberto Arroyo Martínez", "carroyom@mail.com", "carroyom",
-        encodedPassword, adminRole.getId(), LocalDateTime.now(), LocalDateTime.now());
-    user1.setAge(Byte.valueOf("28"));
-    user1.setIsActive(Boolean.TRUE);
+    User user1 = User.builder()
+        .name("Carlos Alberto Arroyo Martínez")
+        .age(Byte.valueOf("28"))
+        .email("carroyom@mail.com")
+        .username("carroyom")
+        .password(passwordEncoder.encode("secret"))
+        .roleId(adminRole.getId())
+        .isActive(Boolean.TRUE)
+        .createdAt(LocalDateTime.now())
+        .updatedAt(LocalDateTime.now())
+        .build();
 
-    User user2 = new User("Cathy Stefania Guido Rojas", "cguidor@mail.com", "cguidor",
-        encodedPassword, customerRole.getId(), LocalDateTime.now(), LocalDateTime.now());
-    user2.setAge(Byte.valueOf("28"));
-    user2.setIsActive(Boolean.TRUE);
+    User user2 = User.builder()
+        .name("Cathy Stefania Guido Rojas")
+        .age(Byte.valueOf("28"))
+        .email("cguidor@mail.com")
+        .username("cguidor")
+        .password(passwordEncoder.encode("secret"))
+        .roleId(customerRole.getId())
+        .isActive(Boolean.TRUE)
+        .createdAt(LocalDateTime.now())
+        .updatedAt(LocalDateTime.now())
+        .build();
 
     userRepository.save(user1);
     userRepository.save(user2);

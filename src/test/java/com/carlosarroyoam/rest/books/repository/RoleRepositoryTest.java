@@ -14,7 +14,10 @@ class RoleRepositoryTest {
 
   @Test
   void test() {
-    Role adminRole = new Role("App//Admin", "Role for admins users");
+    Role adminRole = Role.builder()
+        .title("App//Admin")
+        .description("Role for admins users")
+        .build();
 
     Role savedRole = roleRepository.save(adminRole);
 

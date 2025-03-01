@@ -35,8 +35,8 @@ public class UserService implements UserDetailsService {
   private final UserMapper userMapper;
   private final PasswordEncoder passwordEncoder;
 
-  public UserService(UserRepository userRepository, UserMapper userMapper,
-      PasswordEncoder passwordEncoder) {
+  public UserService(final UserRepository userRepository, final UserMapper userMapper,
+      final PasswordEncoder passwordEncoder) {
     this.userRepository = userRepository;
     this.userMapper = userMapper;
     this.passwordEncoder = passwordEncoder;

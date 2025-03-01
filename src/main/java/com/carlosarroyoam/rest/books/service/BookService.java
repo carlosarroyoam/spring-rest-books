@@ -28,8 +28,8 @@ public class BookService {
   private final BookMapper bookMapper;
   private final AuthorMapper authorMapper;
 
-  public BookService(BookRepository bookRepository, BookMapper bookMapper,
-      AuthorMapper authorMapper) {
+  public BookService(final BookRepository bookRepository, final BookMapper bookMapper,
+      final AuthorMapper authorMapper) {
     this.bookRepository = bookRepository;
     this.bookMapper = bookMapper;
     this.authorMapper = authorMapper;

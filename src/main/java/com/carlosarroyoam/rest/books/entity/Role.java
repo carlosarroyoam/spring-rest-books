@@ -9,6 +9,8 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -16,6 +18,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "roles")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Role {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,11 +31,7 @@ public class Role {
   @Column(name = "description", length = 128, nullable = false)
   private String description;
 
+  @Builder.Default
   @OneToMany(mappedBy = "role")
   private List<User> users = new ArrayList<>();
-
-  public Role(String title, String description) {
-    this.title = title;
-    this.description = description;
-  }
 }

@@ -10,6 +10,8 @@ import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -17,6 +19,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "authors")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Author {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,6 +29,7 @@ public class Author {
   @Column(name = "name", length = 128, nullable = false)
   private String name;
 
+  @Builder.Default
   @ManyToMany(mappedBy = "authors")
   private List<Book> books = new ArrayList<>();
 
@@ -33,10 +38,4 @@ public class Author {
 
   @Column(name = "updated_at", nullable = false)
   private LocalDateTime updatedAt;
-
-  public Author(String name, LocalDateTime createdAt, LocalDateTime updatedAt) {
-    this.name = name;
-    this.createdAt = createdAt;
-    this.updatedAt = updatedAt;
-  }
 }

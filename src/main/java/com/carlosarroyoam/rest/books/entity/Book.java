@@ -14,6 +14,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -21,6 +23,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "books")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Book {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,6 +45,7 @@ public class Book {
   @Column(name = "is_available_online", nullable = false)
   private Boolean isAvailableOnline;
 
+  @Builder.Default
   @ManyToMany
   @JoinTable(name = "book_authors", joinColumns = @JoinColumn(name = "book_id"), inverseJoinColumns = @JoinColumn(name = "author_id"))
   private List<Author> authors = new ArrayList<>();
@@ -53,19 +58,6 @@ public class Book {
 
   @Column(name = "updated_at", nullable = false)
   private LocalDateTime updatedAt;
-
-  public Book(String isbn, String title, String coverUrl, BigDecimal price,
-      boolean isAvailableOnline, LocalDate publishedAt, LocalDateTime createdAt,
-      LocalDateTime updatedAt) {
-    this.isbn = isbn;
-    this.title = title;
-    this.coverUrl = coverUrl;
-    this.price = price;
-    this.isAvailableOnline = isAvailableOnline;
-    this.publishedAt = publishedAt;
-    this.createdAt = createdAt;
-    this.updatedAt = updatedAt;
-  }
 
   public void addAuthor(Author author) {
     this.authors.add(author);

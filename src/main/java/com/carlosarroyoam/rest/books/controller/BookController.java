@@ -31,7 +31,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class BookController {
   private final BookService bookService;
 
-  public BookController(BookService bookService) {
+  public BookController(final BookService bookService) {
     this.bookService = bookService;
   }
 

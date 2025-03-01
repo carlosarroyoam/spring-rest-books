@@ -24,12 +24,13 @@ class ControllerAdvisor {
       ResponseStatusException ex, WebRequest request) {
     HttpStatus statusCode = HttpStatus.valueOf(ex.getStatusCode().value());
 
-    AppExceptionResponse appExceptionResponse = new AppExceptionResponse();
-    appExceptionResponse.setMessage(ex.getReason());
-    appExceptionResponse.setError(statusCode.getReasonPhrase());
-    appExceptionResponse.setStatus(statusCode.value());
-    appExceptionResponse.setPath(request.getDescription(false).replace("uri=", ""));
-    appExceptionResponse.setTimestamp(ZonedDateTime.now(ZoneId.of("UTC")));
+    AppExceptionResponse appExceptionResponse = AppExceptionResponse.builder()
+        .message(ex.getReason())
+        .error(statusCode.getReasonPhrase())
+        .status(statusCode.value())
+        .path(request.getDescription(false).replace("uri=", ""))
+        .timestamp(ZonedDateTime.now(ZoneId.of("UTC")))
+        .build();
 
     return new ResponseEntity<>(appExceptionResponse, ex.getStatusCode());
   }
@@ -39,13 +40,13 @@ class ControllerAdvisor {
       NoHandlerFoundException ex, WebRequest request) {
     HttpStatus statusCode = HttpStatus.NOT_FOUND;
 
-    AppExceptionResponse appExceptionResponse = new AppExceptionResponse();
-    appExceptionResponse
-        .setMessage("No endpoint found for: " + request.getDescription(false).replace("uri=", ""));
-    appExceptionResponse.setError(statusCode.getReasonPhrase());
-    appExceptionResponse.setStatus(statusCode.value());
-    appExceptionResponse.setPath(request.getDescription(false).replace("uri=", ""));
-    appExceptionResponse.setTimestamp(ZonedDateTime.now(ZoneId.of("UTC")));
+    AppExceptionResponse appExceptionResponse = AppExceptionResponse.builder()
+        .message("No endpoint found for: " + request.getDescription(false).replace("uri=", ""))
+        .error(statusCode.getReasonPhrase())
+        .status(statusCode.value())
+        .path(request.getDescription(false).replace("uri=", ""))
+        .timestamp(ZonedDateTime.now(ZoneId.of("UTC")))
+        .build();
 
     return new ResponseEntity<>(appExceptionResponse, statusCode);
   }
@@ -55,13 +56,13 @@ class ControllerAdvisor {
       NoResourceFoundException ex, WebRequest request) {
     HttpStatus statusCode = HttpStatus.NOT_FOUND;
 
-    AppExceptionResponse appExceptionResponse = new AppExceptionResponse();
-    appExceptionResponse
-        .setMessage("No static resource: " + request.getDescription(false).replace("uri=", ""));
-    appExceptionResponse.setError(statusCode.getReasonPhrase());
-    appExceptionResponse.setStatus(statusCode.value());
-    appExceptionResponse.setPath(request.getDescription(false).replace("uri=", ""));
-    appExceptionResponse.setTimestamp(ZonedDateTime.now(ZoneId.of("UTC")));
+    AppExceptionResponse appExceptionResponse = AppExceptionResponse.builder()
+        .message("No static resource: " + request.getDescription(false).replace("uri=", ""))
+        .error(statusCode.getReasonPhrase())
+        .status(statusCode.value())
+        .path(request.getDescription(false).replace("uri=", ""))
+        .timestamp(ZonedDateTime.now(ZoneId.of("UTC")))
+        .build();
 
     return new ResponseEntity<>(appExceptionResponse, statusCode);
   }
@@ -71,12 +72,13 @@ class ControllerAdvisor {
       HttpRequestMethodNotSupportedException ex, WebRequest request) {
     HttpStatus statusCode = HttpStatus.BAD_REQUEST;
 
-    AppExceptionResponse appExceptionResponse = new AppExceptionResponse();
-    appExceptionResponse.setMessage(ex.getMessage());
-    appExceptionResponse.setError(statusCode.getReasonPhrase());
-    appExceptionResponse.setStatus(statusCode.value());
-    appExceptionResponse.setPath(request.getDescription(false).replace("uri=", ""));
-    appExceptionResponse.setTimestamp(ZonedDateTime.now(ZoneId.of("UTC")));
+    AppExceptionResponse appExceptionResponse = AppExceptionResponse.builder()
+        .message(ex.getMessage())
+        .error(statusCode.getReasonPhrase())
+        .status(statusCode.value())
+        .path(request.getDescription(false).replace("uri=", ""))
+        .timestamp(ZonedDateTime.now(ZoneId.of("UTC")))
+        .build();
 
     return new ResponseEntity<>(appExceptionResponse, statusCode);
   }
@@ -106,12 +108,13 @@ class ControllerAdvisor {
       AuthenticationException ex, WebRequest request) {
     HttpStatus statusCode = HttpStatus.UNAUTHORIZED;
 
-    AppExceptionResponse appExceptionResponse = new AppExceptionResponse();
-    appExceptionResponse.setMessage(ex.getMessage());
-    appExceptionResponse.setError(statusCode.getReasonPhrase());
-    appExceptionResponse.setStatus(statusCode.value());
-    appExceptionResponse.setPath(request.getDescription(false).replace("uri=", ""));
-    appExceptionResponse.setTimestamp(ZonedDateTime.now(ZoneId.of("UTC")));
+    AppExceptionResponse appExceptionResponse = AppExceptionResponse.builder()
+        .message(ex.getMessage())
+        .error(statusCode.getReasonPhrase())
+        .status(statusCode.value())
+        .path(request.getDescription(false).replace("uri=", ""))
+        .timestamp(ZonedDateTime.now(ZoneId.of("UTC")))
+        .build();
 
     return new ResponseEntity<>(appExceptionResponse, statusCode);
   }
@@ -120,12 +123,13 @@ class ControllerAdvisor {
   public ResponseEntity<AppExceptionResponse> handleAllException(Exception ex, WebRequest request) {
     HttpStatus statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
 
-    AppExceptionResponse appExceptionResponse = new AppExceptionResponse();
-    appExceptionResponse.setMessage("Whoops! Something went wrong");
-    appExceptionResponse.setError(statusCode.getReasonPhrase());
-    appExceptionResponse.setStatus(statusCode.value());
-    appExceptionResponse.setPath(request.getDescription(false).replace("uri=", ""));
-    appExceptionResponse.setTimestamp(ZonedDateTime.now(ZoneId.of("UTC")));
+    AppExceptionResponse appExceptionResponse = AppExceptionResponse.builder()
+        .message("Whoops! Something went wrong")
+        .error(statusCode.getReasonPhrase())
+        .status(statusCode.value())
+        .path(request.getDescription(false).replace("uri=", ""))
+        .timestamp(ZonedDateTime.now(ZoneId.of("UTC")))
+        .build();
 
     ex.printStackTrace();
 
