@@ -8,26 +8,26 @@ import lombok.Data;
 
 @Data
 public class CreateUserRequest {
-	@NotBlank
-	@Size(min = 3, max = 128)
-	private String name;
+  @NotBlank
+  @Size(min = 3, max = 128)
+  private String name;
 
-	@NotNull
-	private Byte age;
+  @NotNull
+  private Byte age;
 
-	@NotBlank
-	@Size(min = 3, max = 128)
-	@Email
-	private String email;
+  @NotBlank
+  @Size(min = 3, max = 128)
+  @Email
+  private String email;
 
-	@NotBlank
-	@Size(min = 3, max = 128)
-	private String username;
+  @NotBlank
+  @Size(min = 3, max = 128)
+  private String username;
 
-	@NotBlank
-	@Size(min = 3, max = 128)
-	private String password;
+  @NotBlank
+  @Size(min = 3, max = 128)
+  private String password;
 
-	@NotNull
-	private Integer roleId;
+  @NotNull
+  private Integer roleId;
 }

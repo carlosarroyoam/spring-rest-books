@@ -1,5 +1,7 @@
 package com.carlosarroyoam.rest.books.config;
 
+import com.carlosarroyoam.rest.books.config.security.JwtAuthConverter;
+import com.carlosarroyoam.rest.books.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,73 +25,75 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import com.carlosarroyoam.rest.books.config.security.JwtAuthConverter;
-import com.carlosarroyoam.rest.books.utils.StringUtils;
-
 @Configuration
 class WebSecurityConfig {
-	@Value("${app.cors.allowed-origins}")
-	private String allowedOrigins;
+  @Value("${app.cors.allowed-origins}")
+  private String allowedOrigins;
 
-	@Value("${app.cors.allowed-methods}")
-	private String allowedMethods;
+  @Value("${app.cors.allowed-methods}")
+  private String allowedMethods;
 
-	@Value("${app.cors.allowed-headers}")
-	private String allowedHeaders;
+  @Value("${app.cors.allowed-headers}")
+  private String allowedHeaders;
 
-	@Bean
-	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		http.csrf(CsrfConfigurer::disable);
-		http.cors(Customizer.withDefaults());
-		http.headers(headers -> headers.frameOptions(FrameOptionsConfig::sameOrigin));
-		http.sessionManagement(sessions -> sessions.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-		http.oauth2ResourceServer(oauth2 -> {
-			oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(customJwtConverter()));
-		});
+  @Bean
+  SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    http.csrf(CsrfConfigurer::disable);
+    http.cors(Customizer.withDefaults());
+    http.headers(headers -> headers.frameOptions(FrameOptionsConfig::sameOrigin));
+    http.sessionManagement(
+        sessions -> sessions.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+    http.oauth2ResourceServer(oauth2 -> {
+      oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(customJwtConverter()));
+    });
 
-		// @formatter:off
-		http.authorizeHttpRequests(requests -> requests
-				.requestMatchers(AntPathRequestMatcher.antMatcher("/")).permitAll()
-				.requestMatchers(AntPathRequestMatcher.antMatcher(("/auth/**"))).permitAll()
-				.requestMatchers(AntPathRequestMatcher.antMatcher("/swagger-ui/**")).permitAll()
-				.requestMatchers(AntPathRequestMatcher.antMatcher("/api-docs/**")).permitAll()
-				.requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()
-				.anyRequest().authenticated());
-		// @formatter:on
+    http.authorizeHttpRequests(
+        requests -> requests.requestMatchers(AntPathRequestMatcher.antMatcher("/"))
+            .permitAll()
+            .requestMatchers(AntPathRequestMatcher.antMatcher(("/auth/**")))
+            .permitAll()
+            .requestMatchers(AntPathRequestMatcher.antMatcher("/swagger-ui/**"))
+            .permitAll()
+            .requestMatchers(AntPathRequestMatcher.antMatcher("/api-docs/**"))
+            .permitAll()
+            .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**"))
+            .permitAll()
+            .anyRequest()
+            .authenticated());
 
-		return http.build();
-	}
+    return http.build();
+  }
 
-	@Bean
-	AuthenticationManager authenticationManager(UserDetailsService userDetailsService,
-			PasswordEncoder passwordEncoder) {
-		var authenticationProvider = new DaoAuthenticationProvider();
-		authenticationProvider.setUserDetailsService(userDetailsService);
-		authenticationProvider.setPasswordEncoder(passwordEncoder);
+  @Bean
+  AuthenticationManager authenticationManager(UserDetailsService userDetailsService,
+      PasswordEncoder passwordEncoder) {
+    var authenticationProvider = new DaoAuthenticationProvider();
+    authenticationProvider.setUserDetailsService(userDetailsService);
+    authenticationProvider.setPasswordEncoder(passwordEncoder);
 
-		return new ProviderManager(authenticationProvider);
-	}
+    return new ProviderManager(authenticationProvider);
+  }
 
-	@Bean
-	CorsConfigurationSource corsConfigurationSource() {
-		CorsConfiguration configuration = new CorsConfiguration();
-		configuration.setAllowedOrigins(StringUtils.comaSeparatedToList(allowedOrigins));
-		configuration.setAllowedMethods(StringUtils.comaSeparatedToList(allowedMethods));
-		configuration.setAllowedHeaders(StringUtils.comaSeparatedToList(allowedHeaders));
+  @Bean
+  CorsConfigurationSource corsConfigurationSource() {
+    CorsConfiguration configuration = new CorsConfiguration();
+    configuration.setAllowedOrigins(StringUtils.comaSeparatedToList(allowedOrigins));
+    configuration.setAllowedMethods(StringUtils.comaSeparatedToList(allowedMethods));
+    configuration.setAllowedHeaders(StringUtils.comaSeparatedToList(allowedHeaders));
 
-		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-		source.registerCorsConfiguration("/**", configuration);
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", configuration);
 
-		return source;
-	}
+    return source;
+  }
 
-	@Bean
-	Converter<Jwt, AbstractAuthenticationToken> customJwtConverter() {
-		return new JwtAuthConverter();
-	}
+  @Bean
+  Converter<Jwt, AbstractAuthenticationToken> customJwtConverter() {
+    return new JwtAuthConverter();
+  }
 
-	@Bean
-	PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
+  @Bean
+  PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+  }
 }
