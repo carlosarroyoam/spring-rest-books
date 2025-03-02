@@ -37,9 +37,6 @@ public class User {
   @Column(name = "username", length = 128, nullable = false, unique = true)
   private String username;
 
-  @Column(name = "password", length = 128, nullable = false)
-  private String password;
-
   @Column(name = "is_active", nullable = false)
   private Boolean isActive;
 

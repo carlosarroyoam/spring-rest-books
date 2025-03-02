@@ -1,7 +1,6 @@
 package com.carlosarroyoam.rest.books.controller;
 
 import com.carlosarroyoam.rest.books.config.OpenApiConfig;
-import com.carlosarroyoam.rest.books.dto.ChangePasswordRequestDto;
 import com.carlosarroyoam.rest.books.dto.CreateUserRequestDto;
 import com.carlosarroyoam.rest.books.dto.UpdateUserRequestDto;
 import com.carlosarroyoam.rest.books.dto.UserDto;
@@ -73,14 +72,6 @@ public class UserController {
   @Operation(summary = "Deletes a user by its id")
   public ResponseEntity<Void> deleteById(@PathVariable Long userId) {
     userService.deleteById(userId);
-    return ResponseEntity.noContent().build();
-  }
-
-  @PostMapping(path = "/{userId}/change-password", consumes = "application/json")
-  @Operation(summary = "Changes a user password")
-  public ResponseEntity<UserDto> changePassword(@PathVariable Long userId,
-      @Valid @RequestBody ChangePasswordRequestDto requestDto) {
-    userService.changePassword(userId, requestDto);
     return ResponseEntity.noContent().build();
   }
 }

@@ -1,7 +1,6 @@
 package com.carlosarroyoam.rest.books.service;
 
 import com.carlosarroyoam.rest.books.constant.AppMessages;
-import com.carlosarroyoam.rest.books.dto.ChangePasswordRequestDto;
 import com.carlosarroyoam.rest.books.dto.CreateUserRequestDto;
 import com.carlosarroyoam.rest.books.dto.UpdateUserRequestDto;
 import com.carlosarroyoam.rest.books.dto.UserDto;
@@ -24,7 +23,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -32,11 +30,9 @@ import org.springframework.web.server.ResponseStatusException;
 public class UserService implements UserDetailsService {
   private static final Logger log = LoggerFactory.getLogger(UserService.class);
   private final UserRepository userRepository;
-  private final PasswordEncoder passwordEncoder;
 
-  public UserService(final UserRepository userRepository, final PasswordEncoder passwordEncoder) {
+  public UserService(final UserRepository userRepository) {
     this.userRepository = userRepository;
-    this.passwordEncoder = passwordEncoder;
   }
 
   @Override
@@ -80,7 +76,6 @@ public class UserService implements UserDetailsService {
 
     LocalDateTime now = LocalDateTime.now();
     User user = UserDtoMapper.INSTANCE.toEntity(requestDto);
-    user.setPassword(passwordEncoder.encode(requestDto.getPassword()));
     user.setIsActive(Boolean.FALSE);
     user.setCreatedAt(now);
     user.setUpdatedAt(now);
@@ -122,35 +117,8 @@ public class UserService implements UserDetailsService {
     userRepository.save(userById);
   }
 
-  @Transactional
-  public void changePassword(Long userId, ChangePasswordRequestDto requestDto) {
-    User userById = userRepository.findById(userId).orElseThrow(() -> {
-      log.warn(AppMessages.USER_NOT_FOUND_EXCEPTION);
-      return new ResponseStatusException(HttpStatus.NOT_FOUND,
-          AppMessages.USER_NOT_FOUND_EXCEPTION);
-    });
-
-    if (!passwordEncoder.matches(requestDto.getCurrentPassword(), userById.getPassword())) {
-      log.warn(AppMessages.UNAUTHORIZED_CREDENTIALS_EXCEPTION);
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-          AppMessages.UNAUTHORIZED_CREDENTIALS_EXCEPTION);
-    }
-
-    if (!requestDto.getNewPassword().equals(requestDto.getConfirmPassword())) {
-      log.warn(AppMessages.PASSWORDS_NOT_MATCH_EXCEPTION);
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-          AppMessages.PASSWORDS_NOT_MATCH_EXCEPTION);
-    }
-
-    userById.setPassword(passwordEncoder.encode(requestDto.getNewPassword()));
-    userById.setUpdatedAt(LocalDateTime.now());
-
-    userRepository.save(userById);
-  }
-
   private org.springframework.security.core.userdetails.User buildUserDetails(User user) {
     String username = user.getUsername();
-    String password = user.getPassword();
     boolean enabled = user.getIsActive();
     boolean accountNonExpired = user.getIsActive();
     boolean credentialsNonExpired = user.getIsActive();
@@ -158,7 +126,7 @@ public class UserService implements UserDetailsService {
     Collection<? extends GrantedAuthority> authorities = Arrays
         .asList(new SimpleGrantedAuthority(user.getRole().getTitle()));
 
-    return new org.springframework.security.core.userdetails.User(username, password, enabled,
+    return new org.springframework.security.core.userdetails.User(username, null, enabled,
         accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
   }
 }

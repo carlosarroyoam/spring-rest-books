@@ -30,10 +30,6 @@ public class CreateUserRequestDto {
   @Size(min = 3, max = 128)
   private String username;
 
-  @NotBlank
-  @Size(min = 3, max = 128)
-  private String password;
-
   @NotNull
   private Integer roleId;
 }

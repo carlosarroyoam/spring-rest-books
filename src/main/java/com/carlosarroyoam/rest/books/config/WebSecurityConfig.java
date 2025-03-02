@@ -16,8 +16,6 @@ import org.springframework.security.config.annotation.web.configurers.CsrfConfig
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.FrameOptionsConfig;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -65,11 +63,9 @@ class WebSecurityConfig {
   }
 
   @Bean
-  AuthenticationManager authenticationManager(UserDetailsService userDetailsService,
-      PasswordEncoder passwordEncoder) {
+  AuthenticationManager authenticationManager(UserDetailsService userDetailsService) {
     var authenticationProvider = new DaoAuthenticationProvider();
     authenticationProvider.setUserDetailsService(userDetailsService);
-    authenticationProvider.setPasswordEncoder(passwordEncoder);
 
     return new ProviderManager(authenticationProvider);
   }
@@ -90,10 +86,5 @@ class WebSecurityConfig {
   @Bean
   Converter<Jwt, AbstractAuthenticationToken> customJwtConverter() {
     return new JwtAuthConverter();
-  }
-
-  @Bean
-  PasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder();
   }
 }

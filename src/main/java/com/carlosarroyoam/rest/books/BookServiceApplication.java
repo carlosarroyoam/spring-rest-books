@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
 public class BookServiceApplication implements CommandLineRunner {
@@ -22,16 +21,13 @@ public class BookServiceApplication implements CommandLineRunner {
   private final BookRepository bookRepository;
   private final RoleRepository roleRepository;
   private final UserRepository userRepository;
-  private final PasswordEncoder passwordEncoder;
 
   public BookServiceApplication(AuthorRepository authorRepository, BookRepository bookRepository,
-      RoleRepository roleRepository, UserRepository userRepository,
-      PasswordEncoder passwordEncoder) {
+      RoleRepository roleRepository, UserRepository userRepository) {
     this.authorRepository = authorRepository;
     this.bookRepository = bookRepository;
     this.roleRepository = roleRepository;
     this.userRepository = userRepository;
-    this.passwordEncoder = passwordEncoder;
   }
 
   public static void main(String[] args) {
@@ -101,7 +97,6 @@ public class BookServiceApplication implements CommandLineRunner {
         .age(Byte.valueOf("28"))
         .email("carroyom@mail.com")
         .username("carroyom")
-        .password(passwordEncoder.encode("secret"))
         .roleId(adminRole.getId())
         .isActive(Boolean.TRUE)
         .createdAt(LocalDateTime.now())
@@ -113,7 +108,6 @@ public class BookServiceApplication implements CommandLineRunner {
         .age(Byte.valueOf("28"))
         .email("cguidor@mail.com")
         .username("cguidor")
-        .password(passwordEncoder.encode("secret"))
         .roleId(customerRole.getId())
         .isActive(Boolean.TRUE)
         .createdAt(LocalDateTime.now())
