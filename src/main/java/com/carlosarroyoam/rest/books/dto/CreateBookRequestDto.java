@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CreateBookRequest {
+public class CreateBookRequestDto {
   @NotBlank
   @Size(min = 3, max = 128)
   private String title;

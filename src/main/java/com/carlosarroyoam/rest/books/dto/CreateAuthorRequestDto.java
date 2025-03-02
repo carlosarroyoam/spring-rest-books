@@ -1,5 +1,7 @@
 package com.carlosarroyoam.rest.books.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,8 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class RoleResponse {
-  private Integer id;
-  private String title;
-  private String description;
+public class CreateAuthorRequestDto {
+  @NotBlank
+  @Size(min = 3, max = 128)
+  private String name;
 }

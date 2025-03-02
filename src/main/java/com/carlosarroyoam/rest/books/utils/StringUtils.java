@@ -1,5 +1,6 @@
 package com.carlosarroyoam.rest.books.utils;
 
+import com.carlosarroyoam.rest.books.constant.AppMessages;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -7,7 +8,7 @@ import java.util.Optional;
 
 public class StringUtils {
   private StringUtils() {
-    throw new IllegalAccessError("Illegal access to utility class");
+    throw new IllegalAccessError(AppMessages.ILLEGAL_ACCESS_EXCEPTION);
   }
 
   public static List<String> commaSeparatedToList(String input) {

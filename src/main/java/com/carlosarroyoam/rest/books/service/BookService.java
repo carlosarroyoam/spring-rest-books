@@ -1,10 +1,10 @@
 package com.carlosarroyoam.rest.books.service;
 
 import com.carlosarroyoam.rest.books.constant.AppMessages;
-import com.carlosarroyoam.rest.books.dto.AuthorResponse;
-import com.carlosarroyoam.rest.books.dto.BookResponse;
-import com.carlosarroyoam.rest.books.dto.CreateBookRequest;
-import com.carlosarroyoam.rest.books.dto.UpdateBookRequest;
+import com.carlosarroyoam.rest.books.dto.AuthorResponseDto;
+import com.carlosarroyoam.rest.books.dto.BookDto;
+import com.carlosarroyoam.rest.books.dto.CreateBookRequestDto;
+import com.carlosarroyoam.rest.books.dto.UpdateBookRequestDto;
 import com.carlosarroyoam.rest.books.entity.Book;
 import com.carlosarroyoam.rest.books.mapper.AuthorMapper;
 import com.carlosarroyoam.rest.books.mapper.BookMapper;
@@ -35,13 +35,13 @@ public class BookService {
     this.authorMapper = authorMapper;
   }
 
-  public List<BookResponse> findAll(Integer page, Integer size) {
+  public List<BookDto> findAll(Integer page, Integer size) {
     Pageable pageable = PageRequest.of(page, size);
     Page<Book> books = bookRepository.findAll(pageable);
     return bookMapper.toDtos(books.getContent());
   }
 
-  public BookResponse findById(Long bookId) {
+  public BookDto findById(Long bookId) {
     Book bookById = bookRepository.findById(bookId).orElseThrow(() -> {
       log.warn(AppMessages.USER_NOT_FOUND_EXCEPTION);
       return new ResponseStatusException(HttpStatus.NOT_FOUND,
@@ -52,15 +52,15 @@ public class BookService {
   }
 
   @Transactional
-  public BookResponse create(CreateBookRequest createBookRequest) {
-    if (bookRepository.existsByIsbn(createBookRequest.getIsbn())) {
+  public BookDto create(CreateBookRequestDto requestDto) {
+    if (bookRepository.existsByIsbn(requestDto.getIsbn())) {
       log.warn(AppMessages.ISBN_ALREADY_EXISTS_EXCEPTION);
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
           AppMessages.ISBN_ALREADY_EXISTS_EXCEPTION);
     }
 
     LocalDateTime now = LocalDateTime.now();
-    Book book = bookMapper.createRequestToEntity(createBookRequest);
+    Book book = bookMapper.createRequestToEntity(requestDto);
     book.setCreatedAt(now);
     book.setUpdatedAt(now);
 
@@ -69,18 +69,18 @@ public class BookService {
   }
 
   @Transactional
-  public void update(Long bookId, UpdateBookRequest updateBookRequest) {
+  public void update(Long bookId, UpdateBookRequestDto requestDto) {
     Book bookById = bookRepository.findById(bookId).orElseThrow(() -> {
       log.warn(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
       return new ResponseStatusException(HttpStatus.NOT_FOUND,
           AppMessages.BOOK_NOT_FOUND_EXCEPTION);
     });
 
-    bookById.setTitle(updateBookRequest.getTitle());
-    bookById.setCoverUrl(updateBookRequest.getCoverUrl());
-    bookById.setPrice(updateBookRequest.getPrice());
-    bookById.setPublishedAt(updateBookRequest.getPublishedAt());
-    bookById.setIsAvailableOnline(updateBookRequest.getIsAvailableOnline());
+    bookById.setTitle(requestDto.getTitle());
+    bookById.setCoverUrl(requestDto.getCoverUrl());
+    bookById.setPrice(requestDto.getPrice());
+    bookById.setPublishedAt(requestDto.getPublishedAt());
+    bookById.setIsAvailableOnline(requestDto.getIsAvailableOnline());
     bookById.setUpdatedAt(LocalDateTime.now());
 
     bookRepository.save(bookById);
@@ -96,7 +96,7 @@ public class BookService {
     bookRepository.deleteById(bookId);
   }
 
-  public List<AuthorResponse> findAuthorsByBookId(Long bookId) {
+  public List<AuthorResponseDto> findAuthorsByBookId(Long bookId) {
     Book bookById = bookRepository.findById(bookId).orElseThrow(() -> {
       log.warn(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
       return new ResponseStatusException(HttpStatus.NOT_FOUND,

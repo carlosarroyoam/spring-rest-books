@@ -1,10 +1,10 @@
 package com.carlosarroyoam.rest.books.service;
 
 import com.carlosarroyoam.rest.books.constant.AppMessages;
-import com.carlosarroyoam.rest.books.dto.ChangePasswordRequest;
-import com.carlosarroyoam.rest.books.dto.CreateUserRequest;
-import com.carlosarroyoam.rest.books.dto.UpdateUserRequest;
-import com.carlosarroyoam.rest.books.dto.UserResponse;
+import com.carlosarroyoam.rest.books.dto.ChangePasswordRequestDto;
+import com.carlosarroyoam.rest.books.dto.CreateUserRequestDto;
+import com.carlosarroyoam.rest.books.dto.UpdateUserRequestDto;
+import com.carlosarroyoam.rest.books.dto.UserDto;
 import com.carlosarroyoam.rest.books.entity.User;
 import com.carlosarroyoam.rest.books.mapper.UserMapper;
 import com.carlosarroyoam.rest.books.repository.UserRepository;
@@ -51,13 +51,13 @@ public class UserService implements UserDetailsService {
     return buildUserDetails(userByUsername);
   }
 
-  public List<UserResponse> findAll(Integer page, Integer size) {
+  public List<UserDto> findAll(Integer page, Integer size) {
     Pageable pageable = PageRequest.of(page, size);
     Page<User> users = userRepository.findAll(pageable);
     return userMapper.toDtos(users.getContent());
   }
 
-  public UserResponse findById(Long userId) {
+  public UserDto findById(Long userId) {
     User userById = userRepository.findById(userId).orElseThrow(() -> {
       log.warn(AppMessages.USER_NOT_FOUND_EXCEPTION);
       return new ResponseStatusException(HttpStatus.NOT_FOUND,
@@ -68,22 +68,22 @@ public class UserService implements UserDetailsService {
   }
 
   @Transactional
-  public UserResponse create(CreateUserRequest createUserRequest) {
-    if (userRepository.existsByUsername(createUserRequest.getUsername())) {
+  public UserDto create(CreateUserRequestDto requestDto) {
+    if (userRepository.existsByUsername(requestDto.getUsername())) {
       log.warn(AppMessages.USERNAME_ALREADY_EXISTS_EXCEPTION);
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
           AppMessages.USERNAME_ALREADY_EXISTS_EXCEPTION);
     }
 
-    if (userRepository.existsByEmail(createUserRequest.getEmail())) {
+    if (userRepository.existsByEmail(requestDto.getEmail())) {
       log.warn(AppMessages.EMAIL_ALREADY_EXISTS_EXCEPTION);
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
           AppMessages.EMAIL_ALREADY_EXISTS_EXCEPTION);
     }
 
     LocalDateTime now = LocalDateTime.now();
-    User user = userMapper.toEntity(createUserRequest);
-    user.setPassword(passwordEncoder.encode(createUserRequest.getPassword()));
+    User user = userMapper.toEntity(requestDto);
+    user.setPassword(passwordEncoder.encode(requestDto.getPassword()));
     user.setIsActive(Boolean.FALSE);
     user.setCreatedAt(now);
     user.setUpdatedAt(now);
@@ -92,19 +92,19 @@ public class UserService implements UserDetailsService {
   }
 
   @Transactional
-  public void update(Long userId, UpdateUserRequest updateUserRequest) {
+  public void update(Long userId, UpdateUserRequestDto requestDto) {
     User userById = userRepository.findById(userId).orElseThrow(() -> {
       log.warn(AppMessages.USER_NOT_FOUND_EXCEPTION);
       return new ResponseStatusException(HttpStatus.NOT_FOUND,
           AppMessages.USER_NOT_FOUND_EXCEPTION);
     });
 
-    if (updateUserRequest.getName() != null) {
-      userById.setName(updateUserRequest.getName());
+    if (requestDto.getName() != null) {
+      userById.setName(requestDto.getName());
     }
 
-    if (updateUserRequest.getAge() != null) {
-      userById.setAge(updateUserRequest.getAge());
+    if (requestDto.getAge() != null) {
+      userById.setAge(requestDto.getAge());
     }
 
     userById.setUpdatedAt(LocalDateTime.now());
@@ -126,28 +126,28 @@ public class UserService implements UserDetailsService {
   }
 
   @Transactional
-  public void changePassword(Long userId, ChangePasswordRequest changePasswordRequest) {
+  public void changePassword(Long userId, ChangePasswordRequestDto requestDto) {
     User userById = userRepository.findById(userId).orElseThrow(() -> {
       log.warn(AppMessages.USER_NOT_FOUND_EXCEPTION);
       return new ResponseStatusException(HttpStatus.NOT_FOUND,
           AppMessages.USER_NOT_FOUND_EXCEPTION);
     });
 
-    if (!passwordEncoder.matches(changePasswordRequest.getCurrentPassword(),
+    if (!passwordEncoder.matches(requestDto.getCurrentPassword(),
         userById.getPassword())) {
       log.warn(AppMessages.UNAUTHORIZED_CREDENTIALS_EXCEPTION);
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
           AppMessages.UNAUTHORIZED_CREDENTIALS_EXCEPTION);
     }
 
-    if (!changePasswordRequest.getNewPassword()
-        .equals(changePasswordRequest.getConfirmPassword())) {
+    if (!requestDto.getNewPassword()
+        .equals(requestDto.getConfirmPassword())) {
       log.warn(AppMessages.PASSWORDS_NOT_MATCH_EXCEPTION);
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
           AppMessages.PASSWORDS_NOT_MATCH_EXCEPTION);
     }
 
-    userById.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
+    userById.setPassword(passwordEncoder.encode(requestDto.getNewPassword()));
     userById.setUpdatedAt(LocalDateTime.now());
 
     userRepository.save(userById);

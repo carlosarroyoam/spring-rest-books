@@ -1,10 +1,10 @@
 package com.carlosarroyoam.rest.books.service;
 
 import com.carlosarroyoam.rest.books.constant.AppMessages;
-import com.carlosarroyoam.rest.books.dto.AuthorResponse;
-import com.carlosarroyoam.rest.books.dto.BookResponse;
-import com.carlosarroyoam.rest.books.dto.CreateAuthorRequest;
-import com.carlosarroyoam.rest.books.dto.UpdateAuthorRequest;
+import com.carlosarroyoam.rest.books.dto.AuthorResponseDto;
+import com.carlosarroyoam.rest.books.dto.BookDto;
+import com.carlosarroyoam.rest.books.dto.CreateAuthorRequestDto;
+import com.carlosarroyoam.rest.books.dto.UpdateAuthorRequestDto;
 import com.carlosarroyoam.rest.books.entity.Author;
 import com.carlosarroyoam.rest.books.mapper.AuthorMapper;
 import com.carlosarroyoam.rest.books.mapper.BookMapper;
@@ -35,13 +35,13 @@ public class AuthorService {
     this.bookMapper = bookMapper;
   }
 
-  public List<AuthorResponse> findAll(Integer page, Integer size) {
+  public List<AuthorResponseDto> findAll(Integer page, Integer size) {
     Pageable pageable = PageRequest.of(page, size);
     Page<Author> authors = authorRepository.findAll(pageable);
     return authorMapper.toDtos(authors.getContent());
   }
 
-  public AuthorResponse findById(Long authorId) {
+  public AuthorResponseDto findById(Long authorId) {
     Author authorById = authorRepository.findById(authorId).orElseThrow(() -> {
       log.warn(AppMessages.AUTHOR_NOT_FOUND_EXCEPTION);
       return new ResponseStatusException(HttpStatus.NOT_FOUND,
@@ -52,9 +52,9 @@ public class AuthorService {
   }
 
   @Transactional
-  public AuthorResponse create(CreateAuthorRequest createAuthorRequest) {
+  public AuthorResponseDto create(CreateAuthorRequestDto requestDto) {
     LocalDateTime now = LocalDateTime.now();
-    Author author = authorMapper.toEntity(createAuthorRequest);
+    Author author = authorMapper.toEntity(requestDto);
     author.setCreatedAt(now);
     author.setUpdatedAt(now);
 
@@ -63,14 +63,14 @@ public class AuthorService {
   }
 
   @Transactional
-  public void update(Long authorId, UpdateAuthorRequest updateAuthorRequest) {
+  public void update(Long authorId, UpdateAuthorRequestDto requestDto) {
     Author authorById = authorRepository.findById(authorId).orElseThrow(() -> {
       log.warn(AppMessages.AUTHOR_NOT_FOUND_EXCEPTION);
       return new ResponseStatusException(HttpStatus.NOT_FOUND,
           AppMessages.AUTHOR_NOT_FOUND_EXCEPTION);
     });
 
-    authorById.setName(updateAuthorRequest.getName());
+    authorById.setName(requestDto.getName());
     authorById.setUpdatedAt(LocalDateTime.now());
 
     authorRepository.save(authorById);
@@ -87,7 +87,7 @@ public class AuthorService {
     authorRepository.deleteById(authorId);
   }
 
-  public List<BookResponse> findBooksByAuthorId(Long authorId) {
+  public List<BookDto> findBooksByAuthorId(Long authorId) {
     Author authorById = authorRepository.findById(authorId).orElseThrow(() -> {
       log.warn(AppMessages.AUTHOR_NOT_FOUND_EXCEPTION);
       return new ResponseStatusException(HttpStatus.NOT_FOUND,

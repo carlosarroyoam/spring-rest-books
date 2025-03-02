@@ -1,10 +1,10 @@
 package com.carlosarroyoam.rest.books.controller;
 
 import com.carlosarroyoam.rest.books.config.OpenApiConfig;
-import com.carlosarroyoam.rest.books.dto.AuthorResponse;
-import com.carlosarroyoam.rest.books.dto.BookResponse;
-import com.carlosarroyoam.rest.books.dto.CreateBookRequest;
-import com.carlosarroyoam.rest.books.dto.UpdateBookRequest;
+import com.carlosarroyoam.rest.books.dto.AuthorResponseDto;
+import com.carlosarroyoam.rest.books.dto.BookDto;
+import com.carlosarroyoam.rest.books.dto.CreateBookRequestDto;
+import com.carlosarroyoam.rest.books.dto.UpdateBookRequestDto;
 import com.carlosarroyoam.rest.books.service.BookService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -37,25 +37,25 @@ public class BookController {
 
   @GetMapping(produces = "application/json")
   @Operation(summary = "Gets the list of books")
-  public ResponseEntity<List<BookResponse>> findAll(
+  public ResponseEntity<List<BookDto>> findAll(
       @RequestParam(required = false, defaultValue = "0") Integer page,
       @RequestParam(required = false, defaultValue = "25") Integer size) {
-    List<BookResponse> books = bookService.findAll(page, size);
+    List<BookDto> books = bookService.findAll(page, size);
     return ResponseEntity.ok(books);
   }
 
   @GetMapping(value = "/{bookId}", produces = "application/json")
   @Operation(summary = "Gets a book by its id")
-  public ResponseEntity<BookResponse> findById(@PathVariable Long bookId) {
-    BookResponse bookById = bookService.findById(bookId);
+  public ResponseEntity<BookDto> findById(@PathVariable Long bookId) {
+    BookDto bookById = bookService.findById(bookId);
     return ResponseEntity.ok(bookById);
   }
 
   @PostMapping(consumes = "application/json")
   @Operation(summary = "Creates a new book")
-  public ResponseEntity<Void> create(@Valid @RequestBody CreateBookRequest createBookRequest,
+  public ResponseEntity<Void> create(@Valid @RequestBody CreateBookRequestDto requestDto,
       UriComponentsBuilder builder) {
-    BookResponse createdBook = bookService.create(createBookRequest);
+    BookDto createdBook = bookService.create(requestDto);
     UriComponents uriComponents = builder.path("/books/{bookId}")
         .buildAndExpand(createdBook.getId());
     return ResponseEntity.created(uriComponents.toUri()).build();
@@ -64,8 +64,8 @@ public class BookController {
   @PutMapping(value = "/{bookId}", consumes = "application/json")
   @Operation(summary = "Updates a book by its id")
   public ResponseEntity<Void> update(@PathVariable Long bookId,
-      @Valid @RequestBody UpdateBookRequest updateBookRequest) {
-    bookService.update(bookId, updateBookRequest);
+      @Valid @RequestBody UpdateBookRequestDto requestDto) {
+    bookService.update(bookId, requestDto);
     return ResponseEntity.noContent().build();
   }
 
@@ -77,8 +77,8 @@ public class BookController {
   }
 
   @GetMapping(path = "/{bookId}/authors", produces = "application/json")
-  public ResponseEntity<List<AuthorResponse>> findBookAuthors(@PathVariable Long bookId) {
-    List<AuthorResponse> authors = bookService.findAuthorsByBookId(bookId);
+  public ResponseEntity<List<AuthorResponseDto>> findBookAuthors(@PathVariable Long bookId) {
+    List<AuthorResponseDto> authors = bookService.findAuthorsByBookId(bookId);
     return ResponseEntity.ok(authors);
   }
 }

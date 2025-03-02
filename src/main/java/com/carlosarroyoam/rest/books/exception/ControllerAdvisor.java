@@ -1,6 +1,6 @@
 package com.carlosarroyoam.rest.books.exception;
 
-import com.carlosarroyoam.rest.books.dto.AppExceptionResponse;
+import com.carlosarroyoam.rest.books.dto.AppExceptionDto;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.stream.Collectors;
@@ -20,11 +20,11 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 @ControllerAdvice
 class ControllerAdvisor {
   @ExceptionHandler(ResponseStatusException.class)
-  public ResponseEntity<AppExceptionResponse> handleResponseStatusException(
-      ResponseStatusException ex, WebRequest request) {
+  public ResponseEntity<AppExceptionDto> handleResponseStatusException(ResponseStatusException ex,
+      WebRequest request) {
     HttpStatus statusCode = HttpStatus.valueOf(ex.getStatusCode().value());
 
-    AppExceptionResponse appExceptionResponse = AppExceptionResponse.builder()
+    AppExceptionDto appExceptionDto = AppExceptionDto.builder()
         .message(ex.getReason())
         .error(statusCode.getReasonPhrase())
         .status(statusCode.value())
@@ -32,15 +32,15 @@ class ControllerAdvisor {
         .timestamp(ZonedDateTime.now(ZoneId.of("UTC")))
         .build();
 
-    return new ResponseEntity<>(appExceptionResponse, ex.getStatusCode());
+    return new ResponseEntity<>(appExceptionDto, ex.getStatusCode());
   }
 
   @ExceptionHandler(NoHandlerFoundException.class)
-  public ResponseEntity<AppExceptionResponse> handleNoHandlerFoundException(
-      NoHandlerFoundException ex, WebRequest request) {
+  public ResponseEntity<AppExceptionDto> handleNoHandlerFoundException(NoHandlerFoundException ex,
+      WebRequest request) {
     HttpStatus statusCode = HttpStatus.NOT_FOUND;
 
-    AppExceptionResponse appExceptionResponse = AppExceptionResponse.builder()
+    AppExceptionDto appExceptionDto = AppExceptionDto.builder()
         .message("No endpoint found for: " + request.getDescription(false).replace("uri=", ""))
         .error(statusCode.getReasonPhrase())
         .status(statusCode.value())
@@ -48,15 +48,15 @@ class ControllerAdvisor {
         .timestamp(ZonedDateTime.now(ZoneId.of("UTC")))
         .build();
 
-    return new ResponseEntity<>(appExceptionResponse, statusCode);
+    return new ResponseEntity<>(appExceptionDto, statusCode);
   }
 
   @ExceptionHandler(NoResourceFoundException.class)
-  public ResponseEntity<AppExceptionResponse> handleNoResourceFoundException(
-      NoResourceFoundException ex, WebRequest request) {
+  public ResponseEntity<AppExceptionDto> handleNoResourceFoundException(NoResourceFoundException ex,
+      WebRequest request) {
     HttpStatus statusCode = HttpStatus.NOT_FOUND;
 
-    AppExceptionResponse appExceptionResponse = AppExceptionResponse.builder()
+    AppExceptionDto appExceptionDto = AppExceptionDto.builder()
         .message("No static resource: " + request.getDescription(false).replace("uri=", ""))
         .error(statusCode.getReasonPhrase())
         .status(statusCode.value())
@@ -64,15 +64,15 @@ class ControllerAdvisor {
         .timestamp(ZonedDateTime.now(ZoneId.of("UTC")))
         .build();
 
-    return new ResponseEntity<>(appExceptionResponse, statusCode);
+    return new ResponseEntity<>(appExceptionDto, statusCode);
   }
 
   @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-  public ResponseEntity<AppExceptionResponse> handleHttpRequestMethodNotSupportedException(
+  public ResponseEntity<AppExceptionDto> handleHttpRequestMethodNotSupportedException(
       HttpRequestMethodNotSupportedException ex, WebRequest request) {
     HttpStatus statusCode = HttpStatus.BAD_REQUEST;
 
-    AppExceptionResponse appExceptionResponse = AppExceptionResponse.builder()
+    AppExceptionDto appExceptionDto = AppExceptionDto.builder()
         .message(ex.getMessage())
         .error(statusCode.getReasonPhrase())
         .status(statusCode.value())
@@ -80,35 +80,35 @@ class ControllerAdvisor {
         .timestamp(ZonedDateTime.now(ZoneId.of("UTC")))
         .build();
 
-    return new ResponseEntity<>(appExceptionResponse, statusCode);
+    return new ResponseEntity<>(appExceptionDto, statusCode);
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
-  public ResponseEntity<AppExceptionResponse> handleMethodArgumentNotValid(
+  public ResponseEntity<AppExceptionDto> handleMethodArgumentNotValid(
       MethodArgumentNotValidException ex, WebRequest request) {
     HttpStatus statusCode = HttpStatus.BAD_REQUEST;
 
-    AppExceptionResponse appExceptionResponse = new AppExceptionResponse();
-    appExceptionResponse.setMessage("Request data is not valid");
-    appExceptionResponse.setError(statusCode.getReasonPhrase());
-    appExceptionResponse.setStatus(statusCode.value());
-    appExceptionResponse.setPath(request.getDescription(false).replace("uri=", ""));
-    appExceptionResponse.setTimestamp(ZonedDateTime.now(ZoneId.of("UTC")));
-    appExceptionResponse.setDetails(ex.getBindingResult()
+    AppExceptionDto appExceptionDto = new AppExceptionDto();
+    appExceptionDto.setMessage("Request data is not valid");
+    appExceptionDto.setError(statusCode.getReasonPhrase());
+    appExceptionDto.setStatus(statusCode.value());
+    appExceptionDto.setPath(request.getDescription(false).replace("uri=", ""));
+    appExceptionDto.setTimestamp(ZonedDateTime.now(ZoneId.of("UTC")));
+    appExceptionDto.setDetails(ex.getBindingResult()
         .getFieldErrors()
         .stream()
         .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage,
             (first, second) -> second)));
 
-    return new ResponseEntity<>(appExceptionResponse, statusCode);
+    return new ResponseEntity<>(appExceptionDto, statusCode);
   }
 
   @ExceptionHandler(AuthenticationException.class)
-  public ResponseEntity<AppExceptionResponse> handleAuthenticationException(
-      AuthenticationException ex, WebRequest request) {
+  public ResponseEntity<AppExceptionDto> handleAuthenticationException(AuthenticationException ex,
+      WebRequest request) {
     HttpStatus statusCode = HttpStatus.UNAUTHORIZED;
 
-    AppExceptionResponse appExceptionResponse = AppExceptionResponse.builder()
+    AppExceptionDto appExceptionDto = AppExceptionDto.builder()
         .message(ex.getMessage())
         .error(statusCode.getReasonPhrase())
         .status(statusCode.value())
@@ -116,14 +116,14 @@ class ControllerAdvisor {
         .timestamp(ZonedDateTime.now(ZoneId.of("UTC")))
         .build();
 
-    return new ResponseEntity<>(appExceptionResponse, statusCode);
+    return new ResponseEntity<>(appExceptionDto, statusCode);
   }
 
   @ExceptionHandler(Exception.class)
-  public ResponseEntity<AppExceptionResponse> handleAllException(Exception ex, WebRequest request) {
+  public ResponseEntity<AppExceptionDto> handleAllException(Exception ex, WebRequest request) {
     HttpStatus statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
 
-    AppExceptionResponse appExceptionResponse = AppExceptionResponse.builder()
+    AppExceptionDto appExceptionDto = AppExceptionDto.builder()
         .message("Whoops! Something went wrong")
         .error(statusCode.getReasonPhrase())
         .status(statusCode.value())
@@ -133,6 +133,6 @@ class ControllerAdvisor {
 
     ex.printStackTrace();
 
-    return new ResponseEntity<>(appExceptionResponse, statusCode);
+    return new ResponseEntity<>(appExceptionDto, statusCode);
   }
 }

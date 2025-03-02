@@ -1,7 +1,7 @@
 package com.carlosarroyoam.rest.books.mapper;
 
-import com.carlosarroyoam.rest.books.dto.AuthorResponse;
-import com.carlosarroyoam.rest.books.dto.CreateAuthorRequest;
+import com.carlosarroyoam.rest.books.dto.AuthorResponseDto;
+import com.carlosarroyoam.rest.books.dto.CreateAuthorRequestDto;
 import com.carlosarroyoam.rest.books.entity.Author;
 import java.util.List;
 import org.mapstruct.Mapper;
@@ -11,9 +11,9 @@ import org.mapstruct.ReportingPolicy;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface AuthorMapper {
-  AuthorResponse toDto(Author author);
+  AuthorResponseDto toDto(Author author);
 
-  List<AuthorResponse> toDtos(List<Author> authors);
+  List<AuthorResponseDto> toDtos(List<Author> authors);
 
-  Author toEntity(CreateAuthorRequest createAuthorRequest);
+  Author toEntity(CreateAuthorRequestDto createAuthorRequestDto);
 }

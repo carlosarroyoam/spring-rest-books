@@ -1,10 +1,10 @@
 package com.carlosarroyoam.rest.books.controller;
 
 import com.carlosarroyoam.rest.books.config.OpenApiConfig;
-import com.carlosarroyoam.rest.books.dto.ChangePasswordRequest;
-import com.carlosarroyoam.rest.books.dto.CreateUserRequest;
-import com.carlosarroyoam.rest.books.dto.UpdateUserRequest;
-import com.carlosarroyoam.rest.books.dto.UserResponse;
+import com.carlosarroyoam.rest.books.dto.ChangePasswordRequestDto;
+import com.carlosarroyoam.rest.books.dto.CreateUserRequestDto;
+import com.carlosarroyoam.rest.books.dto.UpdateUserRequestDto;
+import com.carlosarroyoam.rest.books.dto.UserDto;
 import com.carlosarroyoam.rest.books.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -37,25 +37,25 @@ public class UserController {
 
   @GetMapping(produces = "application/json")
   @Operation(summary = "Gets the list of users")
-  public ResponseEntity<List<UserResponse>> findAll(
+  public ResponseEntity<List<UserDto>> findAll(
       @RequestParam(required = false, defaultValue = "0") Integer page,
       @RequestParam(required = false, defaultValue = "25") Integer size) {
-    List<UserResponse> users = userService.findAll(page, size);
+    List<UserDto> users = userService.findAll(page, size);
     return ResponseEntity.ok(users);
   }
 
   @GetMapping(path = "/{userId}", produces = "application/json")
   @Operation(summary = "Gets a user by its id")
-  public ResponseEntity<UserResponse> findById(@PathVariable Long userId) {
-    UserResponse userById = userService.findById(userId);
+  public ResponseEntity<UserDto> findById(@PathVariable Long userId) {
+    UserDto userById = userService.findById(userId);
     return ResponseEntity.ok(userById);
   }
 
   @PostMapping(consumes = "application/json")
   @Operation(summary = "Creates a new user")
-  public ResponseEntity<Void> create(@Valid @RequestBody CreateUserRequest createUserRequest,
+  public ResponseEntity<Void> create(@Valid @RequestBody CreateUserRequestDto requestDto,
       UriComponentsBuilder builder) {
-    UserResponse createdUser = userService.create(createUserRequest);
+    UserDto createdUser = userService.create(requestDto);
     UriComponents uriComponents = builder.path("/users/{userId}")
         .buildAndExpand(createdUser.getId());
     return ResponseEntity.created(uriComponents.toUri()).build();
@@ -64,8 +64,8 @@ public class UserController {
   @PutMapping(value = "/{userId}", consumes = "application/json")
   @Operation(summary = "Updates a user by its id")
   public ResponseEntity<Void> update(@PathVariable Long userId,
-      @Valid @RequestBody UpdateUserRequest updateUserRequest) {
-    userService.update(userId, updateUserRequest);
+      @Valid @RequestBody UpdateUserRequestDto requestDto) {
+    userService.update(userId, requestDto);
     return ResponseEntity.noContent().build();
   }
 
@@ -78,9 +78,9 @@ public class UserController {
 
   @PostMapping(path = "/{userId}/change-password", consumes = "application/json")
   @Operation(summary = "Changes a user password")
-  public ResponseEntity<UserResponse> changePassword(@PathVariable Long userId,
-      @Valid @RequestBody ChangePasswordRequest changePasswordRequest) {
-    userService.changePassword(userId, changePasswordRequest);
+  public ResponseEntity<UserDto> changePassword(@PathVariable Long userId,
+      @Valid @RequestBody ChangePasswordRequestDto requestDto) {
+    userService.changePassword(userId, requestDto);
     return ResponseEntity.noContent().build();
   }
 }

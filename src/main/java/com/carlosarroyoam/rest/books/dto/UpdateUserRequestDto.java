@@ -1,6 +1,7 @@
 package com.carlosarroyoam.rest.books.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,8 +12,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UpdateAuthorRequest {
+public class UpdateUserRequestDto {
   @NotBlank
   @Size(min = 3, max = 128)
   private String name;
+
+  @NotNull
+  private Byte age;
 }

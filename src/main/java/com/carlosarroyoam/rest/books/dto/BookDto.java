@@ -12,12 +12,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class BookResponse {
+public class BookDto {
   private Long id;
   private String isbn;
   private String title;
   private String coverUrl;
-  private List<AuthorResponse> authors;
+  private List<AuthorResponseDto> authors;
   private Double price;
   private Boolean isAvailableOnline;
   private LocalDate publishedAt;

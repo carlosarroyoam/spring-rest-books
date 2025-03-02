@@ -2,7 +2,7 @@ package com.carlosarroyoam.rest.books.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.carlosarroyoam.rest.books.dto.BookResponse;
+import com.carlosarroyoam.rest.books.dto.BookDto;
 import com.carlosarroyoam.rest.books.entity.Book;
 import com.carlosarroyoam.rest.books.mapper.AuthorMapper;
 import com.carlosarroyoam.rest.books.mapper.BookMapper;
@@ -62,8 +62,10 @@ class BookServiceTest {
 
     Mockito.when(bookRepository.findAll()).thenReturn(expectedBooks);
 
-    List<BookResponse> books = bookService.findAll(0, 25);
+    List<BookDto> books = bookService.findAll(0, 25);
 
-    assertThat(books).isNotNull().isNotEmpty().size().isEqualTo(2);
+    assertThat(books).isNotNull();
+    assertThat(books).isNotEmpty();
+    assertThat(books).size().isEqualTo(2);
   }
 }
