@@ -1,7 +1,7 @@
 package com.carlosarroyoam.rest.books.controller;
 
 import com.carlosarroyoam.rest.books.config.OpenApiConfig;
-import com.carlosarroyoam.rest.books.dto.AuthorResponseDto;
+import com.carlosarroyoam.rest.books.dto.AuthorDto;
 import com.carlosarroyoam.rest.books.dto.BookDto;
 import com.carlosarroyoam.rest.books.dto.CreateAuthorRequestDto;
 import com.carlosarroyoam.rest.books.dto.UpdateAuthorRequestDto;
@@ -37,17 +37,17 @@ public class AuthorController {
 
   @GetMapping(produces = "application/json")
   @Operation(summary = "Gets the list of authors")
-  public ResponseEntity<List<AuthorResponseDto>> findAll(
+  public ResponseEntity<List<AuthorDto>> findAll(
       @RequestParam(required = false, defaultValue = "0") Integer page,
       @RequestParam(required = false, defaultValue = "25") Integer size) {
-    List<AuthorResponseDto> authors = authorService.findAll(page, size);
+    List<AuthorDto> authors = authorService.findAll(page, size);
     return ResponseEntity.ok(authors);
   }
 
   @GetMapping(path = "/{authorId}", produces = "application/json")
   @Operation(summary = "Gets an author by its id")
-  public ResponseEntity<AuthorResponseDto> findById(@PathVariable Long authorId) {
-    AuthorResponseDto authorById = authorService.findById(authorId);
+  public ResponseEntity<AuthorDto> findById(@PathVariable Long authorId) {
+    AuthorDto authorById = authorService.findById(authorId);
     return ResponseEntity.ok(authorById);
   }
 
@@ -55,7 +55,7 @@ public class AuthorController {
   @Operation(summary = "Creates a new author")
   public ResponseEntity<Void> create(@Valid @RequestBody CreateAuthorRequestDto requestDto,
       UriComponentsBuilder builder) {
-    AuthorResponseDto createdAuthor = authorService.create(requestDto);
+    AuthorDto createdAuthor = authorService.create(requestDto);
     UriComponents uriComponents = builder.path("/authors/{authorId}")
         .buildAndExpand(createdAuthor.getId());
     return ResponseEntity.created(uriComponents.toUri()).build();

@@ -2,10 +2,10 @@ package com.carlosarroyoam.rest.books.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.carlosarroyoam.rest.books.dto.AuthorDto.AuthorDtoMapper;
 import com.carlosarroyoam.rest.books.dto.BookDto;
+import com.carlosarroyoam.rest.books.dto.BookDto.BookDtoMapper;
 import com.carlosarroyoam.rest.books.entity.Book;
-import com.carlosarroyoam.rest.books.mapper.AuthorMapper;
-import com.carlosarroyoam.rest.books.mapper.BookMapper;
 import com.carlosarroyoam.rest.books.repository.BookRepository;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -15,19 +15,23 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 @ExtendWith(MockitoExtension.class)
 class BookServiceTest {
   @Spy
-  private AuthorMapper authorMapper = Mappers.getMapper(AuthorMapper.class);
+  private AuthorDtoMapper authorMapper = Mappers.getMapper(AuthorDtoMapper.class);
 
   @Spy
-  private BookMapper bookMapper = Mappers.getMapper(BookMapper.class);
+  private BookDtoMapper bookMapper = Mappers.getMapper(BookDtoMapper.class);
 
   @Mock
   private BookRepository bookRepository;
@@ -60,7 +64,10 @@ class BookServiceTest {
             .updatedAt(LocalDateTime.now())
             .build());
 
-    Mockito.when(bookRepository.findAll()).thenReturn(expectedBooks);
+    Page<Book> pagedBooks = new PageImpl<Book>(expectedBooks);
+
+    Mockito.when(bookRepository.findAll(ArgumentMatchers.any(Pageable.class)))
+        .thenReturn(pagedBooks);
 
     List<BookDto> books = bookService.findAll(0, 25);
 

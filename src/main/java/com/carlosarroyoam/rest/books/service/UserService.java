@@ -5,8 +5,8 @@ import com.carlosarroyoam.rest.books.dto.ChangePasswordRequestDto;
 import com.carlosarroyoam.rest.books.dto.CreateUserRequestDto;
 import com.carlosarroyoam.rest.books.dto.UpdateUserRequestDto;
 import com.carlosarroyoam.rest.books.dto.UserDto;
+import com.carlosarroyoam.rest.books.dto.UserDto.UserDtoMapper;
 import com.carlosarroyoam.rest.books.entity.User;
-import com.carlosarroyoam.rest.books.mapper.UserMapper;
 import com.carlosarroyoam.rest.books.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -32,13 +32,10 @@ import org.springframework.web.server.ResponseStatusException;
 public class UserService implements UserDetailsService {
   private static final Logger log = LoggerFactory.getLogger(UserService.class);
   private final UserRepository userRepository;
-  private final UserMapper userMapper;
   private final PasswordEncoder passwordEncoder;
 
-  public UserService(final UserRepository userRepository, final UserMapper userMapper,
-      final PasswordEncoder passwordEncoder) {
+  public UserService(final UserRepository userRepository, final PasswordEncoder passwordEncoder) {
     this.userRepository = userRepository;
-    this.userMapper = userMapper;
     this.passwordEncoder = passwordEncoder;
   }
 
@@ -54,7 +51,7 @@ public class UserService implements UserDetailsService {
   public List<UserDto> findAll(Integer page, Integer size) {
     Pageable pageable = PageRequest.of(page, size);
     Page<User> users = userRepository.findAll(pageable);
-    return userMapper.toDtos(users.getContent());
+    return UserDtoMapper.INSTANCE.toDtos(users.getContent());
   }
 
   public UserDto findById(Long userId) {
@@ -64,7 +61,7 @@ public class UserService implements UserDetailsService {
           AppMessages.USER_NOT_FOUND_EXCEPTION);
     });
 
-    return userMapper.toDto(userById);
+    return UserDtoMapper.INSTANCE.toDto(userById);
   }
 
   @Transactional
@@ -82,13 +79,13 @@ public class UserService implements UserDetailsService {
     }
 
     LocalDateTime now = LocalDateTime.now();
-    User user = userMapper.toEntity(requestDto);
+    User user = UserDtoMapper.INSTANCE.toEntity(requestDto);
     user.setPassword(passwordEncoder.encode(requestDto.getPassword()));
     user.setIsActive(Boolean.FALSE);
     user.setCreatedAt(now);
     user.setUpdatedAt(now);
 
-    return userMapper.toDto(userRepository.save(user));
+    return UserDtoMapper.INSTANCE.toDto(userRepository.save(user));
   }
 
   @Transactional
@@ -133,15 +130,13 @@ public class UserService implements UserDetailsService {
           AppMessages.USER_NOT_FOUND_EXCEPTION);
     });
 
-    if (!passwordEncoder.matches(requestDto.getCurrentPassword(),
-        userById.getPassword())) {
+    if (!passwordEncoder.matches(requestDto.getCurrentPassword(), userById.getPassword())) {
       log.warn(AppMessages.UNAUTHORIZED_CREDENTIALS_EXCEPTION);
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
           AppMessages.UNAUTHORIZED_CREDENTIALS_EXCEPTION);
     }
 
-    if (!requestDto.getNewPassword()
-        .equals(requestDto.getConfirmPassword())) {
+    if (!requestDto.getNewPassword().equals(requestDto.getConfirmPassword())) {
       log.warn(AppMessages.PASSWORDS_NOT_MATCH_EXCEPTION);
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
           AppMessages.PASSWORDS_NOT_MATCH_EXCEPTION);

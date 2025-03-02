@@ -1,13 +1,13 @@
 package com.carlosarroyoam.rest.books.service;
 
 import com.carlosarroyoam.rest.books.constant.AppMessages;
-import com.carlosarroyoam.rest.books.dto.AuthorResponseDto;
+import com.carlosarroyoam.rest.books.dto.AuthorDto;
+import com.carlosarroyoam.rest.books.dto.AuthorDto.AuthorDtoMapper;
 import com.carlosarroyoam.rest.books.dto.BookDto;
+import com.carlosarroyoam.rest.books.dto.BookDto.BookDtoMapper;
 import com.carlosarroyoam.rest.books.dto.CreateBookRequestDto;
 import com.carlosarroyoam.rest.books.dto.UpdateBookRequestDto;
 import com.carlosarroyoam.rest.books.entity.Book;
-import com.carlosarroyoam.rest.books.mapper.AuthorMapper;
-import com.carlosarroyoam.rest.books.mapper.BookMapper;
 import com.carlosarroyoam.rest.books.repository.BookRepository;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -25,20 +25,15 @@ import org.springframework.web.server.ResponseStatusException;
 public class BookService {
   private static final Logger log = LoggerFactory.getLogger(BookService.class);
   private final BookRepository bookRepository;
-  private final BookMapper bookMapper;
-  private final AuthorMapper authorMapper;
 
-  public BookService(final BookRepository bookRepository, final BookMapper bookMapper,
-      final AuthorMapper authorMapper) {
+  public BookService(final BookRepository bookRepository) {
     this.bookRepository = bookRepository;
-    this.bookMapper = bookMapper;
-    this.authorMapper = authorMapper;
   }
 
   public List<BookDto> findAll(Integer page, Integer size) {
     Pageable pageable = PageRequest.of(page, size);
     Page<Book> books = bookRepository.findAll(pageable);
-    return bookMapper.toDtos(books.getContent());
+    return BookDtoMapper.INSTANCE.toDtos(books.getContent());
   }
 
   public BookDto findById(Long bookId) {
@@ -48,7 +43,7 @@ public class BookService {
           AppMessages.BOOK_NOT_FOUND_EXCEPTION);
     });
 
-    return bookMapper.toDto(bookById);
+    return BookDtoMapper.INSTANCE.toDto(bookById);
   }
 
   @Transactional
@@ -60,12 +55,12 @@ public class BookService {
     }
 
     LocalDateTime now = LocalDateTime.now();
-    Book book = bookMapper.createRequestToEntity(requestDto);
+    Book book = BookDtoMapper.INSTANCE.createRequestToEntity(requestDto);
     book.setCreatedAt(now);
     book.setUpdatedAt(now);
 
     Book savedBook = bookRepository.save(book);
-    return bookMapper.toDto(savedBook);
+    return BookDtoMapper.INSTANCE.toDto(savedBook);
   }
 
   @Transactional
@@ -96,13 +91,13 @@ public class BookService {
     bookRepository.deleteById(bookId);
   }
 
-  public List<AuthorResponseDto> findAuthorsByBookId(Long bookId) {
+  public List<AuthorDto> findAuthorsByBookId(Long bookId) {
     Book bookById = bookRepository.findById(bookId).orElseThrow(() -> {
       log.warn(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
       return new ResponseStatusException(HttpStatus.NOT_FOUND,
           AppMessages.BOOK_NOT_FOUND_EXCEPTION);
     });
 
-    return authorMapper.toDtos(bookById.getAuthors());
+    return AuthorDtoMapper.INSTANCE.toDtos(bookById.getAuthors());
   }
 }

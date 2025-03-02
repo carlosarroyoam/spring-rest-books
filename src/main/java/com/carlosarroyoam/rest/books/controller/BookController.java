@@ -1,7 +1,7 @@
 package com.carlosarroyoam.rest.books.controller;
 
 import com.carlosarroyoam.rest.books.config.OpenApiConfig;
-import com.carlosarroyoam.rest.books.dto.AuthorResponseDto;
+import com.carlosarroyoam.rest.books.dto.AuthorDto;
 import com.carlosarroyoam.rest.books.dto.BookDto;
 import com.carlosarroyoam.rest.books.dto.CreateBookRequestDto;
 import com.carlosarroyoam.rest.books.dto.UpdateBookRequestDto;
@@ -77,8 +77,8 @@ public class BookController {
   }
 
   @GetMapping(path = "/{bookId}/authors", produces = "application/json")
-  public ResponseEntity<List<AuthorResponseDto>> findBookAuthors(@PathVariable Long bookId) {
-    List<AuthorResponseDto> authors = bookService.findAuthorsByBookId(bookId);
+  public ResponseEntity<List<AuthorDto>> findBookAuthors(@PathVariable Long bookId) {
+    List<AuthorDto> authors = bookService.findAuthorsByBookId(bookId);
     return ResponseEntity.ok(authors);
   }
 }

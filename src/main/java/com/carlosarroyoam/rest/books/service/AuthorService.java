@@ -1,13 +1,13 @@
 package com.carlosarroyoam.rest.books.service;
 
 import com.carlosarroyoam.rest.books.constant.AppMessages;
-import com.carlosarroyoam.rest.books.dto.AuthorResponseDto;
+import com.carlosarroyoam.rest.books.dto.AuthorDto;
+import com.carlosarroyoam.rest.books.dto.AuthorDto.AuthorDtoMapper;
 import com.carlosarroyoam.rest.books.dto.BookDto;
+import com.carlosarroyoam.rest.books.dto.BookDto.BookDtoMapper;
 import com.carlosarroyoam.rest.books.dto.CreateAuthorRequestDto;
 import com.carlosarroyoam.rest.books.dto.UpdateAuthorRequestDto;
 import com.carlosarroyoam.rest.books.entity.Author;
-import com.carlosarroyoam.rest.books.mapper.AuthorMapper;
-import com.carlosarroyoam.rest.books.mapper.BookMapper;
 import com.carlosarroyoam.rest.books.repository.AuthorRepository;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -25,41 +25,36 @@ import org.springframework.web.server.ResponseStatusException;
 public class AuthorService {
   private static final Logger log = LoggerFactory.getLogger(AuthorService.class);
   private final AuthorRepository authorRepository;
-  private final AuthorMapper authorMapper;
-  private final BookMapper bookMapper;
 
-  public AuthorService(final AuthorRepository authorRepository, final AuthorMapper authorMapper,
-      final BookMapper bookMapper) {
+  public AuthorService(final AuthorRepository authorRepository) {
     this.authorRepository = authorRepository;
-    this.authorMapper = authorMapper;
-    this.bookMapper = bookMapper;
   }
 
-  public List<AuthorResponseDto> findAll(Integer page, Integer size) {
+  public List<AuthorDto> findAll(Integer page, Integer size) {
     Pageable pageable = PageRequest.of(page, size);
     Page<Author> authors = authorRepository.findAll(pageable);
-    return authorMapper.toDtos(authors.getContent());
+    return AuthorDtoMapper.INSTANCE.toDtos(authors.getContent());
   }
 
-  public AuthorResponseDto findById(Long authorId) {
+  public AuthorDto findById(Long authorId) {
     Author authorById = authorRepository.findById(authorId).orElseThrow(() -> {
       log.warn(AppMessages.AUTHOR_NOT_FOUND_EXCEPTION);
       return new ResponseStatusException(HttpStatus.NOT_FOUND,
           AppMessages.AUTHOR_NOT_FOUND_EXCEPTION);
     });
 
-    return authorMapper.toDto(authorById);
+    return AuthorDtoMapper.INSTANCE.toDto(authorById);
   }
 
   @Transactional
-  public AuthorResponseDto create(CreateAuthorRequestDto requestDto) {
+  public AuthorDto create(CreateAuthorRequestDto requestDto) {
     LocalDateTime now = LocalDateTime.now();
-    Author author = authorMapper.toEntity(requestDto);
+    Author author = AuthorDtoMapper.INSTANCE.toEntity(requestDto);
     author.setCreatedAt(now);
     author.setUpdatedAt(now);
 
     Author savedAuthor = authorRepository.save(author);
-    return authorMapper.toDto(savedAuthor);
+    return AuthorDtoMapper.INSTANCE.toDto(savedAuthor);
   }
 
   @Transactional
@@ -94,6 +89,6 @@ public class AuthorService {
           AppMessages.AUTHOR_NOT_FOUND_EXCEPTION);
     });
 
-    return bookMapper.toDtos(authorById.getBooks());
+    return BookDtoMapper.INSTANCE.toDtos(authorById.getBooks());
   }
 }

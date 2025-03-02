@@ -1,6 +1,6 @@
 package com.carlosarroyoam.rest.books.dto;
 
-import com.carlosarroyoam.rest.books.entity.User;
+import com.carlosarroyoam.rest.books.entity.Author;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -16,25 +16,20 @@ import org.mapstruct.factory.Mappers;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserDto {
+public class AuthorDto {
   private Long id;
   private String name;
-  private Byte age;
-  private String email;
-  private String username;
-  private Boolean isActive;
-  private Integer roleId;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
 
   @Mapper(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, unmappedTargetPolicy = ReportingPolicy.IGNORE)
-  public interface UserDtoMapper {
-    UserDtoMapper INSTANCE = Mappers.getMapper(UserDtoMapper.class);
+  public interface AuthorDtoMapper {
+    AuthorDtoMapper INSTANCE = Mappers.getMapper(AuthorDtoMapper.class);
 
-    UserDto toDto(User user);
+    AuthorDto toDto(Author author);
 
-    List<UserDto> toDtos(List<User> users);
+    List<AuthorDto> toDtos(List<Author> authors);
 
-    User toEntity(CreateUserRequestDto requestDto);
+    Author toEntity(CreateAuthorRequestDto requestDto);
   }
 }
