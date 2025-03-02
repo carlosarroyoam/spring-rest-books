@@ -2,9 +2,7 @@ package com.carlosarroyoam.rest.books.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.carlosarroyoam.rest.books.dto.AuthorDto.AuthorDtoMapper;
 import com.carlosarroyoam.rest.books.dto.BookDto;
-import com.carlosarroyoam.rest.books.dto.BookDto.BookDtoMapper;
 import com.carlosarroyoam.rest.books.entity.Book;
 import com.carlosarroyoam.rest.books.repository.BookRepository;
 import java.math.BigDecimal;
@@ -19,7 +17,6 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -27,12 +24,6 @@ import org.springframework.data.domain.Pageable;
 
 @ExtendWith(MockitoExtension.class)
 class BookServiceTest {
-  @Spy
-  private AuthorDtoMapper authorMapper = Mappers.getMapper(AuthorDtoMapper.class);
-
-  @Spy
-  private BookDtoMapper bookMapper = Mappers.getMapper(BookDtoMapper.class);
-
   @Mock
   private BookRepository bookRepository;
 
