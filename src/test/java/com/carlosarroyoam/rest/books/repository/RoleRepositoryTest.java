@@ -23,7 +23,7 @@ class RoleRepositoryTest {
 
     assertThat(savedRole).isNotNull();
     assertThat(savedRole.getId()).isNotNull();
-    assertThat(savedRole.getDescription()).isEqualTo("App//Admin");
-    assertThat(savedRole.getTitle()).isEqualTo("Role for admins users");
+    assertThat(savedRole.getTitle()).isEqualTo("App//Admin");
+    assertThat(savedRole.getDescription()).isEqualTo("Role for admins users");
   }
 }
