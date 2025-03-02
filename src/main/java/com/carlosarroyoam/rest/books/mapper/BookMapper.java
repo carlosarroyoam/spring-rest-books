@@ -16,7 +16,7 @@ public interface BookMapper {
 
   List<BookDto> toDtos(List<Book> books);
 
-  Book createRequestToEntity(CreateBookRequestDto createBookRequestDto);
+  Book createRequestToEntity(CreateBookRequestDto requestDto);
 
-  Book updateRequestToEntity(UpdateBookRequestDto updateBookRequestDto);
+  Book updateRequestToEntity(UpdateBookRequestDto requestDto);
 }

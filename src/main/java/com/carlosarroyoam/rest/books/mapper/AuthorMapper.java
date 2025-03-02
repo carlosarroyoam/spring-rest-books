@@ -15,5 +15,5 @@ public interface AuthorMapper {
 
   List<AuthorResponseDto> toDtos(List<Author> authors);
 
-  Author toEntity(CreateAuthorRequestDto createAuthorRequestDto);
+  Author toEntity(CreateAuthorRequestDto requestDto);
 }
