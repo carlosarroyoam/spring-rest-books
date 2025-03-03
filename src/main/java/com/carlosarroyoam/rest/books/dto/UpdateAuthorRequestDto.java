@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class UpdateAuthorRequestDto {
-  @NotBlank
-  @Size(min = 3, max = 128)
+  @NotBlank(message = "Name should not be blank")
+  @Size(min = 3, max = 128, message = "Name should be between 3 and 128")
   private String name;
 }
