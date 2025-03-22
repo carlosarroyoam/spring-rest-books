@@ -13,7 +13,7 @@ class RoleRepositoryTest {
   private RoleRepository roleRepository;
 
   @Test
-  void test() {
+  void shouldSaveUserRole() {
     Role adminRole = Role.builder()
         .title("App//Admin")
         .description("Role for admins users")

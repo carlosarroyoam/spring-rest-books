@@ -22,8 +22,9 @@ public class BookServiceApplication implements CommandLineRunner {
   private final RoleRepository roleRepository;
   private final UserRepository userRepository;
 
-  public BookServiceApplication(AuthorRepository authorRepository, BookRepository bookRepository,
-      RoleRepository roleRepository, UserRepository userRepository) {
+  public BookServiceApplication(final AuthorRepository authorRepository,
+      final BookRepository bookRepository, final RoleRepository roleRepository,
+      final UserRepository userRepository) {
     this.authorRepository = authorRepository;
     this.bookRepository = bookRepository;
     this.roleRepository = roleRepository;

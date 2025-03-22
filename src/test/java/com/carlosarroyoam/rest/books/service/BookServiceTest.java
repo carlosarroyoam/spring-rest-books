@@ -31,7 +31,7 @@ class BookServiceTest {
 
   @Test
   @DisplayName("Should return a list of books")
-  void shouldReturnListBooks() {
+  void shouldReturnListOfBooks() {
     List<Book> expectedBooks = List.of(
         Book.builder()
             .isbn("978-1-3035-0529-4")
