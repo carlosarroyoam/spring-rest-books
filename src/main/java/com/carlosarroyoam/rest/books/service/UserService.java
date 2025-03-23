@@ -118,6 +118,7 @@ public class UserService implements UserDetailsService {
   }
 
   private org.springframework.security.core.userdetails.User buildUserDetails(User user) {
+    String defaultPassword = "";
     String username = user.getUsername();
     boolean enabled = user.getIsActive();
     boolean accountNonExpired = user.getIsActive();
@@ -126,7 +127,7 @@ public class UserService implements UserDetailsService {
     Collection<? extends GrantedAuthority> authorities = Arrays
         .asList(new SimpleGrantedAuthority(user.getRole().getTitle()));
 
-    return new org.springframework.security.core.userdetails.User(username, null, enabled,
-        accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
+    return new org.springframework.security.core.userdetails.User(username, defaultPassword,
+        enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
   }
 }
