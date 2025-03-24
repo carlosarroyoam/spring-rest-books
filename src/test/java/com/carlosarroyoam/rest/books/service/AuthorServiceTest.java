@@ -115,7 +115,7 @@ public class AuthorServiceTest {
 
   @Test
   @DisplayName("Should throw ResponseStatusException when update author with non existing id")
-  void shouldThrowWhenUpdateAuthorWithInvalidData() {
+  void shouldUpdateAuthorWithNonExistingId() {
     UpdateAuthorRequestDto requestDto = UpdateAuthorRequestDto.builder().build();
 
     Mockito.when(authorRepository.findById(any())).thenReturn(Optional.empty());

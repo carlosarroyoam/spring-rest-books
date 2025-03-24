@@ -18,7 +18,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @ControllerAdvice
-class ControllerAdvisor {
+public class ControllerAdvisor {
   @ExceptionHandler(ResponseStatusException.class)
   public ResponseEntity<AppExceptionDto> handleResponseStatusException(ResponseStatusException ex,
       WebRequest request) {
