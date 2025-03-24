@@ -56,9 +56,9 @@ public class UserServiceTest {
   @Test
   @DisplayName("Should return UserDto when find user by id with existing id")
   void shouldReturnWhenFindUserByIdWithExistingId() {
-    User expectedUser = User.builder().id(1L).build();
+    User user = User.builder().id(1L).build();
 
-    Mockito.when(userRepository.findById(any())).thenReturn(Optional.of(expectedUser));
+    Mockito.when(userRepository.findById(any())).thenReturn(Optional.of(user));
 
     UserDto userDto = userService.findById(1L);
 

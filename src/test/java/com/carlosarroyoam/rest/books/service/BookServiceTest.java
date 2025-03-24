@@ -57,9 +57,9 @@ class BookServiceTest {
   @Test
   @DisplayName("Should return BookDto when find book by id with existing id")
   void shouldReturnWhenFindBookByIdWithExisitingId() {
-    Book expectedBook = Book.builder().id(1L).build();
+    Book book = Book.builder().id(1L).build();
 
-    Mockito.when(bookRepository.findById(any())).thenReturn(Optional.of(expectedBook));
+    Mockito.when(bookRepository.findById(any())).thenReturn(Optional.of(book));
 
     BookDto bookDto = bookService.findById(1L);
 

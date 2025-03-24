@@ -56,9 +56,9 @@ public class AuthorServiceTest {
   @Test
   @DisplayName("Should return AuthorDto when find author by id with existing id")
   void shouldReturnWhenFindAuthorByIdWithExistingId() {
-    Author expectedAuthor = Author.builder().id(1L).build();
+    Author author = Author.builder().id(1L).build();
 
-    Mockito.when(authorRepository.findById(any())).thenReturn(Optional.of(expectedAuthor));
+    Mockito.when(authorRepository.findById(any())).thenReturn(Optional.of(author));
 
     AuthorDto authorDto = authorService.findById(1L);
 
