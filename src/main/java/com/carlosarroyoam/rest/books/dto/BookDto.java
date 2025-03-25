@@ -40,7 +40,5 @@ public class BookDto {
     List<BookDto> toDtos(List<Book> books);
 
     Book createRequestToEntity(CreateBookRequestDto requestDto);
-
-    Book updateRequestToEntity(UpdateBookRequestDto requestDto);
   }
 }
