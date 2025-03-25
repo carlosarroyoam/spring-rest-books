@@ -164,6 +164,36 @@ class BookControllerTest {
   }
 
   @Test
+  @DisplayName("Should throw ResponseStatusException when create a book with existing ISBN")
+  void shouldThrowWhenCreateBookWithExistingIsbn() throws Exception {
+    CreateBookRequestDto requestDto = CreateBookRequestDto.builder()
+        .isbn("978-9-7389-4434-3")
+        .title("Sapiens: A Brief History of Humankind")
+        .coverUrl("https://images.isbndb.com/covers/60/97/9780062316097.jpg")
+        .price(new BigDecimal("20.99"))
+        .publishedAt(LocalDate.parse("2021-12-01"))
+        .isAvailableOnline(Boolean.TRUE)
+        .build();
+
+    Mockito.when(bookService.create(any(CreateBookRequestDto.class))).thenThrow(new ResponseStatusException(
+        HttpStatus.BAD_REQUEST, AppMessages.ISBN_ALREADY_EXISTS_EXCEPTION));
+
+    MvcResult mvcResult = mockMvc.perform(post("/books")
+        .content(mapper.writeValueAsString(requestDto))
+        .contentType(MediaType.APPLICATION_JSON))
+        .andReturn();
+
+    String responseJson = mvcResult.getResponse().getContentAsString();
+    AppExceptionDto responseDto = mapper.readValue(responseJson, AppExceptionDto.class);
+
+    assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    assertThat(responseDto).isNotNull();
+    assertThat(responseDto.getMessage()).isEqualTo(AppMessages.ISBN_ALREADY_EXISTS_EXCEPTION);
+    assertThat(responseDto.getError()).isEqualTo(HttpStatus.BAD_REQUEST.getReasonPhrase());
+    assertThat(responseDto.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+  }
+
+  @Test
   @DisplayName("Should update book with valid data")
   void shouldUpdateBookWithValidData() throws Exception {
     UpdateBookRequestDto requestDto = UpdateBookRequestDto.builder()

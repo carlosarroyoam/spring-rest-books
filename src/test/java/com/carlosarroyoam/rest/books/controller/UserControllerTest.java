@@ -159,6 +159,64 @@ class UserControllerTest {
   }
 
   @Test
+  @DisplayName("Should throw ResponseStatusException when create a user with existing username")
+  void shouldReturnWhenCreateUserWithExistingUsername() throws Exception {
+    CreateUserRequestDto requestDto = CreateUserRequestDto.builder()
+        .name("Carlos Alberto Arroyo Martínez")
+        .age(Byte.valueOf("28"))
+        .email("carroyom@mail.com")
+        .username("carroyom")
+        .roleId(1)
+        .build();
+
+    Mockito.when(userService.create(any(CreateUserRequestDto.class))).thenThrow(new ResponseStatusException(
+        HttpStatus.BAD_REQUEST, AppMessages.USERNAME_ALREADY_EXISTS_EXCEPTION));
+
+    MvcResult mvcResult = mockMvc.perform(post("/users")
+        .content(mapper.writeValueAsString(requestDto))
+        .contentType(MediaType.APPLICATION_JSON))
+        .andReturn();
+
+    String responseJson = mvcResult.getResponse().getContentAsString();
+    AppExceptionDto responseDto = mapper.readValue(responseJson, AppExceptionDto.class);
+
+    assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    assertThat(responseDto).isNotNull();
+    assertThat(responseDto.getMessage()).isEqualTo(AppMessages.USERNAME_ALREADY_EXISTS_EXCEPTION);
+    assertThat(responseDto.getError()).isEqualTo(HttpStatus.BAD_REQUEST.getReasonPhrase());
+    assertThat(responseDto.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+  }
+
+  @Test
+  @DisplayName("Should throw ResponseStatusException when create a user with existing email")
+  void shouldReturnWhenCreateUserWithExistingEmail() throws Exception {
+    CreateUserRequestDto requestDto = CreateUserRequestDto.builder()
+        .name("Carlos Alberto Arroyo Martínez")
+        .age(Byte.valueOf("28"))
+        .email("carroyom@mail.com")
+        .username("carroyom")
+        .roleId(1)
+        .build();
+
+    Mockito.when(userService.create(any(CreateUserRequestDto.class))).thenThrow(new ResponseStatusException(
+        HttpStatus.BAD_REQUEST, AppMessages.EMAIL_ALREADY_EXISTS_EXCEPTION));
+
+    MvcResult mvcResult = mockMvc.perform(post("/users")
+        .content(mapper.writeValueAsString(requestDto))
+        .contentType(MediaType.APPLICATION_JSON))
+        .andReturn();
+
+    String responseJson = mvcResult.getResponse().getContentAsString();
+    AppExceptionDto responseDto = mapper.readValue(responseJson, AppExceptionDto.class);
+
+    assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    assertThat(responseDto).isNotNull();
+    assertThat(responseDto.getMessage()).isEqualTo(AppMessages.EMAIL_ALREADY_EXISTS_EXCEPTION);
+    assertThat(responseDto.getError()).isEqualTo(HttpStatus.BAD_REQUEST.getReasonPhrase());
+    assertThat(responseDto.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+  }
+
+  @Test
   @DisplayName("Should update user with valid data")
   void shouldUpdateUserWithValidData() throws Exception {
     UpdateUserRequestDto requestDto = UpdateUserRequestDto.builder()
