@@ -6,14 +6,12 @@ import static org.mockito.ArgumentMatchers.any;
 
 import com.carlosarroyoam.rest.books.constant.AppMessages;
 import com.carlosarroyoam.rest.books.dto.AuthorDto;
-import com.carlosarroyoam.rest.books.dto.AuthorDto.AuthorDtoMapper;
 import com.carlosarroyoam.rest.books.dto.BookDto;
 import com.carlosarroyoam.rest.books.dto.CreateAuthorRequestDto;
 import com.carlosarroyoam.rest.books.dto.UpdateAuthorRequestDto;
 import com.carlosarroyoam.rest.books.entity.Author;
 import com.carlosarroyoam.rest.books.entity.Book;
 import com.carlosarroyoam.rest.books.repository.AuthorRepository;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
@@ -83,9 +81,9 @@ public class AuthorServiceTest {
         .name("Yuval Noah Harari")
         .build();
 
-    Author author = AuthorDtoMapper.INSTANCE.toEntity(requestDto);
-    author.setCreatedAt(LocalDateTime.now());
-    author.setUpdatedAt(LocalDateTime.now());
+    Author author = Author.builder()
+        .name("Yuval Noah Harari")
+        .build();
 
     Mockito.when(authorRepository.save(any(Author.class))).thenReturn(author);
 
@@ -102,7 +100,10 @@ public class AuthorServiceTest {
         .name("Yuval Noah Harari")
         .build();
 
-    Author author = Author.builder().id(1L).name("Yuval Harari").build();
+    Author author = Author.builder()
+        .id(1L)
+        .name("Yuval Harari")
+        .build();
 
     Mockito.when(authorRepository.findById(any())).thenReturn(Optional.of(author));
     Mockito.when(authorRepository.save(any(Author.class))).thenReturn(author);

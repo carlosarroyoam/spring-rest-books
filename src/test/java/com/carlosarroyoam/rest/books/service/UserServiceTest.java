@@ -8,11 +8,9 @@ import com.carlosarroyoam.rest.books.constant.AppMessages;
 import com.carlosarroyoam.rest.books.dto.CreateUserRequestDto;
 import com.carlosarroyoam.rest.books.dto.UpdateUserRequestDto;
 import com.carlosarroyoam.rest.books.dto.UserDto;
-import com.carlosarroyoam.rest.books.dto.UserDto.UserDtoMapper;
 import com.carlosarroyoam.rest.books.entity.Role;
 import com.carlosarroyoam.rest.books.entity.User;
 import com.carlosarroyoam.rest.books.repository.UserRepository;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
@@ -84,9 +82,10 @@ public class UserServiceTest {
         .email("carroyom@mail.com")
         .build();
 
-    User user = UserDtoMapper.INSTANCE.toEntity(requestDto);
-    user.setCreatedAt(LocalDateTime.now());
-    user.setUpdatedAt(LocalDateTime.now());
+    User user = User.builder()
+        .username("carroyom")
+        .email("carroyom@mail.com")
+        .build();
 
     Mockito.when(userRepository.existsByUsername(any())).thenReturn(false);
     Mockito.when(userRepository.existsByEmail(any())).thenReturn(false);
@@ -130,12 +129,12 @@ public class UserServiceTest {
   void shouldUpdateUserWithValidData() {
     UpdateUserRequestDto requestDto = UpdateUserRequestDto.builder()
         .name("Carlos Alberto Arroyo Martínez")
-        .age(Byte.valueOf("28"))
+        .age(Byte.valueOf("29"))
         .build();
 
     User user = User.builder()
         .id(1L)
-        .name("Carlos Alberto Arroyo Martínez")
+        .name("Carlos Arroyo")
         .age(Byte.valueOf("28"))
         .build();
 
@@ -146,7 +145,7 @@ public class UserServiceTest {
 
     Mockito.verify(userRepository).save(user);
     assertThat(user.getName()).isEqualTo("Carlos Alberto Arroyo Martínez");
-    assertThat(user.getAge()).isEqualTo(Byte.valueOf("28"));
+    assertThat(user.getAge()).isEqualTo(Byte.valueOf("29"));
   }
 
   @Test
@@ -203,8 +202,9 @@ public class UserServiceTest {
 
     Mockito.when(userRepository.findByUsername(any())).thenReturn(Optional.of(user));
 
-    org.springframework.security.core.userdetails.User userDetails = (org.springframework.security.core.userdetails.User) userService
-        .loadUserByUsername("carroyom");
+    org.springframework.security.core.userdetails.User userDetails =
+        (org.springframework.security.core.userdetails.User) userService
+            .loadUserByUsername("carroyom");
 
     assertThat(userDetails).isNotNull();
     assertThat(userDetails.getUsername()).isEqualTo("carroyom");

@@ -7,14 +7,12 @@ import static org.mockito.ArgumentMatchers.any;
 import com.carlosarroyoam.rest.books.constant.AppMessages;
 import com.carlosarroyoam.rest.books.dto.AuthorDto;
 import com.carlosarroyoam.rest.books.dto.BookDto;
-import com.carlosarroyoam.rest.books.dto.BookDto.BookDtoMapper;
 import com.carlosarroyoam.rest.books.dto.CreateBookRequestDto;
 import com.carlosarroyoam.rest.books.dto.UpdateBookRequestDto;
 import com.carlosarroyoam.rest.books.entity.Author;
 import com.carlosarroyoam.rest.books.entity.Book;
 import com.carlosarroyoam.rest.books.repository.BookRepository;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
@@ -85,9 +83,10 @@ class BookServiceTest {
         .title("Sapiens: A Brief History of Humankind")
         .build();
 
-    Book book = BookDtoMapper.INSTANCE.createRequestToEntity(requestDto);
-    book.setCreatedAt(LocalDateTime.now());
-    book.setUpdatedAt(LocalDateTime.now());
+    Book book = Book.builder()
+        .isbn("978-9-7389-4434-3")
+        .title("Sapiens: A Brief History of Humankind")
+        .build();
 
     Mockito.when(bookRepository.existsByIsbn(any())).thenReturn(false);
     Mockito.when(bookRepository.save(any(Book.class))).thenReturn(book);
