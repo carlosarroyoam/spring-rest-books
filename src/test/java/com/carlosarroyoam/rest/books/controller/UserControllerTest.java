@@ -160,7 +160,7 @@ class UserControllerTest {
 
   @Test
   @DisplayName("Should throw ResponseStatusException when create a user with existing username")
-  void shouldReturnWhenCreateUserWithExistingUsername() throws Exception {
+  void shouldThrowWhenCreateUserWithExistingUsername() throws Exception {
     CreateUserRequestDto requestDto = CreateUserRequestDto.builder()
         .name("Carlos Alberto Arroyo Martínez")
         .age(Byte.valueOf("28"))
@@ -189,7 +189,7 @@ class UserControllerTest {
 
   @Test
   @DisplayName("Should throw ResponseStatusException when create a user with existing email")
-  void shouldReturnWhenCreateUserWithExistingEmail() throws Exception {
+  void shouldThrowWhenCreateUserWithExistingEmail() throws Exception {
     CreateUserRequestDto requestDto = CreateUserRequestDto.builder()
         .name("Carlos Alberto Arroyo Martínez")
         .age(Byte.valueOf("28"))
