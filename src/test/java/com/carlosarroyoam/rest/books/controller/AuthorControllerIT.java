@@ -19,6 +19,7 @@ import org.springframework.web.context.WebApplicationContext;
 import reactor.core.publisher.Mono;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@WithMockUser
 @Transactional
 class AuthorControllerIT {
   private WebTestClient webTestClient;
@@ -26,178 +27,169 @@ class AuthorControllerIT {
   @Autowired
   public void setWebApplicationContext(final WebApplicationContext context) {
     webTestClient = MockMvcWebTestClient.bindToApplicationContext(context)
-        .apply(SecurityMockMvcConfigurers.springSecurity())
-        .build();
+      .apply(SecurityMockMvcConfigurers.springSecurity())
+      .build();
   }
 
   @Test
-  @WithMockUser
   @DisplayName("Should return authors when find all authors")
   void shouldReturnListOfAuthors() {
     webTestClient
-        .get()
-        .uri(uriBuilder -> uriBuilder.path("/authors")
-            .queryParam("page", "0")
-            .queryParam("size", "25")
-            .build())
-        .exchange()
-        .expectStatus()
-        .isOk()
-        .expectHeader()
-        .contentType(MediaType.APPLICATION_JSON_VALUE)
-        .expectBody()
-        .jsonPath("$.length()").isEqualTo(2)
-        .jsonPath("$[0].id").isEqualTo(1L)
-        .jsonPath("$[0].name").isEqualTo("Yuval Noah Harari")
-        .jsonPath("$[1].id").isEqualTo(2L)
-        .jsonPath("$[1].name").isEqualTo("Itzik Yahav");
+      .get()
+      .uri(uriBuilder -> uriBuilder.path("/authors")
+          .queryParam("page", "0")
+          .queryParam("size", "25")
+          .build())
+      .exchange()
+      .expectStatus()
+      .isOk()
+      .expectHeader()
+      .contentType(MediaType.APPLICATION_JSON_VALUE)
+      .expectBody()
+      .jsonPath("$.length()").isEqualTo(2)
+      .jsonPath("$[0].id").isEqualTo(1L)
+      .jsonPath("$[0].name").isEqualTo("Yuval Noah Harari")
+      .jsonPath("$[1].id").isEqualTo(2L)
+      .jsonPath("$[1].name").isEqualTo("Itzik Yahav");
   }
 
   @Test
-  @WithMockUser
   @DisplayName("Should return AuthorDto when find author by id with existing id")
   void shouldReturnWhenFindAuthorByIdWithExistingId() {
     webTestClient
-        .get()
-        .uri("/authors/{authorId}", 1L)
-        .exchange()
-        .expectStatus()
-        .isOk()
-        .expectHeader()
-        .contentType(MediaType.APPLICATION_JSON_VALUE)
-        .expectBody()
-        .jsonPath("$.id").isEqualTo(1L)
-        .jsonPath("$.name").isEqualTo("Yuval Noah Harari");
+      .get()
+      .uri("/authors/{authorId}", 1L)
+      .exchange()
+      .expectStatus()
+      .isOk()
+      .expectHeader()
+      .contentType(MediaType.APPLICATION_JSON_VALUE)
+      .expectBody()
+      .jsonPath("$.id").isEqualTo(1L)
+      .jsonPath("$.name").isEqualTo("Yuval Noah Harari");
   }
 
   @Test
-  @WithMockUser
-  @DisplayName("Should return AppExceptionDto when find author by id with non existing id")
+  @DisplayName("Should throw AppExceptionDto when find author by id with non existing id")
   void shouldReturnWhenFindAuthorByIdWithNonExistingId() {
     webTestClient
-        .get()
-        .uri("/authors/{authorId}", 1000L)
-        .exchange()
-        .expectStatus()
-        .isNotFound()
-        .expectHeader()
-        .contentType(MediaType.APPLICATION_JSON_VALUE)
-        .expectBody()
-        .jsonPath("$.error").isEqualTo("Not Found")
-        .jsonPath("$.message").isEqualTo("Author not found")
-        .jsonPath("$.status").isEqualTo(404);
+      .get()
+      .uri("/authors/{authorId}", 1000L)
+      .exchange()
+      .expectStatus()
+      .isNotFound()
+      .expectHeader()
+      .contentType(MediaType.APPLICATION_JSON_VALUE)
+      .expectBody()
+      .jsonPath("$.error").isEqualTo("Not Found")
+      .jsonPath("$.message").isEqualTo("Author not found")
+      .jsonPath("$.status").isEqualTo(404);
   }
 
   @Test
-  @WithMockUser
   @DisplayName("Should return when create an author with valid data")
   void shouldReturnWhenCreateAuthorWithValidData() {
     CreateAuthorRequestDto requestDto = CreateAuthorRequestDto.builder().name("Yuval Noah Harari").build();
 
     webTestClient
-        .post()
-        .uri("/authors")
-        .body(Mono.just(requestDto), CreateAuthorRequestDto.class)
-        .exchange()
-        .expectStatus()
-        .isCreated()
-        .expectHeader()
-        .location("http://localhost/authors/3");
+      .post()
+      .uri("/authors")
+      .body(Mono.just(requestDto), CreateAuthorRequestDto.class)
+      .exchange()
+      .expectStatus()
+      .isCreated()
+      .expectHeader()
+      .location("http://localhost/authors/3");
   }
 
   @Test
-  @WithMockUser
   @DisplayName("Should update author with valid data")
   void shouldUpdateAuthorWithValidData() {
     UpdateAuthorRequestDto requestDto = UpdateAuthorRequestDto.builder().name("Yuval Noah").build();
 
     webTestClient
-        .put()
-        .uri("/authors/{authorId}", 1L)
-        .body(Mono.just(requestDto), CreateAuthorRequestDto.class)
-        .exchange()
-        .expectStatus()
-        .isNoContent();
+      .put()
+      .uri("/authors/{authorId}", 1L)
+      .body(Mono.just(requestDto), CreateAuthorRequestDto.class)
+      .exchange()
+      .expectStatus()
+      .isNoContent();
   }
 
   @Test
   @DisplayName("Should throw AppExceptionDto when update author with non existing id")
-  @WithMockUser
   void shouldUpdateAuthorWithNonExistingId() {
     UpdateAuthorRequestDto requestDto = UpdateAuthorRequestDto.builder().name("Yuval Noah").build();
 
     webTestClient
-        .put()
-        .uri("/authors/{authorId}", 1000L)
-        .body(Mono.just(requestDto), CreateAuthorRequestDto.class)
-        .exchange()
-        .expectStatus()
-        .isNotFound()
-        .expectHeader()
-        .contentType(MediaType.APPLICATION_JSON_VALUE)
-        .expectBody()
-        .jsonPath("$.error").isEqualTo("Not Found")
-        .jsonPath("$.message").isEqualTo("Author not found")
-        .jsonPath("$.status").isEqualTo(404);
+      .put()
+      .uri("/authors/{authorId}", 1000L)
+      .body(Mono.just(requestDto), CreateAuthorRequestDto.class)
+      .exchange()
+      .expectStatus()
+      .isNotFound()
+      .expectHeader()
+      .contentType(MediaType.APPLICATION_JSON_VALUE)
+      .expectBody()
+      .jsonPath("$.error").isEqualTo("Not Found")
+      .jsonPath("$.message").isEqualTo("Author not found")
+      .jsonPath("$.status").isEqualTo(404);
   }
 
   @Test
-  @WithMockUser
   @DisplayName("Should delete author with existing id")
   void shouldDeleteAuthorWithExistingId() {
     webTestClient
-        .delete()
-        .uri("/authors/{authorId}", 1L)
-        .exchange()
-        .expectStatus()
-        .isNoContent();
+      .delete()
+      .uri("/authors/{authorId}", 1L)
+      .exchange()
+      .expectStatus()
+      .isNoContent();
   }
 
   @Test
-  @WithMockUser
   @DisplayName("Should throw AppExceptionDto when delete author with non existing id")
   void shouldThrowWhenDeleteAuthorWithNonExistingId() {
     webTestClient
-        .delete()
-        .uri("/authors/{authorId}", 1000L)
-        .exchange()
-        .expectStatus()
-        .isNotFound()
-        .expectHeader()
-        .contentType(MediaType.APPLICATION_JSON_VALUE)
-        .expectBody()
-        .jsonPath("$.error").isEqualTo("Not Found")
-        .jsonPath("$.message").isEqualTo("Author not found")
-        .jsonPath("$.status").isEqualTo(404);
+      .delete()
+      .uri("/authors/{authorId}", 1000L)
+      .exchange()
+      .expectStatus()
+      .isNotFound()
+      .expectHeader()
+      .contentType(MediaType.APPLICATION_JSON_VALUE)
+      .expectBody()
+      .jsonPath("$.error").isEqualTo("Not Found")
+      .jsonPath("$.message").isEqualTo("Author not found")
+      .jsonPath("$.status").isEqualTo(404);
   }
 
   @Test
-  @WithMockUser
   @DisplayName("Should throw AppExceptionDto when find books by author id with non existing id")
   void shouldThrowWhenFindBooksByAuthorIdWithNonExistingId() throws Exception {
     webTestClient
-        .get()
-        .uri("/authors/{authorId}/books", 1L)
-        .exchange()
-        .expectStatus()
-        .isOk()
-        .expectHeader()
-        .contentType(MediaType.APPLICATION_JSON_VALUE)
-        .expectBody()
-        .jsonPath("$.length()").isEqualTo(2)
-        .jsonPath("$[0].id").isEqualTo(1L)
-        .jsonPath("$[0].isbn").isEqualTo("978-1-3035-0529-4")
-        .jsonPath("$[0].title").isEqualTo("Homo Deus: A Brief History of Tomorrow")
-        .jsonPath("$[0].cover_url").isEqualTo("https://images.isbndb.com/covers/39/36/9781784703936.jpg")
-        .jsonPath("$[0].price").isEqualTo(new BigDecimal("22.99"))
-        .jsonPath("$[0].is_available_online").isEqualTo(Boolean.FALSE)
-        .jsonPath("$[0].published_at").isEqualTo(LocalDate.parse("2017-01-01"))
-        .jsonPath("$[1].id").isEqualTo(2L)
-        .jsonPath("$[1].isbn").isEqualTo("978-9-7389-4434-3")
-        .jsonPath("$[1].title").isEqualTo("Sapiens: A Brief History of Humankind")
-        .jsonPath("$[1].cover_url").isEqualTo("https://images.isbndb.com/covers/60/97/9780062316097.jpg")
-        .jsonPath("$[1].price").isEqualTo(new BigDecimal("20.79"))
-        .jsonPath("$[1].is_available_online").isEqualTo(Boolean.FALSE)
-        .jsonPath("$[1].published_at").isEqualTo(LocalDate.parse("2022-12-01"));
+      .get()
+      .uri("/authors/{authorId}/books", 1L)
+      .exchange()
+      .expectStatus()
+      .isOk()
+      .expectHeader()
+      .contentType(MediaType.APPLICATION_JSON_VALUE)
+      .expectBody()
+      .jsonPath("$.length()").isEqualTo(2)
+      .jsonPath("$[0].id").isEqualTo(1L)
+      .jsonPath("$[0].isbn").isEqualTo("978-1-3035-0529-4")
+      .jsonPath("$[0].title").isEqualTo("Homo Deus: A Brief History of Tomorrow")
+      .jsonPath("$[0].cover_url").isEqualTo("https://images.isbndb.com/covers/39/36/9781784703936.jpg")
+      .jsonPath("$[0].price").isEqualTo(new BigDecimal("22.99"))
+      .jsonPath("$[0].is_available_online").isEqualTo(Boolean.FALSE)
+      .jsonPath("$[0].published_at").isEqualTo(LocalDate.parse("2017-01-01"))
+      .jsonPath("$[1].id").isEqualTo(2L)
+      .jsonPath("$[1].isbn").isEqualTo("978-9-7389-4434-3")
+      .jsonPath("$[1].title").isEqualTo("Sapiens: A Brief History of Humankind")
+      .jsonPath("$[1].cover_url").isEqualTo("https://images.isbndb.com/covers/60/97/9780062316097.jpg")
+      .jsonPath("$[1].price").isEqualTo(new BigDecimal("20.79"))
+      .jsonPath("$[1].is_available_online").isEqualTo(Boolean.FALSE)
+      .jsonPath("$[1].published_at").isEqualTo(LocalDate.parse("2022-12-01"));
   }
 }
