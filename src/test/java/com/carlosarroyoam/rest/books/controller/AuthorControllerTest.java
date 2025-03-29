@@ -118,8 +118,9 @@ class AuthorControllerTest {
   @Test
   @DisplayName("Should throw ResponseStatusException when find author by id with non existing id")
   void shouldReturnWhenFindAuthorByIdWithNonExistingId() throws Exception {
-    Mockito.when(authorService.findById(any())).thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND,
-        AppMessages.AUTHOR_NOT_FOUND_EXCEPTION));
+    Mockito.when(authorService.findById(any()))
+        .thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND,
+            AppMessages.AUTHOR_NOT_FOUND_EXCEPTION));
 
     MvcResult mvcResult = mockMvc.perform(get("/authors/{authorId}", 1L)
         .accept(MediaType.APPLICATION_JSON))
@@ -172,7 +173,8 @@ class AuthorControllerTest {
   void shouldUpdateAuthorWithNonExistingId() throws Exception {
     UpdateAuthorRequestDto requestDto = UpdateAuthorRequestDto.builder().name("Yuval Noah Harari").build();
 
-    Mockito.doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, AppMessages.AUTHOR_NOT_FOUND_EXCEPTION)).when(authorService)
+    Mockito.doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, AppMessages.AUTHOR_NOT_FOUND_EXCEPTION))
+        .when(authorService)
         .update(any(), any(UpdateAuthorRequestDto.class));
 
     MvcResult mvcResult = mockMvc.perform(put("/authors/{authorId}", 1L)
@@ -206,7 +208,8 @@ class AuthorControllerTest {
   @Test
   @DisplayName("Should throw ResponseStatusException when delete author with non existing id")
   void shouldThrowWhenDeleteAuthorWithNonExistingId() throws Exception {
-    Mockito.doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, AppMessages.AUTHOR_NOT_FOUND_EXCEPTION)).when(authorService)
+    Mockito.doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, AppMessages.AUTHOR_NOT_FOUND_EXCEPTION))
+        .when(authorService)
         .deleteById(any());
 
     MvcResult mvcResult = mockMvc.perform(delete("/authors/{authorId}", 1L)
@@ -247,8 +250,9 @@ class AuthorControllerTest {
   @Test
   @DisplayName("Should throw ResponseStatusException when find books by author id with non existing id")
   void shouldThrowWhenFindBooksByAuthorIdWithNonExistingId() throws Exception {
-    Mockito.when(authorService.findBooksByAuthorId(any())).thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND,
-        AppMessages.AUTHOR_NOT_FOUND_EXCEPTION));
+    Mockito.when(authorService.findBooksByAuthorId(any()))
+        .thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND,
+            AppMessages.AUTHOR_NOT_FOUND_EXCEPTION));
 
     MvcResult mvcResult = mockMvc.perform(get("/authors/{authorId}/books", 1L)
         .accept(MediaType.APPLICATION_JSON))

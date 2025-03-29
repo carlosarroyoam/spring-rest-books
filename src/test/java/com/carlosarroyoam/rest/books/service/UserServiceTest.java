@@ -202,9 +202,8 @@ public class UserServiceTest {
 
     Mockito.when(userRepository.findByUsername(any())).thenReturn(Optional.of(user));
 
-    org.springframework.security.core.userdetails.User userDetails =
-        (org.springframework.security.core.userdetails.User) userService
-            .loadUserByUsername("carroyom");
+    org.springframework.security.core.userdetails.User userDetails = (org.springframework.security.core.userdetails.User) userService
+        .loadUserByUsername("carroyom");
 
     assertThat(userDetails).isNotNull();
     assertThat(userDetails.getUsername()).isEqualTo("carroyom");

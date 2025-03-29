@@ -117,8 +117,9 @@ class UserControllerTest {
   @Test
   @DisplayName("Should throw ResponseStatusException when find user by id with non existing id")
   void shouldReturnWhenFindUserByIdWithNonExistingId() throws Exception {
-    Mockito.when(userService.findById(any())).thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND,
-        AppMessages.USER_NOT_FOUND_EXCEPTION));
+    Mockito.when(userService.findById(any()))
+        .thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND,
+            AppMessages.USER_NOT_FOUND_EXCEPTION));
 
     MvcResult mvcResult = mockMvc.perform(get("/users/{userId}", 1L)
         .accept(MediaType.APPLICATION_JSON))
@@ -169,8 +170,9 @@ class UserControllerTest {
         .roleId(1)
         .build();
 
-    Mockito.when(userService.create(any(CreateUserRequestDto.class))).thenThrow(new ResponseStatusException(
-        HttpStatus.BAD_REQUEST, AppMessages.USERNAME_ALREADY_EXISTS_EXCEPTION));
+    Mockito.when(userService.create(any(CreateUserRequestDto.class)))
+        .thenThrow(new ResponseStatusException(
+            HttpStatus.BAD_REQUEST, AppMessages.USERNAME_ALREADY_EXISTS_EXCEPTION));
 
     MvcResult mvcResult = mockMvc.perform(post("/users")
         .content(mapper.writeValueAsString(requestDto))
@@ -198,8 +200,9 @@ class UserControllerTest {
         .roleId(1)
         .build();
 
-    Mockito.when(userService.create(any(CreateUserRequestDto.class))).thenThrow(new ResponseStatusException(
-        HttpStatus.BAD_REQUEST, AppMessages.EMAIL_ALREADY_EXISTS_EXCEPTION));
+    Mockito.when(userService.create(any(CreateUserRequestDto.class)))
+        .thenThrow(new ResponseStatusException(
+            HttpStatus.BAD_REQUEST, AppMessages.EMAIL_ALREADY_EXISTS_EXCEPTION));
 
     MvcResult mvcResult = mockMvc.perform(post("/users")
         .content(mapper.writeValueAsString(requestDto))
@@ -241,7 +244,8 @@ class UserControllerTest {
         .age(Byte.valueOf("28"))
         .build();
 
-    Mockito.doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, AppMessages.USER_NOT_FOUND_EXCEPTION)).when(userService)
+    Mockito.doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, AppMessages.USER_NOT_FOUND_EXCEPTION))
+        .when(userService)
         .update(any(), any(UpdateUserRequestDto.class));
 
     MvcResult mvcResult = mockMvc.perform(put("/users/{userId}", 1L)
@@ -275,7 +279,8 @@ class UserControllerTest {
   @Test
   @DisplayName("Should throw ResponseStatusException when delete user with non existing id")
   void shouldThrowWhenDeleteUserWithNonExistingId() throws Exception {
-    Mockito.doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, AppMessages.USER_NOT_FOUND_EXCEPTION)).when(userService)
+    Mockito.doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, AppMessages.USER_NOT_FOUND_EXCEPTION))
+        .when(userService)
         .deleteById(any());
 
     MvcResult mvcResult = mockMvc.perform(delete("/users/{userId}", 1L)

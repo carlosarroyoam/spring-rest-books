@@ -35,7 +35,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.server.ResponseStatusException;
 
-
 @ExtendWith(MockitoExtension.class)
 class BookControllerTest {
   private MockMvc mockMvc;
@@ -121,8 +120,9 @@ class BookControllerTest {
   @Test
   @DisplayName("Should throw ResponseStatusException when find book by id with non existing id")
   void shouldReturnWhenFindBookByIdWithNonExistingId() throws Exception {
-    Mockito.when(bookService.findById(any())).thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND,
-        AppMessages.BOOK_NOT_FOUND_EXCEPTION));
+    Mockito.when(bookService.findById(any()))
+        .thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND,
+            AppMessages.BOOK_NOT_FOUND_EXCEPTION));
 
     MvcResult mvcResult = mockMvc.perform(get("/books/{bookId}", 1L)
         .accept(MediaType.APPLICATION_JSON))
@@ -175,8 +175,9 @@ class BookControllerTest {
         .isAvailableOnline(Boolean.TRUE)
         .build();
 
-    Mockito.when(bookService.create(any(CreateBookRequestDto.class))).thenThrow(new ResponseStatusException(
-        HttpStatus.BAD_REQUEST, AppMessages.ISBN_ALREADY_EXISTS_EXCEPTION));
+    Mockito.when(bookService.create(any(CreateBookRequestDto.class)))
+        .thenThrow(new ResponseStatusException(
+            HttpStatus.BAD_REQUEST, AppMessages.ISBN_ALREADY_EXISTS_EXCEPTION));
 
     MvcResult mvcResult = mockMvc.perform(post("/books")
         .content(mapper.writeValueAsString(requestDto))
@@ -226,7 +227,8 @@ class BookControllerTest {
         .isAvailableOnline(Boolean.TRUE)
         .build();
 
-    Mockito.doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, AppMessages.BOOK_NOT_FOUND_EXCEPTION)).when(bookService)
+    Mockito.doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, AppMessages.BOOK_NOT_FOUND_EXCEPTION))
+        .when(bookService)
         .update(any(), any(UpdateBookRequestDto.class));
 
     MvcResult mvcResult = mockMvc.perform(put("/books/{bookId}", 1L)
@@ -260,7 +262,8 @@ class BookControllerTest {
   @Test
   @DisplayName("Should throw ResponseStatusException when delete book with non existing id")
   void shouldThrowWhenDeleteBookWithNonExistingId() throws Exception {
-    Mockito.doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, AppMessages.BOOK_NOT_FOUND_EXCEPTION)).when(bookService)
+    Mockito.doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, AppMessages.BOOK_NOT_FOUND_EXCEPTION))
+        .when(bookService)
         .deleteById(any());
 
     MvcResult mvcResult = mockMvc.perform(delete("/books/{bookId}", 1L)
@@ -301,8 +304,9 @@ class BookControllerTest {
   @Test
   @DisplayName("Should throw ResponseStatusException when find authors by book id with non existing id")
   void shouldThrowWhenFindAuthorsByBookIdWithNonExistingId() throws Exception {
-    Mockito.when(bookService.findAuthorsByBookId(any())).thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND,
-        AppMessages.BOOK_NOT_FOUND_EXCEPTION));
+    Mockito.when(bookService.findAuthorsByBookId(any()))
+        .thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND,
+            AppMessages.BOOK_NOT_FOUND_EXCEPTION));
 
     MvcResult mvcResult = mockMvc.perform(get("/books/{bookId}/authors", 1L)
         .accept(MediaType.APPLICATION_JSON))
