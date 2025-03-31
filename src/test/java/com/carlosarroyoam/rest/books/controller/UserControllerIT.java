@@ -62,36 +62,21 @@ class UserControllerIT {
         .expectHeader()
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .expectBody()
-        .jsonPath("$.length()")
-        .isEqualTo(2)
-        .jsonPath("$[0].id")
-        .isEqualTo(1L)
-        .jsonPath("$[0].name")
-        .isEqualTo("Carlos Alberto Arroyo Martínez")
-        .jsonPath("$[0].age")
-        .isEqualTo("28")
-        .jsonPath("$[0].email")
-        .isEqualTo("carroyom@mail.com")
-        .jsonPath("$[0].username")
-        .isEqualTo("carroyom")
-        .jsonPath("$[0].role_id")
-        .isEqualTo(1)
-        .jsonPath("$[0].is_active")
-        .isEqualTo(Boolean.TRUE)
-        .jsonPath("$[1].id")
-        .isEqualTo(2L)
-        .jsonPath("$[1].name")
-        .isEqualTo("Cathy Stefania Guido Rojas")
-        .jsonPath("$[1].age")
-        .isEqualTo("28")
-        .jsonPath("$[1].email")
-        .isEqualTo("cguidor@mail.com")
-        .jsonPath("$[1].username")
-        .isEqualTo("cguidor")
-        .jsonPath("$[1].role_id")
-        .isEqualTo(2)
-        .jsonPath("$[1].is_active")
-        .isEqualTo(Boolean.TRUE);
+        .jsonPath("$.length()").isEqualTo(2)
+        .jsonPath("$[0].id").isEqualTo(1L)
+        .jsonPath("$[0].name").isEqualTo("Carlos Alberto Arroyo Martínez")
+        .jsonPath("$[0].age").isEqualTo("28")
+        .jsonPath("$[0].email").isEqualTo("carroyom@mail.com")
+        .jsonPath("$[0].username").isEqualTo("carroyom")
+        .jsonPath("$[0].role_id").isEqualTo(1)
+        .jsonPath("$[0].is_active").isEqualTo(Boolean.TRUE)
+        .jsonPath("$[1].id").isEqualTo(2L)
+        .jsonPath("$[1].name").isEqualTo("Cathy Stefania Guido Rojas")
+        .jsonPath("$[1].age").isEqualTo("28")
+        .jsonPath("$[1].email").isEqualTo("cguidor@mail.com")
+        .jsonPath("$[1].username").isEqualTo("cguidor")
+        .jsonPath("$[1].role_id").isEqualTo(2)
+        .jsonPath("$[1].is_active").isEqualTo(Boolean.TRUE);
   }
 
   @Test
@@ -106,20 +91,13 @@ class UserControllerIT {
         .expectHeader()
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .expectBody()
-        .jsonPath("$.id")
-        .isEqualTo(1L)
-        .jsonPath("$.name")
-        .isEqualTo("Carlos Alberto Arroyo Martínez")
-        .jsonPath("$.age")
-        .isEqualTo("28")
-        .jsonPath("$.email")
-        .isEqualTo("carroyom@mail.com")
-        .jsonPath("$.username")
-        .isEqualTo("carroyom")
-        .jsonPath("$.role_id")
-        .isEqualTo(1)
-        .jsonPath("$.is_active")
-        .isEqualTo(Boolean.TRUE);
+        .jsonPath("$.id").isEqualTo(1L)
+        .jsonPath("$.name").isEqualTo("Carlos Alberto Arroyo Martínez")
+        .jsonPath("$.age").isEqualTo("28")
+        .jsonPath("$.email").isEqualTo("carroyom@mail.com")
+        .jsonPath("$.username").isEqualTo("carroyom")
+        .jsonPath("$.role_id").isEqualTo(1)
+        .jsonPath("$.is_active").isEqualTo(Boolean.TRUE);
   }
 
   @Test
@@ -134,12 +112,9 @@ class UserControllerIT {
         .expectHeader()
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .expectBody()
-        .jsonPath("$.error")
-        .isEqualTo("Not Found")
-        .jsonPath("$.message")
-        .isEqualTo("User not found")
-        .jsonPath("$.status")
-        .isEqualTo(404);
+        .jsonPath("$.error").isEqualTo("Not Found")
+        .jsonPath("$.message").isEqualTo("User not found")
+        .jsonPath("$.status").isEqualTo(404);
   }
 
   @Test
@@ -185,12 +160,9 @@ class UserControllerIT {
         .expectHeader()
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .expectBody()
-        .jsonPath("$.error")
-        .isEqualTo("Bad Request")
-        .jsonPath("$.message")
-        .isEqualTo("Username already exists")
-        .jsonPath("$.status")
-        .isEqualTo(400);
+        .jsonPath("$.error").isEqualTo("Bad Request")
+        .jsonPath("$.message").isEqualTo("Username already exists")
+        .jsonPath("$.status").isEqualTo(400);
   }
 
   @Test
@@ -214,12 +186,9 @@ class UserControllerIT {
         .expectHeader()
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .expectBody()
-        .jsonPath("$.error")
-        .isEqualTo("Bad Request")
-        .jsonPath("$.message")
-        .isEqualTo("Email already exists")
-        .jsonPath("$.status")
-        .isEqualTo(400);
+        .jsonPath("$.error").isEqualTo("Bad Request")
+        .jsonPath("$.message").isEqualTo("Email already exists")
+        .jsonPath("$.status").isEqualTo(400);
   }
 
   @Test
@@ -257,12 +226,9 @@ class UserControllerIT {
         .expectHeader()
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .expectBody()
-        .jsonPath("$.error")
-        .isEqualTo("Not Found")
-        .jsonPath("$.message")
-        .isEqualTo("User not found")
-        .jsonPath("$.status")
-        .isEqualTo(404);
+        .jsonPath("$.error").isEqualTo("Not Found")
+        .jsonPath("$.message").isEqualTo("User not found")
+        .jsonPath("$.status").isEqualTo(404);
   }
 
   @Test
@@ -288,11 +254,8 @@ class UserControllerIT {
         .expectHeader()
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .expectBody()
-        .jsonPath("$.error")
-        .isEqualTo("Not Found")
-        .jsonPath("$.message")
-        .isEqualTo("User not found")
-        .jsonPath("$.status")
-        .isEqualTo(404);
+        .jsonPath("$.error").isEqualTo("Not Found")
+        .jsonPath("$.message").isEqualTo("User not found")
+        .jsonPath("$.status").isEqualTo(404);
   }
 }

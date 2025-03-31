@@ -46,16 +46,11 @@ class AuthorControllerIT {
         .expectHeader()
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .expectBody()
-        .jsonPath("$.length()")
-        .isEqualTo(2)
-        .jsonPath("$[0].id")
-        .isEqualTo(1L)
-        .jsonPath("$[0].name")
-        .isEqualTo("Yuval Noah Harari")
-        .jsonPath("$[1].id")
-        .isEqualTo(2L)
-        .jsonPath("$[1].name")
-        .isEqualTo("Itzik Yahav");
+        .jsonPath("$.length()").isEqualTo(2)
+        .jsonPath("$[0].id").isEqualTo(1L)
+        .jsonPath("$[0].name").isEqualTo("Yuval Noah Harari")
+        .jsonPath("$[1].id").isEqualTo(2L)
+        .jsonPath("$[1].name").isEqualTo("Itzik Yahav");
   }
 
   @Test
@@ -70,10 +65,8 @@ class AuthorControllerIT {
         .expectHeader()
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .expectBody()
-        .jsonPath("$.id")
-        .isEqualTo(1L)
-        .jsonPath("$.name")
-        .isEqualTo("Yuval Noah Harari");
+        .jsonPath("$.id").isEqualTo(1L)
+        .jsonPath("$.name").isEqualTo("Yuval Noah Harari");
   }
 
   @Test
@@ -88,12 +81,9 @@ class AuthorControllerIT {
         .expectHeader()
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .expectBody()
-        .jsonPath("$.error")
-        .isEqualTo("Not Found")
-        .jsonPath("$.message")
-        .isEqualTo("Author not found")
-        .jsonPath("$.status")
-        .isEqualTo(404);
+        .jsonPath("$.error").isEqualTo("Not Found")
+        .jsonPath("$.message").isEqualTo("Author not found")
+        .jsonPath("$.status").isEqualTo(404);
   }
 
   @Test
@@ -141,12 +131,9 @@ class AuthorControllerIT {
         .expectHeader()
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .expectBody()
-        .jsonPath("$.error")
-        .isEqualTo("Not Found")
-        .jsonPath("$.message")
-        .isEqualTo("Author not found")
-        .jsonPath("$.status")
-        .isEqualTo(404);
+        .jsonPath("$.error").isEqualTo("Not Found")
+        .jsonPath("$.message").isEqualTo("Author not found")
+        .jsonPath("$.status").isEqualTo(404);
   }
 
   @Test
@@ -172,12 +159,9 @@ class AuthorControllerIT {
         .expectHeader()
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .expectBody()
-        .jsonPath("$.error")
-        .isEqualTo("Not Found")
-        .jsonPath("$.message")
-        .isEqualTo("Author not found")
-        .jsonPath("$.status")
-        .isEqualTo(404);
+        .jsonPath("$.error").isEqualTo("Not Found")
+        .jsonPath("$.message").isEqualTo("Author not found")
+        .jsonPath("$.status").isEqualTo(404);
   }
 
   @Test
@@ -192,35 +176,20 @@ class AuthorControllerIT {
         .expectHeader()
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .expectBody()
-        .jsonPath("$.length()")
-        .isEqualTo(2)
-        .jsonPath("$[0].id")
-        .isEqualTo(1L)
-        .jsonPath("$[0].isbn")
-        .isEqualTo("978-1-3035-0529-4")
-        .jsonPath("$[0].title")
-        .isEqualTo("Homo Deus: A Brief History of Tomorrow")
-        .jsonPath("$[0].cover_url")
-        .isEqualTo("https://images.isbndb.com/covers/39/36/9781784703936.jpg")
-        .jsonPath("$[0].price")
-        .isEqualTo(new BigDecimal("22.99"))
-        .jsonPath("$[0].is_available_online")
-        .isEqualTo(Boolean.FALSE)
-        .jsonPath("$[0].published_at")
-        .isEqualTo(LocalDate.parse("2017-01-01"))
-        .jsonPath("$[1].id")
-        .isEqualTo(2L)
-        .jsonPath("$[1].isbn")
-        .isEqualTo("978-9-7389-4434-3")
-        .jsonPath("$[1].title")
-        .isEqualTo("Sapiens: A Brief History of Humankind")
-        .jsonPath("$[1].cover_url")
-        .isEqualTo("https://images.isbndb.com/covers/60/97/9780062316097.jpg")
-        .jsonPath("$[1].price")
-        .isEqualTo(new BigDecimal("20.79"))
-        .jsonPath("$[1].is_available_online")
-        .isEqualTo(Boolean.FALSE)
-        .jsonPath("$[1].published_at")
-        .isEqualTo(LocalDate.parse("2022-12-01"));
+        .jsonPath("$.length()").isEqualTo(2)
+        .jsonPath("$[0].id").isEqualTo(1L)
+        .jsonPath("$[0].isbn").isEqualTo("978-1-3035-0529-4")
+        .jsonPath("$[0].title").isEqualTo("Homo Deus: A Brief History of Tomorrow")
+        .jsonPath("$[0].cover_url").isEqualTo("https://images.isbndb.com/covers/39/36/9781784703936.jpg")
+        .jsonPath("$[0].price").isEqualTo(new BigDecimal("22.99"))
+        .jsonPath("$[0].is_available_online").isEqualTo(Boolean.FALSE)
+        .jsonPath("$[0].published_at").isEqualTo(LocalDate.parse("2017-01-01"))
+        .jsonPath("$[1].id").isEqualTo(2L)
+        .jsonPath("$[1].isbn").isEqualTo("978-9-7389-4434-3")
+        .jsonPath("$[1].title").isEqualTo("Sapiens: A Brief History of Humankind")
+        .jsonPath("$[1].cover_url").isEqualTo("https://images.isbndb.com/covers/60/97/9780062316097.jpg")
+        .jsonPath("$[1].price").isEqualTo(new BigDecimal("20.79"))
+        .jsonPath("$[1].is_available_online").isEqualTo(Boolean.FALSE)
+        .jsonPath("$[1].published_at").isEqualTo(LocalDate.parse("2022-12-01"));
   }
 }
