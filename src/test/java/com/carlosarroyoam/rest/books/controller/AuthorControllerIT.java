@@ -165,8 +165,8 @@ class AuthorControllerIT {
   }
 
   @Test
-  @DisplayName("Should throw AppExceptionDto when find books by author id with non existing id")
-  void shouldThrowWhenFindBooksByAuthorIdWithNonExistingId() throws Exception {
+  @DisplayName("Should return List<BookDto> when find books by author id with existing id")
+  void shouldReturnWhenFindBooksByAuthorIdWithExistingId() throws Exception {
     webTestClient
         .get()
         .uri("/authors/{authorId}/books", 1L)
