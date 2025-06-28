@@ -20,10 +20,10 @@ public class JwtAuthConverter implements Converter<Jwt, AbstractAuthenticationTo
   @SuppressWarnings("unchecked")
   private Collection<GrantedAuthority> extractAuthorities(Jwt jwt) {
     var authorities = new ArrayList<GrantedAuthority>();
-    var realm_access = jwt.getClaimAsMap("realm_access");
+    var realmAccess = jwt.getClaimAsMap("realm_access");
 
-    if (realm_access != null && realm_access.get("roles") != null) {
-      var roles = realm_access.get("roles");
+    if (realmAccess != null && realmAccess.get("roles") != null) {
+      var roles = realmAccess.get("roles");
       if (roles instanceof List l) {
         l.forEach(role -> authorities.add(new SimpleGrantedAuthority("ROLE_" + role)));
       }

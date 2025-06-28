@@ -41,9 +41,7 @@ class WebSecurityConfig {
     http.headers(headers -> headers.frameOptions(FrameOptionsConfig::sameOrigin));
     http.sessionManagement(
         sessions -> sessions.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-    http.oauth2ResourceServer(oauth2 -> {
-      oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(customJwtConverter()));
-    });
+    http.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(customJwtConverter())));
 
     http.authorizeHttpRequests(
         requests -> requests.requestMatchers(AntPathRequestMatcher.antMatcher("/"))

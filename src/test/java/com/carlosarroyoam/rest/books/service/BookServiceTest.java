@@ -41,7 +41,7 @@ class BookServiceTest {
   void shouldReturnListOfBooks() {
     List<Book> books = List.of(Book.builder().build(), Book.builder().build());
 
-    Page<Book> pagedBooks = new PageImpl<Book>(books);
+    Page<Book> pagedBooks = new PageImpl<>(books);
 
     Mockito.when(bookRepository.findAll(any(Pageable.class))).thenReturn(pagedBooks);
 

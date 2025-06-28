@@ -9,7 +9,6 @@ import com.carlosarroyoam.rest.books.entity.User;
 import com.carlosarroyoam.rest.books.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.slf4j.Logger;
@@ -38,6 +37,7 @@ public class UserService implements UserDetailsService {
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
     User userByUsername = userRepository.findByUsername(username).orElseThrow(() -> {
+      log.warn(AppMessages.USER_NOT_FOUND_EXCEPTION);
       return new UsernameNotFoundException("Username not found: " + username);
     });
 
@@ -124,8 +124,7 @@ public class UserService implements UserDetailsService {
     boolean accountNonExpired = user.getIsActive();
     boolean credentialsNonExpired = user.getIsActive();
     boolean accountNonLocked = user.getIsActive();
-    Collection<? extends GrantedAuthority> authorities = Arrays
-        .asList(new SimpleGrantedAuthority(user.getRole().getTitle()));
+    Collection<? extends GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(user.getRole().getTitle()));
 
     return new org.springframework.security.core.userdetails.User(username, defaultPassword,
         enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
