@@ -12,9 +12,6 @@ public class AppMessages {
   public static final String EMAIL_ALREADY_EXISTS_EXCEPTION = "Email already exists";
   public static final String USERNAME_ALREADY_EXISTS_EXCEPTION = "Username already exists";
 
-  public static final String UNAUTHORIZED_CREDENTIALS_EXCEPTION = "Incorrect username or password";
-  public static final String PASSWORDS_NOT_MATCH_EXCEPTION = "Passwords doesn't match";
-
   private AppMessages() {
     throw new IllegalAccessError(ILLEGAL_ACCESS_EXCEPTION);
   }
