@@ -18,7 +18,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -41,31 +40,26 @@ class WebSecurityConfig {
     http.headers(headers -> headers.frameOptions(FrameOptionsConfig::sameOrigin));
     http.sessionManagement(
         sessions -> sessions.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-    http.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(customJwtConverter())));
+    http.oauth2ResourceServer(
+        oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(customJwtConverter())));
 
-    http.authorizeHttpRequests(
-        requests -> requests.requestMatchers(AntPathRequestMatcher.antMatcher("/"))
-            .permitAll()
-            .requestMatchers(AntPathRequestMatcher.antMatcher(("/auth/**")))
-            .permitAll()
-            .requestMatchers(AntPathRequestMatcher.antMatcher("/swagger-ui/**"))
-            .permitAll()
-            .requestMatchers(AntPathRequestMatcher.antMatcher("/api-docs/**"))
-            .permitAll()
-            .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**"))
-            .permitAll()
-            .anyRequest()
-            .authenticated());
+    http.authorizeHttpRequests(requests -> requests.requestMatchers("/swagger-ui/**")
+        .permitAll()
+        .requestMatchers("/api-docs/**")
+        .permitAll()
+        .requestMatchers("/h2-console/**")
+        .permitAll()
+        .requestMatchers("/actuator/**")
+        .permitAll()
+        .anyRequest()
+        .authenticated());
 
     return http.build();
   }
 
   @Bean
   AuthenticationManager authenticationManager(UserDetailsService userDetailsService) {
-    var authenticationProvider = new DaoAuthenticationProvider();
-    authenticationProvider.setUserDetailsService(userDetailsService);
-
-    return new ProviderManager(authenticationProvider);
+    return new ProviderManager(new DaoAuthenticationProvider(userDetailsService));
   }
 
   @Bean
