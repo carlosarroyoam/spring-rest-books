@@ -124,7 +124,8 @@ public class UserService implements UserDetailsService {
     boolean accountNonExpired = user.getIsActive();
     boolean credentialsNonExpired = user.getIsActive();
     boolean accountNonLocked = user.getIsActive();
-    Collection<? extends GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(user.getRole().getTitle()));
+    Collection<? extends GrantedAuthority> authorities = List
+        .of(new SimpleGrantedAuthority(user.getRole().getTitle()));
 
     return new org.springframework.security.core.userdetails.User(username, defaultPassword,
         enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);

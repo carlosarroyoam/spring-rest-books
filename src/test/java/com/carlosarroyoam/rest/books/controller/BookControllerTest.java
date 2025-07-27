@@ -47,8 +47,10 @@ class BookControllerTest {
   private BookController bookController;
 
   @BeforeEach
-  public void setup() {
-    mockMvc = MockMvcBuilders.standaloneSetup(bookController).setControllerAdvice(ControllerAdvisor.class).build();
+  void setup() {
+    mockMvc = MockMvcBuilders.standaloneSetup(bookController)
+        .setControllerAdvice(ControllerAdvisor.class)
+        .build();
     mapper = new ObjectMapper();
     mapper.findAndRegisterModules();
   }
@@ -60,20 +62,17 @@ class BookControllerTest {
 
     Mockito.when(bookService.findAll(any(), any())).thenReturn(books);
 
-    MvcResult mvcResult = mockMvc.perform(get("/books")
-        .queryParam("page", "0")
+    MvcResult mvcResult = mockMvc.perform(get("/books").queryParam("page", "0")
         .queryParam("size", "25")
-        .accept(MediaType.APPLICATION_JSON))
-        .andReturn();
+        .accept(MediaType.APPLICATION_JSON)).andReturn();
 
     String responseJson = mvcResult.getResponse().getContentAsString();
-    CollectionType collectionType = mapper.getTypeFactory().constructCollectionType(List.class, BookDto.class);
+    CollectionType collectionType = mapper.getTypeFactory()
+        .constructCollectionType(List.class, BookDto.class);
     List<BookDto> responseDto = mapper.readValue(responseJson, collectionType);
 
     assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
-    assertThat(responseDto).isNotNull();
-    assertThat(responseDto).isNotEmpty();
-    assertThat(responseDto).size().isEqualTo(2);
+    assertThat(responseDto).isNotNull().isNotEmpty().size().isEqualTo(2);
   }
 
   @Test
@@ -83,19 +82,17 @@ class BookControllerTest {
 
     Mockito.when(bookService.findAll(any(), any())).thenReturn(books);
 
-    MvcResult mvcResult = mockMvc.perform(get("/books")
-        .queryParam("page", "0")
+    MvcResult mvcResult = mockMvc.perform(get("/books").queryParam("page", "0")
         .queryParam("size", "25")
-        .accept(MediaType.APPLICATION_JSON))
-        .andReturn();
+        .accept(MediaType.APPLICATION_JSON)).andReturn();
 
     String responseJson = mvcResult.getResponse().getContentAsString();
-    CollectionType collectionType = mapper.getTypeFactory().constructCollectionType(List.class, BookDto.class);
+    CollectionType collectionType = mapper.getTypeFactory()
+        .constructCollectionType(List.class, BookDto.class);
     List<BookDto> responseDto = mapper.readValue(responseJson, collectionType);
 
     assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
-    assertThat(responseDto).isNotNull();
-    assertThat(responseDto).isEmpty();
+    assertThat(responseDto).isNotNull().isEmpty();
   }
 
   @Test
@@ -105,8 +102,8 @@ class BookControllerTest {
 
     Mockito.when(bookService.findById(any())).thenReturn(book);
 
-    MvcResult mvcResult = mockMvc.perform(get("/books/{bookId}", 1L)
-        .accept(MediaType.APPLICATION_JSON))
+    MvcResult mvcResult = mockMvc
+        .perform(get("/books/{bookId}", 1L).accept(MediaType.APPLICATION_JSON))
         .andReturn();
 
     String responseJson = mvcResult.getResponse().getContentAsString();
@@ -124,8 +121,8 @@ class BookControllerTest {
         .thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND,
             AppMessages.BOOK_NOT_FOUND_EXCEPTION));
 
-    MvcResult mvcResult = mockMvc.perform(get("/books/{bookId}", 1L)
-        .accept(MediaType.APPLICATION_JSON))
+    MvcResult mvcResult = mockMvc
+        .perform(get("/books/{bookId}", 1L).accept(MediaType.APPLICATION_JSON))
         .andReturn();
 
     String responseJson = mvcResult.getResponse().getContentAsString();
@@ -154,9 +151,9 @@ class BookControllerTest {
 
     Mockito.when(bookService.create(any(CreateBookRequestDto.class))).thenReturn(book);
 
-    MvcResult mvcResult = mockMvc.perform(post("/books")
-        .content(mapper.writeValueAsString(requestDto))
-        .contentType(MediaType.APPLICATION_JSON))
+    MvcResult mvcResult = mockMvc
+        .perform(post("/books").content(mapper.writeValueAsString(requestDto))
+            .contentType(MediaType.APPLICATION_JSON))
         .andReturn();
 
     assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.CREATED.value());
@@ -176,12 +173,12 @@ class BookControllerTest {
         .build();
 
     Mockito.when(bookService.create(any(CreateBookRequestDto.class)))
-        .thenThrow(new ResponseStatusException(
-            HttpStatus.BAD_REQUEST, AppMessages.ISBN_ALREADY_EXISTS_EXCEPTION));
+        .thenThrow(new ResponseStatusException(HttpStatus.BAD_REQUEST,
+            AppMessages.ISBN_ALREADY_EXISTS_EXCEPTION));
 
-    MvcResult mvcResult = mockMvc.perform(post("/books")
-        .content(mapper.writeValueAsString(requestDto))
-        .contentType(MediaType.APPLICATION_JSON))
+    MvcResult mvcResult = mockMvc
+        .perform(post("/books").content(mapper.writeValueAsString(requestDto))
+            .contentType(MediaType.APPLICATION_JSON))
         .andReturn();
 
     String responseJson = mvcResult.getResponse().getContentAsString();
@@ -206,10 +203,10 @@ class BookControllerTest {
         .isAvailableOnline(Boolean.TRUE)
         .build();
 
-    MvcResult mvcResult = mockMvc.perform(put("/books/{bookId}", 1L)
-        .content(mapper.writeValueAsString(requestDto))
-        .contentType(MediaType.APPLICATION_JSON)
-        .accept(MediaType.APPLICATION_JSON))
+    MvcResult mvcResult = mockMvc
+        .perform(put("/books/{bookId}", 1L).content(mapper.writeValueAsString(requestDto))
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON))
         .andReturn();
 
     assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
@@ -227,14 +224,16 @@ class BookControllerTest {
         .isAvailableOnline(Boolean.TRUE)
         .build();
 
-    Mockito.doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, AppMessages.BOOK_NOT_FOUND_EXCEPTION))
+    Mockito
+        .doThrow(
+            new ResponseStatusException(HttpStatus.NOT_FOUND, AppMessages.BOOK_NOT_FOUND_EXCEPTION))
         .when(bookService)
         .update(any(), any(UpdateBookRequestDto.class));
 
-    MvcResult mvcResult = mockMvc.perform(put("/books/{bookId}", 1L)
-        .content(mapper.writeValueAsString(requestDto))
-        .contentType(MediaType.APPLICATION_JSON)
-        .accept(MediaType.APPLICATION_JSON))
+    MvcResult mvcResult = mockMvc
+        .perform(put("/books/{bookId}", 1L).content(mapper.writeValueAsString(requestDto))
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON))
         .andReturn();
 
     String responseJson = mvcResult.getResponse().getContentAsString();
@@ -252,8 +251,8 @@ class BookControllerTest {
   void shouldDeleteBookWithExistingId() throws Exception {
     Mockito.doNothing().when(bookService).deleteById(any());
 
-    MvcResult mvcResult = mockMvc.perform(delete("/books/{bookId}", 1L)
-        .accept(MediaType.APPLICATION_JSON))
+    MvcResult mvcResult = mockMvc
+        .perform(delete("/books/{bookId}", 1L).accept(MediaType.APPLICATION_JSON))
         .andReturn();
 
     assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
@@ -262,12 +261,14 @@ class BookControllerTest {
   @Test
   @DisplayName("Should throw ResponseStatusException when delete book with non existing id")
   void shouldThrowWhenDeleteBookWithNonExistingId() throws Exception {
-    Mockito.doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, AppMessages.BOOK_NOT_FOUND_EXCEPTION))
+    Mockito
+        .doThrow(
+            new ResponseStatusException(HttpStatus.NOT_FOUND, AppMessages.BOOK_NOT_FOUND_EXCEPTION))
         .when(bookService)
         .deleteById(any());
 
-    MvcResult mvcResult = mockMvc.perform(delete("/books/{bookId}", 1L)
-        .accept(MediaType.APPLICATION_JSON))
+    MvcResult mvcResult = mockMvc
+        .perform(delete("/books/{bookId}", 1L).accept(MediaType.APPLICATION_JSON))
         .andReturn();
 
     String responseJson = mvcResult.getResponse().getContentAsString();
@@ -287,18 +288,17 @@ class BookControllerTest {
 
     Mockito.when(bookService.findAuthorsByBookId(any())).thenReturn(authors);
 
-    MvcResult mvcResult = mockMvc.perform(get("/books/{bookId}/authors", 1L)
-        .accept(MediaType.APPLICATION_JSON))
+    MvcResult mvcResult = mockMvc
+        .perform(get("/books/{bookId}/authors", 1L).accept(MediaType.APPLICATION_JSON))
         .andReturn();
 
     String responseJson = mvcResult.getResponse().getContentAsString();
-    CollectionType collectionType = mapper.getTypeFactory().constructCollectionType(List.class, AuthorDto.class);
+    CollectionType collectionType = mapper.getTypeFactory()
+        .constructCollectionType(List.class, AuthorDto.class);
     List<AuthorDto> responseDto = mapper.readValue(responseJson, collectionType);
 
     assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
-    assertThat(responseDto).isNotNull();
-    assertThat(responseDto).isNotEmpty();
-    assertThat(responseDto).size().isEqualTo(2);
+    assertThat(responseDto).isNotNull().isNotEmpty().size().isEqualTo(2);
   }
 
   @Test
@@ -308,8 +308,8 @@ class BookControllerTest {
         .thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND,
             AppMessages.BOOK_NOT_FOUND_EXCEPTION));
 
-    MvcResult mvcResult = mockMvc.perform(get("/books/{bookId}/authors", 1L)
-        .accept(MediaType.APPLICATION_JSON))
+    MvcResult mvcResult = mockMvc
+        .perform(get("/books/{bookId}/authors", 1L).accept(MediaType.APPLICATION_JSON))
         .andReturn();
 
     String responseJson = mvcResult.getResponse().getContentAsString();

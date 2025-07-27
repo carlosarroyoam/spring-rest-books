@@ -45,8 +45,10 @@ class AuthorControllerTest {
   private AuthorController authorController;
 
   @BeforeEach
-  public void setup() {
-    mockMvc = MockMvcBuilders.standaloneSetup(authorController).setControllerAdvice(ControllerAdvisor.class).build();
+  void setup() {
+    mockMvc = MockMvcBuilders.standaloneSetup(authorController)
+        .setControllerAdvice(ControllerAdvisor.class)
+        .build();
     mapper = new ObjectMapper();
     mapper.findAndRegisterModules();
   }
@@ -58,20 +60,17 @@ class AuthorControllerTest {
 
     Mockito.when(authorService.findAll(any(), any())).thenReturn(authors);
 
-    MvcResult mvcResult = mockMvc.perform(get("/authors")
-        .queryParam("page", "0")
+    MvcResult mvcResult = mockMvc.perform(get("/authors").queryParam("page", "0")
         .queryParam("size", "25")
-        .accept(MediaType.APPLICATION_JSON))
-        .andReturn();
+        .accept(MediaType.APPLICATION_JSON)).andReturn();
 
     String responseJson = mvcResult.getResponse().getContentAsString();
-    CollectionType collectionType = mapper.getTypeFactory().constructCollectionType(List.class, AuthorDto.class);
+    CollectionType collectionType = mapper.getTypeFactory()
+        .constructCollectionType(List.class, AuthorDto.class);
     List<AuthorDto> responseDto = mapper.readValue(responseJson, collectionType);
 
     assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
-    assertThat(responseDto).isNotNull();
-    assertThat(responseDto).isNotEmpty();
-    assertThat(responseDto).size().isEqualTo(2);
+    assertThat(responseDto).isNotNull().isNotEmpty().size().isEqualTo(2);
   }
 
   @Test
@@ -81,19 +80,17 @@ class AuthorControllerTest {
 
     Mockito.when(authorService.findAll(any(), any())).thenReturn(authors);
 
-    MvcResult mvcResult = mockMvc.perform(get("/authors")
-        .queryParam("page", "0")
+    MvcResult mvcResult = mockMvc.perform(get("/authors").queryParam("page", "0")
         .queryParam("size", "25")
-        .accept(MediaType.APPLICATION_JSON))
-        .andReturn();
+        .accept(MediaType.APPLICATION_JSON)).andReturn();
 
     String responseJson = mvcResult.getResponse().getContentAsString();
-    CollectionType collectionType = mapper.getTypeFactory().constructCollectionType(List.class, AuthorDto.class);
+    CollectionType collectionType = mapper.getTypeFactory()
+        .constructCollectionType(List.class, AuthorDto.class);
     List<AuthorDto> responseDto = mapper.readValue(responseJson, collectionType);
 
     assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
-    assertThat(responseDto).isNotNull();
-    assertThat(responseDto).isEmpty();
+    assertThat(responseDto).isNotNull().isEmpty();
   }
 
   @Test
@@ -103,8 +100,8 @@ class AuthorControllerTest {
 
     Mockito.when(authorService.findById(any())).thenReturn(author);
 
-    MvcResult mvcResult = mockMvc.perform(get("/authors/{authorId}", 1L)
-        .accept(MediaType.APPLICATION_JSON))
+    MvcResult mvcResult = mockMvc
+        .perform(get("/authors/{authorId}", 1L).accept(MediaType.APPLICATION_JSON))
         .andReturn();
 
     String responseJson = mvcResult.getResponse().getContentAsString();
@@ -122,8 +119,8 @@ class AuthorControllerTest {
         .thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND,
             AppMessages.AUTHOR_NOT_FOUND_EXCEPTION));
 
-    MvcResult mvcResult = mockMvc.perform(get("/authors/{authorId}", 1L)
-        .accept(MediaType.APPLICATION_JSON))
+    MvcResult mvcResult = mockMvc
+        .perform(get("/authors/{authorId}", 1L).accept(MediaType.APPLICATION_JSON))
         .andReturn();
 
     String responseJson = mvcResult.getResponse().getContentAsString();
@@ -139,30 +136,35 @@ class AuthorControllerTest {
   @Test
   @DisplayName("Should return when create an author with valid data")
   void shouldReturnWhenCreateAuthorWithValidData() throws Exception {
-    CreateAuthorRequestDto requestDto = CreateAuthorRequestDto.builder().name("Yuval Noah Harari").build();
+    CreateAuthorRequestDto requestDto = CreateAuthorRequestDto.builder()
+        .name("Yuval Noah Harari")
+        .build();
 
     AuthorDto author = AuthorDto.builder().id(1L).build();
 
     Mockito.when(authorService.create(any(CreateAuthorRequestDto.class))).thenReturn(author);
 
-    MvcResult mvcResult = mockMvc.perform(post("/authors")
-        .content(mapper.writeValueAsString(requestDto))
-        .contentType(MediaType.APPLICATION_JSON))
+    MvcResult mvcResult = mockMvc
+        .perform(post("/authors").content(mapper.writeValueAsString(requestDto))
+            .contentType(MediaType.APPLICATION_JSON))
         .andReturn();
 
     assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.CREATED.value());
-    assertThat(mvcResult.getResponse().getHeader("location")).isEqualTo("http://localhost/authors/1");
+    assertThat(mvcResult.getResponse().getHeader("location"))
+        .isEqualTo("http://localhost/authors/1");
   }
 
   @Test
   @DisplayName("Should update author with valid data")
   void shouldUpdateAuthorWithValidData() throws Exception {
-    UpdateAuthorRequestDto requestDto = UpdateAuthorRequestDto.builder().name("Yuval Noah Harari").build();
+    UpdateAuthorRequestDto requestDto = UpdateAuthorRequestDto.builder()
+        .name("Yuval Noah Harari")
+        .build();
 
-    MvcResult mvcResult = mockMvc.perform(put("/authors/{authorId}", 1L)
-        .content(mapper.writeValueAsString(requestDto))
-        .contentType(MediaType.APPLICATION_JSON)
-        .accept(MediaType.APPLICATION_JSON))
+    MvcResult mvcResult = mockMvc
+        .perform(put("/authors/{authorId}", 1L).content(mapper.writeValueAsString(requestDto))
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON))
         .andReturn();
 
     assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
@@ -171,16 +173,20 @@ class AuthorControllerTest {
   @Test
   @DisplayName("Should throw ResponseStatusException when update author with non existing id")
   void shouldUpdateAuthorWithNonExistingId() throws Exception {
-    UpdateAuthorRequestDto requestDto = UpdateAuthorRequestDto.builder().name("Yuval Noah Harari").build();
+    UpdateAuthorRequestDto requestDto = UpdateAuthorRequestDto.builder()
+        .name("Yuval Noah Harari")
+        .build();
 
-    Mockito.doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, AppMessages.AUTHOR_NOT_FOUND_EXCEPTION))
+    Mockito
+        .doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND,
+            AppMessages.AUTHOR_NOT_FOUND_EXCEPTION))
         .when(authorService)
         .update(any(), any(UpdateAuthorRequestDto.class));
 
-    MvcResult mvcResult = mockMvc.perform(put("/authors/{authorId}", 1L)
-        .content(mapper.writeValueAsString(requestDto))
-        .contentType(MediaType.APPLICATION_JSON)
-        .accept(MediaType.APPLICATION_JSON))
+    MvcResult mvcResult = mockMvc
+        .perform(put("/authors/{authorId}", 1L).content(mapper.writeValueAsString(requestDto))
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON))
         .andReturn();
 
     String responseJson = mvcResult.getResponse().getContentAsString();
@@ -198,8 +204,8 @@ class AuthorControllerTest {
   void shouldDeleteAuthorWithExistingId() throws Exception {
     Mockito.doNothing().when(authorService).deleteById(any());
 
-    MvcResult mvcResult = mockMvc.perform(delete("/authors/{authorId}", 1L)
-        .accept(MediaType.APPLICATION_JSON))
+    MvcResult mvcResult = mockMvc
+        .perform(delete("/authors/{authorId}", 1L).accept(MediaType.APPLICATION_JSON))
         .andReturn();
 
     assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
@@ -208,12 +214,14 @@ class AuthorControllerTest {
   @Test
   @DisplayName("Should throw ResponseStatusException when delete author with non existing id")
   void shouldThrowWhenDeleteAuthorWithNonExistingId() throws Exception {
-    Mockito.doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, AppMessages.AUTHOR_NOT_FOUND_EXCEPTION))
+    Mockito
+        .doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND,
+            AppMessages.AUTHOR_NOT_FOUND_EXCEPTION))
         .when(authorService)
         .deleteById(any());
 
-    MvcResult mvcResult = mockMvc.perform(delete("/authors/{authorId}", 1L)
-        .accept(MediaType.APPLICATION_JSON))
+    MvcResult mvcResult = mockMvc
+        .perform(delete("/authors/{authorId}", 1L).accept(MediaType.APPLICATION_JSON))
         .andReturn();
 
     String responseJson = mvcResult.getResponse().getContentAsString();
@@ -233,18 +241,17 @@ class AuthorControllerTest {
 
     Mockito.when(authorService.findBooksByAuthorId(any())).thenReturn(books);
 
-    MvcResult mvcResult = mockMvc.perform(get("/authors/{authorId}/books", 1L)
-        .accept(MediaType.APPLICATION_JSON))
+    MvcResult mvcResult = mockMvc
+        .perform(get("/authors/{authorId}/books", 1L).accept(MediaType.APPLICATION_JSON))
         .andReturn();
 
     String responseJson = mvcResult.getResponse().getContentAsString();
-    CollectionType collectionType = mapper.getTypeFactory().constructCollectionType(List.class, BookDto.class);
+    CollectionType collectionType = mapper.getTypeFactory()
+        .constructCollectionType(List.class, BookDto.class);
     List<BookDto> responseDto = mapper.readValue(responseJson, collectionType);
 
     assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
-    assertThat(responseDto).isNotNull();
-    assertThat(responseDto).isNotEmpty();
-    assertThat(responseDto).size().isEqualTo(2);
+    assertThat(responseDto).isNotNull().isNotEmpty().size().isEqualTo(2);
   }
 
   @Test
@@ -254,8 +261,8 @@ class AuthorControllerTest {
         .thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND,
             AppMessages.AUTHOR_NOT_FOUND_EXCEPTION));
 
-    MvcResult mvcResult = mockMvc.perform(get("/authors/{authorId}/books", 1L)
-        .accept(MediaType.APPLICATION_JSON))
+    MvcResult mvcResult = mockMvc
+        .perform(get("/authors/{authorId}/books", 1L).accept(MediaType.APPLICATION_JSON))
         .andReturn();
 
     String responseJson = mvcResult.getResponse().getContentAsString();

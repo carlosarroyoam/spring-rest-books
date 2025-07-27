@@ -28,7 +28,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.server.ResponseStatusException;
 
 @ExtendWith(MockitoExtension.class)
-public class UserServiceTest {
+class UserServiceTest {
   @Mock
   private UserRepository userRepository;
 
@@ -46,9 +46,7 @@ public class UserServiceTest {
 
     List<UserDto> usersDto = userService.findAll(0, 25);
 
-    assertThat(usersDto).isNotNull();
-    assertThat(usersDto).isNotEmpty();
-    assertThat(usersDto).size().isEqualTo(2);
+    assertThat(usersDto).isNotNull().isNotEmpty().size().isEqualTo(2);
   }
 
   @Test
@@ -82,10 +80,7 @@ public class UserServiceTest {
         .email("carroyom@mail.com")
         .build();
 
-    User user = User.builder()
-        .username("carroyom")
-        .email("carroyom@mail.com")
-        .build();
+    User user = User.builder().username("carroyom").email("carroyom@mail.com").build();
 
     Mockito.when(userRepository.existsByUsername(any())).thenReturn(false);
     Mockito.when(userRepository.existsByEmail(any())).thenReturn(false);
@@ -132,11 +127,7 @@ public class UserServiceTest {
         .age(Byte.valueOf("29"))
         .build();
 
-    User user = User.builder()
-        .id(1L)
-        .name("Carlos Arroyo")
-        .age(Byte.valueOf("28"))
-        .build();
+    User user = User.builder().id(1L).name("Carlos Arroyo").age(Byte.valueOf("28")).build();
 
     Mockito.when(userRepository.findById(any())).thenReturn(Optional.of(user));
     Mockito.when(userRepository.save(any(User.class))).thenReturn(user);

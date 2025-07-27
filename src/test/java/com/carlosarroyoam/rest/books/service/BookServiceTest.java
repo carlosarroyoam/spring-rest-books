@@ -47,9 +47,7 @@ class BookServiceTest {
 
     List<BookDto> booksDto = bookService.findAll(0, 25);
 
-    assertThat(booksDto).isNotNull();
-    assertThat(booksDto).isNotEmpty();
-    assertThat(booksDto).size().isEqualTo(2);
+    assertThat(booksDto).isNotNull().isNotEmpty().size().isEqualTo(2);
   }
 
   @Test
@@ -135,7 +133,7 @@ class BookServiceTest {
     Mockito.verify(bookRepository).save(book);
     assertThat(book.getTitle()).isEqualTo("Sapiens: A Brief History of Humankind");
     assertThat(book.getPrice()).isEqualTo(new BigDecimal("20.99"));
-    assertThat(book.getIsAvailableOnline()).isEqualTo(true);
+    assertThat(book.getIsAvailableOnline()).isTrue();
   }
 
   @Test
@@ -183,9 +181,7 @@ class BookServiceTest {
 
     List<AuthorDto> authors = bookService.findAuthorsByBookId(1L);
 
-    assertThat(authors).isNotNull();
-    assertThat(authors).isNotEmpty();
-    assertThat(authors).size().isEqualTo(2);
+    assertThat(authors).isNotNull().isNotEmpty().size().isEqualTo(2);
   }
 
   @Test

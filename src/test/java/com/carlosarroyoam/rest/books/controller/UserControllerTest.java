@@ -44,8 +44,10 @@ class UserControllerTest {
   private UserController userController;
 
   @BeforeEach
-  public void setup() {
-    mockMvc = MockMvcBuilders.standaloneSetup(userController).setControllerAdvice(ControllerAdvisor.class).build();
+  void setup() {
+    mockMvc = MockMvcBuilders.standaloneSetup(userController)
+        .setControllerAdvice(ControllerAdvisor.class)
+        .build();
     mapper = new ObjectMapper();
     mapper.findAndRegisterModules();
   }
@@ -57,20 +59,17 @@ class UserControllerTest {
 
     Mockito.when(userService.findAll(any(), any())).thenReturn(users);
 
-    MvcResult mvcResult = mockMvc.perform(get("/users")
-        .queryParam("page", "0")
+    MvcResult mvcResult = mockMvc.perform(get("/users").queryParam("page", "0")
         .queryParam("size", "25")
-        .accept(MediaType.APPLICATION_JSON))
-        .andReturn();
+        .accept(MediaType.APPLICATION_JSON)).andReturn();
 
     String responseJson = mvcResult.getResponse().getContentAsString();
-    CollectionType collectionType = mapper.getTypeFactory().constructCollectionType(List.class, UserDto.class);
+    CollectionType collectionType = mapper.getTypeFactory()
+        .constructCollectionType(List.class, UserDto.class);
     List<UserDto> responseDto = mapper.readValue(responseJson, collectionType);
 
     assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
-    assertThat(responseDto).isNotNull();
-    assertThat(responseDto).isNotEmpty();
-    assertThat(responseDto).size().isEqualTo(2);
+    assertThat(responseDto).isNotNull().isNotEmpty().size().isEqualTo(2);
   }
 
   @Test
@@ -80,19 +79,17 @@ class UserControllerTest {
 
     Mockito.when(userService.findAll(any(), any())).thenReturn(users);
 
-    MvcResult mvcResult = mockMvc.perform(get("/users")
-        .queryParam("page", "0")
+    MvcResult mvcResult = mockMvc.perform(get("/users").queryParam("page", "0")
         .queryParam("size", "25")
-        .accept(MediaType.APPLICATION_JSON))
-        .andReturn();
+        .accept(MediaType.APPLICATION_JSON)).andReturn();
 
     String responseJson = mvcResult.getResponse().getContentAsString();
-    CollectionType collectionType = mapper.getTypeFactory().constructCollectionType(List.class, UserDto.class);
+    CollectionType collectionType = mapper.getTypeFactory()
+        .constructCollectionType(List.class, UserDto.class);
     List<UserDto> responseDto = mapper.readValue(responseJson, collectionType);
 
     assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
-    assertThat(responseDto).isNotNull();
-    assertThat(responseDto).isEmpty();
+    assertThat(responseDto).isNotNull().isEmpty();
   }
 
   @Test
@@ -102,8 +99,8 @@ class UserControllerTest {
 
     Mockito.when(userService.findById(any())).thenReturn(user);
 
-    MvcResult mvcResult = mockMvc.perform(get("/users/{userId}", 1L)
-        .accept(MediaType.APPLICATION_JSON))
+    MvcResult mvcResult = mockMvc
+        .perform(get("/users/{userId}", 1L).accept(MediaType.APPLICATION_JSON))
         .andReturn();
 
     String responseJson = mvcResult.getResponse().getContentAsString();
@@ -121,8 +118,8 @@ class UserControllerTest {
         .thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND,
             AppMessages.USER_NOT_FOUND_EXCEPTION));
 
-    MvcResult mvcResult = mockMvc.perform(get("/users/{userId}", 1L)
-        .accept(MediaType.APPLICATION_JSON))
+    MvcResult mvcResult = mockMvc
+        .perform(get("/users/{userId}", 1L).accept(MediaType.APPLICATION_JSON))
         .andReturn();
 
     String responseJson = mvcResult.getResponse().getContentAsString();
@@ -150,9 +147,9 @@ class UserControllerTest {
 
     Mockito.when(userService.create(any(CreateUserRequestDto.class))).thenReturn(user);
 
-    MvcResult mvcResult = mockMvc.perform(post("/users")
-        .content(mapper.writeValueAsString(requestDto))
-        .contentType(MediaType.APPLICATION_JSON))
+    MvcResult mvcResult = mockMvc
+        .perform(post("/users").content(mapper.writeValueAsString(requestDto))
+            .contentType(MediaType.APPLICATION_JSON))
         .andReturn();
 
     assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.CREATED.value());
@@ -171,12 +168,12 @@ class UserControllerTest {
         .build();
 
     Mockito.when(userService.create(any(CreateUserRequestDto.class)))
-        .thenThrow(new ResponseStatusException(
-            HttpStatus.BAD_REQUEST, AppMessages.USERNAME_ALREADY_EXISTS_EXCEPTION));
+        .thenThrow(new ResponseStatusException(HttpStatus.BAD_REQUEST,
+            AppMessages.USERNAME_ALREADY_EXISTS_EXCEPTION));
 
-    MvcResult mvcResult = mockMvc.perform(post("/users")
-        .content(mapper.writeValueAsString(requestDto))
-        .contentType(MediaType.APPLICATION_JSON))
+    MvcResult mvcResult = mockMvc
+        .perform(post("/users").content(mapper.writeValueAsString(requestDto))
+            .contentType(MediaType.APPLICATION_JSON))
         .andReturn();
 
     String responseJson = mvcResult.getResponse().getContentAsString();
@@ -201,12 +198,12 @@ class UserControllerTest {
         .build();
 
     Mockito.when(userService.create(any(CreateUserRequestDto.class)))
-        .thenThrow(new ResponseStatusException(
-            HttpStatus.BAD_REQUEST, AppMessages.EMAIL_ALREADY_EXISTS_EXCEPTION));
+        .thenThrow(new ResponseStatusException(HttpStatus.BAD_REQUEST,
+            AppMessages.EMAIL_ALREADY_EXISTS_EXCEPTION));
 
-    MvcResult mvcResult = mockMvc.perform(post("/users")
-        .content(mapper.writeValueAsString(requestDto))
-        .contentType(MediaType.APPLICATION_JSON))
+    MvcResult mvcResult = mockMvc
+        .perform(post("/users").content(mapper.writeValueAsString(requestDto))
+            .contentType(MediaType.APPLICATION_JSON))
         .andReturn();
 
     String responseJson = mvcResult.getResponse().getContentAsString();
@@ -227,10 +224,10 @@ class UserControllerTest {
         .age(Byte.valueOf("28"))
         .build();
 
-    MvcResult mvcResult = mockMvc.perform(put("/users/{userId}", 1L)
-        .content(mapper.writeValueAsString(requestDto))
-        .contentType(MediaType.APPLICATION_JSON)
-        .accept(MediaType.APPLICATION_JSON))
+    MvcResult mvcResult = mockMvc
+        .perform(put("/users/{userId}", 1L).content(mapper.writeValueAsString(requestDto))
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON))
         .andReturn();
 
     assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
@@ -244,14 +241,16 @@ class UserControllerTest {
         .age(Byte.valueOf("28"))
         .build();
 
-    Mockito.doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, AppMessages.USER_NOT_FOUND_EXCEPTION))
+    Mockito
+        .doThrow(
+            new ResponseStatusException(HttpStatus.NOT_FOUND, AppMessages.USER_NOT_FOUND_EXCEPTION))
         .when(userService)
         .update(any(), any(UpdateUserRequestDto.class));
 
-    MvcResult mvcResult = mockMvc.perform(put("/users/{userId}", 1L)
-        .content(mapper.writeValueAsString(requestDto))
-        .contentType(MediaType.APPLICATION_JSON)
-        .accept(MediaType.APPLICATION_JSON))
+    MvcResult mvcResult = mockMvc
+        .perform(put("/users/{userId}", 1L).content(mapper.writeValueAsString(requestDto))
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON))
         .andReturn();
 
     String responseJson = mvcResult.getResponse().getContentAsString();
@@ -269,8 +268,8 @@ class UserControllerTest {
   void shouldDeleteUserWithExistingId() throws Exception {
     Mockito.doNothing().when(userService).deleteById(any());
 
-    MvcResult mvcResult = mockMvc.perform(delete("/users/{userId}", 1L)
-        .accept(MediaType.APPLICATION_JSON))
+    MvcResult mvcResult = mockMvc
+        .perform(delete("/users/{userId}", 1L).accept(MediaType.APPLICATION_JSON))
         .andReturn();
 
     assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
@@ -279,12 +278,14 @@ class UserControllerTest {
   @Test
   @DisplayName("Should throw ResponseStatusException when delete user with non existing id")
   void shouldThrowWhenDeleteUserWithNonExistingId() throws Exception {
-    Mockito.doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, AppMessages.USER_NOT_FOUND_EXCEPTION))
+    Mockito
+        .doThrow(
+            new ResponseStatusException(HttpStatus.NOT_FOUND, AppMessages.USER_NOT_FOUND_EXCEPTION))
         .when(userService)
         .deleteById(any());
 
-    MvcResult mvcResult = mockMvc.perform(delete("/users/{userId}", 1L)
-        .accept(MediaType.APPLICATION_JSON))
+    MvcResult mvcResult = mockMvc
+        .perform(delete("/users/{userId}", 1L).accept(MediaType.APPLICATION_JSON))
         .andReturn();
 
     String responseJson = mvcResult.getResponse().getContentAsString();

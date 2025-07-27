@@ -14,8 +14,7 @@ public class StringUtils {
   public static List<String> commaSeparatedToList(String input) {
     return Optional.ofNullable(input)
         .filter(value -> !value.isEmpty())
-        .map(value -> Arrays.stream(value.replace("\"", "")
-            .split(",", -1))
+        .map(value -> Arrays.stream(value.replace("\"", "").split(",", -1))
             .map(String::trim)
             .toList())
         .orElse(Collections.emptyList());

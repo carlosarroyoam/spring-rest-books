@@ -9,39 +9,33 @@ import org.junit.jupiter.api.Test;
 class StringUtilsTest {
   @Test
   @DisplayName("Should return List<String> when comma separated to list with values")
-  public void shouldReturnEmtyListWhenCommaSeparatedToListWithValues() {
+  void shouldReturnEmtyListWhenCommaSeparatedToListWithValues() {
     List<String> result = StringUtils.commaSeparatedToList("value1, value2, value3");
 
-    assertThat(result).isNotNull();
-    assertThat(result).isNotEmpty();
-    assertThat(result).size().isEqualTo(3);
+    assertThat(result).isNotNull().isNotEmpty().size().isEqualTo(3);
   }
 
   @Test
   @DisplayName("Should return List<String> when comma separated to list with unquoted values")
-  public void shouldReturnEmtyListWhenCommaSeparatedToListWithUnquotedValues() {
+  void shouldReturnEmtyListWhenCommaSeparatedToListWithUnquotedValues() {
     List<String> result = StringUtils.commaSeparatedToList("\"value1\", \"value2\", \"value3\"");
 
-    assertThat(result).isNotNull();
-    assertThat(result).isNotEmpty();
-    assertThat(result).size().isEqualTo(3);
+    assertThat(result).isNotNull().isNotEmpty().size().isEqualTo(3);
   }
 
   @Test
   @DisplayName("Should return empty List<String> when comma separated to list with emtpy string")
-  public void shouldReturnEmtyListWhenCommaSeparatedToListWithEmptyString() {
+  void shouldReturnEmtyListWhenCommaSeparatedToListWithEmptyString() {
     List<String> result = StringUtils.commaSeparatedToList("");
 
-    assertThat(result).isNotNull();
-    assertThat(result).isEmpty();
+    assertThat(result).isNotNull().isEmpty();
   }
 
   @Test
   @DisplayName("Should return empty List<String> when comma separated to list with nulls")
-  public void shouldReturnEmtyListWhenCommaSeparatedToListWithNulls() {
+  void shouldReturnEmtyListWhenCommaSeparatedToListWithNulls() {
     List<String> result = StringUtils.commaSeparatedToList(null);
 
-    assertThat(result).isNotNull();
-    assertThat(result).isEmpty();
+    assertThat(result).isNotNull().isEmpty();
   }
 }

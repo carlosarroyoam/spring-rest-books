@@ -28,7 +28,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 @ExtendWith(MockitoExtension.class)
-public class AuthorServiceTest {
+class AuthorServiceTest {
   @Mock
   private AuthorRepository authorRepository;
 
@@ -46,9 +46,7 @@ public class AuthorServiceTest {
 
     List<AuthorDto> authorsDto = authorService.findAll(0, 25);
 
-    assertThat(authorsDto).isNotNull();
-    assertThat(authorsDto).isNotEmpty();
-    assertThat(authorsDto).size().isEqualTo(2);
+    assertThat(authorsDto).isNotNull().isNotEmpty().size().isEqualTo(2);
   }
 
   @Test
@@ -81,9 +79,7 @@ public class AuthorServiceTest {
         .name("Yuval Noah Harari")
         .build();
 
-    Author author = Author.builder()
-        .name("Yuval Noah Harari")
-        .build();
+    Author author = Author.builder().name("Yuval Noah Harari").build();
 
     Mockito.when(authorRepository.save(any(Author.class))).thenReturn(author);
 
@@ -100,10 +96,7 @@ public class AuthorServiceTest {
         .name("Yuval Noah Harari")
         .build();
 
-    Author author = Author.builder()
-        .id(1L)
-        .name("Yuval Harari")
-        .build();
+    Author author = Author.builder().id(1L).name("Yuval Harari").build();
 
     Mockito.when(authorRepository.findById(any())).thenReturn(Optional.of(author));
     Mockito.when(authorRepository.save(any(Author.class))).thenReturn(author);
@@ -160,9 +153,7 @@ public class AuthorServiceTest {
 
     List<BookDto> books = authorService.findBooksByAuthorId(1L);
 
-    assertThat(books).isNotNull();
-    assertThat(books).isNotEmpty();
-    assertThat(books).size().isEqualTo(2);
+    assertThat(books).isNotNull().isNotEmpty().size().isEqualTo(2);
   }
 
   @Test

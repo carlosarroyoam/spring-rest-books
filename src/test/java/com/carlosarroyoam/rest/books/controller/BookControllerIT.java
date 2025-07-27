@@ -35,12 +35,10 @@ class BookControllerIT {
     mapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
     mapper.findAndRegisterModules();
 
-    ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder()
-        .codecs(configurer -> {
-          configurer.defaultCodecs().jackson2JsonEncoder(new Jackson2JsonEncoder(mapper));
-          configurer.defaultCodecs().jackson2JsonDecoder(new Jackson2JsonDecoder(mapper));
-        })
-        .build();
+    ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder().codecs(configurer -> {
+      configurer.defaultCodecs().jackson2JsonEncoder(new Jackson2JsonEncoder(mapper));
+      configurer.defaultCodecs().jackson2JsonDecoder(new Jackson2JsonDecoder(mapper));
+    }).build();
 
     webTestClient = MockMvcWebTestClient.bindToApplicationContext(context)
         .apply(SecurityMockMvcConfigurers.springSecurity())
@@ -52,8 +50,7 @@ class BookControllerIT {
   @Test
   @DisplayName("Should return List<BookDto> when find all books")
   void shouldReturnListOfBooks() {
-    webTestClient
-        .get()
+    webTestClient.get()
         .uri(uriBuilder -> uriBuilder.path("/books")
             .queryParam("page", "0")
             .queryParam("size", "25")
@@ -64,28 +61,42 @@ class BookControllerIT {
         .expectHeader()
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .expectBody()
-        .jsonPath("$.length()").isEqualTo(2)
-        .jsonPath("$[0].id").isEqualTo(1L)
-        .jsonPath("$[0].isbn").isEqualTo("978-1-3035-0529-4")
-        .jsonPath("$[0].title").isEqualTo("Homo Deus: A Brief History of Tomorrow")
-        .jsonPath("$[0].cover_url").isEqualTo("https://images.isbndb.com/covers/39/36/9781784703936.jpg")
-        .jsonPath("$[0].price").isEqualTo(new BigDecimal("22.99"))
-        .jsonPath("$[0].is_available_online").isEqualTo(Boolean.FALSE)
-        .jsonPath("$[0].published_at").isEqualTo(LocalDate.parse("2017-01-01"))
-        .jsonPath("$[1].id").isEqualTo(2L)
-        .jsonPath("$[1].isbn").isEqualTo("978-9-7389-4434-3")
-        .jsonPath("$[1].title").isEqualTo("Sapiens: A Brief History of Humankind")
-        .jsonPath("$[1].cover_url").isEqualTo("https://images.isbndb.com/covers/60/97/9780062316097.jpg")
-        .jsonPath("$[1].price").isEqualTo(new BigDecimal("20.79"))
-        .jsonPath("$[1].is_available_online").isEqualTo(Boolean.FALSE)
-        .jsonPath("$[1].published_at").isEqualTo(LocalDate.parse("2022-12-01"));
+        .jsonPath("$.length()")
+        .isEqualTo(2)
+        .jsonPath("$[0].id")
+        .isEqualTo(1L)
+        .jsonPath("$[0].isbn")
+        .isEqualTo("978-1-3035-0529-4")
+        .jsonPath("$[0].title")
+        .isEqualTo("Homo Deus: A Brief History of Tomorrow")
+        .jsonPath("$[0].cover_url")
+        .isEqualTo("https://images.isbndb.com/covers/39/36/9781784703936.jpg")
+        .jsonPath("$[0].price")
+        .isEqualTo(new BigDecimal("22.99"))
+        .jsonPath("$[0].is_available_online")
+        .isEqualTo(Boolean.FALSE)
+        .jsonPath("$[0].published_at")
+        .isEqualTo(LocalDate.parse("2017-01-01"))
+        .jsonPath("$[1].id")
+        .isEqualTo(2L)
+        .jsonPath("$[1].isbn")
+        .isEqualTo("978-9-7389-4434-3")
+        .jsonPath("$[1].title")
+        .isEqualTo("Sapiens: A Brief History of Humankind")
+        .jsonPath("$[1].cover_url")
+        .isEqualTo("https://images.isbndb.com/covers/60/97/9780062316097.jpg")
+        .jsonPath("$[1].price")
+        .isEqualTo(new BigDecimal("20.79"))
+        .jsonPath("$[1].is_available_online")
+        .isEqualTo(Boolean.FALSE)
+        .jsonPath("$[1].published_at")
+        .isEqualTo(LocalDate.parse("2022-12-01"));
   }
 
   @Test
   @DisplayName("Should return BookDto when find book by id with existing id")
   void shouldReturnWhenFindBookByIdWithExistingId() {
-    webTestClient
-        .get()
+    webTestClient.get()
         .uri("/books/{bookId}", 1L)
         .exchange()
         .expectStatus()
@@ -93,20 +104,26 @@ class BookControllerIT {
         .expectHeader()
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .expectBody()
-        .jsonPath("$.id").isEqualTo(1L)
-        .jsonPath("$.isbn").isEqualTo("978-1-3035-0529-4")
-        .jsonPath("$.title").isEqualTo("Homo Deus: A Brief History of Tomorrow")
-        .jsonPath("$.cover_url").isEqualTo("https://images.isbndb.com/covers/39/36/9781784703936.jpg")
-        .jsonPath("$.price").isEqualTo(new BigDecimal("22.99"))
-        .jsonPath("$.is_available_online").isEqualTo(Boolean.FALSE)
-        .jsonPath("$.published_at").isEqualTo(LocalDate.parse("2017-01-01"));
+        .jsonPath("$.id")
+        .isEqualTo(1L)
+        .jsonPath("$.isbn")
+        .isEqualTo("978-1-3035-0529-4")
+        .jsonPath("$.title")
+        .isEqualTo("Homo Deus: A Brief History of Tomorrow")
+        .jsonPath("$.cover_url")
+        .isEqualTo("https://images.isbndb.com/covers/39/36/9781784703936.jpg")
+        .jsonPath("$.price")
+        .isEqualTo(new BigDecimal("22.99"))
+        .jsonPath("$.is_available_online")
+        .isEqualTo(Boolean.FALSE)
+        .jsonPath("$.published_at")
+        .isEqualTo(LocalDate.parse("2017-01-01"));
   }
 
   @Test
   @DisplayName("Should throw AppExceptionDto when find book by id with non existing id")
   void shouldReturnWhenFindBookByIdWithNonExistingId() {
-    webTestClient
-        .get()
+    webTestClient.get()
         .uri("/books/{bookId}", 1000L)
         .exchange()
         .expectStatus()
@@ -114,9 +131,12 @@ class BookControllerIT {
         .expectHeader()
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .expectBody()
-        .jsonPath("$.error").isEqualTo("Not Found")
-        .jsonPath("$.message").isEqualTo("Book not found")
-        .jsonPath("$.status").isEqualTo(404);
+        .jsonPath("$.error")
+        .isEqualTo("Not Found")
+        .jsonPath("$.message")
+        .isEqualTo("Book not found")
+        .jsonPath("$.status")
+        .isEqualTo(404);
   }
 
   @Test
@@ -131,8 +151,7 @@ class BookControllerIT {
         .isAvailableOnline(Boolean.TRUE)
         .build();
 
-    webTestClient
-        .post()
+    webTestClient.post()
         .uri("/books")
         .body(Mono.just(requestDto), CreateBookRequestDto.class)
         .exchange()
@@ -154,8 +173,7 @@ class BookControllerIT {
         .isAvailableOnline(Boolean.TRUE)
         .build();
 
-    webTestClient
-        .post()
+    webTestClient.post()
         .uri("/books")
         .body(Mono.just(requestDto), CreateBookRequestDto.class)
         .exchange()
@@ -164,9 +182,12 @@ class BookControllerIT {
         .expectHeader()
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .expectBody()
-        .jsonPath("$.error").isEqualTo("Bad Request")
-        .jsonPath("$.message").isEqualTo("ISBN already exists")
-        .jsonPath("$.status").isEqualTo(400);
+        .jsonPath("$.error")
+        .isEqualTo("Bad Request")
+        .jsonPath("$.message")
+        .isEqualTo("ISBN already exists")
+        .jsonPath("$.status")
+        .isEqualTo(400);
   }
 
   @Test
@@ -181,8 +202,7 @@ class BookControllerIT {
         .isAvailableOnline(Boolean.TRUE)
         .build();
 
-    webTestClient
-        .put()
+    webTestClient.put()
         .uri("/books/{bookId}", 1L)
         .body(Mono.just(requestDto), UpdateBookRequestDto.class)
         .exchange()
@@ -202,8 +222,7 @@ class BookControllerIT {
         .isAvailableOnline(Boolean.TRUE)
         .build();
 
-    webTestClient
-        .put()
+    webTestClient.put()
         .uri("/books/{bookId}", 1000L)
         .body(Mono.just(requestDto), UpdateBookRequestDto.class)
         .exchange()
@@ -212,27 +231,24 @@ class BookControllerIT {
         .expectHeader()
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .expectBody()
-        .jsonPath("$.error").isEqualTo("Not Found")
-        .jsonPath("$.message").isEqualTo("Book not found")
-        .jsonPath("$.status").isEqualTo(404);
+        .jsonPath("$.error")
+        .isEqualTo("Not Found")
+        .jsonPath("$.message")
+        .isEqualTo("Book not found")
+        .jsonPath("$.status")
+        .isEqualTo(404);
   }
 
   @Test
   @DisplayName("Should delete book with existing id")
   void shouldDeleteBookWithExistingId() {
-    webTestClient
-        .delete()
-        .uri("/books/{bookId}", 1L)
-        .exchange()
-        .expectStatus()
-        .isNoContent();
+    webTestClient.delete().uri("/books/{bookId}", 1L).exchange().expectStatus().isNoContent();
   }
 
   @Test
   @DisplayName("Should throw ResponseStatusException when delete book with non existing id")
   void shouldThrowWhenDeleteBookWithNonExistingId() {
-    webTestClient
-        .delete()
+    webTestClient.delete()
         .uri("/books/{bookId}", 1000L)
         .exchange()
         .expectStatus()
@@ -240,16 +256,18 @@ class BookControllerIT {
         .expectHeader()
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .expectBody()
-        .jsonPath("$.error").isEqualTo("Not Found")
-        .jsonPath("$.message").isEqualTo("Book not found")
-        .jsonPath("$.status").isEqualTo(404);
+        .jsonPath("$.error")
+        .isEqualTo("Not Found")
+        .jsonPath("$.message")
+        .isEqualTo("Book not found")
+        .jsonPath("$.status")
+        .isEqualTo(404);
   }
 
   @Test
   @DisplayName("Should return List<AuthorDto> when find authors by book id with existing id")
   void shouldReturnWhenFindAuthorsByBookIdWithExistingId() {
-    webTestClient
-        .get()
+    webTestClient.get()
         .uri("/books/{bookId}/authors", 1L)
         .exchange()
         .expectStatus()
@@ -257,10 +275,15 @@ class BookControllerIT {
         .expectHeader()
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .expectBody()
-        .jsonPath("$.length()").isEqualTo(2)
-        .jsonPath("$[0].id").isEqualTo(1L)
-        .jsonPath("$[0].name").isEqualTo("Yuval Noah Harari")
-        .jsonPath("$[1].id").isEqualTo(2L)
-        .jsonPath("$[1].name").isEqualTo("Itzik Yahav");
+        .jsonPath("$.length()")
+        .isEqualTo(2)
+        .jsonPath("$[0].id")
+        .isEqualTo(1L)
+        .jsonPath("$[0].name")
+        .isEqualTo("Yuval Noah Harari")
+        .jsonPath("$[1].id")
+        .isEqualTo(2L)
+        .jsonPath("$[1].name")
+        .isEqualTo("Itzik Yahav");
   }
 }

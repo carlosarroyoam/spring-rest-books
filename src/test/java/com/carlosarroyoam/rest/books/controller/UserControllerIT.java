@@ -33,12 +33,10 @@ class UserControllerIT {
     mapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
     mapper.findAndRegisterModules();
 
-    ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder()
-        .codecs(configurer -> {
-          configurer.defaultCodecs().jackson2JsonEncoder(new Jackson2JsonEncoder(mapper));
-          configurer.defaultCodecs().jackson2JsonDecoder(new Jackson2JsonDecoder(mapper));
-        })
-        .build();
+    ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder().codecs(configurer -> {
+      configurer.defaultCodecs().jackson2JsonEncoder(new Jackson2JsonEncoder(mapper));
+      configurer.defaultCodecs().jackson2JsonDecoder(new Jackson2JsonDecoder(mapper));
+    }).build();
 
     webTestClient = MockMvcWebTestClient.bindToApplicationContext(context)
         .apply(SecurityMockMvcConfigurers.springSecurity())
@@ -49,9 +47,8 @@ class UserControllerIT {
 
   @Test
   @DisplayName("Should return List<UserDto> when find all users")
-  void shouldReturnListOfUsers() throws Exception {
-    webTestClient
-        .get()
+  void shouldReturnListOfUsers() {
+    webTestClient.get()
         .uri(uriBuilder -> uriBuilder.path("/users")
             .queryParam("page", "0")
             .queryParam("size", "25")
@@ -62,28 +59,42 @@ class UserControllerIT {
         .expectHeader()
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .expectBody()
-        .jsonPath("$.length()").isEqualTo(2)
-        .jsonPath("$[0].id").isEqualTo(1L)
-        .jsonPath("$[0].name").isEqualTo("Carlos Alberto Arroyo Martínez")
-        .jsonPath("$[0].age").isEqualTo("28")
-        .jsonPath("$[0].email").isEqualTo("carroyom@mail.com")
-        .jsonPath("$[0].username").isEqualTo("carroyom")
-        .jsonPath("$[0].role_id").isEqualTo(1)
-        .jsonPath("$[0].is_active").isEqualTo(Boolean.TRUE)
-        .jsonPath("$[1].id").isEqualTo(2L)
-        .jsonPath("$[1].name").isEqualTo("Cathy Stefania Guido Rojas")
-        .jsonPath("$[1].age").isEqualTo("28")
-        .jsonPath("$[1].email").isEqualTo("cguidor@mail.com")
-        .jsonPath("$[1].username").isEqualTo("cguidor")
-        .jsonPath("$[1].role_id").isEqualTo(2)
-        .jsonPath("$[1].is_active").isEqualTo(Boolean.TRUE);
+        .jsonPath("$.length()")
+        .isEqualTo(2)
+        .jsonPath("$[0].id")
+        .isEqualTo(1L)
+        .jsonPath("$[0].name")
+        .isEqualTo("Carlos Alberto Arroyo Martínez")
+        .jsonPath("$[0].age")
+        .isEqualTo("28")
+        .jsonPath("$[0].email")
+        .isEqualTo("carroyom@mail.com")
+        .jsonPath("$[0].username")
+        .isEqualTo("carroyom")
+        .jsonPath("$[0].role_id")
+        .isEqualTo(1)
+        .jsonPath("$[0].is_active")
+        .isEqualTo(Boolean.TRUE)
+        .jsonPath("$[1].id")
+        .isEqualTo(2L)
+        .jsonPath("$[1].name")
+        .isEqualTo("Cathy Stefania Guido Rojas")
+        .jsonPath("$[1].age")
+        .isEqualTo("28")
+        .jsonPath("$[1].email")
+        .isEqualTo("cguidor@mail.com")
+        .jsonPath("$[1].username")
+        .isEqualTo("cguidor")
+        .jsonPath("$[1].role_id")
+        .isEqualTo(2)
+        .jsonPath("$[1].is_active")
+        .isEqualTo(Boolean.TRUE);
   }
 
   @Test
   @DisplayName("Should return UserDto when find user by id with existing id")
-  void shouldReturnWhenFindUserByIdWithExistingId() throws Exception {
-    webTestClient
-        .get()
+  void shouldReturnWhenFindUserByIdWithExistingId() {
+    webTestClient.get()
         .uri("/users/{userId}", 1L)
         .exchange()
         .expectStatus()
@@ -91,20 +102,26 @@ class UserControllerIT {
         .expectHeader()
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .expectBody()
-        .jsonPath("$.id").isEqualTo(1L)
-        .jsonPath("$.name").isEqualTo("Carlos Alberto Arroyo Martínez")
-        .jsonPath("$.age").isEqualTo("28")
-        .jsonPath("$.email").isEqualTo("carroyom@mail.com")
-        .jsonPath("$.username").isEqualTo("carroyom")
-        .jsonPath("$.role_id").isEqualTo(1)
-        .jsonPath("$.is_active").isEqualTo(Boolean.TRUE);
+        .jsonPath("$.id")
+        .isEqualTo(1L)
+        .jsonPath("$.name")
+        .isEqualTo("Carlos Alberto Arroyo Martínez")
+        .jsonPath("$.age")
+        .isEqualTo("28")
+        .jsonPath("$.email")
+        .isEqualTo("carroyom@mail.com")
+        .jsonPath("$.username")
+        .isEqualTo("carroyom")
+        .jsonPath("$.role_id")
+        .isEqualTo(1)
+        .jsonPath("$.is_active")
+        .isEqualTo(Boolean.TRUE);
   }
 
   @Test
   @DisplayName("Should throw AppExceptionDto when find user by id with non existing id")
-  void shouldReturnWhenFindUserByIdWithNonExistingId() throws Exception {
-    webTestClient
-        .get()
+  void shouldReturnWhenFindUserByIdWithNonExistingId() {
+    webTestClient.get()
         .uri("/users/{userId}", 1000L)
         .exchange()
         .expectStatus()
@@ -112,9 +129,12 @@ class UserControllerIT {
         .expectHeader()
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .expectBody()
-        .jsonPath("$.error").isEqualTo("Not Found")
-        .jsonPath("$.message").isEqualTo("User not found")
-        .jsonPath("$.status").isEqualTo(404);
+        .jsonPath("$.error")
+        .isEqualTo("Not Found")
+        .jsonPath("$.message")
+        .isEqualTo("User not found")
+        .jsonPath("$.status")
+        .isEqualTo(404);
   }
 
   @Test
@@ -128,8 +148,7 @@ class UserControllerIT {
         .roleId(1)
         .build();
 
-    webTestClient
-        .post()
+    webTestClient.post()
         .uri("/users")
         .body(Mono.just(requestDto), CreateUserRequestDto.class)
         .exchange()
@@ -150,8 +169,7 @@ class UserControllerIT {
         .roleId(1)
         .build();
 
-    webTestClient
-        .post()
+    webTestClient.post()
         .uri("/users")
         .body(Mono.just(requestDto), CreateUserRequestDto.class)
         .exchange()
@@ -160,9 +178,12 @@ class UserControllerIT {
         .expectHeader()
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .expectBody()
-        .jsonPath("$.error").isEqualTo("Bad Request")
-        .jsonPath("$.message").isEqualTo("Username already exists")
-        .jsonPath("$.status").isEqualTo(400);
+        .jsonPath("$.error")
+        .isEqualTo("Bad Request")
+        .jsonPath("$.message")
+        .isEqualTo("Username already exists")
+        .jsonPath("$.status")
+        .isEqualTo(400);
   }
 
   @Test
@@ -176,8 +197,7 @@ class UserControllerIT {
         .roleId(1)
         .build();
 
-    webTestClient
-        .post()
+    webTestClient.post()
         .uri("/users")
         .body(Mono.just(requestDto), CreateUserRequestDto.class)
         .exchange()
@@ -186,9 +206,12 @@ class UserControllerIT {
         .expectHeader()
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .expectBody()
-        .jsonPath("$.error").isEqualTo("Bad Request")
-        .jsonPath("$.message").isEqualTo("Email already exists")
-        .jsonPath("$.status").isEqualTo(400);
+        .jsonPath("$.error")
+        .isEqualTo("Bad Request")
+        .jsonPath("$.message")
+        .isEqualTo("Email already exists")
+        .jsonPath("$.status")
+        .isEqualTo(400);
   }
 
   @Test
@@ -199,8 +222,7 @@ class UserControllerIT {
         .age(Byte.valueOf("30"))
         .build();
 
-    webTestClient
-        .put()
+    webTestClient.put()
         .uri("/users/{userId}", 1L)
         .body(Mono.just(requestDto), UpdateUserRequestDto.class)
         .exchange()
@@ -216,8 +238,7 @@ class UserControllerIT {
         .age(Byte.valueOf("28"))
         .build();
 
-    webTestClient
-        .put()
+    webTestClient.put()
         .uri("/users/{userId}", 1000L)
         .body(Mono.just(requestDto), UpdateUserRequestDto.class)
         .exchange()
@@ -226,27 +247,24 @@ class UserControllerIT {
         .expectHeader()
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .expectBody()
-        .jsonPath("$.error").isEqualTo("Not Found")
-        .jsonPath("$.message").isEqualTo("User not found")
-        .jsonPath("$.status").isEqualTo(404);
+        .jsonPath("$.error")
+        .isEqualTo("Not Found")
+        .jsonPath("$.message")
+        .isEqualTo("User not found")
+        .jsonPath("$.status")
+        .isEqualTo(404);
   }
 
   @Test
   @DisplayName("Should delete user with existing id")
-  void shouldDeleteUserWithExistingId() throws Exception {
-    webTestClient
-        .delete()
-        .uri("/users/{userId}", 1L)
-        .exchange()
-        .expectStatus()
-        .isNoContent();
+  void shouldDeleteUserWithExistingId() {
+    webTestClient.delete().uri("/users/{userId}", 1L).exchange().expectStatus().isNoContent();
   }
 
   @Test
   @DisplayName("Should throw AppExceptionDto when delete user with non existing id")
-  void shouldThrowWhenDeleteUserWithNonExistingId() throws Exception {
-    webTestClient
-        .delete()
+  void shouldThrowWhenDeleteUserWithNonExistingId() {
+    webTestClient.delete()
         .uri("/users/{userId}", 1000L)
         .exchange()
         .expectStatus()
@@ -254,8 +272,11 @@ class UserControllerIT {
         .expectHeader()
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .expectBody()
-        .jsonPath("$.error").isEqualTo("Not Found")
-        .jsonPath("$.message").isEqualTo("User not found")
-        .jsonPath("$.status").isEqualTo(404);
+        .jsonPath("$.error")
+        .isEqualTo("Not Found")
+        .jsonPath("$.message")
+        .isEqualTo("User not found")
+        .jsonPath("$.status")
+        .isEqualTo(404);
   }
 }

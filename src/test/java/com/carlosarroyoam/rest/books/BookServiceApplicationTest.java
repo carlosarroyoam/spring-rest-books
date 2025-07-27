@@ -6,6 +6,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class BookServiceApplicationTest {
   @Test
-  void test() {
+  void contextLoads() {
   }
 }
