@@ -45,7 +45,7 @@ class WebSecurityConfig {
 
     http.authorizeHttpRequests(requests -> requests.requestMatchers("/swagger-ui/**")
         .permitAll()
-        .requestMatchers("/api-docs/**")
+        .requestMatchers("/v3/api-docs")
         .permitAll()
         .requestMatchers("/h2-console/**")
         .permitAll()
