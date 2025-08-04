@@ -1,1 +1,710 @@
-{"openapi":"3.0.1","info":{"title":"Spring Boot Rest Api","description":"Spring Boot Rest Api","contact":{"email":"carlosarroyoam@gmail.com"},"license":{"name":"Apache 2.0","url":"https://www.apache.org/licenses/LICENSE-2.0.html"},"version":"0.0.1-SNAPSHOT"},"servers":[{"url":"http://localhost:8081","description":"Generated server url"}],"tags":[{"name":"Authors","description":"Operations about authors"},{"name":"Books","description":"Operations about books"},{"name":"Users","description":"Operations about users"}],"paths":{"/users/{userId}":{"get":{"tags":["Users"],"summary":"Gets a user by its id","operationId":"findById","parameters":[{"name":"userId","in":"path","required":true,"schema":{"type":"integer","format":"int64"}}],"responses":{"200":{"description":"OK","content":{"application/json":{"schema":{"$ref":"#/components/schemas/UserDto"}}}}},"security":[{"bearerAuth":[]}]},"put":{"tags":["Users"],"summary":"Updates a user by its id","operationId":"update","parameters":[{"name":"userId","in":"path","required":true,"schema":{"type":"integer","format":"int64"}}],"requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/UpdateUserRequestDto"}}},"required":true},"responses":{"200":{"description":"OK"}},"security":[{"bearerAuth":[]}]},"delete":{"tags":["Users"],"summary":"Deletes a user by its id","operationId":"deleteById","parameters":[{"name":"userId","in":"path","required":true,"schema":{"type":"integer","format":"int64"}}],"responses":{"200":{"description":"OK"}},"security":[{"bearerAuth":[]}]}},"/books/{bookId}":{"get":{"tags":["Books"],"summary":"Gets a book by its id","operationId":"findById_1","parameters":[{"name":"bookId","in":"path","required":true,"schema":{"type":"integer","format":"int64"}}],"responses":{"200":{"description":"OK","content":{"application/json":{"schema":{"$ref":"#/components/schemas/BookDto"}}}}},"security":[{"bearerAuth":[]}]},"put":{"tags":["Books"],"summary":"Updates a book by its id","operationId":"update_1","parameters":[{"name":"bookId","in":"path","required":true,"schema":{"type":"integer","format":"int64"}}],"requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/UpdateBookRequestDto"}}},"required":true},"responses":{"200":{"description":"OK"}},"security":[{"bearerAuth":[]}]},"delete":{"tags":["Books"],"summary":"Deletes a book by its id","operationId":"deleteById_1","parameters":[{"name":"bookId","in":"path","required":true,"schema":{"type":"integer","format":"int64"}}],"responses":{"200":{"description":"OK"}},"security":[{"bearerAuth":[]}]}},"/authors/{authorId}":{"get":{"tags":["Authors"],"summary":"Gets an author by its id","operationId":"findById_2","parameters":[{"name":"authorId","in":"path","required":true,"schema":{"type":"integer","format":"int64"}}],"responses":{"200":{"description":"OK","content":{"application/json":{"schema":{"$ref":"#/components/schemas/AuthorDto"}}}}},"security":[{"bearerAuth":[]}]},"put":{"tags":["Authors"],"summary":"Updates a author by its id","operationId":"update_2","parameters":[{"name":"authorId","in":"path","required":true,"schema":{"type":"integer","format":"int64"}}],"requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/UpdateAuthorRequestDto"}}},"required":true},"responses":{"200":{"description":"OK"}},"security":[{"bearerAuth":[]}]},"delete":{"tags":["Authors"],"summary":"Deletes a author by its id","operationId":"deleteById_2","parameters":[{"name":"authorId","in":"path","required":true,"schema":{"type":"integer","format":"int64"}}],"responses":{"200":{"description":"OK"}},"security":[{"bearerAuth":[]}]}},"/users":{"get":{"tags":["Users"],"summary":"Gets the list of users","operationId":"findAll","parameters":[{"name":"page","in":"query","required":false,"schema":{"type":"integer","format":"int32","default":0}},{"name":"size","in":"query","required":false,"schema":{"type":"integer","format":"int32","default":25}}],"responses":{"200":{"description":"OK","content":{"application/json":{"schema":{"type":"array","items":{"$ref":"#/components/schemas/UserDto"}}}}}},"security":[{"bearerAuth":[]}]},"post":{"tags":["Users"],"summary":"Creates a new user","operationId":"create","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/CreateUserRequestDto"}}},"required":true},"responses":{"200":{"description":"OK"}},"security":[{"bearerAuth":[]}]}},"/books":{"get":{"tags":["Books"],"summary":"Gets the list of books","operationId":"findAll_1","parameters":[{"name":"page","in":"query","required":false,"schema":{"type":"integer","format":"int32","default":0}},{"name":"size","in":"query","required":false,"schema":{"type":"integer","format":"int32","default":25}}],"responses":{"200":{"description":"OK","content":{"application/json":{"schema":{"type":"array","items":{"$ref":"#/components/schemas/BookDto"}}}}}},"security":[{"bearerAuth":[]}]},"post":{"tags":["Books"],"summary":"Creates a new book","operationId":"create_1","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/CreateBookRequestDto"}}},"required":true},"responses":{"200":{"description":"OK"}},"security":[{"bearerAuth":[]}]}},"/authors":{"get":{"tags":["Authors"],"summary":"Gets the list of authors","operationId":"findAll_2","parameters":[{"name":"page","in":"query","required":false,"schema":{"type":"integer","format":"int32","default":0}},{"name":"size","in":"query","required":false,"schema":{"type":"integer","format":"int32","default":25}}],"responses":{"200":{"description":"OK","content":{"application/json":{"schema":{"type":"array","items":{"$ref":"#/components/schemas/AuthorDto"}}}}}},"security":[{"bearerAuth":[]}]},"post":{"tags":["Authors"],"summary":"Creates a new author","operationId":"create_2","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/CreateAuthorRequestDto"}}},"required":true},"responses":{"200":{"description":"OK"}},"security":[{"bearerAuth":[]}]}},"/books/{bookId}/authors":{"get":{"tags":["Books"],"operationId":"findBookAuthors","parameters":[{"name":"bookId","in":"path","required":true,"schema":{"type":"integer","format":"int64"}}],"responses":{"200":{"description":"OK","content":{"application/json":{"schema":{"type":"array","items":{"$ref":"#/components/schemas/AuthorDto"}}}}}},"security":[{"bearerAuth":[]}]}},"/authors/{authorId}/books":{"get":{"tags":["Authors"],"operationId":"findBookAuthors_1","parameters":[{"name":"authorId","in":"path","required":true,"schema":{"type":"integer","format":"int64"}}],"responses":{"200":{"description":"OK","content":{"application/json":{"schema":{"type":"array","items":{"$ref":"#/components/schemas/BookDto"}}}}}},"security":[{"bearerAuth":[]}]}}},"components":{"schemas":{"UpdateUserRequestDto":{"required":["age","name"],"type":"object","properties":{"name":{"maxLength":128,"minLength":3,"type":"string"},"age":{"type":"string","format":"byte"}}},"UpdateBookRequestDto":{"required":["cover_url","is_available_online","isbn","price","published_at","title"],"type":"object","properties":{"isbn":{"maxLength":17,"minLength":10,"type":"string"},"title":{"maxLength":128,"minLength":3,"type":"string"},"cover_url":{"maxLength":512,"minLength":3,"type":"string"},"price":{"type":"number"},"is_available_online":{"type":"boolean"},"published_at":{"type":"string","format":"date"}}},"UpdateAuthorRequestDto":{"required":["name"],"type":"object","properties":{"name":{"maxLength":128,"minLength":3,"type":"string"}}},"CreateUserRequestDto":{"required":["age","email","name","role_id","username"],"type":"object","properties":{"name":{"maxLength":128,"minLength":3,"type":"string"},"age":{"type":"string","format":"byte"},"email":{"maxLength":128,"minLength":3,"type":"string"},"username":{"maxLength":128,"minLength":3,"type":"string"},"role_id":{"type":"integer","format":"int32"}}},"CreateBookRequestDto":{"required":["cover_url","is_available_online","isbn","price","published_at","title"],"type":"object","properties":{"isbn":{"maxLength":17,"minLength":10,"type":"string"},"title":{"maxLength":128,"minLength":3,"type":"string"},"cover_url":{"maxLength":512,"minLength":3,"type":"string"},"price":{"type":"number"},"is_available_online":{"type":"boolean"},"published_at":{"type":"string","format":"date"}}},"CreateAuthorRequestDto":{"required":["name"],"type":"object","properties":{"name":{"maxLength":128,"minLength":3,"type":"string"}}},"UserDto":{"type":"object","properties":{"id":{"type":"integer","format":"int64"},"name":{"type":"string"},"age":{"type":"string","format":"byte"},"email":{"type":"string"},"username":{"type":"string"},"is_active":{"type":"boolean"},"role_id":{"type":"integer","format":"int32"},"created_at":{"type":"string","format":"date-time"},"updated_at":{"type":"string","format":"date-time"}}},"AuthorDto":{"type":"object","properties":{"id":{"type":"integer","format":"int64"},"name":{"type":"string"},"created_at":{"type":"string","format":"date-time"},"updated_at":{"type":"string","format":"date-time"}}},"BookDto":{"type":"object","properties":{"id":{"type":"integer","format":"int64"},"isbn":{"type":"string"},"title":{"type":"string"},"cover_url":{"type":"string"},"authors":{"type":"array","items":{"$ref":"#/components/schemas/AuthorDto"}},"price":{"type":"number"},"is_available_online":{"type":"boolean"},"published_at":{"type":"string","format":"date"},"created_at":{"type":"string","format":"date-time"},"updated_at":{"type":"string","format":"date-time"}}}},"securitySchemes":{"bearerAuth":{"type":"http","scheme":"bearer","bearerFormat":"JWT"}}}}
+{
+  "openapi": "3.0.1",
+  "info":
+    {
+      "title": "Spring Boot Rest Api",
+      "description": "Spring Boot Rest Api",
+      "contact": { "email": "carlosarroyoam@gmail.com" },
+      "license":
+        {
+          "name": "Apache 2.0",
+          "url": "https://www.apache.org/licenses/LICENSE-2.0.html",
+        },
+      "version": "0.0.1-SNAPSHOT",
+    },
+  "servers":
+    [{ "url": "http://localhost:8081", "description": "Generated server url" }],
+  "tags":
+    [
+      { "name": "Authors", "description": "Operations about authors" },
+      { "name": "Books", "description": "Operations about books" },
+      { "name": "Users", "description": "Operations about users" },
+    ],
+  "paths":
+    {
+      "/users/{userId}":
+        {
+          "get":
+            {
+              "tags": ["Users"],
+              "summary": "Gets a user by its id",
+              "operationId": "findById",
+              "parameters":
+                [
+                  {
+                    "name": "userId",
+                    "in": "path",
+                    "required": true,
+                    "schema": { "type": "integer", "format": "int64" },
+                  },
+                ],
+              "responses":
+                {
+                  "200":
+                    {
+                      "description": "OK",
+                      "content":
+                        {
+                          "application/json":
+                            {
+                              "schema":
+                                { "$ref": "#/components/schemas/UserDto" },
+                            },
+                        },
+                    },
+                },
+              "security": [{ "bearerAuth": [] }],
+            },
+          "put":
+            {
+              "tags": ["Users"],
+              "summary": "Updates a user by its id",
+              "operationId": "update",
+              "parameters":
+                [
+                  {
+                    "name": "userId",
+                    "in": "path",
+                    "required": true,
+                    "schema": { "type": "integer", "format": "int64" },
+                  },
+                ],
+              "requestBody":
+                {
+                  "content":
+                    {
+                      "application/json":
+                        {
+                          "schema":
+                            {
+                              "$ref": "#/components/schemas/UpdateUserRequestDto",
+                            },
+                        },
+                    },
+                  "required": true,
+                },
+              "responses": { "200": { "description": "OK" } },
+              "security": [{ "bearerAuth": [] }],
+            },
+          "delete":
+            {
+              "tags": ["Users"],
+              "summary": "Deletes a user by its id",
+              "operationId": "deleteById",
+              "parameters":
+                [
+                  {
+                    "name": "userId",
+                    "in": "path",
+                    "required": true,
+                    "schema": { "type": "integer", "format": "int64" },
+                  },
+                ],
+              "responses": { "200": { "description": "OK" } },
+              "security": [{ "bearerAuth": [] }],
+            },
+        },
+      "/books/{bookId}":
+        {
+          "get":
+            {
+              "tags": ["Books"],
+              "summary": "Gets a book by its id",
+              "operationId": "findById_1",
+              "parameters":
+                [
+                  {
+                    "name": "bookId",
+                    "in": "path",
+                    "required": true,
+                    "schema": { "type": "integer", "format": "int64" },
+                  },
+                ],
+              "responses":
+                {
+                  "200":
+                    {
+                      "description": "OK",
+                      "content":
+                        {
+                          "application/json":
+                            {
+                              "schema":
+                                { "$ref": "#/components/schemas/BookDto" },
+                            },
+                        },
+                    },
+                },
+              "security": [{ "bearerAuth": [] }],
+            },
+          "put":
+            {
+              "tags": ["Books"],
+              "summary": "Updates a book by its id",
+              "operationId": "update_1",
+              "parameters":
+                [
+                  {
+                    "name": "bookId",
+                    "in": "path",
+                    "required": true,
+                    "schema": { "type": "integer", "format": "int64" },
+                  },
+                ],
+              "requestBody":
+                {
+                  "content":
+                    {
+                      "application/json":
+                        {
+                          "schema":
+                            {
+                              "$ref": "#/components/schemas/UpdateBookRequestDto",
+                            },
+                        },
+                    },
+                  "required": true,
+                },
+              "responses": { "200": { "description": "OK" } },
+              "security": [{ "bearerAuth": [] }],
+            },
+          "delete":
+            {
+              "tags": ["Books"],
+              "summary": "Deletes a book by its id",
+              "operationId": "deleteById_1",
+              "parameters":
+                [
+                  {
+                    "name": "bookId",
+                    "in": "path",
+                    "required": true,
+                    "schema": { "type": "integer", "format": "int64" },
+                  },
+                ],
+              "responses": { "200": { "description": "OK" } },
+              "security": [{ "bearerAuth": [] }],
+            },
+        },
+      "/authors/{authorId}":
+        {
+          "get":
+            {
+              "tags": ["Authors"],
+              "summary": "Gets an author by its id",
+              "operationId": "findById_2",
+              "parameters":
+                [
+                  {
+                    "name": "authorId",
+                    "in": "path",
+                    "required": true,
+                    "schema": { "type": "integer", "format": "int64" },
+                  },
+                ],
+              "responses":
+                {
+                  "200":
+                    {
+                      "description": "OK",
+                      "content":
+                        {
+                          "application/json":
+                            {
+                              "schema":
+                                { "$ref": "#/components/schemas/AuthorDto" },
+                            },
+                        },
+                    },
+                },
+              "security": [{ "bearerAuth": [] }],
+            },
+          "put":
+            {
+              "tags": ["Authors"],
+              "summary": "Updates a author by its id",
+              "operationId": "update_2",
+              "parameters":
+                [
+                  {
+                    "name": "authorId",
+                    "in": "path",
+                    "required": true,
+                    "schema": { "type": "integer", "format": "int64" },
+                  },
+                ],
+              "requestBody":
+                {
+                  "content":
+                    {
+                      "application/json":
+                        {
+                          "schema":
+                            {
+                              "$ref": "#/components/schemas/UpdateAuthorRequestDto",
+                            },
+                        },
+                    },
+                  "required": true,
+                },
+              "responses": { "200": { "description": "OK" } },
+              "security": [{ "bearerAuth": [] }],
+            },
+          "delete":
+            {
+              "tags": ["Authors"],
+              "summary": "Deletes a author by its id",
+              "operationId": "deleteById_2",
+              "parameters":
+                [
+                  {
+                    "name": "authorId",
+                    "in": "path",
+                    "required": true,
+                    "schema": { "type": "integer", "format": "int64" },
+                  },
+                ],
+              "responses": { "200": { "description": "OK" } },
+              "security": [{ "bearerAuth": [] }],
+            },
+        },
+      "/users":
+        {
+          "get":
+            {
+              "tags": ["Users"],
+              "summary": "Gets the list of users",
+              "operationId": "findAll",
+              "parameters":
+                [
+                  {
+                    "name": "page",
+                    "in": "query",
+                    "required": false,
+                    "schema":
+                      { "type": "integer", "format": "int32", "default": 0 },
+                  },
+                  {
+                    "name": "size",
+                    "in": "query",
+                    "required": false,
+                    "schema":
+                      { "type": "integer", "format": "int32", "default": 25 },
+                  },
+                ],
+              "responses":
+                {
+                  "200":
+                    {
+                      "description": "OK",
+                      "content":
+                        {
+                          "application/json":
+                            {
+                              "schema":
+                                {
+                                  "type": "array",
+                                  "items":
+                                    { "$ref": "#/components/schemas/UserDto" },
+                                },
+                            },
+                        },
+                    },
+                },
+              "security": [{ "bearerAuth": [] }],
+            },
+          "post":
+            {
+              "tags": ["Users"],
+              "summary": "Creates a new user",
+              "operationId": "create",
+              "requestBody":
+                {
+                  "content":
+                    {
+                      "application/json":
+                        {
+                          "schema":
+                            {
+                              "$ref": "#/components/schemas/CreateUserRequestDto",
+                            },
+                        },
+                    },
+                  "required": true,
+                },
+              "responses": { "200": { "description": "OK" } },
+              "security": [{ "bearerAuth": [] }],
+            },
+        },
+      "/books":
+        {
+          "get":
+            {
+              "tags": ["Books"],
+              "summary": "Gets the list of books",
+              "operationId": "findAll_1",
+              "parameters":
+                [
+                  {
+                    "name": "page",
+                    "in": "query",
+                    "required": false,
+                    "schema":
+                      { "type": "integer", "format": "int32", "default": 0 },
+                  },
+                  {
+                    "name": "size",
+                    "in": "query",
+                    "required": false,
+                    "schema":
+                      { "type": "integer", "format": "int32", "default": 25 },
+                  },
+                ],
+              "responses":
+                {
+                  "200":
+                    {
+                      "description": "OK",
+                      "content":
+                        {
+                          "application/json":
+                            {
+                              "schema":
+                                {
+                                  "type": "array",
+                                  "items":
+                                    { "$ref": "#/components/schemas/BookDto" },
+                                },
+                            },
+                        },
+                    },
+                },
+              "security": [{ "bearerAuth": [] }],
+            },
+          "post":
+            {
+              "tags": ["Books"],
+              "summary": "Creates a new book",
+              "operationId": "create_1",
+              "requestBody":
+                {
+                  "content":
+                    {
+                      "application/json":
+                        {
+                          "schema":
+                            {
+                              "$ref": "#/components/schemas/CreateBookRequestDto",
+                            },
+                        },
+                    },
+                  "required": true,
+                },
+              "responses": { "200": { "description": "OK" } },
+              "security": [{ "bearerAuth": [] }],
+            },
+        },
+      "/authors":
+        {
+          "get":
+            {
+              "tags": ["Authors"],
+              "summary": "Gets the list of authors",
+              "operationId": "findAll_2",
+              "parameters":
+                [
+                  {
+                    "name": "page",
+                    "in": "query",
+                    "required": false,
+                    "schema":
+                      { "type": "integer", "format": "int32", "default": 0 },
+                  },
+                  {
+                    "name": "size",
+                    "in": "query",
+                    "required": false,
+                    "schema":
+                      { "type": "integer", "format": "int32", "default": 25 },
+                  },
+                ],
+              "responses":
+                {
+                  "200":
+                    {
+                      "description": "OK",
+                      "content":
+                        {
+                          "application/json":
+                            {
+                              "schema":
+                                {
+                                  "type": "array",
+                                  "items":
+                                    {
+                                      "$ref": "#/components/schemas/AuthorDto",
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+              "security": [{ "bearerAuth": [] }],
+            },
+          "post":
+            {
+              "tags": ["Authors"],
+              "summary": "Creates a new author",
+              "operationId": "create_2",
+              "requestBody":
+                {
+                  "content":
+                    {
+                      "application/json":
+                        {
+                          "schema":
+                            {
+                              "$ref": "#/components/schemas/CreateAuthorRequestDto",
+                            },
+                        },
+                    },
+                  "required": true,
+                },
+              "responses": { "200": { "description": "OK" } },
+              "security": [{ "bearerAuth": [] }],
+            },
+        },
+      "/books/{bookId}/authors":
+        {
+          "get":
+            {
+              "tags": ["Books"],
+              "operationId": "findBookAuthors",
+              "parameters":
+                [
+                  {
+                    "name": "bookId",
+                    "in": "path",
+                    "required": true,
+                    "schema": { "type": "integer", "format": "int64" },
+                  },
+                ],
+              "responses":
+                {
+                  "200":
+                    {
+                      "description": "OK",
+                      "content":
+                        {
+                          "application/json":
+                            {
+                              "schema":
+                                {
+                                  "type": "array",
+                                  "items":
+                                    {
+                                      "$ref": "#/components/schemas/AuthorDto",
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+              "security": [{ "bearerAuth": [] }],
+            },
+        },
+      "/authors/{authorId}/books":
+        {
+          "get":
+            {
+              "tags": ["Authors"],
+              "operationId": "findBookAuthors_1",
+              "parameters":
+                [
+                  {
+                    "name": "authorId",
+                    "in": "path",
+                    "required": true,
+                    "schema": { "type": "integer", "format": "int64" },
+                  },
+                ],
+              "responses":
+                {
+                  "200":
+                    {
+                      "description": "OK",
+                      "content":
+                        {
+                          "application/json":
+                            {
+                              "schema":
+                                {
+                                  "type": "array",
+                                  "items":
+                                    { "$ref": "#/components/schemas/BookDto" },
+                                },
+                            },
+                        },
+                    },
+                },
+              "security": [{ "bearerAuth": [] }],
+            },
+        },
+    },
+  "components":
+    {
+      "schemas":
+        {
+          "UpdateUserRequestDto":
+            {
+              "required": ["age", "name"],
+              "type": "object",
+              "properties":
+                {
+                  "name":
+                    { "maxLength": 128, "minLength": 3, "type": "string" },
+                  "age": { "type": "string", "format": "byte" },
+                },
+            },
+          "UpdateBookRequestDto":
+            {
+              "required":
+                [
+                  "cover_url",
+                  "is_available_online",
+                  "isbn",
+                  "price",
+                  "published_at",
+                  "title",
+                ],
+              "type": "object",
+              "properties":
+                {
+                  "isbn":
+                    { "maxLength": 17, "minLength": 10, "type": "string" },
+                  "title":
+                    { "maxLength": 128, "minLength": 3, "type": "string" },
+                  "cover_url":
+                    { "maxLength": 512, "minLength": 3, "type": "string" },
+                  "price": { "type": "number" },
+                  "is_available_online": { "type": "boolean" },
+                  "published_at": { "type": "string", "format": "date" },
+                },
+            },
+          "UpdateAuthorRequestDto":
+            {
+              "required": ["name"],
+              "type": "object",
+              "properties":
+                {
+                  "name":
+                    { "maxLength": 128, "minLength": 3, "type": "string" },
+                },
+            },
+          "CreateUserRequestDto":
+            {
+              "required": ["age", "email", "name", "role_id", "username"],
+              "type": "object",
+              "properties":
+                {
+                  "name":
+                    { "maxLength": 128, "minLength": 3, "type": "string" },
+                  "age": { "type": "string", "format": "byte" },
+                  "email":
+                    { "maxLength": 128, "minLength": 3, "type": "string" },
+                  "username":
+                    { "maxLength": 128, "minLength": 3, "type": "string" },
+                  "role_id": { "type": "integer", "format": "int32" },
+                },
+            },
+          "CreateBookRequestDto":
+            {
+              "required":
+                [
+                  "cover_url",
+                  "is_available_online",
+                  "isbn",
+                  "price",
+                  "published_at",
+                  "title",
+                ],
+              "type": "object",
+              "properties":
+                {
+                  "isbn":
+                    { "maxLength": 17, "minLength": 10, "type": "string" },
+                  "title":
+                    { "maxLength": 128, "minLength": 3, "type": "string" },
+                  "cover_url":
+                    { "maxLength": 512, "minLength": 3, "type": "string" },
+                  "price": { "type": "number" },
+                  "is_available_online": { "type": "boolean" },
+                  "published_at": { "type": "string", "format": "date" },
+                },
+            },
+          "CreateAuthorRequestDto":
+            {
+              "required": ["name"],
+              "type": "object",
+              "properties":
+                {
+                  "name":
+                    { "maxLength": 128, "minLength": 3, "type": "string" },
+                },
+            },
+          "UserDto":
+            {
+              "type": "object",
+              "properties":
+                {
+                  "id": { "type": "integer", "format": "int64" },
+                  "name": { "type": "string" },
+                  "age": { "type": "string", "format": "byte" },
+                  "email": { "type": "string" },
+                  "username": { "type": "string" },
+                  "is_active": { "type": "boolean" },
+                  "role_id": { "type": "integer", "format": "int32" },
+                  "created_at": { "type": "string", "format": "date-time" },
+                  "updated_at": { "type": "string", "format": "date-time" },
+                },
+            },
+          "AuthorDto":
+            {
+              "type": "object",
+              "properties":
+                {
+                  "id": { "type": "integer", "format": "int64" },
+                  "name": { "type": "string" },
+                  "created_at": { "type": "string", "format": "date-time" },
+                  "updated_at": { "type": "string", "format": "date-time" },
+                },
+            },
+          "BookDto":
+            {
+              "type": "object",
+              "properties":
+                {
+                  "id": { "type": "integer", "format": "int64" },
+                  "isbn": { "type": "string" },
+                  "title": { "type": "string" },
+                  "cover_url": { "type": "string" },
+                  "authors":
+                    {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/AuthorDto" },
+                    },
+                  "price": { "type": "number" },
+                  "is_available_online": { "type": "boolean" },
+                  "published_at": { "type": "string", "format": "date" },
+                  "created_at": { "type": "string", "format": "date-time" },
+                  "updated_at": { "type": "string", "format": "date-time" },
+                },
+            },
+        },
+      "securitySchemes":
+        {
+          "bearerAuth":
+            { "type": "http", "scheme": "bearer", "bearerFormat": "JWT" },
+        },
+    },
+}
