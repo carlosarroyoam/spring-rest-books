@@ -20,8 +20,8 @@ public class OpenApiConfig {
 
   @Bean
   OpenAPI customOpenAPI() {
-    String appTitle = "Spring Boot Rest Api";
-    String appDescription = "Spring Boot Rest Api";
+    String appTitle = "Spring REST Books API";
+    String appDescription = "Spring REST Books API";
     String appVersion = "0.0.1-SNAPSHOT";
     Contact contactInfo = new Contact().email("carlosarroyoam@gmail.com");
     License license = new License().name("Apache 2.0")
