@@ -76,6 +76,7 @@ public class AuthorController {
   }
 
   @GetMapping(path = "/{authorId}/books", produces = "application/json")
+  @Operation(summary = "Gets the list of books by authorId")
   public ResponseEntity<List<BookDto>> findBookAuthors(@PathVariable Long authorId) {
     List<BookDto> books = authorService.findBooksByAuthorId(authorId);
     return ResponseEntity.ok(books);
