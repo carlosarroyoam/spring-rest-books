@@ -2,10 +2,18 @@ openapi: 3.0.1
 info:
   title: Spring REST Books API
   description: |
-    A comprehensive REST API for managing a bookstore system including users, books and authors.
+    A comprehensive REST API for managing a bookstore system including users,
+    books, authors, shopping cart, orders, payments, shipments and notifications.
 
     ## Features
-    - Complete CRUD operations for users, books, and authors.
+    - Users.
+    - Books.
+    - Authors.
+    - Shopping cart.
+    - Orders.
+    - Payments.
+    - Shipments.
+    - Notifications.
   contact:
     email: carlosarroyoam@gmail.com
   license:
@@ -63,6 +71,14 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/UserDto"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
     post:
@@ -77,8 +93,16 @@ paths:
               $ref: "#/components/schemas/CreateUserRequestDto"
         required: true
       responses:
-        "200":
-          description: OK
+        "201":
+          $ref: "#/components/responses/Created"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
   /users/{userId}:
@@ -101,6 +125,16 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserDto"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
     put:
@@ -122,8 +156,18 @@ paths:
               $ref: "#/components/schemas/UpdateUserRequestDto"
         required: true
       responses:
-        "200":
-          description: OK
+        "204":
+          description: No Content
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
     delete:
@@ -139,8 +183,18 @@ paths:
             type: integer
             format: int64
       responses:
-        "200":
-          description: OK
+        "204":
+          description: No Content
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
 
@@ -174,6 +228,14 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/BookDto"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
     post:
@@ -188,8 +250,16 @@ paths:
               $ref: "#/components/schemas/CreateBookRequestDto"
         required: true
       responses:
-        "200":
-          description: OK
+        "201":
+          $ref: "#/components/responses/Created"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
   /books/{bookId}:
@@ -212,6 +282,16 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/BookDto"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
     put:
@@ -233,8 +313,18 @@ paths:
               $ref: "#/components/schemas/UpdateBookRequestDto"
         required: true
       responses:
-        "200":
-          description: OK
+        "204":
+          $ref: "#/components/responses/NoContent"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
     delete:
@@ -250,8 +340,18 @@ paths:
             type: integer
             format: int64
       responses:
-        "200":
-          description: OK
+        "204":
+          $ref: "#/components/responses/NoContent"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
   /books/{bookId}/authors:
@@ -276,8 +376,17 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/AuthorDto"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
+
   /authors:
     get:
       tags:
@@ -308,6 +417,14 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/AuthorDto"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
     post:
@@ -322,8 +439,18 @@ paths:
               $ref: "#/components/schemas/CreateAuthorRequestDto"
         required: true
       responses:
-        "200":
-          description: OK
+        "201":
+          $ref: "#/components/responses/Created"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
   /authors/{authorId}:
@@ -346,6 +473,16 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/AuthorDto"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
     put:
@@ -367,8 +504,18 @@ paths:
               $ref: "#/components/schemas/UpdateAuthorRequestDto"
         required: true
       responses:
-        "200":
-          description: OK
+        "204":
+          $ref: "#/components/responses/NoContent"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
     delete:
@@ -384,8 +531,8 @@ paths:
             type: integer
             format: int64
       responses:
-        "200":
-          description: OK
+        "204":
+          $ref: "#/components/responses/NoContent"
       security:
         - bearerAuth: []
   /authors/{authorId}/books:
@@ -410,6 +557,14 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/BookDto"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
 
@@ -600,6 +755,61 @@ components:
         updated_at:
           type: string
           format: date-time
+
+    AppExceptionDto:
+      type: object
+      properties:
+        message:
+          type: string
+        error:
+          type: string
+        status:
+          type: integer
+        details:
+          type: object
+          additionalProperties:
+            type: string
+        path:
+          type: string
+        timestamp:
+          format: date-time
+
+  responses:
+    Created:
+      description: Created
+    NoContent:
+      description: No content
+    NotFound:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/AppExceptionDto"
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/AppExceptionDto"
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/AppExceptionDto"
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/AppExceptionDto"
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/AppExceptionDto"
+
   securitySchemes:
     bearerAuth:
       type: http
