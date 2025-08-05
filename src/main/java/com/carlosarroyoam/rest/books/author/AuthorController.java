@@ -4,10 +4,6 @@ import com.carlosarroyoam.rest.books.author.dto.AuthorDto;
 import com.carlosarroyoam.rest.books.author.dto.CreateAuthorRequestDto;
 import com.carlosarroyoam.rest.books.author.dto.UpdateAuthorRequestDto;
 import com.carlosarroyoam.rest.books.book.dto.BookDto;
-import com.carlosarroyoam.rest.books.core.config.OpenApiConfig;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
@@ -25,8 +21,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
 @RequestMapping("/authors")
-@Tag(name = "Authors", description = "Operations about authors")
-@SecurityRequirement(name = OpenApiConfig.SECURITY_SCHEME_NAME)
 public class AuthorController {
   private final AuthorService authorService;
 
@@ -35,7 +29,6 @@ public class AuthorController {
   }
 
   @GetMapping(produces = "application/json")
-  @Operation(summary = "Gets the list of authors")
   public ResponseEntity<List<AuthorDto>> findAll(
       @RequestParam(required = false, defaultValue = "0") Integer page,
       @RequestParam(required = false, defaultValue = "25") Integer size) {
@@ -44,14 +37,12 @@ public class AuthorController {
   }
 
   @GetMapping(path = "/{authorId}", produces = "application/json")
-  @Operation(summary = "Gets an author by its id")
   public ResponseEntity<AuthorDto> findById(@PathVariable Long authorId) {
     AuthorDto authorById = authorService.findById(authorId);
     return ResponseEntity.ok(authorById);
   }
 
   @PostMapping(consumes = "application/json")
-  @Operation(summary = "Creates a new author")
   public ResponseEntity<Void> create(@Valid @RequestBody CreateAuthorRequestDto requestDto,
       UriComponentsBuilder builder) {
     AuthorDto createdAuthor = authorService.create(requestDto);
@@ -61,7 +52,6 @@ public class AuthorController {
   }
 
   @PutMapping(value = "/{authorId}", consumes = "application/json")
-  @Operation(summary = "Updates a author by its id")
   public ResponseEntity<Void> update(@PathVariable Long authorId,
       @Valid @RequestBody UpdateAuthorRequestDto requestDto) {
     authorService.update(authorId, requestDto);
@@ -69,14 +59,12 @@ public class AuthorController {
   }
 
   @DeleteMapping("/{authorId}")
-  @Operation(summary = "Deletes a author by its id")
   public ResponseEntity<Void> deleteById(@PathVariable Long authorId) {
     authorService.deleteById(authorId);
     return ResponseEntity.noContent().build();
   }
 
   @GetMapping(path = "/{authorId}/books", produces = "application/json")
-  @Operation(summary = "Gets the list of books by authorId")
   public ResponseEntity<List<BookDto>> findBookAuthors(@PathVariable Long authorId) {
     List<BookDto> books = authorService.findBooksByAuthorId(authorId);
     return ResponseEntity.ok(books);

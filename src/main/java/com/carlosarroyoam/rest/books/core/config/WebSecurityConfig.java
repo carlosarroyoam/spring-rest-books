@@ -43,11 +43,7 @@ class WebSecurityConfig {
     http.oauth2ResourceServer(
         oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(customJwtConverter())));
 
-    http.authorizeHttpRequests(requests -> requests.requestMatchers("/swagger-ui/**")
-        .permitAll()
-        .requestMatchers("/v3/api-docs")
-        .permitAll()
-        .requestMatchers("/h2-console/**")
+    http.authorizeHttpRequests(requests -> requests.requestMatchers("/h2-console/**")
         .permitAll()
         .requestMatchers("/actuator/**")
         .permitAll()
