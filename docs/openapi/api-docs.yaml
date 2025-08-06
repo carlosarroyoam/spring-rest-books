@@ -488,7 +488,7 @@ paths:
     put:
       tags:
         - Authors
-      summary: Updates a author by its id
+      summary: Updates an author by its id
       operationId: updateAuthor
       parameters:
         - name: authorId
@@ -521,7 +521,7 @@ paths:
     delete:
       tags:
         - Authors
-      summary: Deletes a author by its id
+      summary: Deletes an author by its id
       operationId: deleteAuthor
       parameters:
         - name: authorId
@@ -533,6 +533,16 @@ paths:
       responses:
         "204":
           $ref: "#/components/responses/NoContent"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
   /authors/{authorId}/books:
@@ -563,6 +573,294 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+      security:
+        - bearerAuth: []
+
+  /shopping-cart/{userId}:
+    get:
+      tags:
+        - Shopping cart
+      summary: Gets a shopping cart by user id
+      operationId: findShoppingCartByUserId
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShoppingCartDto"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+      security:
+        - bearerAuth: []
+  /shopping-cart/{userId}/items:
+    post:
+      tags:
+        - Shopping cart
+      summary: Adds a cart item
+      operationId: addCartItem
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddCartItemRequestDto"
+      responses:
+        "204":
+          $ref: "#/components/responses/NoContent"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+      security:
+        - bearerAuth: []
+    put:
+      tags:
+        - Shopping cart
+      summary: Updates a cart item
+      operationId: updateCartItem
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateCartItemRequestDto"
+      responses:
+        "204":
+          $ref: "#/components/responses/NoContent"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+      security:
+        - bearerAuth: []
+  /shopping-cart/{userId}/items/{book_id}:
+    delete:
+      tags:
+        - Shopping cart
+      summary: Deletes a cart item
+      operationId: deleteCartItem
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: bookId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "204":
+          $ref: "#/components/responses/NoContent"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+      security:
+        - bearerAuth: []
+
+  /orders:
+    get:
+      tags:
+        - Orders
+      summary: Gets the list of orders
+      operationId: findAllOrders
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - name: size
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 25
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OrderDto"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+      security:
+        - bearerAuth: []
+    post:
+      tags:
+        - Orders
+      summary: Creates a new order
+      operationId: createOrder
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateOrderRequestDto"
+        required: true
+      responses:
+        "201":
+          $ref: "#/components/responses/Created"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+      security:
+        - bearerAuth: []
+  /orders/{orderId}:
+    get:
+      tags:
+        - Orders
+      summary: Gets an order by its id
+      operationId: findOrderById
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderDto"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+      security:
+        - bearerAuth: []
+    put:
+      tags:
+        - Orders
+      summary: Updates an order by its id
+      operationId: updateOrder
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateOrderRequestDto"
+      responses:
+        "204":
+          $ref: "#/components/responses/NoContent"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+      security:
+        - bearerAuth: []
+    delete:
+      tags:
+        - Orders
+      summary: Deletes an order by its id
+      operationId: deleteOrder
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "204":
+          $ref: "#/components/responses/NoContent"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
         "500":
           $ref: "#/components/responses/InternalServerError"
       security:
@@ -686,6 +984,94 @@ components:
           maxLength: 128
           minLength: 3
           type: string
+    AddCartItemRequestDto:
+      required:
+        - book_id
+        - shipping_address
+        - billing_address
+        - items
+      type: object
+      properties:
+        book_id:
+          type: integer
+          format: int64
+        quantity:
+          type: integer
+          format: int32
+          minimum: 1
+    UpdateCartItemRequestDto:
+      required:
+        - book_id
+        - shipping_address
+        - billing_address
+        - items
+      type: object
+      properties:
+        book_id:
+          type: integer
+          format: int64
+        quantity:
+          type: integer
+          format: int32
+          minimum: 1
+    CreateOrderRequestDto:
+      required:
+        - user_id
+        - shipping_address
+        - billing_address
+        - items
+      type: object
+      properties:
+        user_id:
+          type: integer
+          format: int64
+        shipping_address:
+          maxLength: 512
+          minLength: 10
+          type: string
+        billing_address:
+          maxLength: 512
+          minLength: 10
+          type: string
+        notes:
+          maxLength: 1000
+          type: string
+        items:
+          type: array
+          minItems: 1
+          items:
+            $ref: "#/components/schemas/CreateOrderItemRequestDto"
+    UpdateOrderRequestDto:
+      required:
+        - shipping_address
+        - billing_address
+      type: object
+      properties:
+        shipping_address:
+          maxLength: 512
+          minLength: 10
+          type: string
+        billing_address:
+          maxLength: 512
+          minLength: 10
+          type: string
+        notes:
+          maxLength: 1000
+          type: string
+    CreateOrderItemRequestDto:
+      required:
+        - book_id
+        - quantity
+      type: object
+      properties:
+        book_id:
+          type: integer
+          format: int64
+        quantity:
+          type: integer
+          format: int32
+          minimum: 1
+
     UserDto:
       type: object
       properties:
@@ -755,7 +1141,101 @@ components:
         updated_at:
           type: string
           format: date-time
-
+    OrderDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        order_number:
+          type: string
+        status:
+          type: string
+          enum:
+            - PENDING
+            - CONFIRMED
+            - PROCESSING
+            - SHIPPED
+            - DELIVERED
+            - CANCELLED
+            - REFUNDE
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/OrderItemDto"
+        subtotal:
+          type: number
+        tax_amount:
+          type: number
+        shipping_amount:
+          type: number
+        total:
+          type: number
+        user_id:
+          type: number
+          format: int64
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    OrderItemDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        quantity:
+          type: number
+          minimum: 1
+        unit_price:
+          type: number
+        total_price:
+          type: number
+        book_id:
+          type: number
+          format: int64
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    ShoppingCartDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/CartItemDto"
+        user_id:
+          type: number
+          format: int64
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    CartItemDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        quantity:
+          type: number
+          minimum: 1
+        book_id:
+          type: number
+          format: int64
+        added_at:
+          type: string
+          format: date-time
     AppExceptionDto:
       type: object
       properties:
