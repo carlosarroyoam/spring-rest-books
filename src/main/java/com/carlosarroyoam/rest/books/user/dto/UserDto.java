@@ -24,6 +24,7 @@ public class UserDto {
   private String username;
   private Boolean isActive;
   private Integer roleId;
+  private RoleDto role;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
 

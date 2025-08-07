@@ -73,6 +73,12 @@ class UserControllerIT {
         .isEqualTo("carroyom")
         .jsonPath("$[0].role_id")
         .isEqualTo(1)
+        .jsonPath("$[0].role.id")
+        .isEqualTo(1)
+        .jsonPath("$[0].role.title")
+        .isEqualTo("App/Admin")
+        .jsonPath("$[0].role.description")
+        .isEqualTo("Role for admins users")
         .jsonPath("$[0].is_active")
         .isEqualTo(Boolean.TRUE)
         .jsonPath("$[1].id")
@@ -87,6 +93,12 @@ class UserControllerIT {
         .isEqualTo("cguidor")
         .jsonPath("$[1].role_id")
         .isEqualTo(2)
+        .jsonPath("$[1].role.id")
+        .isEqualTo(2)
+        .jsonPath("$[1].role.title")
+        .isEqualTo("App/Customer")
+        .jsonPath("$[1].role.description")
+        .isEqualTo("Role for customer users")
         .jsonPath("$[1].is_active")
         .isEqualTo(Boolean.TRUE);
   }
@@ -114,6 +126,12 @@ class UserControllerIT {
         .isEqualTo("carroyom")
         .jsonPath("$.role_id")
         .isEqualTo(1)
+        .jsonPath("$[0].role.id")
+        .isEqualTo(1)
+        .jsonPath("$[0].role.title")
+        .isEqualTo("App/Admin")
+        .jsonPath("$[0].role.description")
+        .isEqualTo("Role for admins users")
         .jsonPath("$.is_active")
         .isEqualTo(Boolean.TRUE);
   }
