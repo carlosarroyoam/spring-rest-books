@@ -1366,15 +1366,15 @@ components:
           type: number
         total:
           type: number
-        user_id:
-          type: number
-          format: int64
-        payment_id:
-          type: number
-          format: int64
-        shipment_id:
-          type: number
-          format: int64
+        user:
+          type: object
+          $ref: "#/components/schemas/UserDto"
+        payment:
+          type: object
+          $ref: "#/components/schemas/PaymentDto"
+        shipment:
+          type: object
+          $ref: "#/components/schemas/ShipmentDto"
         created_at:
           type: string
           format: date-time
