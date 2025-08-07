@@ -1274,9 +1274,6 @@ components:
           type: string
         is_active:
           type: boolean
-        role_id:
-          type: integer
-          format: int32
         role:
           type: object
           $ref: "#/components/schemas/RoleDto"
