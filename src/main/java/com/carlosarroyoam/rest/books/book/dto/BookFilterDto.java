@@ -13,5 +13,8 @@ public class BookFilterDto {
   @Size(max = 128, message = "Title should be max 128")
   private String title;
 
+  @Size(max = 128, message = "Author should be max 128")
+  private String author;
+
   private Boolean isAvailableOnline;
 }

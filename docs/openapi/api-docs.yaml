@@ -230,6 +230,12 @@ paths:
           schema:
             type: string
             maxLength: 128
+        - name: author
+          in: query
+          required: false
+          schema:
+            type: string
+            maxLength: 128
         - name: isAvailableOnline
           in: query
           required: false

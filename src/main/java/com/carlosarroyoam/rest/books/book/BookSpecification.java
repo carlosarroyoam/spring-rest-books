@@ -1,7 +1,11 @@
 package com.carlosarroyoam.rest.books.book;
 
+import com.carlosarroyoam.rest.books.author.entity.Author;
 import com.carlosarroyoam.rest.books.book.entity.Book;
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
+import jakarta.persistence.criteria.Join;
+import java.util.Arrays;
+import java.util.List;
 import org.springframework.data.jpa.domain.Specification;
 
 public class BookSpecification {
@@ -25,7 +29,19 @@ public class BookSpecification {
         return cb.conjunction();
       }
 
-      return cb.like(book.get("title"), "%" + title + "%");
+      return cb.like(cb.lower(book.get("title")), "%" + title.toLowerCase() + "%");
+    };
+  }
+
+  static Specification<Book> author(String author) {
+    return (book, cq, cb) -> {
+      if (author == null || author.isBlank()) {
+        return cb.conjunction();
+      }
+
+      Join<Book, Author> authorJoin = book.join("authors");
+
+      return cb.like(cb.lower(authorJoin.get("name")), "%" + author.toLowerCase() + "%");
     };
   }
 
