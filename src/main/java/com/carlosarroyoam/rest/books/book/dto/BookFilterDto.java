@@ -1,5 +1,6 @@
 package com.carlosarroyoam.rest.books.book.dto;
 
+import com.carlosarroyoam.rest.books.core.validation.CommaSeparatedLong;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Data;
@@ -13,8 +14,8 @@ public class BookFilterDto {
   @Size(max = 128, message = "Title should be max 128")
   private String title;
 
-  @Size(max = 128, message = "Author should be max 128")
-  private String author;
+  @CommaSeparatedLong(message = "AuthorIds should contain only valid ids")
+  private String authorIds;
 
   private Boolean isAvailableOnline;
 }
