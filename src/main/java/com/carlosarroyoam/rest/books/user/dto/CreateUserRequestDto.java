@@ -31,7 +31,7 @@ public class CreateUserRequestDto {
   private String email;
 
   @NotBlank(message = "Username should not be blank")
-  @Size(min = 3, max = 128, message = "Email should be between 3 and 128")
+  @Size(min = 3, max = 128, message = "Username should be between 3 and 128")
   private String username;
 
   @NotNull(message = "Role_id should not be null")

@@ -5,6 +5,7 @@ import com.carlosarroyoam.rest.books.user.dto.CreateUserRequestDto;
 import com.carlosarroyoam.rest.books.user.dto.UpdateUserRequestDto;
 import com.carlosarroyoam.rest.books.user.dto.UserDto;
 import com.carlosarroyoam.rest.books.user.dto.UserDto.UserDtoMapper;
+import com.carlosarroyoam.rest.books.user.dto.UserFilterDto;
 import com.carlosarroyoam.rest.books.user.entity.User;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -13,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -26,8 +28,16 @@ public class UserService {
     this.userRepository = userRepository;
   }
 
-  public List<UserDto> findAll(Pageable pageable) {
-    Page<User> users = userRepository.findAll(pageable);
+  public List<UserDto> findAll(Pageable pageable, UserFilterDto filters) {
+    Specification<User> spec = Specification.unrestricted();
+    spec = spec.and(UserSpecification.name(filters.getName()));
+    spec = spec.and(UserSpecification.age(filters.getAge()));
+    spec = spec.and(UserSpecification.email(filters.getEmail()));
+    spec = spec.and(UserSpecification.username(filters.getUsername()));
+    spec = spec.and(UserSpecification.isActive(filters.getIsActive()));
+    spec = spec.and(UserSpecification.roleId(filters.getRoleId()));
+
+    Page<User> users = userRepository.findAll(spec, pageable);
     return UserDtoMapper.INSTANCE.toDtos(users.getContent());
   }
 

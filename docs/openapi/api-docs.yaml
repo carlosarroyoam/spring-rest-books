@@ -60,6 +60,34 @@ paths:
             type: integer
             format: int32
             default: 25
+        - name: name
+          in: query
+          required: false
+          schema:
+            type: string
+            maxLength: 128
+        - name: age
+          in: query
+          required: false
+          schema:
+            format: byte
+        - name: email
+          in: query
+          required: false
+          schema:
+            type: string
+            maxLength: 128
+        - name: username
+          in: query
+          required: false
+          schema:
+            type: string
+            maxLength: 128
+        - name: isActive
+          in: query
+          required: false
+          schema:
+            type: boolean
       responses:
         "200":
           description: OK
@@ -1500,7 +1528,7 @@ components:
           type: integer
           format: int64
         attention_name:
-         type: string
+          type: string
         address:
           type: string
         phone:

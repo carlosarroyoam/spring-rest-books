@@ -8,6 +8,7 @@ import com.carlosarroyoam.rest.books.core.constant.AppMessages;
 import com.carlosarroyoam.rest.books.user.dto.CreateUserRequestDto;
 import com.carlosarroyoam.rest.books.user.dto.UpdateUserRequestDto;
 import com.carlosarroyoam.rest.books.user.dto.UserDto;
+import com.carlosarroyoam.rest.books.user.dto.UserFilterDto;
 import com.carlosarroyoam.rest.books.user.entity.User;
 import java.util.List;
 import java.util.Optional;
@@ -39,7 +40,8 @@ class UserServiceTest {
 
     Mockito.when(userRepository.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(users));
 
-    List<UserDto> usersDto = userService.findAll(PageRequest.of(0, 25));
+    List<UserDto> usersDto = userService.findAll(PageRequest.of(0, 25),
+        UserFilterDto.builder().build());
 
     assertThat(usersDto).isNotNull().isNotEmpty().size().isEqualTo(2);
   }
