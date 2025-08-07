@@ -33,15 +33,20 @@ public class BookSpecification {
     };
   }
 
-  static Specification<Book> author(String author) {
+  static Specification<Book> authorIds(String authorIds) {
     return (book, cq, cb) -> {
-      if (author == null || author.isBlank()) {
+      if (authorIds == null || authorIds.isBlank()) {
         return cb.conjunction();
       }
 
+      List<Long> ids = Arrays.stream(authorIds.split(","))
+          .map(String::trim)
+          .map(Long::parseLong)
+          .toList();
+
       Join<Book, Author> authorJoin = book.join("authors");
 
-      return cb.like(cb.lower(authorJoin.get("name")), "%" + author.toLowerCase() + "%");
+      return authorJoin.get("id").in(ids);
     };
   }
 

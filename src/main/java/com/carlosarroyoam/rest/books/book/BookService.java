@@ -34,7 +34,7 @@ public class BookService {
     Specification<Book> spec = Specification.unrestricted();
     spec = spec.and(BookSpecification.isbn(filters.getIsbn()));
     spec = spec.and(BookSpecification.titleContains(filters.getTitle()));
-    spec = spec.and(BookSpecification.author(filters.getAuthor()));
+    spec = spec.and(BookSpecification.authorIds(filters.getAuthorIds()));
     spec = spec.and(BookSpecification.isAvailableOnline(filters.getIsAvailableOnline()));
 
     Page<Book> books = bookRepository.findAll(spec, pageable);
