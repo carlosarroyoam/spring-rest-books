@@ -4,6 +4,7 @@ import com.carlosarroyoam.rest.books.author.dto.AuthorDto;
 import com.carlosarroyoam.rest.books.author.dto.AuthorDto.AuthorDtoMapper;
 import com.carlosarroyoam.rest.books.book.dto.BookDto;
 import com.carlosarroyoam.rest.books.book.dto.BookDto.BookDtoMapper;
+import com.carlosarroyoam.rest.books.book.dto.BookFilterDto;
 import com.carlosarroyoam.rest.books.book.dto.CreateBookRequestDto;
 import com.carlosarroyoam.rest.books.book.dto.UpdateBookRequestDto;
 import com.carlosarroyoam.rest.books.book.entity.Book;
@@ -14,8 +15,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -29,9 +30,13 @@ public class BookService {
     this.bookRepository = bookRepository;
   }
 
-  public List<BookDto> findAll(Integer page, Integer size) {
-    Pageable pageable = PageRequest.of(page, size);
-    Page<Book> books = bookRepository.findAll(pageable);
+  public List<BookDto> findAll(Pageable pageable, BookFilterDto filters) {
+    Specification<Book> spec = Specification.unrestricted();
+    spec = spec.and(BookSpecification.isbn(filters.getIsbn()));
+    spec = spec.and(BookSpecification.titleContains(filters.getTitle()));
+    spec = spec.and(BookSpecification.isAvailableOnline(filters.getIsAvailableOnline()));
+
+    Page<Book> books = bookRepository.findAll(spec, pageable);
     return BookDtoMapper.INSTANCE.toDtos(books.getContent());
   }
 

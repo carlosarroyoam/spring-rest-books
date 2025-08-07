@@ -2,19 +2,22 @@ package com.carlosarroyoam.rest.books.book;
 
 import com.carlosarroyoam.rest.books.author.dto.AuthorDto;
 import com.carlosarroyoam.rest.books.book.dto.BookDto;
+import com.carlosarroyoam.rest.books.book.dto.BookFilterDto;
 import com.carlosarroyoam.rest.books.book.dto.CreateBookRequestDto;
 import com.carlosarroyoam.rest.books.book.dto.UpdateBookRequestDto;
 import jakarta.validation.Valid;
 import java.util.List;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -30,9 +33,9 @@ public class BookController {
 
   @GetMapping(produces = "application/json")
   public ResponseEntity<List<BookDto>> findAll(
-      @RequestParam(required = false, defaultValue = "0") Integer page,
-      @RequestParam(required = false, defaultValue = "25") Integer size) {
-    List<BookDto> books = bookService.findAll(page, size);
+      @PageableDefault(page = 0, size = 25) Pageable pageable,
+      @Valid @ModelAttribute BookFilterDto filters) {
+    List<BookDto> books = bookService.findAll(pageable, filters);
     return ResponseEntity.ok(books);
   }
 

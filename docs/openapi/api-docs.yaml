@@ -217,6 +217,24 @@ paths:
             type: integer
             format: int32
             default: 25
+        - name: isbn
+          in: query
+          required: false
+          schema:
+            type: string
+            minLength: 10
+            maxLength: 17
+        - name: title
+          in: query
+          required: false
+          schema:
+            type: string
+            maxLength: 128
+        - name: isAvailableOnline
+          in: query
+          required: false
+          schema:
+            type: boolean
       responses:
         "200":
           description: OK
@@ -1088,17 +1106,17 @@ components:
       type: object
       properties:
         isbn:
+          type: string
           maxLength: 17
           minLength: 10
-          type: string
         title:
+          type: string
           maxLength: 128
           minLength: 3
-          type: string
         cover_url:
+          type: string
           maxLength: 512
           minLength: 3
-          type: string
         price:
           type: number
         is_available_online:
@@ -1117,17 +1135,17 @@ components:
       type: object
       properties:
         isbn:
+          type: string
           maxLength: 17
           minLength: 10
-          type: string
         title:
+          type: string
           maxLength: 128
           minLength: 3
-          type: string
         cover_url:
+          type: string
           maxLength: 512
           minLength: 3
-          type: string
         price:
           type: number
         is_available_online:
@@ -1141,18 +1159,18 @@ components:
       type: object
       properties:
         name:
+          type: string
           maxLength: 128
           minLength: 3
-          type: string
     UpdateAuthorRequestDto:
       required:
         - name
       type: object
       properties:
         name:
+          type: string
           maxLength: 128
           minLength: 3
-          type: string
     AddCartItemRequestDto:
       required:
         - book_id
@@ -1203,8 +1221,8 @@ components:
           maxLength: 512
           minLength: 10
         notes:
-          maxLength: 1000
           type: string
+          maxLength: 1000
         items:
           type: array
           minItems: 1
@@ -1225,8 +1243,8 @@ components:
           maxLength: 512
           minLength: 10
         notes:
-          maxLength: 1000
           type: string
+          maxLength: 1000
     CreateOrderItemRequestDto:
       required:
         - book_id

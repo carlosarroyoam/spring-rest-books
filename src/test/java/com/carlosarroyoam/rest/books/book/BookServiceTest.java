@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.any;
 import com.carlosarroyoam.rest.books.author.dto.AuthorDto;
 import com.carlosarroyoam.rest.books.author.entity.Author;
 import com.carlosarroyoam.rest.books.book.dto.BookDto;
+import com.carlosarroyoam.rest.books.book.dto.BookFilterDto;
 import com.carlosarroyoam.rest.books.book.dto.CreateBookRequestDto;
 import com.carlosarroyoam.rest.books.book.dto.UpdateBookRequestDto;
 import com.carlosarroyoam.rest.books.book.entity.Book;
@@ -21,8 +22,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
@@ -40,11 +41,10 @@ class BookServiceTest {
   void shouldReturnListOfBooks() {
     List<Book> books = List.of(Book.builder().build(), Book.builder().build());
 
-    Page<Book> pagedBooks = new PageImpl<>(books);
+    Mockito.when(bookRepository.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(books));
 
-    Mockito.when(bookRepository.findAll(any(Pageable.class))).thenReturn(pagedBooks);
-
-    List<BookDto> booksDto = bookService.findAll(0, 25);
+    List<BookDto> booksDto = bookService.findAll(PageRequest.of(0, 25),
+        BookFilterDto.builder().build());
 
     assertThat(booksDto).isNotNull().isNotEmpty().size().isEqualTo(2);
   }
