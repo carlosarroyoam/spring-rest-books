@@ -20,8 +20,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
@@ -39,11 +39,9 @@ class AuthorServiceTest {
   void shouldReturnListOfAuthors() {
     List<Author> authors = List.of(Author.builder().build(), Author.builder().build());
 
-    Page<Author> pagedAuthors = new PageImpl<>(authors);
+    Mockito.when(authorRepository.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(authors));
 
-    Mockito.when(authorRepository.findAll(any(Pageable.class))).thenReturn(pagedAuthors);
-
-    List<AuthorDto> authorsDto = authorService.findAll(0, 25);
+    List<AuthorDto> authorsDto = authorService.findAll(PageRequest.of(0, 25));
 
     assertThat(authorsDto).isNotNull().isNotEmpty().size().isEqualTo(2);
   }

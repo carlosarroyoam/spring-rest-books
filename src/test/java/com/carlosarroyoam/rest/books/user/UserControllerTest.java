@@ -56,7 +56,7 @@ class UserControllerTest {
   void shouldReturnListOfUsers() throws Exception {
     List<UserDto> users = List.of(UserDto.builder().build(), UserDto.builder().build());
 
-    Mockito.when(userService.findAll(any(), any())).thenReturn(users);
+    Mockito.when(userService.findAll(any())).thenReturn(users);
 
     MvcResult mvcResult = mockMvc.perform(get("/users").queryParam("page", "0")
         .queryParam("size", "25")
@@ -76,7 +76,7 @@ class UserControllerTest {
   void shouldReturnListOfUsersWithEmptyResponse() throws Exception {
     List<UserDto> users = List.of();
 
-    Mockito.when(userService.findAll(any(), any())).thenReturn(users);
+    Mockito.when(userService.findAll(any())).thenReturn(users);
 
     MvcResult mvcResult = mockMvc.perform(get("/users").queryParam("page", "0")
         .queryParam("size", "25")

@@ -6,6 +6,8 @@ import com.carlosarroyoam.rest.books.author.dto.UpdateAuthorRequestDto;
 import com.carlosarroyoam.rest.books.book.dto.BookDto;
 import jakarta.validation.Valid;
 import java.util.List;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +16,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -30,9 +31,8 @@ public class AuthorController {
 
   @GetMapping(produces = "application/json")
   public ResponseEntity<List<AuthorDto>> findAll(
-      @RequestParam(required = false, defaultValue = "0") Integer page,
-      @RequestParam(required = false, defaultValue = "25") Integer size) {
-    List<AuthorDto> authors = authorService.findAll(page, size);
+      @PageableDefault(page = 0, size = 25) Pageable pageable) {
+    List<AuthorDto> authors = authorService.findAll(pageable);
     return ResponseEntity.ok(authors);
   }
 
