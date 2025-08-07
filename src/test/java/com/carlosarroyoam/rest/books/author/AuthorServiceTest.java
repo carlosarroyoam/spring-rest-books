@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 
 import com.carlosarroyoam.rest.books.author.dto.AuthorDto;
+import com.carlosarroyoam.rest.books.author.dto.AuthorFilterDto;
 import com.carlosarroyoam.rest.books.author.dto.CreateAuthorRequestDto;
 import com.carlosarroyoam.rest.books.author.dto.UpdateAuthorRequestDto;
 import com.carlosarroyoam.rest.books.author.entity.Author;
@@ -41,7 +42,8 @@ class AuthorServiceTest {
 
     Mockito.when(authorRepository.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(authors));
 
-    List<AuthorDto> authorsDto = authorService.findAll(PageRequest.of(0, 25));
+    List<AuthorDto> authorsDto = authorService.findAll(PageRequest.of(0, 25),
+        AuthorFilterDto.builder().build());
 
     assertThat(authorsDto).isNotNull().isNotEmpty().size().isEqualTo(2);
   }

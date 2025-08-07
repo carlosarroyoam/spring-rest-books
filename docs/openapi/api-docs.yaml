@@ -429,6 +429,12 @@ paths:
             type: integer
             format: int32
             default: 25
+        - name: name
+          in: query
+          required: false
+          schema:
+            type: string
+            maxLength: 128
       responses:
         "200":
           description: OK

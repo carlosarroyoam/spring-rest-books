@@ -2,6 +2,7 @@ package com.carlosarroyoam.rest.books.author;
 
 import com.carlosarroyoam.rest.books.author.dto.AuthorDto;
 import com.carlosarroyoam.rest.books.author.dto.AuthorDto.AuthorDtoMapper;
+import com.carlosarroyoam.rest.books.author.dto.AuthorFilterDto;
 import com.carlosarroyoam.rest.books.author.dto.CreateAuthorRequestDto;
 import com.carlosarroyoam.rest.books.author.dto.UpdateAuthorRequestDto;
 import com.carlosarroyoam.rest.books.author.entity.Author;
@@ -15,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -28,8 +30,11 @@ public class AuthorService {
     this.authorRepository = authorRepository;
   }
 
-  public List<AuthorDto> findAll(Pageable pageable) {
-    Page<Author> authors = authorRepository.findAll(pageable);
+  public List<AuthorDto> findAll(Pageable pageable, AuthorFilterDto filters) {
+    Specification<Author> spec = Specification.unrestricted();
+    spec = spec.and(AuthorSpecification.name(filters.getName()));
+    
+    Page<Author> authors = authorRepository.findAll(spec, pageable);
     return AuthorDtoMapper.INSTANCE.toDtos(authors.getContent());
   }
 

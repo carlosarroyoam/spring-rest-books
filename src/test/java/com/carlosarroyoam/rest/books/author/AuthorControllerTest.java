@@ -57,7 +57,7 @@ class AuthorControllerTest {
   void shouldReturnListOfAuthors() throws Exception {
     List<AuthorDto> authors = List.of(AuthorDto.builder().build(), AuthorDto.builder().build());
 
-    Mockito.when(authorService.findAll(any())).thenReturn(authors);
+    Mockito.when(authorService.findAll(any(), any())).thenReturn(authors);
 
     MvcResult mvcResult = mockMvc.perform(get("/authors").queryParam("page", "0")
         .queryParam("size", "25")
@@ -77,7 +77,7 @@ class AuthorControllerTest {
   void shouldReturnListOfAuthorsWithEmptyResponse() throws Exception {
     List<AuthorDto> authors = List.of();
 
-    Mockito.when(authorService.findAll(any())).thenReturn(authors);
+    Mockito.when(authorService.findAll(any(), any())).thenReturn(authors);
 
     MvcResult mvcResult = mockMvc.perform(get("/authors").queryParam("page", "0")
         .queryParam("size", "25")
