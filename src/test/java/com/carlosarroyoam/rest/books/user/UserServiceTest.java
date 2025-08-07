@@ -8,7 +8,6 @@ import com.carlosarroyoam.rest.books.core.constant.AppMessages;
 import com.carlosarroyoam.rest.books.user.dto.CreateUserRequestDto;
 import com.carlosarroyoam.rest.books.user.dto.UpdateUserRequestDto;
 import com.carlosarroyoam.rest.books.user.dto.UserDto;
-import com.carlosarroyoam.rest.books.user.entity.Role;
 import com.carlosarroyoam.rest.books.user.entity.User;
 import java.util.List;
 import java.util.Optional;
@@ -23,7 +22,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.server.ResponseStatusException;
 
 @ExtendWith(MockitoExtension.class)
@@ -173,40 +171,5 @@ class UserServiceTest {
     assertThatThrownBy(() -> userService.deleteById(1L)).isInstanceOf(ResponseStatusException.class)
         .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
         .hasMessageContaining(AppMessages.USER_NOT_FOUND_EXCEPTION);
-  }
-
-  @Test
-  @DisplayName("Should load user details by username with existing username")
-  void shouldLoadUserDetailsByUsernameWithExistingUsername() {
-    Role adminRole = Role.builder()
-        .title("App//Admin")
-        .description("Role for admins users")
-        .build();
-
-    User user = User.builder()
-        .username("carroyom")
-        .isActive(true)
-        .role(adminRole)
-        .roleId(adminRole.getId())
-        .build();
-
-    Mockito.when(userRepository.findByUsername(any())).thenReturn(Optional.of(user));
-
-    org.springframework.security.core.userdetails.User userDetails = (org.springframework.security.core.userdetails.User) userService
-        .loadUserByUsername("carroyom");
-
-    assertThat(userDetails).isNotNull();
-    assertThat(userDetails.getUsername()).isEqualTo("carroyom");
-    assertThat(userDetails.isEnabled()).isTrue();
-  }
-
-  @Test
-  @DisplayName("Should throw UsernameNotFoundException when load user details by username with non existing username")
-  void shouldThrowWhenLoadUserDetailsByUsernameWithNonExistingUsername() {
-    Mockito.when(userRepository.findByUsername(any())).thenReturn(Optional.empty());
-
-    assertThatThrownBy(() -> userService.loadUserByUsername("carroyom"))
-        .isInstanceOf(UsernameNotFoundException.class)
-        .hasMessageContaining("Username not found: carroyom");
   }
 }

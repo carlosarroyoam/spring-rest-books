@@ -7,15 +7,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.FrameOptionsConfig;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
@@ -35,13 +31,13 @@ class WebSecurityConfig {
 
   @Bean
   SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    http.csrf(CsrfConfigurer::disable);
-    http.cors(Customizer.withDefaults());
-    http.headers(headers -> headers.frameOptions(FrameOptionsConfig::sameOrigin));
-    http.sessionManagement(
-        sessions -> sessions.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-    http.oauth2ResourceServer(
-        oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(customJwtConverter())));
+    http.csrf(CsrfConfigurer::disable)
+        .cors(Customizer.withDefaults())
+        .headers(headers -> headers.frameOptions(FrameOptionsConfig::sameOrigin))
+        .sessionManagement(
+            sessions -> sessions.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .oauth2ResourceServer(
+            oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(customJwtConverter())));
 
     http.authorizeHttpRequests(requests -> requests.requestMatchers("/h2-console/**")
         .permitAll()
@@ -54,8 +50,8 @@ class WebSecurityConfig {
   }
 
   @Bean
-  AuthenticationManager authenticationManager(UserDetailsService userDetailsService) {
-    return new ProviderManager(new DaoAuthenticationProvider(userDetailsService));
+  Converter<Jwt, AbstractAuthenticationToken> customJwtConverter() {
+    return new JwtAuthConverter();
   }
 
   @Bean
@@ -67,12 +63,6 @@ class WebSecurityConfig {
 
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     source.registerCorsConfiguration("/**", configuration);
-
     return source;
-  }
-
-  @Bean
-  Converter<Jwt, AbstractAuthenticationToken> customJwtConverter() {
-    return new JwtAuthConverter();
   }
 }
