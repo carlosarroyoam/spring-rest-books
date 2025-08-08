@@ -730,7 +730,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
-  /shopping-cart/{userId}/items/{book_id}:
+  /shopping-cart/{userId}/items/{bookId}:
     delete:
       tags:
         - Shopping cart

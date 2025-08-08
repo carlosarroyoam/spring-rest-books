@@ -9,7 +9,7 @@ public class AuthorSpecification {
     throw new IllegalAccessError(AppMessages.ILLEGAL_ACCESS_EXCEPTION);
   }
 
-  static Specification<Author> name(String name) {
+  static Specification<Author> nameContains(String name) {
     return (author, cq, cb) -> {
       if (name == null || name.isBlank()) {
         return cb.conjunction();

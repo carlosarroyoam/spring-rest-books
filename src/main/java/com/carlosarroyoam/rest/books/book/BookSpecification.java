@@ -13,7 +13,7 @@ public class BookSpecification {
     throw new IllegalAccessError(AppMessages.ILLEGAL_ACCESS_EXCEPTION);
   }
 
-  static Specification<Book> isbn(String isbn) {
+  static Specification<Book> isbnEquals(String isbn) {
     return (book, cq, cb) -> {
       if (isbn == null || isbn.isBlank()) {
         return cb.conjunction();
@@ -33,7 +33,7 @@ public class BookSpecification {
     };
   }
 
-  static Specification<Book> authorIds(String authorIds) {
+  static Specification<Book> authorIdIn(String authorIds) {
     return (book, cq, cb) -> {
       if (authorIds == null || authorIds.isBlank()) {
         return cb.conjunction();

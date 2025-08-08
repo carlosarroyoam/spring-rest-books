@@ -9,7 +9,7 @@ public class UserSpecification {
     throw new IllegalAccessError(AppMessages.ILLEGAL_ACCESS_EXCEPTION);
   }
 
-  static Specification<User> name(String name) {
+  static Specification<User> nameContains(String name) {
     return (user, cq, cb) -> {
       if (name == null || name.isBlank()) {
         return cb.conjunction();
@@ -19,7 +19,7 @@ public class UserSpecification {
     };
   }
 
-  static Specification<User> age(Byte age) {
+  static Specification<User> ageEquals(Byte age) {
     return (user, cq, cb) -> {
       if (age == null) {
         return cb.conjunction();
@@ -29,7 +29,7 @@ public class UserSpecification {
     };
   }
 
-  static Specification<User> email(String email) {
+  static Specification<User> emailContains(String email) {
     return (user, cq, cb) -> {
       if (email == null || email.isBlank()) {
         return cb.conjunction();
@@ -39,7 +39,7 @@ public class UserSpecification {
     };
   }
 
-  static Specification<User> username(String username) {
+  static Specification<User> usernameContains(String username) {
     return (user, cq, cb) -> {
       if (username == null || username.isBlank()) {
         return cb.conjunction();
@@ -59,7 +59,7 @@ public class UserSpecification {
     };
   }
 
-  static Specification<User> roleId(Integer roleId) {
+  static Specification<User> roleIdEquals(Integer roleId) {
     return (user, cq, cb) -> {
       if (roleId == null) {
         return cb.conjunction();
