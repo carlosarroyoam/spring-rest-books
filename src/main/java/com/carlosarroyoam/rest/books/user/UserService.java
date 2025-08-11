@@ -30,12 +30,12 @@ public class UserService {
 
   public List<UserDto> findAll(Pageable pageable, UserFilterDto filters) {
     Specification<User> spec = Specification.unrestricted();
-    spec = spec.and(UserSpecification.nameContains(filters.getName()));
-    spec = spec.and(UserSpecification.ageEquals(filters.getAge()));
-    spec = spec.and(UserSpecification.emailContains(filters.getEmail()));
-    spec = spec.and(UserSpecification.usernameContains(filters.getUsername()));
-    spec = spec.and(UserSpecification.isActive(filters.getIsActive()));
-    spec = spec.and(UserSpecification.roleIdEquals(filters.getRoleId()));
+    spec = spec.and(UserSpecification.nameContains(filters.getName()))
+        .and(UserSpecification.ageEquals(filters.getAge()))
+        .and(UserSpecification.emailContains(filters.getEmail()))
+        .and(UserSpecification.usernameContains(filters.getUsername()))
+        .and(UserSpecification.isActive(filters.getIsActive()))
+        .and(UserSpecification.roleIdEquals(filters.getRoleId()));
 
     Page<User> users = userRepository.findAll(spec, pageable);
     return UserDtoMapper.INSTANCE.toDtos(users.getContent());

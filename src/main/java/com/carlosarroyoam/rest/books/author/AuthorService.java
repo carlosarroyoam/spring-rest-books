@@ -33,7 +33,7 @@ public class AuthorService {
   public List<AuthorDto> findAll(Pageable pageable, AuthorFilterDto filters) {
     Specification<Author> spec = Specification.unrestricted();
     spec = spec.and(AuthorSpecification.nameContains(filters.getName()));
-    
+
     Page<Author> authors = authorRepository.findAll(spec, pageable);
     return AuthorDtoMapper.INSTANCE.toDtos(authors.getContent());
   }

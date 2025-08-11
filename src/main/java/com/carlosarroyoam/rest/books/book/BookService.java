@@ -32,10 +32,10 @@ public class BookService {
 
   public List<BookDto> findAll(Pageable pageable, BookFilterDto filters) {
     Specification<Book> spec = Specification.unrestricted();
-    spec = spec.and(BookSpecification.isbnEquals(filters.getIsbn()));
-    spec = spec.and(BookSpecification.titleContains(filters.getTitle()));
-    spec = spec.and(BookSpecification.authorIdIn(filters.getAuthorIds()));
-    spec = spec.and(BookSpecification.isAvailableOnline(filters.getIsAvailableOnline()));
+    spec = spec.and(BookSpecification.isbnEquals(filters.getIsbn()))
+        .and(BookSpecification.titleContains(filters.getTitle()))
+        .and(BookSpecification.authorIdIn(filters.getAuthorIds()))
+        .and(BookSpecification.isAvailableOnline(filters.getIsAvailableOnline()));
 
     Page<Book> books = bookRepository.findAll(spec, pageable);
     return BookDtoMapper.INSTANCE.toDtos(books.getContent());
