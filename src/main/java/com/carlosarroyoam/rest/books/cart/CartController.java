@@ -4,7 +4,8 @@ import com.carlosarroyoam.rest.books.cart.dto.CartDto;
 import com.carlosarroyoam.rest.books.cart.dto.UpdateCartItemRequestDto;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,8 +24,8 @@ public class CartController {
   }
 
   @GetMapping(produces = "application/json")
-  public ResponseEntity<CartDto> findByUserId(JwtAuthenticationToken authentication) {
-    String username = authentication.getToken().getClaim("preferred_username");
+  public ResponseEntity<CartDto> findByUserId(@AuthenticationPrincipal Jwt jwt) {
+    String username = jwt.getClaim("preferred_username");
     CartDto shoppingCartByUserId = shoppingCartService.findByUsername(username);
     return ResponseEntity.ok(shoppingCartByUserId);
   }
