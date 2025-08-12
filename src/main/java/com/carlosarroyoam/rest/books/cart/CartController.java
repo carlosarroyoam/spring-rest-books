@@ -5,6 +5,7 @@ import com.carlosarroyoam.rest.books.cart.dto.UpdateCartItemRequestDto;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.oidc.StandardClaimNames;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,7 +26,7 @@ public class CartController {
 
   @GetMapping(produces = "application/json")
   public ResponseEntity<CartDto> findByUserId(@AuthenticationPrincipal Jwt jwt) {
-    String username = jwt.getClaim("preferred_username");
+    String username = jwt.getClaim(StandardClaimNames.PREFERRED_USERNAME);
     CartDto shoppingCartByUserId = shoppingCartService.findByUsername(username);
     return ResponseEntity.ok(shoppingCartByUserId);
   }
