@@ -3,13 +3,13 @@ info:
   title: Spring REST Books API
   description: |
     A comprehensive REST API for managing a bookstore system including users,
-    books, authors, shopping cart, orders, payments and shipments.
+    books, authors, carts, orders, payments and shipments.
 
     ## Features
     - Users.
     - Books.
     - Authors.
-    - Shopping cart.
+    - Carts.
     - Orders.
     - Payments.
     - Shipments.
@@ -29,8 +29,8 @@ tags:
     description: Operations about books
   - name: Authors
     description: Operations about authors
-  - name: Shopping cart
-    description: Operations about shopping cart
+  - name: Carts
+    description: Operations about carts
   - name: Orders
     description: Operations about orders
   - name: Payments
@@ -633,19 +633,12 @@ paths:
       security:
         - bearerAuth: []
 
-  /shopping-cart/{userId}:
+  /carts:
     get:
       tags:
-        - Shopping cart
-      summary: Gets a shopping cart by user id
-      operationId: findShoppingCartByUserId
-      parameters:
-        - name: userId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
+        - Carts
+      summary: Gets the user cart
+      operationId: findCart
       responses:
         "200":
           description: OK
@@ -665,14 +658,14 @@ paths:
           $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
-  /shopping-cart/{userId}/items:
+  /carts/{cartId}/items:
     put:
       tags:
-        - Shopping cart
+        - Carts
       summary: Updates a cart item
       operationId: updateCartItem
       parameters:
-        - name: userId
+        - name: cartId
           in: path
           required: true
           schema:
@@ -698,14 +691,14 @@ paths:
           $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
-  /shopping-cart/{userId}/items/{cartItemId}:
+  /carts/{cartId}/items/{cartItemId}:
     delete:
       tags:
-        - Shopping cart
+        - Carts
       summary: Deletes a cart item
       operationId: deleteCartItem
       parameters:
-        - name: userId
+        - name: cartId
           in: path
           required: true
           schema:

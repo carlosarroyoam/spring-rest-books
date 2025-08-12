@@ -1,4 +1,4 @@
-package com.carlosarroyoam.rest.books.shoppingcart.entity;
+package com.carlosarroyoam.rest.books.cart.entity;
 
 import com.carlosarroyoam.rest.books.user.entity.User;
 import jakarta.persistence.Column;
@@ -19,18 +19,18 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "shopping_carts")
+@Table(name = "carts")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ShoppingCart {
+public class Cart {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @Builder.Default
-  @OneToMany(mappedBy = "shoppingCart")
+  @OneToMany(mappedBy = "cart")
   private List<CartItem> items = new ArrayList<>();
 
   @Column(name = "user_id", nullable = false)

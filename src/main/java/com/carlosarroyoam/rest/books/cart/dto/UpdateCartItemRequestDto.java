@@ -1,4 +1,4 @@
-package com.carlosarroyoam.rest.books.shoppingcart.dto;
+package com.carlosarroyoam.rest.books.cart.dto;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;

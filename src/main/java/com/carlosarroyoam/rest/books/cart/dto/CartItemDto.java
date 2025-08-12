@@ -1,7 +1,7 @@
-package com.carlosarroyoam.rest.books.shoppingcart.dto;
+package com.carlosarroyoam.rest.books.cart.dto;
 
 import com.carlosarroyoam.rest.books.book.dto.BookDto;
-import com.carlosarroyoam.rest.books.shoppingcart.entity.CartItem;
+import com.carlosarroyoam.rest.books.cart.entity.CartItem;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

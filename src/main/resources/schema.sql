@@ -44,7 +44,7 @@ CREATE TABLE users (
     FOREIGN KEY (role_id) REFERENCES roles(id)
 );
 
-CREATE TABLE shopping_carts (
+CREATE TABLE carts (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT NOT NULL,
     created_at TIMESTAMP NOT NULL,
@@ -55,9 +55,9 @@ CREATE TABLE shopping_carts (
 CREATE TABLE cart_items (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     book_id BIGINT NOT NULL,
-    shopping_cart_id BIGINT NOT NULL,
+    cart_id BIGINT NOT NULL,
     quantity INT NOT NULL,
     added_at TIMESTAMP NOT NULL,
     FOREIGN KEY (book_id) REFERENCES books(id),
-    FOREIGN KEY (shopping_cart_id) REFERENCES shopping_carts(id)
+    FOREIGN KEY (cart_id) REFERENCES carts(id)
 );

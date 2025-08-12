@@ -1,4 +1,4 @@
-package com.carlosarroyoam.rest.books.shoppingcart.entity;
+package com.carlosarroyoam.rest.books.cart.entity;
 
 import com.carlosarroyoam.rest.books.book.entity.Book;
 import jakarta.persistence.Column;
@@ -36,12 +36,12 @@ public class CartItem {
   @JoinColumn(name = "book_id", referencedColumnName = "id", insertable = false, updatable = false, nullable = false)
   private Book book;
 
-  @Column(name = "shopping_cart_id", nullable = false)
-  private Long shoppingCartId;
+  @Column(name = "cart_id", nullable = false)
+  private Long cartId;
 
   @ManyToOne
-  @JoinColumn(name = "shopping_cart_id", referencedColumnName = "id", insertable = false, updatable = false, nullable = false)
-  private ShoppingCart shoppingCart;
+  @JoinColumn(name = "cart_id", referencedColumnName = "id", insertable = false, updatable = false, nullable = false)
+  private Cart cart;
 
   @Column(name = "added_at", nullable = false)
   private LocalDateTime addedAt;

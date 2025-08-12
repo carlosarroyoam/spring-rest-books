@@ -1,6 +1,6 @@
-package com.carlosarroyoam.rest.books.shoppingcart.dto;
+package com.carlosarroyoam.rest.books.cart.dto;
 
-import com.carlosarroyoam.rest.books.shoppingcart.entity.ShoppingCart;
+import com.carlosarroyoam.rest.books.cart.entity.Cart;
 import com.carlosarroyoam.rest.books.user.dto.UserDto;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,7 +17,7 @@ import org.mapstruct.factory.Mappers;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ShoppingCartDto {
+public class CartDto {
   private Long id;
   private List<CartItemDto> items;
   private UserDto user;
@@ -28,6 +28,6 @@ public class ShoppingCartDto {
   public interface ShoppingCartDtoMapper {
     ShoppingCartDtoMapper INSTANCE = Mappers.getMapper(ShoppingCartDtoMapper.class);
 
-    ShoppingCartDto toDto(ShoppingCart entity);
+    CartDto toDto(Cart entity);
   }
 }
