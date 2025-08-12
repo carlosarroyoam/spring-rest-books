@@ -31,9 +31,9 @@ public class UserDto {
   public interface UserDtoMapper {
     UserDtoMapper INSTANCE = Mappers.getMapper(UserDtoMapper.class);
 
-    UserDto toDto(User user);
+    UserDto toDto(User entity);
 
-    List<UserDto> toDtos(List<User> users);
+    List<UserDto> toDtos(List<User> entities);
 
     User toEntity(CreateUserRequestDto requestDto);
   }

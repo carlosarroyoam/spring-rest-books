@@ -26,9 +26,9 @@ public class AuthorDto {
   public interface AuthorDtoMapper {
     AuthorDtoMapper INSTANCE = Mappers.getMapper(AuthorDtoMapper.class);
 
-    AuthorDto toDto(Author author);
+    AuthorDto toDto(Author entity);
 
-    List<AuthorDto> toDtos(List<Author> authors);
+    List<AuthorDto> toDtos(List<Author> entities);
 
     Author toEntity(CreateAuthorRequestDto requestDto);
   }
