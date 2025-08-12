@@ -59,8 +59,4 @@ public class Book {
 
   @Column(name = "updated_at", nullable = false)
   private LocalDateTime updatedAt;
-
-  public void addAuthor(Author author) {
-    this.authors.add(author);
-  }
 }

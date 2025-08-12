@@ -666,38 +666,6 @@ paths:
       security:
         - bearerAuth: []
   /shopping-cart/{userId}/items:
-    post:
-      tags:
-        - Shopping cart
-      summary: Adds a cart item
-      operationId: addCartItem
-      parameters:
-        - name: userId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/AddCartItemRequestDto"
-      responses:
-        "204":
-          $ref: "#/components/responses/NoContent"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "401":
-          $ref: "#/components/responses/Unauthorized"
-        "403":
-          $ref: "#/components/responses/Forbidden"
-        "404":
-          $ref: "#/components/responses/NotFound"
-        "500":
-          $ref: "#/components/responses/InternalServerError"
-      security:
-        - bearerAuth: []
     put:
       tags:
         - Shopping cart
@@ -730,7 +698,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
-  /shopping-cart/{userId}/items/{bookId}:
+  /shopping-cart/{userId}/items/{cartItemId}:
     delete:
       tags:
         - Shopping cart
@@ -743,7 +711,7 @@ paths:
           schema:
             type: integer
             format: int64
-        - name: bookId
+        - name: cartItemId
           in: path
           required: true
           schema:

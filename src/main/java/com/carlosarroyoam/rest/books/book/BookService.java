@@ -43,7 +43,7 @@ public class BookService {
 
   public BookDto findById(Long bookId) {
     Book bookById = bookRepository.findById(bookId).orElseThrow(() -> {
-      log.warn(AppMessages.USER_NOT_FOUND_EXCEPTION);
+      log.warn(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
       return new ResponseStatusException(HttpStatus.NOT_FOUND,
           AppMessages.BOOK_NOT_FOUND_EXCEPTION);
     });

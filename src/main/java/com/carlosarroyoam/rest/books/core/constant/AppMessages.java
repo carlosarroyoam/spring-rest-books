@@ -12,6 +12,9 @@ public class AppMessages {
   public static final String EMAIL_ALREADY_EXISTS_EXCEPTION = "Email already exists";
   public static final String USERNAME_ALREADY_EXISTS_EXCEPTION = "Username already exists";
 
+  public static final String SHOPPING_CART_NOT_FOUND_EXCEPTION = "Shopping cart not found";
+  public static final String CART_ITEM_NOT_FOUND_EXCEPTION = "Cart item not found";
+
   private AppMessages() {
     throw new IllegalAccessError(ILLEGAL_ACCESS_EXCEPTION);
   }

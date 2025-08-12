@@ -19,3 +19,8 @@ VALUES ('Carlos Alberto Arroyo Martínez', 28, 'carroyom@mail.com', 'carroyom', 
 
 INSERT INTO users(name, age, email, username, role_id, is_active, created_at, updated_at)
 VALUES ('Cathy Stefania Guido Rojas', 28, 'cguidor@mail.com', 'cguidor', 2, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+INSERT INTO shopping_carts(user_id, created_at, updated_at) VALUES (2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+INSERT INTO cart_items(book_id, shopping_cart_id, quantity, added_at) VALUES (1, 1, 1, CURRENT_TIMESTAMP);
+INSERT INTO cart_items(book_id, shopping_cart_id, quantity, added_at) VALUES (2, 1, 2, CURRENT_TIMESTAMP);
