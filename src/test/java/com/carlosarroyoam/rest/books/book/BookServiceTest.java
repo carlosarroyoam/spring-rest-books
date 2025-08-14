@@ -3,6 +3,8 @@ package com.carlosarroyoam.rest.books.book;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.carlosarroyoam.rest.books.author.dto.AuthorDto;
 import com.carlosarroyoam.rest.books.author.entity.Author;
@@ -18,13 +20,14 @@ import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -41,12 +44,13 @@ class BookServiceTest {
   void shouldReturnListOfBooks() {
     List<Book> books = List.of(Book.builder().build(), Book.builder().build());
 
-    Mockito.when(bookRepository.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(books));
+    when(bookRepository.findAll(ArgumentMatchers.<Specification<Book>>any(), any(Pageable.class)))
+        .thenReturn(new PageImpl<>(books));
 
     List<BookDto> booksDto = bookService.findAll(PageRequest.of(0, 25),
         BookFilterDto.builder().build());
 
-    assertThat(booksDto).isNotNull().isNotEmpty().size().isEqualTo(2);
+    assertThat(booksDto).isNotNull().isNotEmpty().hasSize(2);
   }
 
   @Test
@@ -54,7 +58,7 @@ class BookServiceTest {
   void shouldReturnWhenFindBookByIdWithExisitingId() {
     Book book = Book.builder().id(1L).build();
 
-    Mockito.when(bookRepository.findById(any())).thenReturn(Optional.of(book));
+    when(bookRepository.findById(any())).thenReturn(Optional.of(book));
 
     BookDto bookDto = bookService.findById(1L);
 
@@ -65,7 +69,7 @@ class BookServiceTest {
   @Test
   @DisplayName("Should throw ResponseStatusException when find a book by id with non existing id")
   void shouldThrowWhenFindBookByIdWithNonExisitingId() {
-    Mockito.when(bookRepository.findById(any())).thenReturn(Optional.empty());
+    when(bookRepository.findById(any())).thenReturn(Optional.empty());
 
     assertThatThrownBy(() -> bookService.findById(1L)).isInstanceOf(ResponseStatusException.class)
         .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
@@ -85,8 +89,8 @@ class BookServiceTest {
         .title("Sapiens: A Brief History of Humankind")
         .build();
 
-    Mockito.when(bookRepository.existsByIsbn(any())).thenReturn(false);
-    Mockito.when(bookRepository.save(any(Book.class))).thenReturn(book);
+    when(bookRepository.existsByIsbn(any())).thenReturn(false);
+    when(bookRepository.save(any(Book.class))).thenReturn(book);
 
     BookDto bookDto = bookService.create(requestDto);
 
@@ -100,7 +104,7 @@ class BookServiceTest {
   void shouldThrowWhenCreateBookWithExistingIsbn() {
     CreateBookRequestDto requestDto = CreateBookRequestDto.builder().build();
 
-    Mockito.when(bookRepository.existsByIsbn(any())).thenReturn(true);
+    when(bookRepository.existsByIsbn(any())).thenReturn(true);
 
     assertThatThrownBy(() -> bookService.create(requestDto))
         .isInstanceOf(ResponseStatusException.class)
@@ -124,12 +128,12 @@ class BookServiceTest {
         .isAvailableOnline(false)
         .build();
 
-    Mockito.when(bookRepository.findById(any())).thenReturn(Optional.of(book));
-    Mockito.when(bookRepository.save(any(Book.class))).thenReturn(book);
+    when(bookRepository.findById(any())).thenReturn(Optional.of(book));
+    when(bookRepository.save(any(Book.class))).thenReturn(book);
 
     bookService.update(1L, requestDto);
 
-    Mockito.verify(bookRepository).save(book);
+    verify(bookRepository).save(book);
     assertThat(book.getTitle()).isEqualTo("Sapiens: A Brief History of Humankind");
     assertThat(book.getPrice()).isEqualTo(new BigDecimal("20.99"));
     assertThat(book.getIsAvailableOnline()).isTrue();
@@ -140,7 +144,7 @@ class BookServiceTest {
   void shouldThrowWhenUpdateBookWithInvalidData() {
     UpdateBookRequestDto requestDto = UpdateBookRequestDto.builder().build();
 
-    Mockito.when(bookRepository.findById(any())).thenReturn(Optional.empty());
+    when(bookRepository.findById(any())).thenReturn(Optional.empty());
 
     assertThatThrownBy(() -> bookService.update(1L, requestDto))
         .isInstanceOf(ResponseStatusException.class)
@@ -151,17 +155,17 @@ class BookServiceTest {
   @Test
   @DisplayName("Should delete book with existing id")
   void shouldDeleteBookWithExistingId() {
-    Mockito.when(bookRepository.existsById(any())).thenReturn(true);
+    when(bookRepository.existsById(any())).thenReturn(true);
 
     bookService.deleteById(1L);
 
-    Mockito.verify(bookRepository).deleteById(1L);
+    verify(bookRepository).deleteById(1L);
   }
 
   @Test
   @DisplayName("Should throw ResponseStatusException when delete book with non existing id")
   void shouldThrowWhenDeleteBookWithNonExistingId() {
-    Mockito.when(bookRepository.existsById(any())).thenReturn(false);
+    when(bookRepository.existsById(any())).thenReturn(false);
 
     assertThatThrownBy(() -> bookService.deleteById(1L)).isInstanceOf(ResponseStatusException.class)
         .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
@@ -176,17 +180,17 @@ class BookServiceTest {
         .authors(List.of(Author.builder().build(), Author.builder().build()))
         .build();
 
-    Mockito.when(bookRepository.findById(any())).thenReturn(Optional.of(book));
+    when(bookRepository.findById(any())).thenReturn(Optional.of(book));
 
     List<AuthorDto> authors = bookService.findAuthorsByBookId(1L);
 
-    assertThat(authors).isNotNull().isNotEmpty().size().isEqualTo(2);
+    assertThat(authors).isNotNull().isNotEmpty().hasSize(2);
   }
 
   @Test
   @DisplayName("Should throw ResponseStatusException when find authors by book id with non existing id")
   void shouldThrowWhenFindAuthorsByBookIdWithNonExistingId() {
-    Mockito.when(bookRepository.findById(any())).thenReturn(Optional.empty());
+    when(bookRepository.findById(any())).thenReturn(Optional.empty());
 
     assertThatThrownBy(() -> bookService.findAuthorsByBookId(1L))
         .isInstanceOf(ResponseStatusException.class)

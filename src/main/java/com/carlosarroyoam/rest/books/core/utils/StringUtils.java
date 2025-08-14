@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 public class StringUtils {
   private StringUtils() {
@@ -13,7 +14,7 @@ public class StringUtils {
 
   public static List<String> commaSeparatedToList(String input) {
     return Optional.ofNullable(input)
-        .filter(value -> !value.isEmpty())
+        .filter(Predicate.not(String::isEmpty))
         .map(value -> Arrays.stream(value.replace("\"", "").split(",", -1))
             .map(String::trim)
             .toList())

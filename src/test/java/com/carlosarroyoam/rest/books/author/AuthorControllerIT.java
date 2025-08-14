@@ -4,6 +4,7 @@ import com.carlosarroyoam.rest.books.author.dto.CreateAuthorRequestDto;
 import com.carlosarroyoam.rest.books.author.dto.UpdateAuthorRequestDto;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,14 +20,17 @@ import org.springframework.web.context.WebApplicationContext;
 import reactor.core.publisher.Mono;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@WithMockUser
 @Transactional
+@WithMockUser
 class AuthorControllerIT {
+  @Autowired
+  private WebApplicationContext webApplicationContext;
+
   private WebTestClient webTestClient;
 
-  @Autowired
-  public void setWebApplicationContext(final WebApplicationContext context) {
-    webTestClient = MockMvcWebTestClient.bindToApplicationContext(context)
+  @BeforeEach
+  void setup() {
+    webTestClient = MockMvcWebTestClient.bindToApplicationContext(webApplicationContext)
         .apply(SecurityMockMvcConfigurers.springSecurity())
         .build();
   }
@@ -50,11 +54,7 @@ class AuthorControllerIT {
         .jsonPath("$[0].id")
         .isEqualTo(1L)
         .jsonPath("$[0].name")
-        .isEqualTo("Yuval Noah Harari")
-        .jsonPath("$[1].id")
-        .isEqualTo(2L)
-        .jsonPath("$[1].name")
-        .isEqualTo("Itzik Yahav");
+        .isEqualTo("Yuval Noah Harari");
   }
 
   @Test

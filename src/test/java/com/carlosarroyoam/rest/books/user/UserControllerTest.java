@@ -2,6 +2,9 @@ package com.carlosarroyoam.rest.books.user;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -13,6 +16,7 @@ import com.carlosarroyoam.rest.books.core.exception.dto.AppExceptionDto;
 import com.carlosarroyoam.rest.books.user.dto.CreateUserRequestDto;
 import com.carlosarroyoam.rest.books.user.dto.UpdateUserRequestDto;
 import com.carlosarroyoam.rest.books.user.dto.UserDto;
+import com.carlosarroyoam.rest.books.user.dto.UserFilterDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import java.util.List;
@@ -22,8 +26,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -33,8 +38,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 @ExtendWith(MockitoExtension.class)
 class UserControllerTest {
-  private MockMvc mockMvc;
   private ObjectMapper mapper;
+  private MockMvc mockMvc;
 
   @Mock
   private UserService userService;
@@ -44,11 +49,12 @@ class UserControllerTest {
 
   @BeforeEach
   void setup() {
-    mockMvc = MockMvcBuilders.standaloneSetup(userController)
-        .setControllerAdvice(ControllerAdvisor.class)
-        .build();
     mapper = new ObjectMapper();
     mapper.findAndRegisterModules();
+    mockMvc = MockMvcBuilders.standaloneSetup(userController)
+        .setControllerAdvice(ControllerAdvisor.class)
+        .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
+        .build();
   }
 
   @Test
@@ -56,7 +62,7 @@ class UserControllerTest {
   void shouldReturnListOfUsers() throws Exception {
     List<UserDto> users = List.of(UserDto.builder().build(), UserDto.builder().build());
 
-    Mockito.when(userService.findAll(any(), any())).thenReturn(users);
+    when(userService.findAll(any(Pageable.class), any(UserFilterDto.class))).thenReturn(users);
 
     MvcResult mvcResult = mockMvc.perform(get("/users").queryParam("page", "0")
         .queryParam("size", "25")
@@ -68,7 +74,7 @@ class UserControllerTest {
     List<UserDto> responseDto = mapper.readValue(responseJson, collectionType);
 
     assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
-    assertThat(responseDto).isNotNull().isNotEmpty().size().isEqualTo(2);
+    assertThat(responseDto).isNotNull().isNotEmpty().hasSize(2);
   }
 
   @Test
@@ -76,7 +82,7 @@ class UserControllerTest {
   void shouldReturnListOfUsersWithEmptyResponse() throws Exception {
     List<UserDto> users = List.of();
 
-    Mockito.when(userService.findAll(any(), any())).thenReturn(users);
+    when(userService.findAll(any(Pageable.class), any(UserFilterDto.class))).thenReturn(users);
 
     MvcResult mvcResult = mockMvc.perform(get("/users").queryParam("page", "0")
         .queryParam("size", "25")
@@ -96,7 +102,7 @@ class UserControllerTest {
   void shouldReturnWhenFindUserByIdWithExistingId() throws Exception {
     UserDto user = UserDto.builder().id(1L).build();
 
-    Mockito.when(userService.findById(any())).thenReturn(user);
+    when(userService.findById(any())).thenReturn(user);
 
     MvcResult mvcResult = mockMvc
         .perform(get("/users/{userId}", 1L).accept(MediaType.APPLICATION_JSON))
@@ -113,9 +119,8 @@ class UserControllerTest {
   @Test
   @DisplayName("Should throw ResponseStatusException when find user by id with non existing id")
   void shouldReturnWhenFindUserByIdWithNonExistingId() throws Exception {
-    Mockito.when(userService.findById(any()))
-        .thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND,
-            AppMessages.USER_NOT_FOUND_EXCEPTION));
+    when(userService.findById(any())).thenThrow(
+        new ResponseStatusException(HttpStatus.NOT_FOUND, AppMessages.USER_NOT_FOUND_EXCEPTION));
 
     MvcResult mvcResult = mockMvc
         .perform(get("/users/{userId}", 1L).accept(MediaType.APPLICATION_JSON))
@@ -144,7 +149,7 @@ class UserControllerTest {
 
     UserDto user = UserDto.builder().id(1L).build();
 
-    Mockito.when(userService.create(any(CreateUserRequestDto.class))).thenReturn(user);
+    when(userService.create(any(CreateUserRequestDto.class))).thenReturn(user);
 
     MvcResult mvcResult = mockMvc
         .perform(post("/users").content(mapper.writeValueAsString(requestDto))
@@ -166,9 +171,8 @@ class UserControllerTest {
         .roleId(1)
         .build();
 
-    Mockito.when(userService.create(any(CreateUserRequestDto.class)))
-        .thenThrow(new ResponseStatusException(HttpStatus.BAD_REQUEST,
-            AppMessages.USERNAME_ALREADY_EXISTS_EXCEPTION));
+    when(userService.create(any(CreateUserRequestDto.class))).thenThrow(new ResponseStatusException(
+        HttpStatus.BAD_REQUEST, AppMessages.USERNAME_ALREADY_EXISTS_EXCEPTION));
 
     MvcResult mvcResult = mockMvc
         .perform(post("/users").content(mapper.writeValueAsString(requestDto))
@@ -196,9 +200,8 @@ class UserControllerTest {
         .roleId(1)
         .build();
 
-    Mockito.when(userService.create(any(CreateUserRequestDto.class)))
-        .thenThrow(new ResponseStatusException(HttpStatus.BAD_REQUEST,
-            AppMessages.EMAIL_ALREADY_EXISTS_EXCEPTION));
+    when(userService.create(any(CreateUserRequestDto.class))).thenThrow(new ResponseStatusException(
+        HttpStatus.BAD_REQUEST, AppMessages.EMAIL_ALREADY_EXISTS_EXCEPTION));
 
     MvcResult mvcResult = mockMvc
         .perform(post("/users").content(mapper.writeValueAsString(requestDto))
@@ -240,9 +243,7 @@ class UserControllerTest {
         .age(Byte.valueOf("28"))
         .build();
 
-    Mockito
-        .doThrow(
-            new ResponseStatusException(HttpStatus.NOT_FOUND, AppMessages.USER_NOT_FOUND_EXCEPTION))
+    doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, AppMessages.USER_NOT_FOUND_EXCEPTION))
         .when(userService)
         .update(any(), any(UpdateUserRequestDto.class));
 
@@ -265,7 +266,7 @@ class UserControllerTest {
   @Test
   @DisplayName("Should delete user with existing id")
   void shouldDeleteUserWithExistingId() throws Exception {
-    Mockito.doNothing().when(userService).deleteById(any());
+    doNothing().when(userService).deleteById(any());
 
     MvcResult mvcResult = mockMvc
         .perform(delete("/users/{userId}", 1L).accept(MediaType.APPLICATION_JSON))
@@ -277,9 +278,7 @@ class UserControllerTest {
   @Test
   @DisplayName("Should throw ResponseStatusException when delete user with non existing id")
   void shouldThrowWhenDeleteUserWithNonExistingId() throws Exception {
-    Mockito
-        .doThrow(
-            new ResponseStatusException(HttpStatus.NOT_FOUND, AppMessages.USER_NOT_FOUND_EXCEPTION))
+    doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, AppMessages.USER_NOT_FOUND_EXCEPTION))
         .when(userService)
         .deleteById(any());
 

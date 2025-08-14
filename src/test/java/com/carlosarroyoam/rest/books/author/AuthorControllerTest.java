@@ -2,12 +2,16 @@ package com.carlosarroyoam.rest.books.author;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 import com.carlosarroyoam.rest.books.author.dto.AuthorDto;
+import com.carlosarroyoam.rest.books.author.dto.AuthorFilterDto;
 import com.carlosarroyoam.rest.books.author.dto.CreateAuthorRequestDto;
 import com.carlosarroyoam.rest.books.author.dto.UpdateAuthorRequestDto;
 import com.carlosarroyoam.rest.books.book.dto.BookDto;
@@ -23,8 +27,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -34,8 +39,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 @ExtendWith(MockitoExtension.class)
 class AuthorControllerTest {
-  private MockMvc mockMvc;
   private ObjectMapper mapper;
+  private MockMvc mockMvc;
 
   @Mock
   private AuthorService authorService;
@@ -45,11 +50,12 @@ class AuthorControllerTest {
 
   @BeforeEach
   void setup() {
-    mockMvc = MockMvcBuilders.standaloneSetup(authorController)
-        .setControllerAdvice(ControllerAdvisor.class)
-        .build();
     mapper = new ObjectMapper();
     mapper.findAndRegisterModules();
+    mockMvc = MockMvcBuilders.standaloneSetup(authorController)
+        .setControllerAdvice(ControllerAdvisor.class)
+        .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
+        .build();
   }
 
   @Test
@@ -57,7 +63,8 @@ class AuthorControllerTest {
   void shouldReturnListOfAuthors() throws Exception {
     List<AuthorDto> authors = List.of(AuthorDto.builder().build(), AuthorDto.builder().build());
 
-    Mockito.when(authorService.findAll(any(), any())).thenReturn(authors);
+    when(authorService.findAll(any(Pageable.class), any(AuthorFilterDto.class)))
+        .thenReturn(authors);
 
     MvcResult mvcResult = mockMvc.perform(get("/authors").queryParam("page", "0")
         .queryParam("size", "25")
@@ -69,7 +76,7 @@ class AuthorControllerTest {
     List<AuthorDto> responseDto = mapper.readValue(responseJson, collectionType);
 
     assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
-    assertThat(responseDto).isNotNull().isNotEmpty().size().isEqualTo(2);
+    assertThat(responseDto).isNotNull().isNotEmpty().hasSize(2);
   }
 
   @Test
@@ -77,7 +84,8 @@ class AuthorControllerTest {
   void shouldReturnListOfAuthorsWithEmptyResponse() throws Exception {
     List<AuthorDto> authors = List.of();
 
-    Mockito.when(authorService.findAll(any(), any())).thenReturn(authors);
+    when(authorService.findAll(any(Pageable.class), any(AuthorFilterDto.class)))
+        .thenReturn(authors);
 
     MvcResult mvcResult = mockMvc.perform(get("/authors").queryParam("page", "0")
         .queryParam("size", "25")
@@ -97,7 +105,7 @@ class AuthorControllerTest {
   void shouldReturnWhenFindAuthorByIdWithExistingId() throws Exception {
     AuthorDto author = AuthorDto.builder().id(1L).build();
 
-    Mockito.when(authorService.findById(any())).thenReturn(author);
+    when(authorService.findById(any())).thenReturn(author);
 
     MvcResult mvcResult = mockMvc
         .perform(get("/authors/{authorId}", 1L).accept(MediaType.APPLICATION_JSON))
@@ -114,9 +122,8 @@ class AuthorControllerTest {
   @Test
   @DisplayName("Should throw ResponseStatusException when find author by id with non existing id")
   void shouldReturnWhenFindAuthorByIdWithNonExistingId() throws Exception {
-    Mockito.when(authorService.findById(any()))
-        .thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND,
-            AppMessages.AUTHOR_NOT_FOUND_EXCEPTION));
+    when(authorService.findById(any())).thenThrow(
+        new ResponseStatusException(HttpStatus.NOT_FOUND, AppMessages.AUTHOR_NOT_FOUND_EXCEPTION));
 
     MvcResult mvcResult = mockMvc
         .perform(get("/authors/{authorId}", 1L).accept(MediaType.APPLICATION_JSON))
@@ -141,7 +148,7 @@ class AuthorControllerTest {
 
     AuthorDto author = AuthorDto.builder().id(1L).build();
 
-    Mockito.when(authorService.create(any(CreateAuthorRequestDto.class))).thenReturn(author);
+    when(authorService.create(any(CreateAuthorRequestDto.class))).thenReturn(author);
 
     MvcResult mvcResult = mockMvc
         .perform(post("/authors").content(mapper.writeValueAsString(requestDto))
@@ -176,11 +183,10 @@ class AuthorControllerTest {
         .name("Yuval Noah Harari")
         .build();
 
-    Mockito
-        .doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND,
-            AppMessages.AUTHOR_NOT_FOUND_EXCEPTION))
-        .when(authorService)
-        .update(any(), any(UpdateAuthorRequestDto.class));
+    doThrow(
+        new ResponseStatusException(HttpStatus.NOT_FOUND, AppMessages.AUTHOR_NOT_FOUND_EXCEPTION))
+            .when(authorService)
+            .update(any(), any(UpdateAuthorRequestDto.class));
 
     MvcResult mvcResult = mockMvc
         .perform(put("/authors/{authorId}", 1L).content(mapper.writeValueAsString(requestDto))
@@ -201,7 +207,7 @@ class AuthorControllerTest {
   @Test
   @DisplayName("Should delete author with existing id")
   void shouldDeleteAuthorWithExistingId() throws Exception {
-    Mockito.doNothing().when(authorService).deleteById(any());
+    doNothing().when(authorService).deleteById(any());
 
     MvcResult mvcResult = mockMvc
         .perform(delete("/authors/{authorId}", 1L).accept(MediaType.APPLICATION_JSON))
@@ -213,11 +219,10 @@ class AuthorControllerTest {
   @Test
   @DisplayName("Should throw ResponseStatusException when delete author with non existing id")
   void shouldThrowWhenDeleteAuthorWithNonExistingId() throws Exception {
-    Mockito
-        .doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND,
-            AppMessages.AUTHOR_NOT_FOUND_EXCEPTION))
-        .when(authorService)
-        .deleteById(any());
+    doThrow(
+        new ResponseStatusException(HttpStatus.NOT_FOUND, AppMessages.AUTHOR_NOT_FOUND_EXCEPTION))
+            .when(authorService)
+            .deleteById(any());
 
     MvcResult mvcResult = mockMvc
         .perform(delete("/authors/{authorId}", 1L).accept(MediaType.APPLICATION_JSON))
@@ -238,7 +243,7 @@ class AuthorControllerTest {
   void shouldReturnWhenFindBooksByAuthorIdWithExistingId() throws Exception {
     List<BookDto> books = List.of(BookDto.builder().build(), BookDto.builder().build());
 
-    Mockito.when(authorService.findBooksByAuthorId(any())).thenReturn(books);
+    when(authorService.findBooksByAuthorId(any())).thenReturn(books);
 
     MvcResult mvcResult = mockMvc
         .perform(get("/authors/{authorId}/books", 1L).accept(MediaType.APPLICATION_JSON))
@@ -250,15 +255,14 @@ class AuthorControllerTest {
     List<BookDto> responseDto = mapper.readValue(responseJson, collectionType);
 
     assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
-    assertThat(responseDto).isNotNull().isNotEmpty().size().isEqualTo(2);
+    assertThat(responseDto).isNotNull().isNotEmpty().hasSize(2);
   }
 
   @Test
   @DisplayName("Should throw ResponseStatusException when find books by author id with non existing id")
   void shouldThrowWhenFindBooksByAuthorIdWithNonExistingId() throws Exception {
-    Mockito.when(authorService.findBooksByAuthorId(any()))
-        .thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND,
-            AppMessages.AUTHOR_NOT_FOUND_EXCEPTION));
+    when(authorService.findBooksByAuthorId(any())).thenThrow(
+        new ResponseStatusException(HttpStatus.NOT_FOUND, AppMessages.AUTHOR_NOT_FOUND_EXCEPTION));
 
     MvcResult mvcResult = mockMvc
         .perform(get("/authors/{authorId}/books", 1L).accept(MediaType.APPLICATION_JSON))

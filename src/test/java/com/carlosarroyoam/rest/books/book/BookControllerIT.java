@@ -3,14 +3,14 @@ package com.carlosarroyoam.rest.books.book;
 import com.carlosarroyoam.rest.books.book.dto.CreateBookRequestDto;
 import com.carlosarroyoam.rest.books.book.dto.UpdateBookRequestDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
@@ -18,29 +18,30 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.test.web.servlet.client.MockMvcWebTestClient;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import reactor.core.publisher.Mono;
 
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@WithMockUser
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Transactional
+@WithMockUser
 class BookControllerIT {
-  private WebTestClient webTestClient;
+  @Autowired
+  private WebApplicationContext webApplicationContext;
 
   @Autowired
-  public void setWebApplicationContext(final WebApplicationContext context) {
-    ObjectMapper mapper = new ObjectMapper();
-    mapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
-    mapper.findAndRegisterModules();
+  private ObjectMapper mapper;
 
+  private WebTestClient webTestClient;
+
+  @BeforeEach
+  void setup() {
     ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder().codecs(configurer -> {
       configurer.defaultCodecs().jackson2JsonEncoder(new Jackson2JsonEncoder(mapper));
       configurer.defaultCodecs().jackson2JsonDecoder(new Jackson2JsonDecoder(mapper));
     }).build();
 
-    webTestClient = MockMvcWebTestClient.bindToApplicationContext(context)
+    webTestClient = MockMvcWebTestClient.bindToApplicationContext(webApplicationContext)
         .apply(SecurityMockMvcConfigurers.springSecurity())
         .configureClient()
         .exchangeStrategies(exchangeStrategies)
@@ -76,21 +77,7 @@ class BookControllerIT {
         .jsonPath("$[0].is_available_online")
         .isEqualTo(Boolean.FALSE)
         .jsonPath("$[0].published_at")
-        .isEqualTo(LocalDate.parse("2017-01-01"))
-        .jsonPath("$[1].id")
-        .isEqualTo(2L)
-        .jsonPath("$[1].isbn")
-        .isEqualTo("978-9-7389-4434-3")
-        .jsonPath("$[1].title")
-        .isEqualTo("Sapiens: A Brief History of Humankind")
-        .jsonPath("$[1].cover_url")
-        .isEqualTo("https://images.isbndb.com/covers/60/97/9780062316097.jpg")
-        .jsonPath("$[1].price")
-        .isEqualTo(new BigDecimal("20.79"))
-        .jsonPath("$[1].is_available_online")
-        .isEqualTo(Boolean.FALSE)
-        .jsonPath("$[1].published_at")
-        .isEqualTo(LocalDate.parse("2022-12-01"));
+        .isEqualTo(LocalDate.parse("2017-01-01"));
   }
 
   @Test

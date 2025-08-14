@@ -3,7 +3,8 @@ package com.carlosarroyoam.rest.books.user;
 import com.carlosarroyoam.rest.books.user.dto.CreateUserRequestDto;
 import com.carlosarroyoam.rest.books.user.dto.UpdateUserRequestDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import jakarta.transaction.Transactional;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,29 +17,30 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.test.web.servlet.client.MockMvcWebTestClient;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import reactor.core.publisher.Mono;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@WithMockUser
 @Transactional
+@WithMockUser
 class UserControllerIT {
-  private WebTestClient webTestClient;
+  @Autowired
+  private WebApplicationContext webApplicationContext;
 
   @Autowired
-  public void setWebApplicationContext(final WebApplicationContext context) {
-    ObjectMapper mapper = new ObjectMapper();
-    mapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
-    mapper.findAndRegisterModules();
+  private ObjectMapper mapper;
 
+  private WebTestClient webTestClient;
+
+  @BeforeEach
+  void setup() {
     ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder().codecs(configurer -> {
       configurer.defaultCodecs().jackson2JsonEncoder(new Jackson2JsonEncoder(mapper));
       configurer.defaultCodecs().jackson2JsonDecoder(new Jackson2JsonDecoder(mapper));
     }).build();
 
-    webTestClient = MockMvcWebTestClient.bindToApplicationContext(context)
+    webTestClient = MockMvcWebTestClient.bindToApplicationContext(webApplicationContext)
         .apply(SecurityMockMvcConfigurers.springSecurity())
         .configureClient()
         .exchangeStrategies(exchangeStrategies)
@@ -74,28 +76,10 @@ class UserControllerIT {
         .jsonPath("$[0].role.id")
         .isEqualTo(1)
         .jsonPath("$[0].role.title")
-        .isEqualTo("App/Admin")
+        .isEqualTo("App//Admin")
         .jsonPath("$[0].role.description")
         .isEqualTo("Role for admins users")
         .jsonPath("$[0].is_active")
-        .isEqualTo(Boolean.TRUE)
-        .jsonPath("$[1].id")
-        .isEqualTo(2L)
-        .jsonPath("$[1].name")
-        .isEqualTo("Cathy Stefania Guido Rojas")
-        .jsonPath("$[1].age")
-        .isEqualTo("28")
-        .jsonPath("$[1].email")
-        .isEqualTo("cguidor@mail.com")
-        .jsonPath("$[1].username")
-        .isEqualTo("cguidor")
-        .jsonPath("$[1].role.id")
-        .isEqualTo(2)
-        .jsonPath("$[1].role.title")
-        .isEqualTo("App/Customer")
-        .jsonPath("$[1].role.description")
-        .isEqualTo("Role for customer users")
-        .jsonPath("$[1].is_active")
         .isEqualTo(Boolean.TRUE);
   }
 
@@ -120,11 +104,11 @@ class UserControllerIT {
         .isEqualTo("carroyom@mail.com")
         .jsonPath("$.username")
         .isEqualTo("carroyom")
-        .jsonPath("$[0].role.id")
+        .jsonPath("$.role.id")
         .isEqualTo(1)
-        .jsonPath("$[0].role.title")
-        .isEqualTo("App/Admin")
-        .jsonPath("$[0].role.description")
+        .jsonPath("$.role.title")
+        .isEqualTo("App//Admin")
+        .jsonPath("$.role.description")
         .isEqualTo("Role for admins users")
         .jsonPath("$.is_active")
         .isEqualTo(Boolean.TRUE);

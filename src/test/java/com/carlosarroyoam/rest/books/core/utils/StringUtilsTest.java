@@ -12,7 +12,7 @@ class StringUtilsTest {
   void shouldReturnEmtyListWhenCommaSeparatedToListWithValues() {
     List<String> result = StringUtils.commaSeparatedToList("value1, value2, value3");
 
-    assertThat(result).isNotNull().isNotEmpty().size().isEqualTo(3);
+    assertThat(result).isNotNull().isNotEmpty().hasSize(3);
   }
 
   @Test
@@ -20,7 +20,7 @@ class StringUtilsTest {
   void shouldReturnEmtyListWhenCommaSeparatedToListWithUnquotedValues() {
     List<String> result = StringUtils.commaSeparatedToList("\"value1\", \"value2\", \"value3\"");
 
-    assertThat(result).isNotNull().isNotEmpty().size().isEqualTo(3);
+    assertThat(result).isNotNull().isNotEmpty().hasSize(3);
   }
 
   @Test

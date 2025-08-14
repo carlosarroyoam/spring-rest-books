@@ -58,6 +58,6 @@ CREATE TABLE cart_items (
     cart_id BIGINT NOT NULL,
     quantity INT NOT NULL,
     added_at TIMESTAMP NOT NULL,
-    FOREIGN KEY (book_id) REFERENCES books(id),
-    FOREIGN KEY (cart_id) REFERENCES carts(id)
+    FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE,
+    FOREIGN KEY (cart_id) REFERENCES carts(id) ON DELETE CASCADE
 );
