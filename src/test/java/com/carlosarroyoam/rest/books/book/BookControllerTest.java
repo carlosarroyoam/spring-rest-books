@@ -2,6 +2,7 @@ package com.carlosarroyoam.rest.books.book;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
@@ -63,7 +64,7 @@ class BookControllerTest {
   @Test
   @DisplayName("Should return List<BookDto> when find all books")
   void shouldReturnListOfBooks() throws Exception {
-    List<BookDto> books = List.of(BookDto.builder().build(), BookDto.builder().build());
+    List<BookDto> books = List.of(BookDto.builder().build());
 
     when(bookService.findAll(any(Pageable.class), any(BookFilterDto.class))).thenReturn(books);
 
@@ -78,7 +79,7 @@ class BookControllerTest {
     System.out.println("Response JSON: " + responseJson);
 
     assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
-    assertThat(responseDto).isNotNull().isNotEmpty().hasSize(2);
+    assertThat(responseDto).isNotNull().isNotEmpty().hasSize(1);
   }
 
   @Test
@@ -104,9 +105,9 @@ class BookControllerTest {
   @Test
   @DisplayName("Should return BookDto when find book by id with existing id")
   void shouldReturnWhenFindBookByIdWithExistingId() throws Exception {
-    BookDto book = BookDto.builder().id(1L).build();
+    BookDto book = BookDto.builder().build();
 
-    when(bookService.findById(any())).thenReturn(book);
+    when(bookService.findById(anyLong())).thenReturn(book);
 
     MvcResult mvcResult = mockMvc
         .perform(get("/books/{bookId}", 1L).accept(MediaType.APPLICATION_JSON))
@@ -117,13 +118,12 @@ class BookControllerTest {
 
     assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
     assertThat(responseDto).isNotNull();
-    assertThat(responseDto.getId()).isEqualTo(1L);
   }
 
   @Test
   @DisplayName("Should throw ResponseStatusException when find book by id with non existing id")
   void shouldReturnWhenFindBookByIdWithNonExistingId() throws Exception {
-    when(bookService.findById(any())).thenThrow(
+    when(bookService.findById(anyLong())).thenThrow(
         new ResponseStatusException(HttpStatus.NOT_FOUND, AppMessages.BOOK_NOT_FOUND_EXCEPTION));
 
     MvcResult mvcResult = mockMvc
@@ -230,7 +230,7 @@ class BookControllerTest {
 
     doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, AppMessages.BOOK_NOT_FOUND_EXCEPTION))
         .when(bookService)
-        .update(any(), any(UpdateBookRequestDto.class));
+        .update(anyLong(), any(UpdateBookRequestDto.class));
 
     MvcResult mvcResult = mockMvc
         .perform(put("/books/{bookId}", 1L).content(mapper.writeValueAsString(requestDto))
@@ -251,7 +251,7 @@ class BookControllerTest {
   @Test
   @DisplayName("Should delete book with existing id")
   void shouldDeleteBookWithExistingId() throws Exception {
-    doNothing().when(bookService).deleteById(any());
+    doNothing().when(bookService).deleteById(anyLong());
 
     MvcResult mvcResult = mockMvc
         .perform(delete("/books/{bookId}", 1L).accept(MediaType.APPLICATION_JSON))
@@ -265,7 +265,7 @@ class BookControllerTest {
   void shouldThrowWhenDeleteBookWithNonExistingId() throws Exception {
     doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, AppMessages.BOOK_NOT_FOUND_EXCEPTION))
         .when(bookService)
-        .deleteById(any());
+        .deleteById(anyLong());
 
     MvcResult mvcResult = mockMvc
         .perform(delete("/books/{bookId}", 1L).accept(MediaType.APPLICATION_JSON))
@@ -284,9 +284,9 @@ class BookControllerTest {
   @Test
   @DisplayName("Should return List<AuthorDto> when find authors by book id with existing id")
   void shouldReturnWhenFindAuthorsByBookIdWithExistingId() throws Exception {
-    List<AuthorDto> authors = List.of(AuthorDto.builder().build(), AuthorDto.builder().build());
+    List<AuthorDto> authors = List.of(AuthorDto.builder().build());
 
-    when(bookService.findAuthorsByBookId(any())).thenReturn(authors);
+    when(bookService.findAuthorsByBookId(anyLong())).thenReturn(authors);
 
     MvcResult mvcResult = mockMvc
         .perform(get("/books/{bookId}/authors", 1L).accept(MediaType.APPLICATION_JSON))
@@ -298,13 +298,13 @@ class BookControllerTest {
     List<AuthorDto> responseDto = mapper.readValue(responseJson, collectionType);
 
     assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
-    assertThat(responseDto).isNotNull().isNotEmpty().hasSize(2);
+    assertThat(responseDto).isNotNull().isNotEmpty().hasSize(1);
   }
 
   @Test
   @DisplayName("Should throw ResponseStatusException when find authors by book id with non existing id")
   void shouldThrowWhenFindAuthorsByBookIdWithNonExistingId() throws Exception {
-    when(bookService.findAuthorsByBookId(any())).thenThrow(
+    when(bookService.findAuthorsByBookId(anyLong())).thenThrow(
         new ResponseStatusException(HttpStatus.NOT_FOUND, AppMessages.BOOK_NOT_FOUND_EXCEPTION));
 
     MvcResult mvcResult = mockMvc

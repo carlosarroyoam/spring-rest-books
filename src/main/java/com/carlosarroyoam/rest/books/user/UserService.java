@@ -66,7 +66,7 @@ public class UserService {
     }
 
     LocalDateTime now = LocalDateTime.now();
-    User user = UserDtoMapper.INSTANCE.toEntity(requestDto);
+    User user = UserDtoMapper.INSTANCE.createRequestToEntity(requestDto);
     user.setIsActive(Boolean.FALSE);
     user.setCreatedAt(now);
     user.setUpdatedAt(now);

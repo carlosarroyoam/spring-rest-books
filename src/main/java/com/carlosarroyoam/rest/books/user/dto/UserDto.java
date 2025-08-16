@@ -35,6 +35,6 @@ public class UserDto {
 
     List<UserDto> toDtos(List<User> entities);
 
-    User toEntity(CreateUserRequestDto requestDto);
+    User createRequestToEntity(CreateUserRequestDto requestDto);
   }
 }

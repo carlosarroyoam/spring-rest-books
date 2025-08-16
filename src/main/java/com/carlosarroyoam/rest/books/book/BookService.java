@@ -63,8 +63,7 @@ public class BookService {
     Book book = BookDtoMapper.INSTANCE.createRequestToEntity(requestDto);
     book.setCreatedAt(now);
     book.setUpdatedAt(now);
-    bookRepository.save(book);
-    return BookDtoMapper.INSTANCE.toDto(book);
+    return BookDtoMapper.INSTANCE.toDto(bookRepository.save(book));
   }
 
   @Transactional
@@ -75,6 +74,7 @@ public class BookService {
           AppMessages.BOOK_NOT_FOUND_EXCEPTION);
     });
 
+    bookById.setIsbn(requestDto.getIsbn());
     bookById.setTitle(requestDto.getTitle());
     bookById.setCoverUrl(requestDto.getCoverUrl());
     bookById.setPrice(requestDto.getPrice());

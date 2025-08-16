@@ -2,6 +2,7 @@ package com.carlosarroyoam.rest.books.user;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
@@ -60,7 +61,7 @@ class UserControllerTest {
   @Test
   @DisplayName("Should return List<UserDto> when find all users")
   void shouldReturnListOfUsers() throws Exception {
-    List<UserDto> users = List.of(UserDto.builder().build(), UserDto.builder().build());
+    List<UserDto> users = List.of(UserDto.builder().build());
 
     when(userService.findAll(any(Pageable.class), any(UserFilterDto.class))).thenReturn(users);
 
@@ -74,7 +75,7 @@ class UserControllerTest {
     List<UserDto> responseDto = mapper.readValue(responseJson, collectionType);
 
     assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
-    assertThat(responseDto).isNotNull().isNotEmpty().hasSize(2);
+    assertThat(responseDto).isNotNull().isNotEmpty().hasSize(1);
   }
 
   @Test
@@ -102,7 +103,7 @@ class UserControllerTest {
   void shouldReturnWhenFindUserByIdWithExistingId() throws Exception {
     UserDto user = UserDto.builder().id(1L).build();
 
-    when(userService.findById(any())).thenReturn(user);
+    when(userService.findById(anyLong())).thenReturn(user);
 
     MvcResult mvcResult = mockMvc
         .perform(get("/users/{userId}", 1L).accept(MediaType.APPLICATION_JSON))
@@ -119,7 +120,7 @@ class UserControllerTest {
   @Test
   @DisplayName("Should throw ResponseStatusException when find user by id with non existing id")
   void shouldReturnWhenFindUserByIdWithNonExistingId() throws Exception {
-    when(userService.findById(any())).thenThrow(
+    when(userService.findById(anyLong())).thenThrow(
         new ResponseStatusException(HttpStatus.NOT_FOUND, AppMessages.USER_NOT_FOUND_EXCEPTION));
 
     MvcResult mvcResult = mockMvc
@@ -245,7 +246,7 @@ class UserControllerTest {
 
     doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, AppMessages.USER_NOT_FOUND_EXCEPTION))
         .when(userService)
-        .update(any(), any(UpdateUserRequestDto.class));
+        .update(anyLong(), any(UpdateUserRequestDto.class));
 
     MvcResult mvcResult = mockMvc
         .perform(put("/users/{userId}", 1L).content(mapper.writeValueAsString(requestDto))
@@ -266,7 +267,7 @@ class UserControllerTest {
   @Test
   @DisplayName("Should delete user with existing id")
   void shouldDeleteUserWithExistingId() throws Exception {
-    doNothing().when(userService).deleteById(any());
+    doNothing().when(userService).deleteById(anyLong());
 
     MvcResult mvcResult = mockMvc
         .perform(delete("/users/{userId}", 1L).accept(MediaType.APPLICATION_JSON))
@@ -280,7 +281,7 @@ class UserControllerTest {
   void shouldThrowWhenDeleteUserWithNonExistingId() throws Exception {
     doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, AppMessages.USER_NOT_FOUND_EXCEPTION))
         .when(userService)
-        .deleteById(any());
+        .deleteById(anyLong());
 
     MvcResult mvcResult = mockMvc
         .perform(delete("/users/{userId}", 1L).accept(MediaType.APPLICATION_JSON))
