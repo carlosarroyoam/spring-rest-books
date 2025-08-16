@@ -21,14 +21,14 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 public class CartService {
   private static final Logger log = LoggerFactory.getLogger(CartService.class);
-  private final CartRepository shoppingCartRepository;
+  private final CartRepository cartRepository;
   private final CartItemRepository cartItemRepository;
   private final UserRepository userRepository;
   private final BookRepository bookRepository;
 
-  public CartService(CartRepository shoppingCartRepository, CartItemRepository cartItemRepository,
+  public CartService(CartRepository cartRepository, CartItemRepository cartItemRepository,
       UserRepository userRepository, BookRepository bookRepository) {
-    this.shoppingCartRepository = shoppingCartRepository;
+    this.cartRepository = cartRepository;
     this.cartItemRepository = cartItemRepository;
     this.userRepository = userRepository;
     this.bookRepository = bookRepository;
@@ -41,7 +41,7 @@ public class CartService {
           AppMessages.USER_NOT_FOUND_EXCEPTION);
     });
 
-    Cart shoppingCartByUserId = shoppingCartRepository.findByUserId(userByUsername.getId())
+    Cart shoppingCartByUserId = cartRepository.findByUserId(userByUsername.getId())
         .orElseThrow(() -> {
           log.warn(AppMessages.CART_NOT_FOUND_EXCEPTION);
           return new ResponseStatusException(HttpStatus.NOT_FOUND,
@@ -52,7 +52,7 @@ public class CartService {
   }
 
   public void updateCartItem(Long cartId, UpdateCartItemRequestDto requestDto) {
-    Cart cartById = shoppingCartRepository.findById(cartId).orElseThrow(() -> {
+    Cart cartById = cartRepository.findById(cartId).orElseThrow(() -> {
       log.warn(AppMessages.CART_NOT_FOUND_EXCEPTION);
       return new ResponseStatusException(HttpStatus.NOT_FOUND,
           AppMessages.CART_NOT_FOUND_EXCEPTION);
@@ -77,7 +77,7 @@ public class CartService {
   }
 
   public void deleteCartItem(Long cartId, Long cartItemId) {
-    Cart cartById = shoppingCartRepository.findById(cartId).orElseThrow(() -> {
+    Cart cartById = cartRepository.findById(cartId).orElseThrow(() -> {
       log.warn(AppMessages.CART_NOT_FOUND_EXCEPTION);
       return new ResponseStatusException(HttpStatus.NOT_FOUND,
           AppMessages.CART_NOT_FOUND_EXCEPTION);
@@ -94,6 +94,6 @@ public class CartService {
           AppMessages.CART_ITEM_NOT_FOUND_EXCEPTION);
     }
 
-    cartItemRepository.delete(cartItemOptional.get());
+    cartItemRepository.deleteById(cartItemOptional.get().getId());
   }
 }

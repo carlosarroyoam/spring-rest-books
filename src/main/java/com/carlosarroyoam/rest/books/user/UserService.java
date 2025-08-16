@@ -70,7 +70,6 @@ public class UserService {
     user.setIsActive(Boolean.FALSE);
     user.setCreatedAt(now);
     user.setUpdatedAt(now);
-
     return UserDtoMapper.INSTANCE.toDto(userRepository.save(user));
   }
 
@@ -82,14 +81,8 @@ public class UserService {
           AppMessages.USER_NOT_FOUND_EXCEPTION);
     });
 
-    if (requestDto.getName() != null) {
-      userById.setName(requestDto.getName());
-    }
-
-    if (requestDto.getAge() != null) {
-      userById.setAge(requestDto.getAge());
-    }
-
+    userById.setName(requestDto.getName());
+    userById.setAge(requestDto.getAge());
     userById.setUpdatedAt(LocalDateTime.now());
     userRepository.save(userById);
   }
@@ -104,7 +97,6 @@ public class UserService {
 
     userById.setIsActive(Boolean.FALSE);
     userById.setUpdatedAt(LocalDateTime.now());
-
     userRepository.save(userById);
   }
 }

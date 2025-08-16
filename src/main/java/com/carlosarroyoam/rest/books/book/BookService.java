@@ -63,9 +63,8 @@ public class BookService {
     Book book = BookDtoMapper.INSTANCE.createRequestToEntity(requestDto);
     book.setCreatedAt(now);
     book.setUpdatedAt(now);
-
-    Book savedBook = bookRepository.save(book);
-    return BookDtoMapper.INSTANCE.toDto(savedBook);
+    bookRepository.save(book);
+    return BookDtoMapper.INSTANCE.toDto(book);
   }
 
   @Transactional
@@ -82,7 +81,6 @@ public class BookService {
     bookById.setPublishedAt(requestDto.getPublishedAt());
     bookById.setIsAvailableOnline(requestDto.getIsAvailableOnline());
     bookById.setUpdatedAt(LocalDateTime.now());
-
     bookRepository.save(bookById);
   }
 

@@ -54,9 +54,8 @@ public class AuthorService {
     Author author = AuthorDtoMapper.INSTANCE.toEntity(requestDto);
     author.setCreatedAt(now);
     author.setUpdatedAt(now);
-
-    Author savedAuthor = authorRepository.save(author);
-    return AuthorDtoMapper.INSTANCE.toDto(savedAuthor);
+    authorRepository.save(author);
+    return AuthorDtoMapper.INSTANCE.toDto(author);
   }
 
   @Transactional
@@ -69,7 +68,6 @@ public class AuthorService {
 
     authorById.setName(requestDto.getName());
     authorById.setUpdatedAt(LocalDateTime.now());
-
     authorRepository.save(authorById);
   }
 
