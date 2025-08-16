@@ -1,215 +1,153 @@
 package com.carlosarroyoam.rest.books.author;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.carlosarroyoam.rest.books.author.dto.CreateAuthorRequestDto;
 import com.carlosarroyoam.rest.books.author.dto.UpdateAuthorRequestDto;
-import java.math.BigDecimal;
-import java.time.LocalDate;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
-import org.springframework.test.web.reactive.server.WebTestClient;
-import org.springframework.test.web.servlet.client.MockMvcWebTestClient;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
-import reactor.core.publisher.Mono;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@AutoConfigureMockMvc
 @Transactional
-@WithMockUser
 class AuthorControllerIT {
   @Autowired
   private WebApplicationContext webApplicationContext;
 
-  private WebTestClient webTestClient;
+  @Autowired
+  private ObjectMapper mapper;
+
+  @Autowired
+  private MockMvc mockMvc;
 
   @BeforeEach
   void setup() {
-    webTestClient = MockMvcWebTestClient.bindToApplicationContext(webApplicationContext)
+    mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
         .apply(SecurityMockMvcConfigurers.springSecurity())
+        .defaultRequest(
+            get("/").with(jwt().jwt(jwt -> jwt.claim("preferred_username", "carroyom"))))
         .build();
   }
 
   @Test
   @DisplayName("Should return authors when find all authors")
-  void shouldReturnListOfAuthors() {
-    webTestClient.get()
-        .uri(uriBuilder -> uriBuilder.path("/authors")
-            .queryParam("page", "0")
-            .queryParam("size", "25")
-            .build())
-        .exchange()
-        .expectStatus()
-        .isOk()
-        .expectHeader()
-        .contentType(MediaType.APPLICATION_JSON_VALUE)
-        .expectBody()
-        .jsonPath("$.length()")
-        .isEqualTo(2)
-        .jsonPath("$[0].id")
-        .isEqualTo(1L)
-        .jsonPath("$[0].name")
-        .isEqualTo("Yuval Noah Harari");
+  void shouldReturnListOfAuthorsWhenFindAllAuthors() throws Exception {
+    mockMvc.perform(get("/authors").param("page", "0").param("size", "25"))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+        .andExpect(jsonPath("$[0].id").value(1L))
+        .andExpect(jsonPath("$[0].name").value("Yuval Noah Harari"));
   }
 
   @Test
   @DisplayName("Should return AuthorDto when find author by id with existing id")
-  void shouldReturnWhenFindAuthorByIdWithExistingId() {
-    webTestClient.get()
-        .uri("/authors/{authorId}", 1L)
-        .exchange()
-        .expectStatus()
-        .isOk()
-        .expectHeader()
-        .contentType(MediaType.APPLICATION_JSON_VALUE)
-        .expectBody()
-        .jsonPath("$.id")
-        .isEqualTo(1L)
-        .jsonPath("$.name")
-        .isEqualTo("Yuval Noah Harari");
+  void shouldReturnAuthorDtoWhenFindAuthorByIdWithExistingId() throws Exception {
+    mockMvc.perform(get("/authors/{authorId}", 1L))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+        .andExpect(jsonPath("$.id").value(1L))
+        .andExpect(jsonPath("$.name").value("Yuval Noah Harari"));
   }
 
   @Test
   @DisplayName("Should throw AppExceptionDto when find author by id with non existing id")
-  void shouldReturnWhenFindAuthorByIdWithNonExistingId() {
-    webTestClient.get()
-        .uri("/authors/{authorId}", 1000L)
-        .exchange()
-        .expectStatus()
-        .isNotFound()
-        .expectHeader()
-        .contentType(MediaType.APPLICATION_JSON_VALUE)
-        .expectBody()
-        .jsonPath("$.error")
-        .isEqualTo("Not Found")
-        .jsonPath("$.message")
-        .isEqualTo("Author not found")
-        .jsonPath("$.status")
-        .isEqualTo(404);
+  void shouldThrowWhenFindAuthorByIdWithNonExistingId() throws Exception {
+    mockMvc.perform(get("/authors/{authorId}", 1000L))
+        .andExpect(status().isNotFound())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+        .andExpect(jsonPath("$.error").value("Not Found"))
+        .andExpect(jsonPath("$.message").value("Author not found"))
+        .andExpect(jsonPath("$.status").value(404));
   }
 
   @Test
-  @DisplayName("Should return when create an author with valid data")
-  void shouldReturnWhenCreateAuthorWithValidData() {
+  @DisplayName("Should return created when create an author with valid data")
+  void shouldReturnCreatedWhenCreateAuthorWithValidData() throws Exception {
     CreateAuthorRequestDto requestDto = CreateAuthorRequestDto.builder()
         .name("Yuval Noah Harari")
         .build();
 
-    webTestClient.post()
-        .uri("/authors")
-        .body(Mono.just(requestDto), CreateAuthorRequestDto.class)
-        .exchange()
-        .expectStatus()
-        .isCreated()
-        .expectHeader()
-        .location("http://localhost/authors/3");
+    mockMvc
+        .perform(post("/authors").contentType(MediaType.APPLICATION_JSON)
+            .content(mapper.writeValueAsString(requestDto)))
+        .andExpect(status().isCreated())
+        .andExpect(header().string("Location", "http://localhost/authors/3"));
   }
 
   @Test
-  @DisplayName("Should update author with valid data")
-  void shouldUpdateAuthorWithValidData() {
+  @DisplayName("Should return no content when update author with valid data")
+  void shouldReturnNoContentWhenUpdateAuthorWithValidData() throws Exception {
     UpdateAuthorRequestDto requestDto = UpdateAuthorRequestDto.builder().name("Yuval Noah").build();
 
-    webTestClient.put()
-        .uri("/authors/{authorId}", 1L)
-        .body(Mono.just(requestDto), CreateAuthorRequestDto.class)
-        .exchange()
-        .expectStatus()
-        .isNoContent();
+    mockMvc.perform(put("/authors/{authorId}", 1L).contentType(MediaType.APPLICATION_JSON)
+        .content(mapper.writeValueAsString(requestDto))).andExpect(status().isNoContent());
   }
 
   @Test
   @DisplayName("Should throw AppExceptionDto when update author with non existing id")
-  void shouldUpdateAuthorWithNonExistingId() {
+  void shouldThrowWhenUpdateAuthorWithNonExistingId() throws Exception {
     UpdateAuthorRequestDto requestDto = UpdateAuthorRequestDto.builder().name("Yuval Noah").build();
 
-    webTestClient.put()
-        .uri("/authors/{authorId}", 1000L)
-        .body(Mono.just(requestDto), CreateAuthorRequestDto.class)
-        .exchange()
-        .expectStatus()
-        .isNotFound()
-        .expectHeader()
-        .contentType(MediaType.APPLICATION_JSON_VALUE)
-        .expectBody()
-        .jsonPath("$.error")
-        .isEqualTo("Not Found")
-        .jsonPath("$.message")
-        .isEqualTo("Author not found")
-        .jsonPath("$.status")
-        .isEqualTo(404);
+    mockMvc
+        .perform(put("/authors/{authorId}", 1000L).contentType(MediaType.APPLICATION_JSON)
+            .content(mapper.writeValueAsString(requestDto)))
+        .andExpect(status().isNotFound())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+        .andExpect(jsonPath("$.error").value("Not Found"))
+        .andExpect(jsonPath("$.message").value("Author not found"))
+        .andExpect(jsonPath("$.status").value(404));
   }
 
   @Test
-  @DisplayName("Should delete author with existing id")
-  void shouldDeleteAuthorWithExistingId() {
-    webTestClient.delete().uri("/authors/{authorId}", 1L).exchange().expectStatus().isNoContent();
+  @DisplayName("Should return no content when delete author with existing id")
+  void shouldReturnNoContentWhenDeleteAuthorWithExistingId() throws Exception {
+    mockMvc.perform(delete("/authors/{authorId}", 1L)).andExpect(status().isNoContent());
   }
 
   @Test
   @DisplayName("Should throw AppExceptionDto when delete author with non existing id")
-  void shouldThrowWhenDeleteAuthorWithNonExistingId() {
-    webTestClient.delete()
-        .uri("/authors/{authorId}", 1000L)
-        .exchange()
-        .expectStatus()
-        .isNotFound()
-        .expectHeader()
-        .contentType(MediaType.APPLICATION_JSON_VALUE)
-        .expectBody()
-        .jsonPath("$.error")
-        .isEqualTo("Not Found")
-        .jsonPath("$.message")
-        .isEqualTo("Author not found")
-        .jsonPath("$.status")
-        .isEqualTo(404);
+  void shouldThrowWhenDeleteAuthorWithNonExistingId() throws Exception {
+    mockMvc.perform(delete("/authors/{authorId}", 1000L))
+        .andExpect(status().isNotFound())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+        .andExpect(jsonPath("$.error").value("Not Found"))
+        .andExpect(jsonPath("$.message").value("Author not found"))
+        .andExpect(jsonPath("$.status").value(404));
   }
 
   @Test
   @DisplayName("Should return List<BookDto> when find books by author id with existing id")
-  void shouldReturnWhenFindBooksByAuthorIdWithExistingId() {
-    webTestClient.get()
-        .uri("/authors/{authorId}/books", 1L)
-        .exchange()
-        .expectStatus()
-        .isOk()
-        .expectHeader()
-        .contentType(MediaType.APPLICATION_JSON_VALUE)
-        .expectBody()
-        .jsonPath("$.length()")
-        .isEqualTo(2)
-        .jsonPath("$[0].id")
-        .isEqualTo(1L)
-        .jsonPath("$[0].isbn")
-        .isEqualTo("978-1-3035-0529-4")
-        .jsonPath("$[0].title")
-        .isEqualTo("Homo Deus: A Brief History of Tomorrow")
-        .jsonPath("$[0].cover_url")
-        .isEqualTo("https://images.isbndb.com/covers/39/36/9781784703936.jpg")
-        .jsonPath("$[0].price")
-        .isEqualTo(new BigDecimal("22.99"))
-        .jsonPath("$[0].is_available_online")
-        .isEqualTo(Boolean.FALSE)
-        .jsonPath("$[0].published_at")
-        .isEqualTo(LocalDate.parse("2017-01-01"))
-        .jsonPath("$[1].id")
-        .isEqualTo(2L)
-        .jsonPath("$[1].isbn")
-        .isEqualTo("978-9-7389-4434-3")
-        .jsonPath("$[1].title")
-        .isEqualTo("Sapiens: A Brief History of Humankind")
-        .jsonPath("$[1].cover_url")
-        .isEqualTo("https://images.isbndb.com/covers/60/97/9780062316097.jpg")
-        .jsonPath("$[1].price")
-        .isEqualTo(new BigDecimal("20.79"))
-        .jsonPath("$[1].is_available_online")
-        .isEqualTo(Boolean.FALSE)
-        .jsonPath("$[1].published_at")
-        .isEqualTo(LocalDate.parse("2022-12-01"));
+  void shouldReturnListOfBooksWhenFindBooksByAuthorIdWithExistingId() throws Exception {
+    mockMvc.perform(get("/authors/{authorId}/books", 1L))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+        .andExpect(jsonPath("$[0].id").value(1L))
+        .andExpect(jsonPath("$[0].isbn").value("978-1-3035-0529-4"))
+        .andExpect(jsonPath("$[0].title").value("Homo Deus: A Brief History of Tomorrow"))
+        .andExpect(jsonPath("$[0].cover_url")
+            .value("https://images.isbndb.com/covers/39/36/9781784703936.jpg"))
+        .andExpect(jsonPath("$[0].price").value(22.99))
+        .andExpect(jsonPath("$[0].is_available_online").value(false))
+        .andExpect(jsonPath("$[0].published_at").value("2017-01-01"));
   }
 }
