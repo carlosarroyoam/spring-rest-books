@@ -34,7 +34,7 @@ public class Cart {
   private List<CartItem> items = new ArrayList<>();
 
   @Column(name = "user_id", nullable = false)
-  private Integer userId;
+  private Long userId;
 
   @OneToOne
   @JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false, nullable = false)

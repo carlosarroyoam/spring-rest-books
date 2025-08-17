@@ -18,8 +18,8 @@ import org.mapstruct.factory.Mappers;
 @Builder
 public class CartItemDto {
   private Long id;
-  private BookDto book;
   private Integer quantity;
+  private BookDto book;
   private LocalDateTime addedAt;
 
   @Mapper(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, unmappedTargetPolicy = ReportingPolicy.IGNORE)

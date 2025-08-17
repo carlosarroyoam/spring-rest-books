@@ -25,7 +25,7 @@ public class CartController {
   }
 
   @GetMapping(produces = "application/json")
-  public ResponseEntity<CartDto> findByUserId(@AuthenticationPrincipal Jwt jwt) {
+  public ResponseEntity<CartDto> findByUsername(@AuthenticationPrincipal Jwt jwt) {
     String username = jwt.getClaim(StandardClaimNames.PREFERRED_USERNAME);
     CartDto shoppingCartByUserId = shoppingCartService.findByUsername(username);
     return ResponseEntity.ok(shoppingCartByUserId);
