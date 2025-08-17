@@ -72,6 +72,8 @@ class AuthorControllerTest {
     List<AuthorDto> responseDto = mapper.readValue(responseJson, collectionType);
 
     assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
+    assertThat(mvcResult.getResponse().getContentType())
+        .isEqualTo(MediaType.APPLICATION_JSON_VALUE);
     assertThat(responseDto).isNotNull().isNotEmpty().hasSize(1);
   }
 
@@ -90,6 +92,8 @@ class AuthorControllerTest {
     AuthorDto responseDto = mapper.readValue(responseJson, AuthorDto.class);
 
     assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
+    assertThat(mvcResult.getResponse().getContentType())
+        .isEqualTo(MediaType.APPLICATION_JSON_VALUE);
     assertThat(responseDto).isNotNull();
   }
 
@@ -157,6 +161,8 @@ class AuthorControllerTest {
     List<BookDto> responseDto = mapper.readValue(responseJson, collectionType);
 
     assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
+    assertThat(mvcResult.getResponse().getContentType())
+        .isEqualTo(MediaType.APPLICATION_JSON_VALUE);
     assertThat(responseDto).isNotNull().isNotEmpty().hasSize(1);
   }
 }

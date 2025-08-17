@@ -60,6 +60,8 @@ class CartControllerTest {
     CartDto responseDto = mapper.readValue(responseJson, CartDto.class);
 
     assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
+    assertThat(mvcResult.getResponse().getContentType())
+        .isEqualTo(MediaType.APPLICATION_JSON_VALUE);
     assertThat(responseDto).isNotNull();
   }
 

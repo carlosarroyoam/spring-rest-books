@@ -70,6 +70,8 @@ class UserControllerTest {
     List<UserDto> responseDto = mapper.readValue(responseJson, collectionType);
 
     assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
+    assertThat(mvcResult.getResponse().getContentType())
+        .isEqualTo(MediaType.APPLICATION_JSON_VALUE);
     assertThat(responseDto).isNotNull().isNotEmpty().hasSize(1);
   }
 
@@ -88,6 +90,8 @@ class UserControllerTest {
     UserDto responseDto = mapper.readValue(responseJson, UserDto.class);
 
     assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
+    assertThat(mvcResult.getResponse().getContentType())
+        .isEqualTo(MediaType.APPLICATION_JSON_VALUE);
     assertThat(responseDto).isNotNull();
     assertThat(responseDto.getId()).isEqualTo(1L);
   }
