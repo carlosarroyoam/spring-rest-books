@@ -1,0 +1,7 @@
+{
+  "message": "Email already exists",
+  "error": "Bad Request",
+  "status": 400,
+  "path": "/users",
+  "timestamp": "2025-01-01T00:00:00"
+}

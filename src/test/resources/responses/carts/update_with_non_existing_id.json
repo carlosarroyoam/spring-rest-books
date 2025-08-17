@@ -1,0 +1,7 @@
+{
+  "message": "Cart not found",
+  "error": "Not Found",
+  "status": 404,
+  "path": "/carts/1000/items",
+  "timestamp": "2025-01-01T00:00:00"
+}

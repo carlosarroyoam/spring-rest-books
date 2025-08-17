@@ -1,0 +1,7 @@
+{
+  "message": "Book not found",
+  "error": "Not Found",
+  "status": 404,
+  "path": "/books/1000",
+  "timestamp": "2025-01-01T00:00:00"
+}

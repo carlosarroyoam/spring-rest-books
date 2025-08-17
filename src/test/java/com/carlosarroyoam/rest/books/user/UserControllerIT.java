@@ -7,9 +7,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.carlosarroyoam.rest.books.common.JsonUtils;
 import com.carlosarroyoam.rest.books.user.dto.CreateUserRequestDto;
 import com.carlosarroyoam.rest.books.user.dto.UpdateUserRequestDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,6 +17,10 @@ import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.skyscreamer.jsonassert.Customization;
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
+import org.skyscreamer.jsonassert.comparator.CustomComparator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -52,46 +56,47 @@ class UserControllerIT {
   @Test
   @DisplayName("Should return List<UserDto> when find all users")
   void shouldReturnListOfUsersWhenFindAllUsers() throws Exception {
-    mockMvc.perform(get("/users").param("page", "0").param("size", "25"))
+    String expectedJson = JsonUtils.readJson("/users/find-all.json");
+
+    String responseJson = mockMvc.perform(get("/users").param("page", "0").param("size", "25"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(jsonPath("$[0].id").value(1L))
-        .andExpect(jsonPath("$[0].name").value("Carlos Alberto Arroyo Martínez"))
-        .andExpect(jsonPath("$[0].age").value("28"))
-        .andExpect(jsonPath("$[0].email").value("carroyom@mail.com"))
-        .andExpect(jsonPath("$[0].username").value("carroyom"))
-        .andExpect(jsonPath("$[0].role.id").value(1))
-        .andExpect(jsonPath("$[0].role.title").value("App//Admin"))
-        .andExpect(jsonPath("$[0].role.description").value("Role for admins users"))
-        .andExpect(jsonPath("$[0].is_active").value(true));
+        .andReturn()
+        .getResponse()
+        .getContentAsString();
+
+    JSONAssert.assertEquals(expectedJson, responseJson, false);
   }
 
   @Test
   @DisplayName("Should return UserDto when find user by id with existing id")
   void shouldReturnUserDtoWhenFindUserByIdWithExistingId() throws Exception {
-    mockMvc.perform(get("/users/{userId}", 1L))
+    String expectedJson = JsonUtils.readJson("/users/find-by-id.json");
+
+    String responseJson = mockMvc.perform(get("/users/{userId}", 1L))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(jsonPath("$.id").value(1L))
-        .andExpect(jsonPath("$.name").value("Carlos Alberto Arroyo Martínez"))
-        .andExpect(jsonPath("$.age").value("28"))
-        .andExpect(jsonPath("$.email").value("carroyom@mail.com"))
-        .andExpect(jsonPath("$.username").value("carroyom"))
-        .andExpect(jsonPath("$.role.id").value(1))
-        .andExpect(jsonPath("$.role.title").value("App//Admin"))
-        .andExpect(jsonPath("$.role.description").value("Role for admins users"))
-        .andExpect(jsonPath("$.is_active").value(true));
+        .andReturn()
+        .getResponse()
+        .getContentAsString();
+
+    JSONAssert.assertEquals(expectedJson, responseJson, false);
   }
 
   @Test
   @DisplayName("Should throw AppExceptionDto when find user by id with non existing id")
   void shouldThrowWhenFindUserByIdWithNonExistingId() throws Exception {
-    mockMvc.perform(get("/users/{userId}", 1000L))
+    String expectedJson = JsonUtils.readJson("/users/find-by-id_with_non_existing_id.json");
+
+    String responseJson = mockMvc.perform(get("/users/{userId}", 1000L))
         .andExpect(status().isNotFound())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(jsonPath("$.error").value("Not Found"))
-        .andExpect(jsonPath("$.message").value("User not found"))
-        .andExpect(jsonPath("$.status").value(404));
+        .andReturn()
+        .getResponse()
+        .getContentAsString();
+
+    JSONAssert.assertEquals(expectedJson, responseJson, new CustomComparator(
+        JSONCompareMode.LENIENT, new Customization("timestamp", (o1, o2) -> true)));
   }
 
   @Test
@@ -115,6 +120,8 @@ class UserControllerIT {
   @Test
   @DisplayName("Should throw AppExceptionDto when create a user with existing username")
   void shouldThrowWhenCreateUserWithExistingUsername() throws Exception {
+    String expectedJson = JsonUtils.readJson("/users/create_with_existing_username.json");
+
     CreateUserRequestDto requestDto = CreateUserRequestDto.builder()
         .name("Carlos Alberto Arroyo Martínez")
         .age((byte) 28)
@@ -123,19 +130,24 @@ class UserControllerIT {
         .roleId(1)
         .build();
 
-    mockMvc
+    String responseJson = mockMvc
         .perform(post("/users").contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(requestDto)))
         .andExpect(status().isBadRequest())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(jsonPath("$.error").value("Bad Request"))
-        .andExpect(jsonPath("$.message").value("Username already exists"))
-        .andExpect(jsonPath("$.status").value(400));
+        .andReturn()
+        .getResponse()
+        .getContentAsString();
+
+    JSONAssert.assertEquals(expectedJson, responseJson, new CustomComparator(
+        JSONCompareMode.LENIENT, new Customization("timestamp", (o1, o2) -> true)));
   }
 
   @Test
   @DisplayName("Should throw AppExceptionDto when create a user with existing email")
   void shouldThrowWhenCreateUserWithExistingEmail() throws Exception {
+    String expectedJson = JsonUtils.readJson("/users/create_with_existing_email.json");
+
     CreateUserRequestDto requestDto = CreateUserRequestDto.builder()
         .name("Carlos Alberto Arroyo Martínez")
         .age((byte) 28)
@@ -144,14 +156,17 @@ class UserControllerIT {
         .roleId(1)
         .build();
 
-    mockMvc
+    String responseJson = mockMvc
         .perform(post("/users").contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(requestDto)))
         .andExpect(status().isBadRequest())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(jsonPath("$.error").value("Bad Request"))
-        .andExpect(jsonPath("$.message").value("Email already exists"))
-        .andExpect(jsonPath("$.status").value(400));
+        .andReturn()
+        .getResponse()
+        .getContentAsString();
+
+    JSONAssert.assertEquals(expectedJson, responseJson, new CustomComparator(
+        JSONCompareMode.LENIENT, new Customization("timestamp", (o1, o2) -> true)));
   }
 
   @Test
@@ -169,19 +184,24 @@ class UserControllerIT {
   @Test
   @DisplayName("Should throw AppExceptionDto when update user with non existing id")
   void shouldThrowWhenUpdateUserWithNonExistingId() throws Exception {
+    String expectedJson = JsonUtils.readJson("/users/update_with_non_existing_id.json");
+
     UpdateUserRequestDto requestDto = UpdateUserRequestDto.builder()
         .name("Carlos Alberto Arroyo Martínez")
         .age((byte) 28)
         .build();
 
-    mockMvc
+    String responseJson = mockMvc
         .perform(put("/users/{userId}", 1000L).contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(requestDto)))
         .andExpect(status().isNotFound())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(jsonPath("$.error").value("Not Found"))
-        .andExpect(jsonPath("$.message").value("User not found"))
-        .andExpect(jsonPath("$.status").value(404));
+        .andReturn()
+        .getResponse()
+        .getContentAsString();
+
+    JSONAssert.assertEquals(expectedJson, responseJson, new CustomComparator(
+        JSONCompareMode.LENIENT, new Customization("timestamp", (o1, o2) -> true)));
   }
 
   @Test
@@ -193,11 +213,16 @@ class UserControllerIT {
   @Test
   @DisplayName("Should throw AppExceptionDto when delete user with non existing id")
   void shouldThrowWhenDeleteUserWithNonExistingId() throws Exception {
-    mockMvc.perform(delete("/users/{userId}", 1000L))
+    String expectedJson = JsonUtils.readJson("/users/delete_with_non_existing_id.json");
+
+    String responseJson = mockMvc.perform(delete("/users/{userId}", 1000L))
         .andExpect(status().isNotFound())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(jsonPath("$.error").value("Not Found"))
-        .andExpect(jsonPath("$.message").value("User not found"))
-        .andExpect(jsonPath("$.status").value(404));
+        .andReturn()
+        .getResponse()
+        .getContentAsString();
+
+    JSONAssert.assertEquals(expectedJson, responseJson, new CustomComparator(
+        JSONCompareMode.LENIENT, new Customization("timestamp", (o1, o2) -> true)));
   }
 }

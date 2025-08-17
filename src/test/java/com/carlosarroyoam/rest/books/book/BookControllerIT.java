@@ -7,11 +7,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.carlosarroyoam.rest.books.book.dto.CreateBookRequestDto;
 import com.carlosarroyoam.rest.books.book.dto.UpdateBookRequestDto;
+import com.carlosarroyoam.rest.books.common.JsonUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
@@ -19,6 +19,10 @@ import java.time.LocalDate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.skyscreamer.jsonassert.Customization;
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
+import org.skyscreamer.jsonassert.comparator.CustomComparator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -53,44 +57,47 @@ class BookControllerIT {
   @Test
   @DisplayName("Should return List<BookDto> when find all books")
   void shouldReturnListOfBooksWhenFindAllBooks() throws Exception {
-    mockMvc.perform(get("/books").param("page", "0").param("size", "25"))
+    String expectedJson = JsonUtils.readJson("/books/find-all.json");
+
+    String responseJson = mockMvc.perform(get("/books").param("page", "0").param("size", "25"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(jsonPath("$[0].id").value(1L))
-        .andExpect(jsonPath("$[0].isbn").value("978-1-3035-0529-4"))
-        .andExpect(jsonPath("$[0].title").value("Homo Deus: A Brief History of Tomorrow"))
-        .andExpect(jsonPath("$[0].cover_url")
-            .value("https://images.isbndb.com/covers/39/36/9781784703936.jpg"))
-        .andExpect(jsonPath("$[0].price").value(22.99))
-        .andExpect(jsonPath("$[0].is_available_online").value(false))
-        .andExpect(jsonPath("$[0].published_at").value("2017-01-01"));
+        .andReturn()
+        .getResponse()
+        .getContentAsString();
+
+    JSONAssert.assertEquals(expectedJson, responseJson, false);
   }
 
   @Test
   @DisplayName("Should return BookDto when find book by id with existing id")
   void shouldReturnBookDtoWhenFindBookByIdWithExistingId() throws Exception {
-    mockMvc.perform(get("/books/{bookId}", 1L))
+    String expectedJson = JsonUtils.readJson("/books/find-by-id.json");
+
+    String responseJson = mockMvc.perform(get("/books/{bookId}", 1L))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(jsonPath("$.id").value(1L))
-        .andExpect(jsonPath("$.isbn").value("978-1-3035-0529-4"))
-        .andExpect(jsonPath("$.title").value("Homo Deus: A Brief History of Tomorrow"))
-        .andExpect(jsonPath("$.cover_url")
-            .value("https://images.isbndb.com/covers/39/36/9781784703936.jpg"))
-        .andExpect(jsonPath("$.price").value(22.99))
-        .andExpect(jsonPath("$.is_available_online").value(false))
-        .andExpect(jsonPath("$.published_at").value("2017-01-01"));
+        .andReturn()
+        .getResponse()
+        .getContentAsString();
+
+    JSONAssert.assertEquals(expectedJson, responseJson, false);
   }
 
   @Test
   @DisplayName("Should throw AppExceptionDto when find book by id with non existing id")
   void shouldThrowWhenFindBookByIdWithNonExistingId() throws Exception {
-    mockMvc.perform(get("/books/{bookId}", 1000L))
+    String expectedJson = JsonUtils.readJson("/books/find-by-id_with_non_existing_id.json");
+
+    String responseJson = mockMvc.perform(get("/books/{bookId}", 1000L))
         .andExpect(status().isNotFound())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(jsonPath("$.error").value("Not Found"))
-        .andExpect(jsonPath("$.message").value("Book not found"))
-        .andExpect(jsonPath("$.status").value(404));
+        .andReturn()
+        .getResponse()
+        .getContentAsString();
+
+    JSONAssert.assertEquals(expectedJson, responseJson, new CustomComparator(
+        JSONCompareMode.LENIENT, new Customization("timestamp", (o1, o2) -> true)));
   }
 
   @Test
@@ -115,6 +122,8 @@ class BookControllerIT {
   @Test
   @DisplayName("Should throw AppExceptionDto when create a book with existing ISBN")
   void shouldThrowWhenCreateBookWithExistingIsbn() throws Exception {
+    String expectedJson = JsonUtils.readJson("/books/create_with_existing_isbn.json");
+
     CreateBookRequestDto requestDto = CreateBookRequestDto.builder()
         .isbn("978-9-7389-4434-3")
         .title("Sapiens: A Brief History of Humankind")
@@ -124,14 +133,17 @@ class BookControllerIT {
         .isAvailableOnline(true)
         .build();
 
-    mockMvc
+    String responseJson = mockMvc
         .perform(post("/books").contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(requestDto)))
         .andExpect(status().isBadRequest())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(jsonPath("$.error").value("Bad Request"))
-        .andExpect(jsonPath("$.message").value("ISBN already exists"))
-        .andExpect(jsonPath("$.status").value(400));
+        .andReturn()
+        .getResponse()
+        .getContentAsString();
+
+    JSONAssert.assertEquals(expectedJson, responseJson, new CustomComparator(
+        JSONCompareMode.LENIENT, new Customization("timestamp", (o1, o2) -> true)));
   }
 
   @Test
@@ -153,6 +165,8 @@ class BookControllerIT {
   @Test
   @DisplayName("Should throw AppExceptionDto when update book with non existing id")
   void shouldThrowWhenUpdateBookWithNonExistingId() throws Exception {
+    String expectedJson = JsonUtils.readJson("/books/update_with_non_existing_id.json");
+
     UpdateBookRequestDto requestDto = UpdateBookRequestDto.builder()
         .isbn("978-9-7389-4434-3")
         .title("Sapiens: A Brief History of Humankind")
@@ -162,14 +176,17 @@ class BookControllerIT {
         .isAvailableOnline(true)
         .build();
 
-    mockMvc
+    String responseJson = mockMvc
         .perform(put("/books/{bookId}", 1000L).contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(requestDto)))
         .andExpect(status().isNotFound())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(jsonPath("$.error").value("Not Found"))
-        .andExpect(jsonPath("$.message").value("Book not found"))
-        .andExpect(jsonPath("$.status").value(404));
+        .andReturn()
+        .getResponse()
+        .getContentAsString();
+
+    JSONAssert.assertEquals(expectedJson, responseJson, new CustomComparator(
+        JSONCompareMode.LENIENT, new Customization("timestamp", (o1, o2) -> true)));
   }
 
   @Test
@@ -181,21 +198,31 @@ class BookControllerIT {
   @Test
   @DisplayName("Should throw AppExceptionDto when delete book with non existing id")
   void shouldThrowWhenDeleteBookWithNonExistingId() throws Exception {
-    mockMvc.perform(delete("/books/{bookId}", 1000L))
+    String expectedJson = JsonUtils.readJson("/books/delete_with_non_existing_id.json");
+
+    String responseJson = mockMvc.perform(delete("/books/{bookId}", 1000L))
         .andExpect(status().isNotFound())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(jsonPath("$.error").value("Not Found"))
-        .andExpect(jsonPath("$.message").value("Book not found"))
-        .andExpect(jsonPath("$.status").value(404));
+        .andReturn()
+        .getResponse()
+        .getContentAsString();
+
+    JSONAssert.assertEquals(expectedJson, responseJson, new CustomComparator(
+        JSONCompareMode.LENIENT, new Customization("timestamp", (o1, o2) -> true)));
   }
 
   @Test
   @DisplayName("Should return List<AuthorDto> when find authors by book id with existing id")
   void shouldReturnListOfAuthorsWhenFindAuthorsByBookIdWithExistingId() throws Exception {
-    mockMvc.perform(get("/books/{bookId}/authors", 1L))
+    String expectedJson = JsonUtils.readJson("/books/find-authors-by-book.json");
+
+    String responseJson = mockMvc.perform(get("/books/{bookId}/authors", 1L))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(jsonPath("$[0].id").value(1L))
-        .andExpect(jsonPath("$[0].name").value("Yuval Noah Harari"));
+        .andReturn()
+        .getResponse()
+        .getContentAsString();
+
+    JSONAssert.assertEquals(expectedJson, responseJson, false);
   }
 }

@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "name": "Carlos Alberto Arroyo Martínez",
+    "age": 28,
+    "email": "carroyom@mail.com",
+    "username": "carroyom",
+    "is_active": true,
+    "role": {
+      "id": 1,
+      "title": "App//Admin",
+      "description": "Role for admins users"
+    },
+    "created_at": "2025-01-01T00:00:00",
+    "updated_at": "2025-01-01T00:00:00"
+  },
+  {
+    "id": 2,
+    "name": "Cathy Stefania Guido Rojas",
+    "age": 28,
+    "email": "cguidor@mail.com",
+    "username": "cguidor",
+    "is_active": true,
+    "role": {
+      "id": 2,
+      "title": "App//Customer",
+      "description": "Role for customer users"
+    },
+    "created_at": "2025-01-01T00:00:00",
+    "updated_at": "2025-01-01T00:00:00"
+  }
+]

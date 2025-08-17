@@ -1,0 +1,25 @@
+{
+  "id": 1,
+  "isbn": "978-1-3035-0529-4",
+  "title": "Homo Deus: A Brief History of Tomorrow",
+  "cover_url": "https://images.isbndb.com/covers/39/36/9781784703936.jpg",
+  "authors": [
+    {
+      "id": 1,
+      "name": "Yuval Noah Harari",
+      "created_at": "2025-01-01T00:00:00",
+      "updated_at": "2025-01-01T00:00:00"
+    },
+    {
+      "id": 2,
+      "name": "Itzik Yahav",
+      "created_at": "2025-01-01T00:00:00",
+      "updated_at": "2025-01-01T00:00:00"
+    }
+  ],
+  "price": 22.99,
+  "is_available_online": false,
+  "published_at": "2017-01-01",
+  "created_at": "2025-01-01T00:00:00",
+  "updated_at": "2025-01-01T00:00:00"
+}

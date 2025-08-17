@@ -1,0 +1,7 @@
+{
+  "message": "ISBN already exists",
+  "error": "Bad Request",
+  "status": 400,
+  "path": "/books",
+  "timestamp": "2025-01-01T00:00:00"
+}
