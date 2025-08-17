@@ -69,6 +69,22 @@ class AuthorControllerIT {
   }
 
   @Test
+  @DisplayName("Should return authors when find all authors with filters")
+  void shouldReturnListOfAuthorsWhenFindAllAuthorsWithFilters() throws Exception {
+    String expectedJson = JsonUtils.readJson("/authors/find-all_with_filters.json");
+
+    String responseJson = mockMvc.perform(
+        get("/authors").param("page", "0").param("size", "25").param("name", "Yuval Noah Harari"))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+        .andReturn()
+        .getResponse()
+        .getContentAsString();
+
+    JSONAssert.assertEquals(expectedJson, responseJson, false);
+  }
+
+  @Test
   @DisplayName("Should return AuthorDto when find author by id with existing id")
   void shouldReturnAuthorDtoWhenFindAuthorByIdWithExistingId() throws Exception {
     String expectedJson = JsonUtils.readJson("/authors/find-by-id.json");

@@ -70,6 +70,27 @@ class BookControllerIT {
   }
 
   @Test
+  @DisplayName("Should return List<BookDto> when find all books with filters")
+  void shouldReturnListOfBooksWhenFindAllBooksWithFilters() throws Exception {
+    String expectedJson = JsonUtils.readJson("/books/find-all_with_filters.json");
+
+    String responseJson = mockMvc
+        .perform(get("/books").param("page", "0")
+            .param("size", "25")
+            .param("isbn", "978-1-3035-0529-4")
+            .param("title", "Homo Deus: A Brief History of Tomorrow")
+            .param("authorIds", "1,2")
+            .param("isAvailableOnline", "false"))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+        .andReturn()
+        .getResponse()
+        .getContentAsString();
+
+    JSONAssert.assertEquals(expectedJson, responseJson, false);
+  }
+
+  @Test
   @DisplayName("Should return BookDto when find book by id with existing id")
   void shouldReturnBookDtoWhenFindBookByIdWithExistingId() throws Exception {
     String expectedJson = JsonUtils.readJson("/books/find-by-id.json");

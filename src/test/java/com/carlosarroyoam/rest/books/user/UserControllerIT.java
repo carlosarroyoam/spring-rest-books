@@ -69,6 +69,29 @@ class UserControllerIT {
   }
 
   @Test
+  @DisplayName("Should return List<UserDto> when find all users with filters")
+  void shouldReturnListOfUsersWhenFindAllUsersWithFilters() throws Exception {
+    String expectedJson = JsonUtils.readJson("/users/find-all_with_filters.json");
+
+    String responseJson = mockMvc
+        .perform(get("/users").param("page", "0")
+            .param("size", "25")
+            .param("name", "Carlos Alberto Arroyo Martínez")
+            .param("age", "28")
+            .param("email", "carroyom@mail.com")
+            .param("username", "carroyom")
+            .param("roleId", "1")
+            .param("isActive", "true"))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+        .andReturn()
+        .getResponse()
+        .getContentAsString();
+
+    JSONAssert.assertEquals(expectedJson, responseJson, false);
+  }
+
+  @Test
   @DisplayName("Should return UserDto when find user by id with existing id")
   void shouldReturnUserDtoWhenFindUserByIdWithExistingId() throws Exception {
     String expectedJson = JsonUtils.readJson("/users/find-by-id.json");
