@@ -2,6 +2,6 @@
   "message": "Book not found",
   "error": "Not Found",
   "status": 404,
-  "path": "/carts/1/items",
+  "path": "/carts/items",
   "timestamp": "2025-01-01T00:00:00"
 }

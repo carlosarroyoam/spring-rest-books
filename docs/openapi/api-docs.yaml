@@ -658,19 +658,12 @@ paths:
           $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
-  /carts/{cartId}/items:
+  /carts/items:
     put:
       tags:
         - Carts
       summary: Updates a cart item
       operationId: updateCartItem
-      parameters:
-        - name: cartId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
       requestBody:
         content:
           application/json:
@@ -691,19 +684,13 @@ paths:
           $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
-  /carts/{cartId}/items/{cartItemId}:
+  /carts/items/{cartItemId}:
     delete:
       tags:
         - Carts
       summary: Deletes a cart item
       operationId: deleteCartItem
       parameters:
-        - name: cartId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
         - name: cartItemId
           in: path
           required: true

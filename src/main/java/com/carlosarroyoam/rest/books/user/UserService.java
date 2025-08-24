@@ -53,13 +53,13 @@ public class UserService {
 
   @Transactional
   public UserDto create(CreateUserRequestDto requestDto) {
-    if (userRepository.existsByUsername(requestDto.getUsername())) {
+    if (Boolean.TRUE.equals(userRepository.existsByUsername(requestDto.getUsername()))) {
       log.warn(AppMessages.USERNAME_ALREADY_EXISTS_EXCEPTION);
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
           AppMessages.USERNAME_ALREADY_EXISTS_EXCEPTION);
     }
 
-    if (userRepository.existsByEmail(requestDto.getEmail())) {
+    if (Boolean.TRUE.equals(userRepository.existsByEmail(requestDto.getEmail()))) {
       log.warn(AppMessages.EMAIL_ALREADY_EXISTS_EXCEPTION);
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
           AppMessages.EMAIL_ALREADY_EXISTS_EXCEPTION);

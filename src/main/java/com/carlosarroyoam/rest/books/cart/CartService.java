@@ -41,29 +41,34 @@ public class CartService {
           AppMessages.USER_NOT_FOUND_EXCEPTION);
     });
 
-    Cart shoppingCartByUserId = cartRepository.findByUserId(userByUsername.getId())
-        .orElseThrow(() -> {
-          log.warn(AppMessages.CART_NOT_FOUND_EXCEPTION);
-          return new ResponseStatusException(HttpStatus.NOT_FOUND,
-              AppMessages.CART_NOT_FOUND_EXCEPTION);
-        });
-
-    return ShoppingCartDtoMapper.INSTANCE.toDto(shoppingCartByUserId);
-  }
-
-  public void updateCartItem(Long cartId, UpdateCartItemRequestDto requestDto) {
-    Cart cartById = cartRepository.findById(cartId).orElseThrow(() -> {
+    Cart cartByUserId = cartRepository.findByUserId(userByUsername.getId()).orElseThrow(() -> {
       log.warn(AppMessages.CART_NOT_FOUND_EXCEPTION);
       return new ResponseStatusException(HttpStatus.NOT_FOUND,
           AppMessages.CART_NOT_FOUND_EXCEPTION);
     });
 
-    if (!bookRepository.existsById(requestDto.getBookId())) {
+    return ShoppingCartDtoMapper.INSTANCE.toDto(cartByUserId);
+  }
+
+  public void updateCartItem(String username, UpdateCartItemRequestDto requestDto) {
+    User userByUsername = userRepository.findByUsername(username).orElseThrow(() -> {
+      log.warn(AppMessages.USER_NOT_FOUND_EXCEPTION);
+      return new ResponseStatusException(HttpStatus.NOT_FOUND,
+          AppMessages.USER_NOT_FOUND_EXCEPTION);
+    });
+
+    Cart cartByUserId = cartRepository.findByUserId(userByUsername.getId()).orElseThrow(() -> {
+      log.warn(AppMessages.CART_NOT_FOUND_EXCEPTION);
+      return new ResponseStatusException(HttpStatus.NOT_FOUND,
+          AppMessages.CART_NOT_FOUND_EXCEPTION);
+    });
+
+    if (Boolean.FALSE.equals(bookRepository.existsById(requestDto.getBookId()))) {
       log.warn(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, AppMessages.BOOK_NOT_FOUND_EXCEPTION);
     }
 
-    Optional<CartItem> cartItemOptional = cartById.getItems()
+    Optional<CartItem> cartItemOptional = cartByUserId.getItems()
         .stream()
         .filter(item -> item.getBookId().equals(requestDto.getBookId()))
         .findFirst();
@@ -72,28 +77,33 @@ public class CartService {
         : CartItemDtoMapper.INSTANCE.updateCartItemToEntity(requestDto);
     cartItem.setQuantity(requestDto.getQuantity());
     cartItem.setAddedAt(LocalDateTime.now());
-    cartItem.setCartId(cartById.getId());
+    cartItem.setCartId(cartByUserId.getId());
     cartItemRepository.save(cartItem);
   }
 
-  public void deleteCartItem(Long cartId, Long cartItemId) {
-    Cart cartById = cartRepository.findById(cartId).orElseThrow(() -> {
+  public void deleteCartItem(String username, Long cartItemId) {
+    User userByUsername = userRepository.findByUsername(username).orElseThrow(() -> {
+      log.warn(AppMessages.USER_NOT_FOUND_EXCEPTION);
+      return new ResponseStatusException(HttpStatus.NOT_FOUND,
+          AppMessages.USER_NOT_FOUND_EXCEPTION);
+    });
+
+    Cart cartByUserId = cartRepository.findByUserId(userByUsername.getId()).orElseThrow(() -> {
       log.warn(AppMessages.CART_NOT_FOUND_EXCEPTION);
       return new ResponseStatusException(HttpStatus.NOT_FOUND,
           AppMessages.CART_NOT_FOUND_EXCEPTION);
     });
 
-    Optional<CartItem> cartItemOptional = cartById.getItems()
+    CartItem cartItemOptional = cartByUserId.getItems()
         .stream()
         .filter(item -> item.getId().equals(cartItemId))
-        .findFirst();
+        .findFirst()
+        .orElseThrow(() -> {
+          log.warn(AppMessages.CART_ITEM_NOT_FOUND_EXCEPTION);
+          return new ResponseStatusException(HttpStatus.NOT_FOUND,
+              AppMessages.CART_ITEM_NOT_FOUND_EXCEPTION);
+        });
 
-    if (cartItemOptional.isEmpty()) {
-      log.warn(AppMessages.CART_ITEM_NOT_FOUND_EXCEPTION);
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-          AppMessages.CART_ITEM_NOT_FOUND_EXCEPTION);
-    }
-
-    cartItemRepository.deleteById(cartItemOptional.get().getId());
+    cartItemRepository.deleteById(cartItemOptional.getId());
   }
 }

@@ -49,6 +49,7 @@ class CartServiceTest {
 
   private Cart cart;
   private CartItem cartItem;
+  private String username = "carroyom";
 
   @BeforeEach
   void setUp() {
@@ -75,8 +76,6 @@ class CartServiceTest {
   @Test
   @DisplayName("Should return CartDto when find cart by username")
   void shouldReturnCartDtoWhenFindCartByUsername() {
-    String username = "carroyom";
-
     when(userRepository.findByUsername(anyString()))
         .thenReturn(Optional.of(User.builder().id(1L).build()));
     when(cartRepository.findByUserId(anyLong())).thenReturn(Optional.of(cart));
@@ -101,8 +100,6 @@ class CartServiceTest {
   @Test
   @DisplayName("Should throw ResponseStatusException when find cart by username with non existing username")
   void shouldThrowWhenFindCartByUsernameWithNonExistingUsername() {
-    String username = "carroyom";
-
     when(userRepository.findByUsername(anyString())).thenReturn(Optional.ofNullable(null));
 
     assertThatThrownBy(() -> cartService.findByUsername(username))
@@ -113,9 +110,7 @@ class CartServiceTest {
 
   @Test
   @DisplayName("Should throw ResponseStatusException when find cart by username with no carts")
-  void shouldThrowWhenFindCartByUsernameWithNonNonCarts() {
-    String username = "carroyom";
-
+  void shouldThrowWhenFindCartByUsernameWithNoCarts() {
     when(userRepository.findByUsername(anyString()))
         .thenReturn(Optional.of(User.builder().id(1L).build()));
     when(cartRepository.findByUserId(anyLong())).thenReturn(Optional.ofNullable(null));
@@ -134,11 +129,13 @@ class CartServiceTest {
         .bookId(1L)
         .build();
 
-    when(cartRepository.findById(anyLong())).thenReturn(Optional.of(cart));
+    when(userRepository.findByUsername(anyString()))
+        .thenReturn(Optional.of(User.builder().id(1L).build()));
+    when(cartRepository.findByUserId(anyLong())).thenReturn(Optional.of(cart));
     when(bookRepository.existsById(anyLong())).thenReturn(Boolean.TRUE);
     when(cartItemRepository.save(any(CartItem.class))).thenReturn(cartItem);
 
-    cartService.updateCartItem(1L, requestDto);
+    cartService.updateCartItem(username, requestDto);
 
     verify(cartItemRepository).save(any(CartItem.class));
   }
@@ -152,13 +149,28 @@ class CartServiceTest {
         .build();
     Cart cartWithoutItems = Cart.builder().id(1L).build();
 
-    when(cartRepository.findById(anyLong())).thenReturn(Optional.of(cartWithoutItems));
+    when(userRepository.findByUsername(anyString()))
+        .thenReturn(Optional.of(User.builder().id(1L).build()));
+    when(cartRepository.findByUserId(anyLong())).thenReturn(Optional.of(cartWithoutItems));
     when(bookRepository.existsById(anyLong())).thenReturn(Boolean.TRUE);
     when(cartItemRepository.save(any(CartItem.class))).thenReturn(cartItem);
 
-    cartService.updateCartItem(1L, requestDto);
+    cartService.updateCartItem(username, requestDto);
 
     verify(cartItemRepository).save(any(CartItem.class));
+  }
+
+  @Test
+  @DisplayName("Should throw ResponseStatusException when update cart item with non existing username")
+  void shouldThrowWhenUpdateCartItemWithNonExistingUsername() {
+    UpdateCartItemRequestDto requestDto = UpdateCartItemRequestDto.builder().build();
+
+    when(userRepository.findByUsername(anyString())).thenReturn(Optional.ofNullable(null));
+
+    assertThatThrownBy(() -> cartService.updateCartItem(username, requestDto))
+        .isInstanceOf(ResponseStatusException.class)
+        .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
+        .hasMessageContaining(AppMessages.USER_NOT_FOUND_EXCEPTION);
   }
 
   @Test
@@ -166,9 +178,11 @@ class CartServiceTest {
   void shouldThrowWhenUpdateCartItemWhitNonExistingCartId() {
     UpdateCartItemRequestDto requestDto = UpdateCartItemRequestDto.builder().build();
 
-    when(cartRepository.findById(anyLong())).thenReturn(Optional.ofNullable(null));
+    when(userRepository.findByUsername(anyString()))
+        .thenReturn(Optional.of(User.builder().id(1L).build()));
+    when(cartRepository.findByUserId(anyLong())).thenReturn(Optional.ofNullable(null));
 
-    assertThatThrownBy(() -> cartService.updateCartItem(1L, requestDto))
+    assertThatThrownBy(() -> cartService.updateCartItem(username, requestDto))
         .isInstanceOf(ResponseStatusException.class)
         .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
         .hasMessageContaining(AppMessages.CART_NOT_FOUND_EXCEPTION);
@@ -179,10 +193,12 @@ class CartServiceTest {
   void shouldThrowWhenUpdateCartItemWhitNonExistingBookId() {
     UpdateCartItemRequestDto requestDto = UpdateCartItemRequestDto.builder().bookId(1L).build();
 
-    when(cartRepository.findById(anyLong())).thenReturn(Optional.of(cart));
+    when(userRepository.findByUsername(anyString()))
+        .thenReturn(Optional.of(User.builder().id(1L).build()));
+    when(cartRepository.findByUserId(anyLong())).thenReturn(Optional.of(cart));
     when(bookRepository.existsById(anyLong())).thenReturn(Boolean.FALSE);
 
-    assertThatThrownBy(() -> cartService.updateCartItem(1L, requestDto))
+    assertThatThrownBy(() -> cartService.updateCartItem(username, requestDto))
         .isInstanceOf(ResponseStatusException.class)
         .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
         .hasMessageContaining(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
@@ -191,9 +207,11 @@ class CartServiceTest {
   @Test
   @DisplayName("Should delete cart item with existing id")
   void shouldThrowWhenDeleteCartItemWhitExistingId() {
-    when(cartRepository.findById(anyLong())).thenReturn(Optional.of(cart));
+    when(userRepository.findByUsername(anyString()))
+        .thenReturn(Optional.of(User.builder().id(1L).build()));
+    when(cartRepository.findByUserId(anyLong())).thenReturn(Optional.of(cart));
 
-    cartService.deleteCartItem(1L, 1L);
+    cartService.deleteCartItem(username, 1L);
 
     verify(cartItemRepository).deleteById(anyLong());
   }
@@ -201,12 +219,25 @@ class CartServiceTest {
   @Test
   @DisplayName("Should throw ResponseStatusException when delete cart item with non existing cart item id")
   void shouldThrowWhenDeleteCartItemWhitNonExistingCartItemId() {
-    when(cartRepository.findById(anyLong())).thenReturn(Optional.ofNullable(null));
+    when(userRepository.findByUsername(anyString()))
+        .thenReturn(Optional.of(User.builder().id(1L).build()));
+    when(cartRepository.findByUserId(anyLong())).thenReturn(Optional.ofNullable(null));
 
-    assertThatThrownBy(() -> cartService.deleteCartItem(1L, 1L))
+    assertThatThrownBy(() -> cartService.deleteCartItem(username, 1L))
         .isInstanceOf(ResponseStatusException.class)
         .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
         .hasMessageContaining(AppMessages.CART_NOT_FOUND_EXCEPTION);
+  }
+
+  @Test
+  @DisplayName("Should throw ResponseStatusException when delete cart item with non existing username")
+  void shouldThrowWhenDeleteCartItemWithNonExistingUsername() {
+    when(userRepository.findByUsername(anyString())).thenReturn(Optional.ofNullable(null));
+
+    assertThatThrownBy(() -> cartService.deleteCartItem(username, 1L))
+        .isInstanceOf(ResponseStatusException.class)
+        .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
+        .hasMessageContaining(AppMessages.USER_NOT_FOUND_EXCEPTION);
   }
 
   @Test
@@ -214,9 +245,11 @@ class CartServiceTest {
   void shouldThrowWhenDeleteCartItemWhitNonExistingCartId() {
     Cart cartWithoutItems = Cart.builder().id(1L).build();
 
-    when(cartRepository.findById(anyLong())).thenReturn(Optional.of(cartWithoutItems));
+    when(userRepository.findByUsername(anyString()))
+        .thenReturn(Optional.of(User.builder().id(1L).build()));
+    when(cartRepository.findByUserId(anyLong())).thenReturn(Optional.of(cartWithoutItems));
 
-    assertThatThrownBy(() -> cartService.deleteCartItem(1L, 1L))
+    assertThatThrownBy(() -> cartService.deleteCartItem(username, 1L))
         .isInstanceOf(ResponseStatusException.class)
         .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
         .hasMessageContaining(AppMessages.CART_ITEM_NOT_FOUND_EXCEPTION);

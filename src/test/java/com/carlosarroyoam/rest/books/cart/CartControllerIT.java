@@ -73,33 +73,9 @@ class CartControllerIT {
         .bookId(1L)
         .build();
 
-    mockMvc.perform(put("/carts/{cartId}/items", 1L).content(mapper.writeValueAsString(requestDto))
+    mockMvc.perform(put("/carts/items").content(mapper.writeValueAsString(requestDto))
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON)).andExpect(status().isNoContent());
-  }
-
-  @Test
-  @DisplayName("Should throw AppExceptionDto when update cart item with non existing cart id")
-  void shouldThrowWhenUpdateCartItemWithNonExistingCartId() throws Exception {
-    String expectedJson = JsonUtils.readJson("/carts/update_with_non_existing_id.json");
-
-    UpdateCartItemRequestDto requestDto = UpdateCartItemRequestDto.builder()
-        .quantity(1)
-        .bookId(1L)
-        .build();
-
-    String responseJson = mockMvc
-        .perform(put("/carts/{cartId}/items", 1000L).content(mapper.writeValueAsString(requestDto))
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isNotFound())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andReturn()
-        .getResponse()
-        .getContentAsString();
-
-    JSONAssert.assertEquals(expectedJson, responseJson, new CustomComparator(
-        JSONCompareMode.LENIENT, new Customization("timestamp", (o1, o2) -> true)));
   }
 
   @Test
@@ -113,7 +89,7 @@ class CartControllerIT {
         .build();
 
     String responseJson = mockMvc
-        .perform(put("/carts/{cartId}/items", 1L).content(mapper.writeValueAsString(requestDto))
+        .perform(put("/carts/items").content(mapper.writeValueAsString(requestDto))
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNotFound())
@@ -129,28 +105,8 @@ class CartControllerIT {
   @Test
   @DisplayName("Should return no content when delete cart item with existing id")
   void shouldReturnNoContentWhenDeleteCartItemWithExistingId() throws Exception {
-    mockMvc
-        .perform(
-            delete("/carts/{cartId}/items/{cartItemId}", 1L, 1L).accept(MediaType.APPLICATION_JSON))
+    mockMvc.perform(delete("/carts/items/{cartItemId}", 1L).accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNoContent());
-  }
-
-  @Test
-  @DisplayName("Should throw AppExceptionDto when delete cart item with non existing cart id")
-  void shouldThrowWhenDeleteCartItemWithNonExistingCartId() throws Exception {
-    String expectedJson = JsonUtils.readJson("/carts/delete_with_non_existing_id.json");
-
-    String responseJson = mockMvc
-        .perform(delete("/carts/{cartId}/items/{cartItemId}", 1000L, 1L)
-            .accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isNotFound())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andReturn()
-        .getResponse()
-        .getContentAsString();
-
-    JSONAssert.assertEquals(expectedJson, responseJson, new CustomComparator(
-        JSONCompareMode.LENIENT, new Customization("timestamp", (o1, o2) -> true)));
   }
 
   @Test
@@ -159,8 +115,7 @@ class CartControllerIT {
     String expectedJson = JsonUtils.readJson("/carts/delete_with_non_existing_cart_item_id.json");
 
     String responseJson = mockMvc
-        .perform(delete("/carts/{cartId}/items/{cartItemId}", 1L, 1000L)
-            .accept(MediaType.APPLICATION_JSON))
+        .perform(delete("/carts/items/{cartItemId}", 1000L).accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNotFound())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andReturn()

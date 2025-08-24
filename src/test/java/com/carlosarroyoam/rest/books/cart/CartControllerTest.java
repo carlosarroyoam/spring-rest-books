@@ -74,7 +74,7 @@ class CartControllerTest {
         .build();
 
     MvcResult mvcResult = mockMvc
-        .perform(put("/carts/{cartId}/items", 1L).content(mapper.writeValueAsString(requestDto))
+        .perform(put("/carts/items").content(mapper.writeValueAsString(requestDto))
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
         .andReturn();
@@ -87,7 +87,7 @@ class CartControllerTest {
   void shouldReturnNoContentWhenDeleteCartItem() throws Exception {
     MvcResult mvcResult = mockMvc
         .perform(
-            delete("/carts/{cartId}/items/{cartItemId}", 1L, 1L).accept(MediaType.APPLICATION_JSON))
+            delete("/carts/items/{cartItemId}", 1L).accept(MediaType.APPLICATION_JSON))
         .andReturn();
 
     assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());

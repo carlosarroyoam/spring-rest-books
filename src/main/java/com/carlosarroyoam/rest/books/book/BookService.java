@@ -53,7 +53,7 @@ public class BookService {
 
   @Transactional
   public BookDto create(CreateBookRequestDto requestDto) {
-    if (bookRepository.existsByIsbn(requestDto.getIsbn())) {
+    if (Boolean.TRUE.equals(bookRepository.existsByIsbn(requestDto.getIsbn()))) {
       log.warn(AppMessages.ISBN_ALREADY_EXISTS_EXCEPTION);
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
           AppMessages.ISBN_ALREADY_EXISTS_EXCEPTION);
