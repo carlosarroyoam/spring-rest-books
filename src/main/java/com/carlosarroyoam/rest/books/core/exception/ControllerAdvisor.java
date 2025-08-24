@@ -4,6 +4,8 @@ import com.carlosarroyoam.rest.books.core.exception.dto.AppExceptionDto;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
@@ -19,6 +21,8 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @ControllerAdvice
 public class ControllerAdvisor {
+  private static final Logger log = LoggerFactory.getLogger(ControllerAdvisor.class);
+
   @ExceptionHandler(ResponseStatusException.class)
   public ResponseEntity<AppExceptionDto> handleResponseStatusException(ResponseStatusException ex,
       WebRequest request) {
@@ -131,7 +135,7 @@ public class ControllerAdvisor {
         .timestamp(ZonedDateTime.now(ZoneId.of("UTC")))
         .build();
 
-    ex.printStackTrace();
+    log.error("Exception:", ex);
 
     return new ResponseEntity<>(appExceptionDto, statusCode);
   }
