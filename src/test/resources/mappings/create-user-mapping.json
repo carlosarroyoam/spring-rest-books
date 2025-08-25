@@ -1,0 +1,18 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "/admin/realms/fake-realm/users",
+    "headers": {
+      "Authorization": {
+        "matches": "Bearer .*"
+      }
+    }
+  },
+  "response": {
+    "status": 201,
+    "headers": {
+      "Location": "http://localhost:8089/admin/realms/fake-realm/users/418f2517-f9e5-4e4c-8387-69b231969314"
+    },
+    "bodyFileName": "create-user-response.json"
+  }
+}

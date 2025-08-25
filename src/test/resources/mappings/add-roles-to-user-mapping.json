@@ -1,0 +1,18 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPattern": "/admin/realms/fake-realm/users/.*/role-mappings/realm",
+    "headers": {
+      "Authorization": {
+        "matches": "Bearer .*"
+      }
+    }
+  },
+  "response": {
+    "status": 200,
+    "bodyFileName": "add-roles-to-user-response.json",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

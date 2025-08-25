@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "/realms/fake-realm/protocol/openid-connect/token"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "bodyFileName": "token-response.json"
+  }
+}
