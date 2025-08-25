@@ -1,7 +1,7 @@
 package com.carlosarroyoam.rest.books.cart;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -47,11 +47,11 @@ class CartControllerTest {
   }
 
   @Test
-  @DisplayName("Should return CartDto when find cart by username")
-  void shouldReturnCartDtoWhenFindCartByUsername() throws Exception {
+  @DisplayName("Should return CartDto when find cart by customer id")
+  void shouldReturnCartDtoWhenFindCartByCustomerId() throws Exception {
     CartDto cartDto = CartDto.builder().build();
 
-    when(cartService.findByUsername(anyString())).thenReturn(cartDto);
+    when(cartService.findByCustomerId(anyLong())).thenReturn(cartDto);
 
     MvcResult mvcResult = mockMvc.perform(get("/carts").accept(MediaType.APPLICATION_JSON))
         .andReturn();

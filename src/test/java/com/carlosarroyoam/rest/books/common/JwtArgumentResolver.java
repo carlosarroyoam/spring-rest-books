@@ -2,7 +2,6 @@ package com.carlosarroyoam.rest.books.common;
 
 import java.time.Instant;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -24,7 +23,7 @@ public class JwtArgumentResolver implements HandlerMethodArgumentResolver {
     Map<String, Object> headers = Map.of("alg", "none");
     Map<String, Object> claims = new HashMap<>();
     claims.put("preferred_username", "carroyom");
-    claims.put("realm_access", Map.of("roles", List.of("Admin")));
+    claims.put("customer_id", 1L);
 
     return new Jwt("token-value", issuedAt, issuedAt.plusSeconds(3600), headers, claims);
   }

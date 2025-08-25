@@ -8,8 +8,6 @@ import com.carlosarroyoam.rest.books.cart.dto.UpdateCartItemRequestDto;
 import com.carlosarroyoam.rest.books.cart.entity.Cart;
 import com.carlosarroyoam.rest.books.cart.entity.CartItem;
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
-import com.carlosarroyoam.rest.books.customer.CustomerRepository;
-import com.carlosarroyoam.rest.books.customer.entity.Customer;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -23,47 +21,31 @@ public class CartService {
   private static final Logger log = LoggerFactory.getLogger(CartService.class);
   private final CartRepository cartRepository;
   private final CartItemRepository cartItemRepository;
-  private final CustomerRepository customerRepository;
   private final BookRepository bookRepository;
 
   public CartService(CartRepository cartRepository, CartItemRepository cartItemRepository,
-      CustomerRepository customerRepository, BookRepository bookRepository) {
+      BookRepository bookRepository) {
     this.cartRepository = cartRepository;
     this.cartItemRepository = cartItemRepository;
-    this.customerRepository = customerRepository;
     this.bookRepository = bookRepository;
   }
 
-  public CartDto findByUsername(String username) {
-    Customer customerByUsername = customerRepository.findByUsername(username).orElseThrow(() -> {
-      log.warn(AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION);
+  public CartDto findByCustomerId(Long customerId) {
+    Cart cartByCustomerId = cartRepository.findByCustomerId(customerId).orElseThrow(() -> {
+      log.warn(AppMessages.CART_NOT_FOUND_EXCEPTION);
       return new ResponseStatusException(HttpStatus.NOT_FOUND,
-          AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION);
+          AppMessages.CART_NOT_FOUND_EXCEPTION);
     });
-
-    Cart cartByCustomerId = cartRepository.findByCustomerId(customerByUsername.getId())
-        .orElseThrow(() -> {
-          log.warn(AppMessages.CART_NOT_FOUND_EXCEPTION);
-          return new ResponseStatusException(HttpStatus.NOT_FOUND,
-              AppMessages.CART_NOT_FOUND_EXCEPTION);
-        });
 
     return CartDtoMapper.INSTANCE.toDto(cartByCustomerId);
   }
 
-  public void updateCartItem(String username, UpdateCartItemRequestDto requestDto) {
-    Customer customerByUsername = customerRepository.findByUsername(username).orElseThrow(() -> {
-      log.warn(AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION);
+  public void updateCartItem(Long customerId, UpdateCartItemRequestDto requestDto) {
+    Cart cartByCustomerId = cartRepository.findByCustomerId(customerId).orElseThrow(() -> {
+      log.warn(AppMessages.CART_NOT_FOUND_EXCEPTION);
       return new ResponseStatusException(HttpStatus.NOT_FOUND,
-          AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION);
+          AppMessages.CART_NOT_FOUND_EXCEPTION);
     });
-
-    Cart cartByCustomerId = cartRepository.findByCustomerId(customerByUsername.getId())
-        .orElseThrow(() -> {
-          log.warn(AppMessages.CART_NOT_FOUND_EXCEPTION);
-          return new ResponseStatusException(HttpStatus.NOT_FOUND,
-              AppMessages.CART_NOT_FOUND_EXCEPTION);
-        });
 
     if (Boolean.FALSE.equals(bookRepository.existsById(requestDto.getBookId()))) {
       log.warn(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
@@ -83,19 +65,12 @@ public class CartService {
     cartItemRepository.save(cartItem);
   }
 
-  public void deleteCartItem(String username, Long cartItemId) {
-    Customer customerByUsername = customerRepository.findByUsername(username).orElseThrow(() -> {
-      log.warn(AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION);
+  public void deleteCartItem(Long customerId, Long cartItemId) {
+    Cart cartByCustomerId = cartRepository.findByCustomerId(customerId).orElseThrow(() -> {
+      log.warn(AppMessages.CART_NOT_FOUND_EXCEPTION);
       return new ResponseStatusException(HttpStatus.NOT_FOUND,
-          AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION);
+          AppMessages.CART_NOT_FOUND_EXCEPTION);
     });
-
-    Cart cartByCustomerId = cartRepository.findByCustomerId(customerByUsername.getId())
-        .orElseThrow(() -> {
-          log.warn(AppMessages.CART_NOT_FOUND_EXCEPTION);
-          return new ResponseStatusException(HttpStatus.NOT_FOUND,
-              AppMessages.CART_NOT_FOUND_EXCEPTION);
-        });
 
     CartItem cartItemOptional = cartByCustomerId.getItems()
         .stream()

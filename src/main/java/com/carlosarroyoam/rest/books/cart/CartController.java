@@ -2,11 +2,11 @@ package com.carlosarroyoam.rest.books.cart;
 
 import com.carlosarroyoam.rest.books.cart.dto.CartDto;
 import com.carlosarroyoam.rest.books.cart.dto.UpdateCartItemRequestDto;
+import com.carlosarroyoam.rest.books.core.constant.CustomClaimNames;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.oidc.StandardClaimNames;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,8 +28,8 @@ public class CartController {
   @GetMapping(produces = "application/json")
   @PreAuthorize("hasRole('App/Customer')")
   public ResponseEntity<CartDto> findByUsername(@AuthenticationPrincipal Jwt jwt) {
-    String username = jwt.getClaim(StandardClaimNames.PREFERRED_USERNAME);
-    CartDto cartByUsername = cartService.findByUsername(username);
+    Long customerId = jwt.getClaim(CustomClaimNames.CUSTOMER_ID);
+    CartDto cartByUsername = cartService.findByCustomerId(customerId);
     return ResponseEntity.ok(cartByUsername);
   }
 
@@ -37,8 +37,8 @@ public class CartController {
   @PreAuthorize("hasRole('App/Customer')")
   public ResponseEntity<Void> updateCartItem(
       @Valid @RequestBody UpdateCartItemRequestDto requestDto, @AuthenticationPrincipal Jwt jwt) {
-    String username = jwt.getClaim(StandardClaimNames.PREFERRED_USERNAME);
-    cartService.updateCartItem(username, requestDto);
+    Long customerId = jwt.getClaim(CustomClaimNames.CUSTOMER_ID);
+    cartService.updateCartItem(customerId, requestDto);
     return ResponseEntity.noContent().build();
   }
 
@@ -46,8 +46,8 @@ public class CartController {
   @PreAuthorize("hasRole('App/Customer')")
   public ResponseEntity<Void> deleteCartItem(@PathVariable Long cartItemId,
       @AuthenticationPrincipal Jwt jwt) {
-    String username = jwt.getClaim(StandardClaimNames.PREFERRED_USERNAME);
-    cartService.deleteCartItem(username, cartItemId);
+    Long customerId = jwt.getClaim(CustomClaimNames.CUSTOMER_ID);
+    cartService.deleteCartItem(customerId, cartItemId);
     return ResponseEntity.noContent().build();
   }
 }

@@ -48,15 +48,16 @@ class CartControllerIT {
   void setup() {
     mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
         .apply(SecurityMockMvcConfigurers.springSecurity())
-        .defaultRequest(get("/").with(jwt().jwt(jwt -> jwt.claim("preferred_username", "carroyom"))
-            .authorities(new SimpleGrantedAuthority("ROLE_App/Customer"))))
+        .defaultRequest(get("/").with(
+            jwt().jwt(jwt -> jwt.claim("preferred_username", "carroyom").claim("customer_id", 1L))
+                .authorities(new SimpleGrantedAuthority("ROLE_App/Customer"))))
         .build();
   }
 
   @Test
-  @DisplayName("Should return CartDto when find cart by username")
-  void shouldReturnCartDtoWhenFindCartByUsername() throws Exception {
-    String expectedJson = JsonUtils.readJson("/carts/find-by-username.json");
+  @DisplayName("Should return CartDto when find cart by customer id")
+  void shouldReturnCartDtoWhenFindCartByCustomerId() throws Exception {
+    String expectedJson = JsonUtils.readJson("/carts/find-by-customer-id.json");
 
     String responseJson = mockMvc.perform(get("/carts"))
         .andExpect(status().isOk())
