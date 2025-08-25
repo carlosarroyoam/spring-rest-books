@@ -26,7 +26,7 @@ public class BookService {
   private static final Logger log = LoggerFactory.getLogger(BookService.class);
   private final BookRepository bookRepository;
 
-  public BookService(final BookRepository bookRepository) {
+  public BookService(BookRepository bookRepository) {
     this.bookRepository = bookRepository;
   }
 

@@ -25,8 +25,7 @@ public class CustomerService {
   private final CustomerRepository customerRepository;
   private final KeycloakService keycloakService;
 
-  public CustomerService(final CustomerRepository customerRepository,
-      final KeycloakService keycloakService) {
+  public CustomerService(CustomerRepository customerRepository, KeycloakService keycloakService) {
     this.customerRepository = customerRepository;
     this.keycloakService = keycloakService;
   }

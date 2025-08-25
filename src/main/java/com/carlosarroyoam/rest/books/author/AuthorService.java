@@ -26,7 +26,7 @@ public class AuthorService {
   private static final Logger log = LoggerFactory.getLogger(AuthorService.class);
   private final AuthorRepository authorRepository;
 
-  public AuthorService(final AuthorRepository authorRepository) {
+  public AuthorService(AuthorRepository authorRepository) {
     this.authorRepository = authorRepository;
   }
 

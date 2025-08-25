@@ -28,7 +28,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class AuthorController {
   private final AuthorService authorService;
 
-  public AuthorController(final AuthorService authorService) {
+  public AuthorController(AuthorService authorService) {
     this.authorService = authorService;
   }
 

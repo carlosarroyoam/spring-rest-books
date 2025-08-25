@@ -23,9 +23,9 @@ public class KeycloakService {
   private final Keycloak keycloak;
   private final KeycloakAdminProps keycloakAdminProps;
 
-  public KeycloakService(Keycloak keycloak, KeycloakAdminProps properties) {
+  public KeycloakService(Keycloak keycloak, KeycloakAdminProps keycloakAdminProps) {
     this.keycloak = keycloak;
-    this.keycloakAdminProps = properties;
+    this.keycloakAdminProps = keycloakAdminProps;
   }
 
   public void createUser(CreateCustomerRequestDto requestDto, Long customerId) {
