@@ -30,9 +30,14 @@ public class KeycloakService {
 
   public void createUser(CreateUserRequestDto requestDto, Long userId) {
     UsersResource usersResource = keycloak.realm(keycloakAdminProps.getRealm()).users();
-    List<UserRepresentation> existingUsers = usersResource.search(requestDto.getUsername(), true);
 
-    if (!existingUsers.isEmpty()) {
+    List<UserRepresentation> existingUsersByUsername = usersResource
+        .searchByUsername(requestDto.getUsername(), true);
+    List<UserRepresentation> existingUsersByEmail = usersResource
+        .searchByEmail(requestDto.getEmail(), true);
+
+    if (Boolean.FALSE.equals(existingUsersByUsername.isEmpty())
+        || Boolean.FALSE.equals(existingUsersByEmail.isEmpty())) {
       return;
     }
 
