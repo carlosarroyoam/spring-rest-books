@@ -9,6 +9,7 @@ import java.util.List;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -31,6 +32,7 @@ public class CustomerController {
   }
 
   @GetMapping(produces = "application/json")
+  @PreAuthorize("hasRole('App/Admin')")
   public ResponseEntity<List<CustomerDto>> findAll(
       @PageableDefault(page = 0, size = 25) Pageable pageable,
       @Valid @ModelAttribute CustomerFilterDto filters) {
@@ -39,6 +41,7 @@ public class CustomerController {
   }
 
   @GetMapping(path = "/{customerId}", produces = "application/json")
+  @PreAuthorize("hasRole('App/Admin')")
   public ResponseEntity<CustomerDto> findById(@PathVariable Long customerId) {
     CustomerDto customerById = customerService.findById(customerId);
     return ResponseEntity.ok(customerById);
@@ -61,6 +64,7 @@ public class CustomerController {
   }
 
   @DeleteMapping("/{customerId}")
+  @PreAuthorize("hasRole('App/Admin')")
   public ResponseEntity<Void> deleteById(@PathVariable Long customerId) {
     customerService.deleteById(customerId);
     return ResponseEntity.noContent().build();

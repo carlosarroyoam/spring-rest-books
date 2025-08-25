@@ -13,6 +13,7 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.FrameOptionsConfig;
@@ -27,6 +28,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
+@EnableMethodSecurity
 class WebSecurityConfig {
   private final CorsProps corsProps;
 
@@ -77,6 +79,7 @@ class WebSecurityConfig {
       var roles = realmAccess.flatMap(map -> Optional.ofNullable((List<String>) map.get("roles")));
       return roles.map(List::stream)
           .orElse(Stream.empty())
+          .map(role -> "ROLE_" + role)
           .map(SimpleGrantedAuthority::new)
           .map(GrantedAuthority.class::cast)
           .toList();

@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -107,10 +107,10 @@ public class ControllerAdvisor {
     return new ResponseEntity<>(appExceptionDto, statusCode);
   }
 
-  @ExceptionHandler(AuthenticationException.class)
-  public ResponseEntity<AppExceptionDto> handleAuthenticationException(AuthenticationException ex,
-      WebRequest request) {
-    HttpStatus statusCode = HttpStatus.UNAUTHORIZED;
+  @ExceptionHandler(AuthorizationDeniedException.class)
+  public ResponseEntity<AppExceptionDto> handleAuthorizationDeniedException(
+      AuthorizationDeniedException ex, WebRequest request) {
+    HttpStatus statusCode = HttpStatus.FORBIDDEN;
 
     AppExceptionDto appExceptionDto = AppExceptionDto.builder()
         .message(ex.getMessage())

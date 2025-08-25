@@ -4,6 +4,7 @@ import com.carlosarroyoam.rest.books.cart.dto.CartDto;
 import com.carlosarroyoam.rest.books.cart.dto.UpdateCartItemRequestDto;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.oidc.StandardClaimNames;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -25,6 +26,7 @@ public class CartController {
   }
 
   @GetMapping(produces = "application/json")
+  @PreAuthorize("hasRole('App/Customer')")
   public ResponseEntity<CartDto> findByUsername(@AuthenticationPrincipal Jwt jwt) {
     String username = jwt.getClaim(StandardClaimNames.PREFERRED_USERNAME);
     CartDto cartByUsername = cartService.findByUsername(username);
@@ -32,6 +34,7 @@ public class CartController {
   }
 
   @PutMapping(value = "/items", consumes = "application/json")
+  @PreAuthorize("hasRole('App/Customer')")
   public ResponseEntity<Void> updateCartItem(
       @Valid @RequestBody UpdateCartItemRequestDto requestDto, @AuthenticationPrincipal Jwt jwt) {
     String username = jwt.getClaim(StandardClaimNames.PREFERRED_USERNAME);
@@ -40,6 +43,7 @@ public class CartController {
   }
 
   @DeleteMapping(value = "/items/{cartItemId}")
+  @PreAuthorize("hasRole('App/Customer')")
   public ResponseEntity<Void> deleteCartItem(@PathVariable Long cartItemId,
       @AuthenticationPrincipal Jwt jwt) {
     String username = jwt.getClaim(StandardClaimNames.PREFERRED_USERNAME);

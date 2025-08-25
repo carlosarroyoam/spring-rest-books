@@ -10,6 +10,7 @@ import java.util.List;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -46,6 +47,7 @@ public class AuthorController {
   }
 
   @PostMapping(consumes = "application/json")
+  @PreAuthorize("hasRole('App/Admin')")
   public ResponseEntity<Void> create(@Valid @RequestBody CreateAuthorRequestDto requestDto,
       UriComponentsBuilder builder) {
     AuthorDto createdAuthor = authorService.create(requestDto);
@@ -55,6 +57,7 @@ public class AuthorController {
   }
 
   @PutMapping(value = "/{authorId}", consumes = "application/json")
+  @PreAuthorize("hasRole('App/Admin')")
   public ResponseEntity<Void> update(@PathVariable Long authorId,
       @Valid @RequestBody UpdateAuthorRequestDto requestDto) {
     authorService.update(authorId, requestDto);
@@ -62,6 +65,7 @@ public class AuthorController {
   }
 
   @DeleteMapping("/{authorId}")
+  @PreAuthorize("hasRole('App/Admin')")
   public ResponseEntity<Void> deleteById(@PathVariable Long authorId) {
     authorService.deleteById(authorId);
     return ResponseEntity.noContent().build();
