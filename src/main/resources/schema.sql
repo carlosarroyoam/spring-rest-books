@@ -33,15 +33,12 @@ CREATE TABLE roles (
 
 CREATE TABLE users (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(128) NOT NULL,
-    age TINYINT NOT NULL,
+    first_name VARCHAR(128) NOT NULL,
+    last_name VARCHAR(128) NOT NULL,
     email VARCHAR(128) NOT NULL UNIQUE,
     username VARCHAR(128) NOT NULL UNIQUE,
-    is_active BOOLEAN NOT NULL,
-    role_id INT NOT NULL,
     created_at TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP NOT NULL,
-    FOREIGN KEY (role_id) REFERENCES roles(id)
+    updated_at TIMESTAMP NOT NULL
 );
 
 CREATE TABLE carts (

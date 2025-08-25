@@ -11,6 +11,7 @@ public class AppMessages {
   public static final String USER_NOT_FOUND_EXCEPTION = "User not found";
   public static final String EMAIL_ALREADY_EXISTS_EXCEPTION = "Email already exists";
   public static final String USERNAME_ALREADY_EXISTS_EXCEPTION = "Username already exists";
+  public static final String USER_NOT_CREATED_EXCEPTION = "User not created";
 
   public static final String CART_NOT_FOUND_EXCEPTION = "Cart not found";
   public static final String CART_ITEM_NOT_FOUND_EXCEPTION = "Cart item not found";

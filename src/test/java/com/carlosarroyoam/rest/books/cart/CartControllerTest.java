@@ -86,8 +86,7 @@ class CartControllerTest {
   @DisplayName("Should return no content when delete cart item")
   void shouldReturnNoContentWhenDeleteCartItem() throws Exception {
     MvcResult mvcResult = mockMvc
-        .perform(
-            delete("/carts/items/{cartItemId}", 1L).accept(MediaType.APPLICATION_JSON))
+        .perform(delete("/carts/items/{cartItemId}", 1L).accept(MediaType.APPLICATION_JSON))
         .andReturn();
 
     assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());

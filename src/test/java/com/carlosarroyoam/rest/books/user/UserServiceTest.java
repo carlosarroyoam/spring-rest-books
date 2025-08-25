@@ -12,7 +12,6 @@ import com.carlosarroyoam.rest.books.user.dto.UpdateUserRequestDto;
 import com.carlosarroyoam.rest.books.user.dto.UserDto;
 import com.carlosarroyoam.rest.books.user.dto.UserDto.UserDtoMapper;
 import com.carlosarroyoam.rest.books.user.dto.UserFilterDto;
-import com.carlosarroyoam.rest.books.user.entity.Role;
 import com.carlosarroyoam.rest.books.user.entity.User;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -37,6 +36,9 @@ class UserServiceTest {
   @Mock
   private UserRepository userRepository;
 
+  @Mock
+  private KeycloakService keycloakService;
+
   @InjectMocks
   private UserService userService;
 
@@ -46,21 +48,12 @@ class UserServiceTest {
   void setUp() {
     LocalDateTime now = LocalDateTime.now();
 
-    Role role = Role.builder()
-        .id(1)
-        .title("App//Admin")
-        .description("Role for admins users")
-        .build();
-
     user = User.builder()
         .id(1L)
-        .name("Carlos Alberto Arroyo Martínez")
-        .age(Byte.valueOf("28"))
+        .firstName("Carlos Alberto")
+        .lastName("Arroyo Martínez")
         .email("carroyom@mail.com")
         .username("carroyom")
-        .roleId(role.getId())
-        .role(role)
-        .isActive(Boolean.TRUE)
         .createdAt(now)
         .updatedAt(now)
         .build();
@@ -80,15 +73,10 @@ class UserServiceTest {
     assertThat(usersDto).isNotNull().isNotEmpty().hasSize(1);
     assertThat(usersDto.get(0)).isNotNull();
     assertThat(usersDto.get(0).getId()).isEqualTo(1L);
-    assertThat(usersDto.get(0).getName()).isEqualTo("Carlos Alberto Arroyo Martínez");
-    assertThat(usersDto.get(0).getAge()).isEqualTo(Byte.valueOf("28"));
+    assertThat(usersDto.get(0).getFirstName()).isEqualTo("Carlos Alberto");
+    assertThat(usersDto.get(0).getLastName()).isEqualTo("Arroyo Martínez");
     assertThat(usersDto.get(0).getEmail()).isEqualTo("carroyom@mail.com");
     assertThat(usersDto.get(0).getUsername()).isEqualTo("carroyom");
-    assertThat(usersDto.get(0).getRole()).isNotNull();
-    assertThat(usersDto.get(0).getRole().getId()).isEqualTo(1);
-    assertThat(usersDto.get(0).getRole().getTitle()).isEqualTo("App//Admin");
-    assertThat(usersDto.get(0).getRole().getDescription()).isEqualTo("Role for admins users");
-    assertThat(usersDto.get(0).getIsActive()).isEqualTo(Boolean.TRUE);
     assertThat(usersDto.get(0).getCreatedAt()).isNotNull();
     assertThat(usersDto.get(0).getUpdatedAt()).isNotNull();
   }
@@ -102,15 +90,10 @@ class UserServiceTest {
 
     assertThat(userDto).isNotNull();
     assertThat(userDto.getId()).isEqualTo(1L);
-    assertThat(userDto.getName()).isEqualTo("Carlos Alberto Arroyo Martínez");
-    assertThat(userDto.getAge()).isEqualTo(Byte.valueOf("28"));
+    assertThat(userDto.getFirstName()).isEqualTo("Carlos Alberto");
+    assertThat(userDto.getLastName()).isEqualTo("Arroyo Martínez");
     assertThat(userDto.getEmail()).isEqualTo("carroyom@mail.com");
     assertThat(userDto.getUsername()).isEqualTo("carroyom");
-    assertThat(userDto.getRole()).isNotNull();
-    assertThat(userDto.getRole().getId()).isEqualTo(1);
-    assertThat(userDto.getRole().getTitle()).isEqualTo("App//Admin");
-    assertThat(userDto.getRole().getDescription()).isEqualTo("Role for admins users");
-    assertThat(userDto.getIsActive()).isEqualTo(Boolean.TRUE);
     assertThat(userDto.getCreatedAt()).isNotNull();
     assertThat(userDto.getUpdatedAt()).isNotNull();
   }
@@ -129,11 +112,10 @@ class UserServiceTest {
   @DisplayName("Should return UserDto when create a user with valid data")
   void shouldReturnWhenCreateUserWithValidData() {
     CreateUserRequestDto requestDto = CreateUserRequestDto.builder()
-        .name("Cathy Stefania Guido Rojas")
-        .age(Byte.valueOf("28"))
+        .firstName("Cathy Stefania")
+        .lastName("Guido Rojas")
         .email("cguidor@mail.com")
         .username("cguidor")
-        .roleId(2)
         .build();
 
     when(userRepository.existsByUsername(any())).thenReturn(false);
@@ -144,8 +126,8 @@ class UserServiceTest {
     UserDto userDto = userService.create(requestDto);
 
     assertThat(userDto).isNotNull();
-    assertThat(userDto.getName()).isEqualTo("Cathy Stefania Guido Rojas");
-    assertThat(userDto.getAge()).isEqualTo(Byte.valueOf("28"));
+    assertThat(userDto.getFirstName()).isEqualTo("Cathy Stefania");
+    assertThat(userDto.getLastName()).isEqualTo("Guido Rojas");
     assertThat(userDto.getEmail()).isEqualTo("cguidor@mail.com");
     assertThat(userDto.getUsername()).isEqualTo("cguidor");
   }
@@ -180,8 +162,8 @@ class UserServiceTest {
   @DisplayName("Should update user with valid data")
   void shouldUpdateUserWithValidData() {
     UpdateUserRequestDto requestDto = UpdateUserRequestDto.builder()
-        .name("Carlos Alberto")
-        .age(Byte.valueOf("30"))
+        .firstName("Carlos")
+        .lastName("Arroyo")
         .build();
 
     when(userRepository.findById(any())).thenReturn(Optional.of(user));
@@ -191,12 +173,10 @@ class UserServiceTest {
 
     verify(userRepository).save(user);
     assertThat(user.getId()).isEqualTo(1L);
-    assertThat(user.getName()).isEqualTo("Carlos Alberto");
-    assertThat(user.getAge()).isEqualTo(Byte.valueOf("30"));
+    assertThat(user.getFirstName()).isEqualTo("Carlos");
+    assertThat(user.getLastName()).isEqualTo("Arroyo");
     assertThat(user.getEmail()).isEqualTo("carroyom@mail.com");
     assertThat(user.getUsername()).isEqualTo("carroyom");
-    assertThat(user.getRoleId()).isEqualTo(1);
-    assertThat(user.getIsActive()).isEqualTo(Boolean.TRUE);
     assertThat(user.getCreatedAt()).isNotNull();
     assertThat(user.getUpdatedAt()).isNotNull();
   }
@@ -223,7 +203,6 @@ class UserServiceTest {
     userService.deleteById(1L);
 
     verify(userRepository).save(user);
-    assertThat(user.getIsActive()).isFalse();
   }
 
   @Test

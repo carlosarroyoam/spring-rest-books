@@ -18,12 +18,10 @@ import org.mapstruct.factory.Mappers;
 @Builder
 public class UserDto {
   private Long id;
-  private String name;
-  private Byte age;
+  private String firstName;
+  private String lastName;
   private String email;
   private String username;
-  private Boolean isActive;
-  private RoleDto role;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
 

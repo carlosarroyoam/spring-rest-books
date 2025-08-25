@@ -60,17 +60,18 @@ paths:
             type: integer
             format: int32
             default: 25
-        - name: name
+        - name: firstName
           in: query
           required: false
           schema:
             type: string
             maxLength: 128
-        - name: age
+        - name: lastName
           in: query
           required: false
           schema:
-            format: byte
+            type: string
+            maxLength: 128
         - name: email
           in: query
           required: false
@@ -83,11 +84,6 @@ paths:
           schema:
             type: string
             maxLength: 128
-        - name: isActive
-          in: query
-          required: false
-          schema:
-            type: boolean
       responses:
         "200":
           description: OK
@@ -1044,20 +1040,20 @@ components:
   schemas:
     CreateUserRequestDto:
       required:
-        - age
-        - email
-        - name
-        - role_id
+        - first_name
+        - last_name
         - username
+        - email
       type: object
       properties:
-        name:
+        first_name:
           maxLength: 128
           minLength: 3
           type: string
-        age:
+        last_name:
+          maxLength: 128
+          minLength: 3
           type: string
-          format: byte
         email:
           maxLength: 128
           minLength: 3
@@ -1066,22 +1062,20 @@ components:
           maxLength: 128
           minLength: 3
           type: string
-        role_id:
-          type: integer
-          format: int32
     UpdateUserRequestDto:
       required:
-        - age
-        - name
+        - first_name
+        - last_name
       type: object
       properties:
-        name:
+        first_name:
           maxLength: 128
           minLength: 3
           type: string
-        age:
+        last_name:
+          maxLength: 128
+          minLength: 3
           type: string
-          format: byte
     CreateBookRequestDto:
       required:
         - cover_url
@@ -1268,20 +1262,14 @@ components:
         id:
           type: integer
           format: int64
-        name:
+        first_name:
           type: string
-        age:
+        last_name:
           type: string
-          format: byte
         email:
           type: string
         username:
           type: string
-        is_active:
-          type: boolean
-        role:
-          type: object
-          $ref: "#/components/schemas/RoleDto"
         created_at:
           type: string
           format: date-time

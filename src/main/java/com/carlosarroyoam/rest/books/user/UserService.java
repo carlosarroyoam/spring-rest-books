@@ -23,19 +23,19 @@ import org.springframework.web.server.ResponseStatusException;
 public class UserService {
   private static final Logger log = LoggerFactory.getLogger(UserService.class);
   private final UserRepository userRepository;
+  private final KeycloakService keycloakService;
 
-  public UserService(final UserRepository userRepository) {
+  public UserService(final UserRepository userRepository, final KeycloakService keycloakService) {
     this.userRepository = userRepository;
+    this.keycloakService = keycloakService;
   }
 
   public List<UserDto> findAll(Pageable pageable, UserFilterDto filters) {
     Specification<User> spec = Specification.unrestricted();
-    spec = spec.and(UserSpecification.nameContains(filters.getName()))
-        .and(UserSpecification.ageEquals(filters.getAge()))
+    spec = spec.and(UserSpecification.firstNameContains(filters.getFirstName()))
+        .and(UserSpecification.lastNameContains(filters.getLastName()))
         .and(UserSpecification.emailContains(filters.getEmail()))
-        .and(UserSpecification.usernameContains(filters.getUsername()))
-        .and(UserSpecification.isActive(filters.getIsActive()))
-        .and(UserSpecification.roleIdEquals(filters.getRoleId()));
+        .and(UserSpecification.usernameContains(filters.getUsername()));
 
     Page<User> users = userRepository.findAll(spec, pageable);
     return UserDtoMapper.INSTANCE.toDtos(users.getContent());
@@ -67,10 +67,13 @@ public class UserService {
 
     LocalDateTime now = LocalDateTime.now();
     User user = UserDtoMapper.INSTANCE.createRequestToEntity(requestDto);
-    user.setIsActive(Boolean.FALSE);
     user.setCreatedAt(now);
     user.setUpdatedAt(now);
-    return UserDtoMapper.INSTANCE.toDto(userRepository.save(user));
+    User createdUser = userRepository.save(user);
+
+    keycloakService.createUser(requestDto, createdUser.getId());
+
+    return UserDtoMapper.INSTANCE.toDto(createdUser);
   }
 
   @Transactional
@@ -81,8 +84,8 @@ public class UserService {
           AppMessages.USER_NOT_FOUND_EXCEPTION);
     });
 
-    userById.setName(requestDto.getName());
-    userById.setAge(requestDto.getAge());
+    userById.setFirstName(requestDto.getFirstName());
+    userById.setLastName(requestDto.getLastName());
     userById.setUpdatedAt(LocalDateTime.now());
     userRepository.save(userById);
   }
@@ -95,7 +98,6 @@ public class UserService {
           AppMessages.USER_NOT_FOUND_EXCEPTION);
     });
 
-    userById.setIsActive(Boolean.FALSE);
     userById.setUpdatedAt(LocalDateTime.now());
     userRepository.save(userById);
   }

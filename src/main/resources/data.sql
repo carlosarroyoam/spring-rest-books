@@ -9,12 +9,8 @@ INSERT INTO book_authors(book_id, author_id) VALUES (1, 1);
 INSERT INTO book_authors(book_id, author_id) VALUES (1, 2);
 INSERT INTO book_authors(book_id, author_id) VALUES (2, 1);
 
-INSERT INTO roles(description, title) VALUES ('Role for admins users', 'App//Admin');
-INSERT INTO roles(description, title) VALUES ('Role for customer users', 'App//Customer');
-
-INSERT INTO users(name, age, email, username, role_id, is_active, created_at, updated_at) VALUES ('Carlos Alberto Arroyo Martínez', 28, 'carroyom@mail.com', 'carroyom', 1, 1, '2025-01-01 00:00:00', '2025-01-01 00:00:00');
-
-INSERT INTO users(name, age, email, username, role_id, is_active, created_at, updated_at) VALUES ('Cathy Stefania Guido Rojas', 28, 'cguidor@mail.com', 'cguidor', 2, 1, '2025-01-01 00:00:00', '2025-01-01 00:00:00');
+INSERT INTO users(first_name, last_name, email, username, created_at, updated_at) VALUES ('Carlos Alberto', 'Arroyo Martínez', 'carroyom@mail.com', 'carroyom', '2025-01-01 00:00:00', '2025-01-01 00:00:00');
+INSERT INTO users(first_name, last_name, email, username, created_at, updated_at) VALUES ('Cathy Stefania', 'Guido Rojas', 'cguidor@mail.com', 'cguidor', '2025-01-01 00:00:00', '2025-01-01 00:00:00');
 
 INSERT INTO carts(user_id, created_at, updated_at) VALUES (1, '2025-01-01 00:00:00', '2025-01-01 00:00:00');
 INSERT INTO carts(user_id, created_at, updated_at) VALUES (2, '2025-01-01 00:00:00', '2025-01-01 00:00:00');

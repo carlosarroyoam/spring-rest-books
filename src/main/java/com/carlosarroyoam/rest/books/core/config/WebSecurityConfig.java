@@ -1,12 +1,12 @@
 package com.carlosarroyoam.rest.books.core.config;
 
 import com.carlosarroyoam.rest.books.core.config.security.AuthoritiesConverter;
+import com.carlosarroyoam.rest.books.core.property.CorsProps;
 import com.carlosarroyoam.rest.books.core.utils.StringUtils;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
@@ -27,14 +27,11 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 class WebSecurityConfig {
-  @Value("${app.cors.allowed-origins}")
-  private String allowedOrigins;
+  private final CorsProps corsProps;
 
-  @Value("${app.cors.allowed-methods}")
-  private String allowedMethods;
-
-  @Value("${app.cors.allowed-headers}")
-  private String allowedHeaders;
+  public WebSecurityConfig(CorsProps corsProps) {
+    this.corsProps = corsProps;
+  }
 
   @Bean
   SecurityFilterChain securityFilterChain(HttpSecurity http,
@@ -82,9 +79,12 @@ class WebSecurityConfig {
   @Bean
   CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
-    configuration.setAllowedOrigins(StringUtils.commaSeparatedToList(allowedOrigins));
-    configuration.setAllowedMethods(StringUtils.commaSeparatedToList(allowedMethods));
-    configuration.setAllowedHeaders(StringUtils.commaSeparatedToList(allowedHeaders));
+    configuration
+        .setAllowedOrigins(StringUtils.commaSeparatedToList(corsProps.getAllowedOrigins()));
+    configuration
+        .setAllowedMethods(StringUtils.commaSeparatedToList(corsProps.getAllowedMethods()));
+    configuration
+        .setAllowedHeaders(StringUtils.commaSeparatedToList(corsProps.getAllowedHeaders()));
 
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     source.registerCorsConfiguration("/**", configuration);

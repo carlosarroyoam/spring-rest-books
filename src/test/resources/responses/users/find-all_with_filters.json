@@ -1,16 +1,10 @@
 [
   {
     "id": 1,
-    "name": "Carlos Alberto Arroyo Martínez",
-    "age": 28,
+    "first_name": "Carlos Alberto",
+    "last_name": "Arroyo Martínez",
     "email": "carroyom@mail.com",
     "username": "carroyom",
-    "is_active": true,
-    "role": {
-      "id": 1,
-      "title": "App//Admin",
-      "description": "Role for admins users"
-    },
     "created_at": "2025-01-01T00:00:00",
     "updated_at": "2025-01-01T00:00:00"
   }

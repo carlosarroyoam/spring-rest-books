@@ -76,12 +76,10 @@ class UserControllerIT {
     String responseJson = mockMvc
         .perform(get("/users").param("page", "0")
             .param("size", "25")
-            .param("name", "Carlos Alberto Arroyo Martínez")
-            .param("age", "28")
+            .param("firstName", "Carlos Alberto")
+            .param("lastName", "Arroyo Martínez")
             .param("email", "carroyom@mail.com")
-            .param("username", "carroyom")
-            .param("roleId", "1")
-            .param("isActive", "true"))
+            .param("username", "carroyom"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andReturn()
@@ -126,11 +124,11 @@ class UserControllerIT {
   @DisplayName("Should return created when create a user with valid data")
   void shouldReturnCreatedWhenCreateUserWithValidData() throws Exception {
     CreateUserRequestDto requestDto = CreateUserRequestDto.builder()
-        .name("Carlos Alberto Arroyo Martínez")
-        .age((byte) 28)
+        .firstName("Carlos Alberto")
+        .lastName("Arroyo Martínez")
+        .password("secret123#")
         .email("carroyom2@mail.com")
         .username("carroyom2")
-        .roleId(1)
         .build();
 
     mockMvc
@@ -146,11 +144,11 @@ class UserControllerIT {
     String expectedJson = JsonUtils.readJson("/users/create_with_existing_username.json");
 
     CreateUserRequestDto requestDto = CreateUserRequestDto.builder()
-        .name("Carlos Alberto Arroyo Martínez")
-        .age((byte) 28)
+        .firstName("Carlos Alberto")
+        .lastName("Arroyo Martínez")
+        .password("secret123#")
         .email("carroyom2@mail.com")
         .username("carroyom")
-        .roleId(1)
         .build();
 
     String responseJson = mockMvc
@@ -172,11 +170,11 @@ class UserControllerIT {
     String expectedJson = JsonUtils.readJson("/users/create_with_existing_email.json");
 
     CreateUserRequestDto requestDto = CreateUserRequestDto.builder()
-        .name("Carlos Alberto Arroyo Martínez")
-        .age((byte) 28)
+        .firstName("Carlos Alberto")
+        .lastName("Arroyo Martínez")
+        .password("secret123#")
         .email("carroyom@mail.com")
         .username("carroyom2")
-        .roleId(1)
         .build();
 
     String responseJson = mockMvc
@@ -196,8 +194,8 @@ class UserControllerIT {
   @DisplayName("Should return no content update user with valid data")
   void shouldReturnNoContentWhenUpdateUserWithValidData() throws Exception {
     UpdateUserRequestDto requestDto = UpdateUserRequestDto.builder()
-        .name("Carlos Alberto Arroyo Martínez")
-        .age((byte) 30)
+        .firstName("Carlos Alberto")
+        .lastName("Arroyo Martínez")
         .build();
 
     mockMvc.perform(put("/users/{userId}", 1L).contentType(MediaType.APPLICATION_JSON)
@@ -210,8 +208,8 @@ class UserControllerIT {
     String expectedJson = JsonUtils.readJson("/users/update_with_non_existing_id.json");
 
     UpdateUserRequestDto requestDto = UpdateUserRequestDto.builder()
-        .name("Carlos Alberto Arroyo Martínez")
-        .age((byte) 28)
+        .firstName("Carlos Alberto")
+        .lastName("Arroyo Martínez")
         .build();
 
     String responseJson = mockMvc

@@ -9,23 +9,23 @@ public class UserSpecification {
     throw new IllegalAccessError(AppMessages.ILLEGAL_ACCESS_EXCEPTION);
   }
 
-  static Specification<User> nameContains(String name) {
+  static Specification<User> firstNameContains(String firstName) {
     return (user, cq, cb) -> {
-      if (name == null || name.isBlank()) {
+      if (firstName == null || firstName.isBlank()) {
         return cb.conjunction();
       }
 
-      return cb.like(cb.lower(user.get("name")), "%" + name.toLowerCase() + "%");
+      return cb.like(cb.lower(user.get("firstName")), "%" + firstName.toLowerCase() + "%");
     };
   }
 
-  static Specification<User> ageEquals(Byte age) {
+  static Specification<User> lastNameContains(String lastName) {
     return (user, cq, cb) -> {
-      if (age == null) {
+      if (lastName == null || lastName.isBlank()) {
         return cb.conjunction();
       }
 
-      return cb.equal(user.get("age"), age);
+      return cb.like(cb.lower(user.get("lastName")), "%" + lastName.toLowerCase() + "%");
     };
   }
 
@@ -46,26 +46,6 @@ public class UserSpecification {
       }
 
       return cb.like(cb.lower(user.get("username")), "%" + username.toLowerCase() + "%");
-    };
-  }
-
-  static Specification<User> isActive(Boolean isActive) {
-    return (user, cq, cb) -> {
-      if (isActive == null) {
-        return cb.conjunction();
-      }
-
-      return cb.equal(user.get("isActive"), isActive);
-    };
-  }
-
-  static Specification<User> roleIdEquals(Integer roleId) {
-    return (user, cq, cb) -> {
-      if (roleId == null) {
-        return cb.conjunction();
-      }
-
-      return cb.equal(user.get("role").get("id"), roleId);
     };
   }
 }

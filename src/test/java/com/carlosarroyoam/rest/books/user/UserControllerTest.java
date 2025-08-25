@@ -100,11 +100,11 @@ class UserControllerTest {
   @DisplayName("Should return created when create a user")
   void shouldReturnCreatedWhenCreateUser() throws Exception {
     CreateUserRequestDto requestDto = CreateUserRequestDto.builder()
-        .name("Carlos Alberto Arroyo Martínez")
-        .age(Byte.valueOf("28"))
+        .firstName("Carlos Alberto")
+        .lastName("Arroyo Martínez")
+        .password("secret123#")
         .email("carroyom@mail.com")
         .username("carroyom")
-        .roleId(1)
         .build();
 
     UserDto user = UserDto.builder().id(1L).build();
@@ -124,8 +124,8 @@ class UserControllerTest {
   @DisplayName("Should return no content when update user")
   void shouldReturnNoContentUpdateUser() throws Exception {
     UpdateUserRequestDto requestDto = UpdateUserRequestDto.builder()
-        .name("Carlos Alberto Arroyo Martínez")
-        .age(Byte.valueOf("28"))
+        .firstName("Carlos Alberto")
+        .lastName("Arroyo Martínez")
         .build();
 
     MvcResult mvcResult = mockMvc
