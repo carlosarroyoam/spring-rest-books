@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -44,7 +45,13 @@ class WebSecurityConfig {
         .oauth2ResourceServer(
             oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(authenticationConverter)));
 
-    http.authorizeHttpRequests(requests -> requests.requestMatchers("/h2-console/**")
+    http.authorizeHttpRequests(requests -> requests.requestMatchers(HttpMethod.GET, "/books/**")
+        .permitAll()
+        .requestMatchers(HttpMethod.GET, "/authors/**")
+        .permitAll()
+        .requestMatchers(HttpMethod.POST, "/users")
+        .permitAll()
+        .requestMatchers("/h2-console/**")
         .permitAll()
         .requestMatchers("/actuator/**")
         .permitAll()
