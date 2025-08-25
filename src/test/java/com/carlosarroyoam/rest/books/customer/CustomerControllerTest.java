@@ -1,4 +1,4 @@
-package com.carlosarroyoam.rest.books.user;
+package com.carlosarroyoam.rest.books.customer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -10,10 +10,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 import com.carlosarroyoam.rest.books.core.exception.ControllerAdvisor;
-import com.carlosarroyoam.rest.books.user.dto.CreateUserRequestDto;
-import com.carlosarroyoam.rest.books.user.dto.UpdateUserRequestDto;
-import com.carlosarroyoam.rest.books.user.dto.UserDto;
-import com.carlosarroyoam.rest.books.user.dto.UserFilterDto;
+import com.carlosarroyoam.rest.books.customer.dto.CreateCustomerRequestDto;
+import com.carlosarroyoam.rest.books.customer.dto.CustomerDto;
+import com.carlosarroyoam.rest.books.customer.dto.CustomerFilterDto;
+import com.carlosarroyoam.rest.books.customer.dto.UpdateCustomerRequestDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import java.util.List;
@@ -33,41 +33,42 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 @ExtendWith(MockitoExtension.class)
-class UserControllerTest {
+class CustomerControllerTest {
   private ObjectMapper mapper;
   private MockMvc mockMvc;
 
   @Mock
-  private UserService userService;
+  private CustomerService customerService;
 
   @InjectMocks
-  private UserController userController;
+  private CustomerController customerController;
 
   @BeforeEach
   void setup() {
     mapper = new ObjectMapper();
     mapper.findAndRegisterModules();
-    mockMvc = MockMvcBuilders.standaloneSetup(userController)
+    mockMvc = MockMvcBuilders.standaloneSetup(customerController)
         .setControllerAdvice(ControllerAdvisor.class)
         .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
         .build();
   }
 
   @Test
-  @DisplayName("Should return List<UserDto> when find all users")
-  void shouldReturnListOfUsersWhenFindAllUsers() throws Exception {
-    List<UserDto> users = List.of(UserDto.builder().build());
+  @DisplayName("Should return List<CustomerDto> when find all customers")
+  void shouldReturnListOfCustomersWhenFindAllCustomers() throws Exception {
+    List<CustomerDto> customers = List.of(CustomerDto.builder().build());
 
-    when(userService.findAll(any(Pageable.class), any(UserFilterDto.class))).thenReturn(users);
+    when(customerService.findAll(any(Pageable.class), any(CustomerFilterDto.class)))
+        .thenReturn(customers);
 
-    MvcResult mvcResult = mockMvc.perform(get("/users").queryParam("page", "0")
+    MvcResult mvcResult = mockMvc.perform(get("/customers").queryParam("page", "0")
         .queryParam("size", "25")
         .accept(MediaType.APPLICATION_JSON)).andReturn();
 
     String responseJson = mvcResult.getResponse().getContentAsString();
     CollectionType collectionType = mapper.getTypeFactory()
-        .constructCollectionType(List.class, UserDto.class);
-    List<UserDto> responseDto = mapper.readValue(responseJson, collectionType);
+        .constructCollectionType(List.class, CustomerDto.class);
+    List<CustomerDto> responseDto = mapper.readValue(responseJson, collectionType);
 
     assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
     assertThat(mvcResult.getResponse().getContentType())
@@ -76,18 +77,18 @@ class UserControllerTest {
   }
 
   @Test
-  @DisplayName("Should return UserDto when find user by id")
-  void shouldReturnUserDtoWhenFindUserById() throws Exception {
-    UserDto user = UserDto.builder().id(1L).build();
+  @DisplayName("Should return CustomerDto when find customer by id")
+  void shouldReturnCustomerDtoWhenFindCustomerById() throws Exception {
+    CustomerDto customer = CustomerDto.builder().id(1L).build();
 
-    when(userService.findById(anyLong())).thenReturn(user);
+    when(customerService.findById(anyLong())).thenReturn(customer);
 
     MvcResult mvcResult = mockMvc
-        .perform(get("/users/{userId}", 1L).accept(MediaType.APPLICATION_JSON))
+        .perform(get("/customers/{customerId}", 1L).accept(MediaType.APPLICATION_JSON))
         .andReturn();
 
     String responseJson = mvcResult.getResponse().getContentAsString();
-    UserDto responseDto = mapper.readValue(responseJson, UserDto.class);
+    CustomerDto responseDto = mapper.readValue(responseJson, CustomerDto.class);
 
     assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
     assertThat(mvcResult.getResponse().getContentType())
@@ -97,9 +98,9 @@ class UserControllerTest {
   }
 
   @Test
-  @DisplayName("Should return created when create a user")
-  void shouldReturnCreatedWhenCreateUser() throws Exception {
-    CreateUserRequestDto requestDto = CreateUserRequestDto.builder()
+  @DisplayName("Should return created when create a customer")
+  void shouldReturnCreatedWhenCreateCustomer() throws Exception {
+    CreateCustomerRequestDto requestDto = CreateCustomerRequestDto.builder()
         .firstName("Carlos Alberto")
         .lastName("Arroyo Martínez")
         .password("secret123#")
@@ -107,29 +108,30 @@ class UserControllerTest {
         .username("carroyom")
         .build();
 
-    UserDto user = UserDto.builder().id(1L).build();
+    CustomerDto customer = CustomerDto.builder().id(1L).build();
 
-    when(userService.create(any(CreateUserRequestDto.class))).thenReturn(user);
+    when(customerService.create(any(CreateCustomerRequestDto.class))).thenReturn(customer);
 
     MvcResult mvcResult = mockMvc
-        .perform(post("/users").content(mapper.writeValueAsString(requestDto))
+        .perform(post("/customers").content(mapper.writeValueAsString(requestDto))
             .contentType(MediaType.APPLICATION_JSON))
         .andReturn();
 
     assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.CREATED.value());
-    assertThat(mvcResult.getResponse().getHeader("location")).isEqualTo("http://localhost/users/1");
+    assertThat(mvcResult.getResponse().getHeader("location"))
+        .isEqualTo("http://localhost/customers/1");
   }
 
   @Test
-  @DisplayName("Should return no content when update user")
-  void shouldReturnNoContentUpdateUser() throws Exception {
-    UpdateUserRequestDto requestDto = UpdateUserRequestDto.builder()
+  @DisplayName("Should return no content when update customer")
+  void shouldReturnNoContentUpdateCustomer() throws Exception {
+    UpdateCustomerRequestDto requestDto = UpdateCustomerRequestDto.builder()
         .firstName("Carlos Alberto")
         .lastName("Arroyo Martínez")
         .build();
 
     MvcResult mvcResult = mockMvc
-        .perform(put("/users/{userId}", 1L).content(mapper.writeValueAsString(requestDto))
+        .perform(put("/customers/{customerId}", 1L).content(mapper.writeValueAsString(requestDto))
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
         .andReturn();
@@ -138,10 +140,10 @@ class UserControllerTest {
   }
 
   @Test
-  @DisplayName("Should return no content when delete user")
-  void shouldReturnNoContentWhenDeleteUser() throws Exception {
+  @DisplayName("Should return no content when delete customer")
+  void shouldReturnNoContentWhenDeleteCustomer() throws Exception {
     MvcResult mvcResult = mockMvc
-        .perform(delete("/users/{userId}", 1L).accept(MediaType.APPLICATION_JSON))
+        .perform(delete("/customers/{customerId}", 1L).accept(MediaType.APPLICATION_JSON))
         .andReturn();
 
     assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());

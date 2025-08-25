@@ -1,4 +1,4 @@
-package com.carlosarroyoam.rest.books.user.dto;
+package com.carlosarroyoam.rest.books.customer.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class UserFilterDto {
+public class CustomerFilterDto {
   @Size(min = 3, max = 128, message = "First name should be between 3 and 128")
   private String firstName;
 

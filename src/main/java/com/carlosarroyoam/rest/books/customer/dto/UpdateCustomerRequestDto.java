@@ -1,4 +1,4 @@
-package com.carlosarroyoam.rest.books.user.dto;
+package com.carlosarroyoam.rest.books.customer.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UpdateUserRequestDto {
+public class UpdateCustomerRequestDto {
   @NotBlank(message = "First name should not be blank")
   @Size(min = 3, max = 128, message = "First name should be between 3 and 128")
   private String firstName;

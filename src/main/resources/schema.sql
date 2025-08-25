@@ -25,13 +25,7 @@ CREATE TABLE book_authors (
     FOREIGN KEY (author_id) REFERENCES authors(id)
 );
 
-CREATE TABLE roles (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    title VARCHAR(32) NOT NULL,
-    description VARCHAR(128) NOT NULL
-);
-
-CREATE TABLE users (
+CREATE TABLE customers (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     first_name VARCHAR(128) NOT NULL,
     last_name VARCHAR(128) NOT NULL,
@@ -43,10 +37,10 @@ CREATE TABLE users (
 
 CREATE TABLE carts (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    user_id BIGINT NOT NULL,
+    customer_id BIGINT NOT NULL,
     created_at TIMESTAMP NOT NULL,
     updated_at TIMESTAMP NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id)
+    FOREIGN KEY (customer_id) REFERENCES customers(id)
 );
 
 CREATE TABLE cart_items (

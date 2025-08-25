@@ -49,7 +49,7 @@ class WebSecurityConfig {
         .permitAll()
         .requestMatchers(HttpMethod.GET, "/authors/**")
         .permitAll()
-        .requestMatchers(HttpMethod.POST, "/users")
+        .requestMatchers(HttpMethod.POST, "/customers")
         .permitAll()
         .requestMatchers("/h2-console/**")
         .permitAll()

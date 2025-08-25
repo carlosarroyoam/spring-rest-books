@@ -1,4 +1,4 @@
-package com.carlosarroyoam.rest.books.user;
+package com.carlosarroyoam.rest.books.customer;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -10,8 +10,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.carlosarroyoam.rest.books.common.JsonUtils;
-import com.carlosarroyoam.rest.books.user.dto.CreateUserRequestDto;
-import com.carlosarroyoam.rest.books.user.dto.UpdateUserRequestDto;
+import com.carlosarroyoam.rest.books.customer.dto.CreateCustomerRequestDto;
+import com.carlosarroyoam.rest.books.customer.dto.UpdateCustomerRequestDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,7 +39,7 @@ import org.wiremock.spring.EnableWireMock;
 @AutoConfigureMockMvc
 @EnableWireMock({ @ConfigureWireMock(port = 8089) })
 @Transactional
-class UserControllerIT {
+class CustomerControllerIT {
   @Autowired
   private WebApplicationContext webApplicationContext;
 
@@ -59,11 +59,11 @@ class UserControllerIT {
   }
 
   @Test
-  @DisplayName("Should return List<UserDto> when find all users")
-  void shouldReturnListOfUsersWhenFindAllUsers() throws Exception {
-    String expectedJson = JsonUtils.readJson("/users/find-all.json");
+  @DisplayName("Should return List<CustomerDto> when find all customers")
+  void shouldReturnListOfCustomersWhenFindAllCustomers() throws Exception {
+    String expectedJson = JsonUtils.readJson("/customers/find-all.json");
 
-    String responseJson = mockMvc.perform(get("/users").param("page", "0").param("size", "25"))
+    String responseJson = mockMvc.perform(get("/customers").param("page", "0").param("size", "25"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andReturn()
@@ -74,12 +74,12 @@ class UserControllerIT {
   }
 
   @Test
-  @DisplayName("Should return List<UserDto> when find all users with filters")
-  void shouldReturnListOfUsersWhenFindAllUsersWithFilters() throws Exception {
-    String expectedJson = JsonUtils.readJson("/users/find-all_with_filters.json");
+  @DisplayName("Should return List<CustomerDto> when find all customers with filters")
+  void shouldReturnListOfCustomersWhenFindAllCustomersWithFilters() throws Exception {
+    String expectedJson = JsonUtils.readJson("/customers/find-all_with_filters.json");
 
     String responseJson = mockMvc
-        .perform(get("/users").param("page", "0")
+        .perform(get("/customers").param("page", "0")
             .param("size", "25")
             .param("firstName", "Carlos Alberto")
             .param("lastName", "Arroyo Martínez")
@@ -95,11 +95,11 @@ class UserControllerIT {
   }
 
   @Test
-  @DisplayName("Should return UserDto when find user by id with existing id")
-  void shouldReturnUserDtoWhenFindUserByIdWithExistingId() throws Exception {
-    String expectedJson = JsonUtils.readJson("/users/find-by-id.json");
+  @DisplayName("Should return CustomerDto when find customer by id with existing id")
+  void shouldReturnCustomerDtoWhenFindCustomerByIdWithExistingId() throws Exception {
+    String expectedJson = JsonUtils.readJson("/customers/find-by-id.json");
 
-    String responseJson = mockMvc.perform(get("/users/{userId}", 1L))
+    String responseJson = mockMvc.perform(get("/customers/{customerId}", 1L))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andReturn()
@@ -110,11 +110,11 @@ class UserControllerIT {
   }
 
   @Test
-  @DisplayName("Should throw AppExceptionDto when find user by id with non existing id")
-  void shouldThrowWhenFindUserByIdWithNonExistingId() throws Exception {
-    String expectedJson = JsonUtils.readJson("/users/find-by-id_with_non_existing_id.json");
+  @DisplayName("Should throw AppExceptionDto when find customer by id with non existing id")
+  void shouldThrowWhenFindCustomerByIdWithNonExistingId() throws Exception {
+    String expectedJson = JsonUtils.readJson("/customers/find-by-id_with_non_existing_id.json");
 
-    String responseJson = mockMvc.perform(get("/users/{userId}", 1000L))
+    String responseJson = mockMvc.perform(get("/customers/{customerId}", 1000L))
         .andExpect(status().isNotFound())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andReturn()
@@ -126,9 +126,9 @@ class UserControllerIT {
   }
 
   @Test
-  @DisplayName("Should return created when create a user with valid data")
-  void shouldReturnCreatedWhenCreateUserWithValidData() throws Exception {
-    CreateUserRequestDto requestDto = CreateUserRequestDto.builder()
+  @DisplayName("Should return created when create a customer with valid data")
+  void shouldReturnCreatedWhenCreateCustomerWithValidData() throws Exception {
+    CreateCustomerRequestDto requestDto = CreateCustomerRequestDto.builder()
         .firstName("Carlos Alberto")
         .lastName("Arroyo Martínez")
         .password("secret123#")
@@ -137,18 +137,18 @@ class UserControllerIT {
         .build();
 
     mockMvc
-        .perform(post("/users").contentType(MediaType.APPLICATION_JSON)
+        .perform(post("/customers").contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(requestDto)))
         .andExpect(status().isCreated())
-        .andExpect(header().string("Location", "http://localhost/users/3"));
+        .andExpect(header().string("Location", "http://localhost/customers/3"));
   }
 
   @Test
-  @DisplayName("Should throw AppExceptionDto when create a user with existing username")
-  void shouldThrowWhenCreateUserWithExistingUsername() throws Exception {
-    String expectedJson = JsonUtils.readJson("/users/create_with_existing_username.json");
+  @DisplayName("Should throw AppExceptionDto when create a customer with existing username")
+  void shouldThrowWhenCreateCustomerWithExistingUsername() throws Exception {
+    String expectedJson = JsonUtils.readJson("/customers/create_with_existing_username.json");
 
-    CreateUserRequestDto requestDto = CreateUserRequestDto.builder()
+    CreateCustomerRequestDto requestDto = CreateCustomerRequestDto.builder()
         .firstName("Carlos Alberto")
         .lastName("Arroyo Martínez")
         .password("secret123#")
@@ -157,7 +157,7 @@ class UserControllerIT {
         .build();
 
     String responseJson = mockMvc
-        .perform(post("/users").contentType(MediaType.APPLICATION_JSON)
+        .perform(post("/customers").contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(requestDto)))
         .andExpect(status().isBadRequest())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -170,11 +170,11 @@ class UserControllerIT {
   }
 
   @Test
-  @DisplayName("Should throw AppExceptionDto when create a user with existing email")
-  void shouldThrowWhenCreateUserWithExistingEmail() throws Exception {
-    String expectedJson = JsonUtils.readJson("/users/create_with_existing_email.json");
+  @DisplayName("Should throw AppExceptionDto when create a customer with existing email")
+  void shouldThrowWhenCreateCustomerWithExistingEmail() throws Exception {
+    String expectedJson = JsonUtils.readJson("/customers/create_with_existing_email.json");
 
-    CreateUserRequestDto requestDto = CreateUserRequestDto.builder()
+    CreateCustomerRequestDto requestDto = CreateCustomerRequestDto.builder()
         .firstName("Carlos Alberto")
         .lastName("Arroyo Martínez")
         .password("secret123#")
@@ -183,7 +183,7 @@ class UserControllerIT {
         .build();
 
     String responseJson = mockMvc
-        .perform(post("/users").contentType(MediaType.APPLICATION_JSON)
+        .perform(post("/customers").contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(requestDto)))
         .andExpect(status().isBadRequest())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -196,29 +196,29 @@ class UserControllerIT {
   }
 
   @Test
-  @DisplayName("Should return no content update user with valid data")
-  void shouldReturnNoContentWhenUpdateUserWithValidData() throws Exception {
-    UpdateUserRequestDto requestDto = UpdateUserRequestDto.builder()
+  @DisplayName("Should return no content update customer with valid data")
+  void shouldReturnNoContentWhenUpdateCustomerWithValidData() throws Exception {
+    UpdateCustomerRequestDto requestDto = UpdateCustomerRequestDto.builder()
         .firstName("Carlos Alberto")
         .lastName("Arroyo Martínez")
         .build();
 
-    mockMvc.perform(put("/users/{userId}", 1L).contentType(MediaType.APPLICATION_JSON)
+    mockMvc.perform(put("/customers/{customerId}", 1L).contentType(MediaType.APPLICATION_JSON)
         .content(mapper.writeValueAsString(requestDto))).andExpect(status().isNoContent());
   }
 
   @Test
-  @DisplayName("Should throw AppExceptionDto when update user with non existing id")
-  void shouldThrowWhenUpdateUserWithNonExistingId() throws Exception {
-    String expectedJson = JsonUtils.readJson("/users/update_with_non_existing_id.json");
+  @DisplayName("Should throw AppExceptionDto when update customer with non existing id")
+  void shouldThrowWhenUpdateCustomerWithNonExistingId() throws Exception {
+    String expectedJson = JsonUtils.readJson("/customers/update_with_non_existing_id.json");
 
-    UpdateUserRequestDto requestDto = UpdateUserRequestDto.builder()
+    UpdateCustomerRequestDto requestDto = UpdateCustomerRequestDto.builder()
         .firstName("Carlos Alberto")
         .lastName("Arroyo Martínez")
         .build();
 
     String responseJson = mockMvc
-        .perform(put("/users/{userId}", 1000L).contentType(MediaType.APPLICATION_JSON)
+        .perform(put("/customers/{customerId}", 1000L).contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(requestDto)))
         .andExpect(status().isNotFound())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -231,17 +231,17 @@ class UserControllerIT {
   }
 
   @Test
-  @DisplayName("Should return no content when delete user with existing id")
-  void shouldReturnNoContentWhenDeleteUserWithExistingId() throws Exception {
-    mockMvc.perform(delete("/users/{userId}", 1L)).andExpect(status().isNoContent());
+  @DisplayName("Should return no content when delete customer with existing id")
+  void shouldReturnNoContentWhenDeleteCustomerWithExistingId() throws Exception {
+    mockMvc.perform(delete("/customers/{customerId}", 1L)).andExpect(status().isNoContent());
   }
 
   @Test
-  @DisplayName("Should throw AppExceptionDto when delete user with non existing id")
-  void shouldThrowWhenDeleteUserWithNonExistingId() throws Exception {
-    String expectedJson = JsonUtils.readJson("/users/delete_with_non_existing_id.json");
+  @DisplayName("Should throw AppExceptionDto when delete customer with non existing id")
+  void shouldThrowWhenDeleteCustomerWithNonExistingId() throws Exception {
+    String expectedJson = JsonUtils.readJson("/customers/delete_with_non_existing_id.json");
 
-    String responseJson = mockMvc.perform(delete("/users/{userId}", 1000L))
+    String responseJson = mockMvc.perform(delete("/customers/{customerId}", 1000L))
         .andExpect(status().isNotFound())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andReturn()

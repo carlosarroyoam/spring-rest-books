@@ -20,15 +20,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class CartController {
   private final CartService cartService;
 
-  public CartController(final CartService shoppingCartService) {
-    this.cartService = shoppingCartService;
+  public CartController(final CartService cartService) {
+    this.cartService = cartService;
   }
 
   @GetMapping(produces = "application/json")
   public ResponseEntity<CartDto> findByUsername(@AuthenticationPrincipal Jwt jwt) {
     String username = jwt.getClaim(StandardClaimNames.PREFERRED_USERNAME);
-    CartDto shoppingCartByUserId = cartService.findByUsername(username);
-    return ResponseEntity.ok(shoppingCartByUserId);
+    CartDto cartByUsername = cartService.findByUsername(username);
+    return ResponseEntity.ok(cartByUsername);
   }
 
   @PutMapping(value = "/items", consumes = "application/json")

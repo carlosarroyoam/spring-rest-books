@@ -2,11 +2,11 @@ openapi: 3.0.1
 info:
   title: Spring REST Books API
   description: |
-    A comprehensive REST API for managing a bookstore system including users,
+    A comprehensive REST API for managing a bookstore system including customers,
     books, authors, carts, orders, payments and shipments.
 
     ## Features
-    - Users.
+    - Customers.
     - Books.
     - Authors.
     - Carts.
@@ -23,8 +23,8 @@ servers:
   - url: http://localhost:8081
     description: Localhost server url
 tags:
-  - name: Users
-    description: Operations about users
+  - name: Customers
+    description: Operations about customers
   - name: Books
     description: Operations about books
   - name: Authors
@@ -39,12 +39,12 @@ tags:
     description: Operations about shipments
 
 paths:
-  /users:
+  /customers:
     get:
       tags:
-        - Users
-      summary: Gets the list of users
-      operationId: findAllUsers
+        - Customers
+      summary: Gets the list of customers
+      operationId: findAllCustomers
       parameters:
         - name: page
           in: query
@@ -92,7 +92,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/UserDto"
+                  $ref: "#/components/schemas/CustomerDto"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -105,14 +105,14 @@ paths:
         - bearerAuth: []
     post:
       tags:
-        - Users
-      summary: Creates a new user
-      operationId: createUser
+        - Customers
+      summary: Creates a new customer
+      operationId: createCustomer
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CreateUserRequestDto"
+              $ref: "#/components/schemas/CreateCustomerRequestDto"
         required: true
       responses:
         "201":
@@ -127,14 +127,14 @@ paths:
           $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
-  /users/{userId}:
+  /customers/{customerId}:
     get:
       tags:
-        - Users
-      summary: Gets a user by its id
-      operationId: findUserById
+        - Customers
+      summary: Gets a customer by its id
+      operationId: findCustomerById
       parameters:
-        - name: userId
+        - name: customerId
           in: path
           required: true
           schema:
@@ -146,7 +146,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UserDto"
+                $ref: "#/components/schemas/CustomerDto"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -161,11 +161,11 @@ paths:
         - bearerAuth: []
     put:
       tags:
-        - Users
-      summary: Updates a user by its id
-      operationId: updateUser
+        - Customers
+      summary: Updates a customer by its id
+      operationId: updateCustomer
       parameters:
-        - name: userId
+        - name: customerId
           in: path
           required: true
           schema:
@@ -175,7 +175,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UpdateUserRequestDto"
+              $ref: "#/components/schemas/UpdateCustomerRequestDto"
         required: true
       responses:
         "204":
@@ -194,11 +194,11 @@ paths:
         - bearerAuth: []
     delete:
       tags:
-        - Users
-      summary: Deletes a user by its id
-      operationId: deleteUser
+        - Customers
+      summary: Deletes a customer by its id
+      operationId: deleteCustomer
       parameters:
-        - name: userId
+        - name: customerId
           in: path
           required: true
           schema:
@@ -633,7 +633,7 @@ paths:
     get:
       tags:
         - Carts
-      summary: Gets the user cart
+      summary: Gets the customer cart
       operationId: findCart
       responses:
         "200":
@@ -641,7 +641,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ShoppingCartDto"
+                $ref: "#/components/schemas/CartDto"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -1038,7 +1038,7 @@ paths:
 
 components:
   schemas:
-    CreateUserRequestDto:
+    CreateCustomerRequestDto:
       required:
         - first_name
         - last_name
@@ -1062,7 +1062,7 @@ components:
           maxLength: 128
           minLength: 3
           type: string
-    UpdateUserRequestDto:
+    UpdateCustomerRequestDto:
       required:
         - first_name
         - last_name
@@ -1184,13 +1184,13 @@ components:
           minimum: 1
     CreateOrderRequestDto:
       required:
-        - user_id
+        - customer_id
         - shipping_address
         - billing_address
         - items
       type: object
       properties:
-        user_id:
+        customer_id:
           type: integer
           format: int64
         shipping_address:
@@ -1256,7 +1256,7 @@ components:
             - PAYPAL
             - BANK_TRANSFER
             - CASH_ON_DELIVERY
-    UserDto:
+    CustomerDto:
       type: object
       properties:
         id:
@@ -1359,9 +1359,9 @@ components:
           type: number
         total:
           type: number
-        user:
+        customer:
           type: object
-          $ref: "#/components/schemas/UserDto"
+          $ref: "#/components/schemas/CustomerDto"
         payment:
           type: object
           $ref: "#/components/schemas/PaymentDto"
@@ -1395,7 +1395,7 @@ components:
         updated_at:
           type: string
           format: date-time
-    ShoppingCartDto:
+    CartDto:
       type: object
       properties:
         id:
@@ -1405,7 +1405,7 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/CartItemDto"
-        user_id:
+        customer_id:
           type: number
           format: int64
         created_at:

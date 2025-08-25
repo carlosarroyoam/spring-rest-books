@@ -1,6 +1,6 @@
-package com.carlosarroyoam.rest.books.user.dto;
+package com.carlosarroyoam.rest.books.customer.dto;
 
-import com.carlosarroyoam.rest.books.user.entity.User;
+import com.carlosarroyoam.rest.books.customer.entity.Customer;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -16,7 +16,7 @@ import org.mapstruct.factory.Mappers;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserDto {
+public class CustomerDto {
   private Long id;
   private String firstName;
   private String lastName;
@@ -26,13 +26,13 @@ public class UserDto {
   private LocalDateTime updatedAt;
 
   @Mapper(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, unmappedTargetPolicy = ReportingPolicy.IGNORE)
-  public interface UserDtoMapper {
-    UserDtoMapper INSTANCE = Mappers.getMapper(UserDtoMapper.class);
+  public interface CustomerDtoMapper {
+    CustomerDtoMapper INSTANCE = Mappers.getMapper(CustomerDtoMapper.class);
 
-    UserDto toDto(User entity);
+    CustomerDto toDto(Customer entity);
 
-    List<UserDto> toDtos(List<User> entities);
+    List<CustomerDto> toDtos(List<Customer> entities);
 
-    User createRequestToEntity(CreateUserRequestDto requestDto);
+    Customer createRequestToEntity(CreateCustomerRequestDto requestDto);
   }
 }

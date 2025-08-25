@@ -1,7 +1,7 @@
 package com.carlosarroyoam.rest.books.cart.dto;
 
 import com.carlosarroyoam.rest.books.cart.entity.Cart;
-import com.carlosarroyoam.rest.books.user.dto.UserDto;
+import com.carlosarroyoam.rest.books.customer.dto.CustomerDto;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -20,13 +20,13 @@ import org.mapstruct.factory.Mappers;
 public class CartDto {
   private Long id;
   private List<CartItemDto> items;
-  private UserDto user;
+  private CustomerDto customer;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
 
   @Mapper(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, unmappedTargetPolicy = ReportingPolicy.IGNORE)
-  public interface ShoppingCartDtoMapper {
-    ShoppingCartDtoMapper INSTANCE = Mappers.getMapper(ShoppingCartDtoMapper.class);
+  public interface CartDtoMapper {
+    CartDtoMapper INSTANCE = Mappers.getMapper(CartDtoMapper.class);
 
     CartDto toDto(Cart entity);
   }

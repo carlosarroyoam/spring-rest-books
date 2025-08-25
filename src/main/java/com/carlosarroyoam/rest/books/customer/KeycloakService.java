@@ -1,8 +1,8 @@
-package com.carlosarroyoam.rest.books.user;
+package com.carlosarroyoam.rest.books.customer;
 
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
 import com.carlosarroyoam.rest.books.core.property.KeycloakAdminProps;
-import com.carlosarroyoam.rest.books.user.dto.CreateUserRequestDto;
+import com.carlosarroyoam.rest.books.customer.dto.CreateCustomerRequestDto;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 import java.util.Collections;
@@ -28,7 +28,7 @@ public class KeycloakService {
     this.keycloakAdminProps = properties;
   }
 
-  public void createUser(CreateUserRequestDto requestDto, Long userId) {
+  public void createUser(CreateCustomerRequestDto requestDto, Long customerId) {
     UsersResource usersResource = keycloak.realm(keycloakAdminProps.getRealm()).users();
 
     List<UserRepresentation> existingUsersByUsername = usersResource
@@ -42,7 +42,7 @@ public class KeycloakService {
     }
 
     Map<String, List<String>> attributes = new HashMap<>();
-    attributes.put("userId", List.of(userId.toString()));
+    attributes.put("customerId", List.of(customerId.toString()));
 
     CredentialRepresentation credential = new CredentialRepresentation();
     credential.setTemporary(false);

@@ -1,6 +1,6 @@
 package com.carlosarroyoam.rest.books.cart.entity;
 
-import com.carlosarroyoam.rest.books.user.entity.User;
+import com.carlosarroyoam.rest.books.customer.entity.Customer;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -33,12 +33,12 @@ public class Cart {
   @OneToMany(mappedBy = "cart")
   private List<CartItem> items = new ArrayList<>();
 
-  @Column(name = "user_id", nullable = false)
-  private Long userId;
+  @Column(name = "customer_id", nullable = false)
+  private Long customerId;
 
   @OneToOne
-  @JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false, nullable = false)
-  private User user;
+  @JoinColumn(name = "customer_id", referencedColumnName = "id", insertable = false, updatable = false, nullable = false)
+  private Customer customer;
 
   @Column(name = "created_at", nullable = false)
   private LocalDateTime createdAt;
