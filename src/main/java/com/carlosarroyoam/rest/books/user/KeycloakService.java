@@ -68,7 +68,7 @@ public class KeycloakService {
 
       RoleRepresentation role = keycloak.realm(keycloakAdminProps.getRealm())
           .roles()
-          .get("App//Customer")
+          .get("App/Customer")
           .toRepresentation();
 
       usersResource.get(keycloakUserId).roles().realmLevel().add(Collections.singletonList(role));
