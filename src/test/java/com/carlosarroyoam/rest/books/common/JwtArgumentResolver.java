@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.core.MethodParameter;
+import org.springframework.lang.Nullable;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -17,8 +18,9 @@ public class JwtArgumentResolver implements HandlerMethodArgumentResolver {
   }
 
   @Override
-  public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
-      NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
+  public Object resolveArgument(MethodParameter parameter,
+      @Nullable ModelAndViewContainer mavContainer, NativeWebRequest webRequest,
+      @Nullable WebDataBinderFactory binderFactory) {
     Instant issuedAt = Instant.now();
     Map<String, Object> headers = Map.of("alg", "none");
     Map<String, Object> claims = new HashMap<>();
