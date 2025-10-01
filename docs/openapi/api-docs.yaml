@@ -1424,9 +1424,6 @@ components:
         id:
           type: integer
           format: int64
-        order_id:
-          type: number
-          format: int64
         amount:
           type: number
         method:
@@ -1447,6 +1444,9 @@ components:
             - REFUNDED
         transaction_id:
           type: string
+        order_id:
+          type: number
+          format: int64
     ShipmentDto:
       type: object
       properties:
