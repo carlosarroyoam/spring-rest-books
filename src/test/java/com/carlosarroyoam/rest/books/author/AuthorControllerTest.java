@@ -14,7 +14,7 @@ import com.carlosarroyoam.rest.books.author.dto.AuthorFilterDto;
 import com.carlosarroyoam.rest.books.author.dto.CreateAuthorRequestDto;
 import com.carlosarroyoam.rest.books.author.dto.UpdateAuthorRequestDto;
 import com.carlosarroyoam.rest.books.book.dto.BookDto;
-import com.carlosarroyoam.rest.books.core.exception.ControllerAdvisor;
+import com.carlosarroyoam.rest.books.core.exception.GlobalExceptionHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import java.util.List;
@@ -49,7 +49,7 @@ class AuthorControllerTest {
     mapper = new ObjectMapper();
     mapper.findAndRegisterModules();
     mockMvc = MockMvcBuilders.standaloneSetup(authorController)
-        .setControllerAdvice(ControllerAdvisor.class)
+        .setControllerAdvice(GlobalExceptionHandler.class)
         .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
         .build();
   }

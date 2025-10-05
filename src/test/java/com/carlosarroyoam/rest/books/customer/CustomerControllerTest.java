@@ -9,7 +9,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
-import com.carlosarroyoam.rest.books.core.exception.ControllerAdvisor;
+import com.carlosarroyoam.rest.books.core.exception.GlobalExceptionHandler;
 import com.carlosarroyoam.rest.books.customer.dto.CreateCustomerRequestDto;
 import com.carlosarroyoam.rest.books.customer.dto.CustomerDto;
 import com.carlosarroyoam.rest.books.customer.dto.CustomerFilterDto;
@@ -48,7 +48,7 @@ class CustomerControllerTest {
     mapper = new ObjectMapper();
     mapper.findAndRegisterModules();
     mockMvc = MockMvcBuilders.standaloneSetup(customerController)
-        .setControllerAdvice(ControllerAdvisor.class)
+        .setControllerAdvice(GlobalExceptionHandler.class)
         .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
         .build();
   }

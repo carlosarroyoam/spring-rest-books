@@ -10,7 +10,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import com.carlosarroyoam.rest.books.cart.dto.CartDto;
 import com.carlosarroyoam.rest.books.cart.dto.UpdateCartItemRequestDto;
 import com.carlosarroyoam.rest.books.common.JwtArgumentResolver;
-import com.carlosarroyoam.rest.books.core.exception.ControllerAdvisor;
+import com.carlosarroyoam.rest.books.core.exception.GlobalExceptionHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -41,7 +41,7 @@ class CartControllerTest {
     mapper = new ObjectMapper();
     mapper.findAndRegisterModules();
     mockMvc = MockMvcBuilders.standaloneSetup(cartController)
-        .setControllerAdvice(ControllerAdvisor.class)
+        .setControllerAdvice(GlobalExceptionHandler.class)
         .setCustomArgumentResolvers(new JwtArgumentResolver())
         .build();
   }

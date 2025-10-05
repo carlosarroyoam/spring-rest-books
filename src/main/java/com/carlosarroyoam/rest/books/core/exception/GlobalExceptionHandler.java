@@ -12,16 +12,16 @@ import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
-@ControllerAdvice
-public class ControllerAdvisor {
-  private static final Logger log = LoggerFactory.getLogger(ControllerAdvisor.class);
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+  private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
   @ExceptionHandler(ResponseStatusException.class)
   public ResponseEntity<AppExceptionDto> handleResponseStatusException(ResponseStatusException ex,
@@ -92,17 +92,18 @@ public class ControllerAdvisor {
       MethodArgumentNotValidException ex, WebRequest request) {
     HttpStatus statusCode = HttpStatus.BAD_REQUEST;
 
-    AppExceptionDto appExceptionDto = new AppExceptionDto();
-    appExceptionDto.setMessage("Request data is not valid");
-    appExceptionDto.setError(statusCode.getReasonPhrase());
-    appExceptionDto.setStatus(statusCode.value());
-    appExceptionDto.setPath(request.getDescription(false).replace("uri=", ""));
-    appExceptionDto.setTimestamp(ZonedDateTime.now(ZoneId.of("UTC")));
-    appExceptionDto.setDetails(ex.getBindingResult()
-        .getFieldErrors()
-        .stream()
-        .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage,
-            (first, second) -> second)));
+    AppExceptionDto appExceptionDto = AppExceptionDto.builder()
+        .message("Request data is not valid")
+        .error(statusCode.getReasonPhrase())
+        .status(statusCode.value())
+        .path(request.getDescription(false).replace("uri=", ""))
+        .timestamp(ZonedDateTime.now(ZoneId.of("UTC")))
+        .details(ex.getBindingResult()
+            .getFieldErrors()
+            .stream()
+            .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage,
+                (first, second) -> second)))
+        .build();
 
     return new ResponseEntity<>(appExceptionDto, statusCode);
   }

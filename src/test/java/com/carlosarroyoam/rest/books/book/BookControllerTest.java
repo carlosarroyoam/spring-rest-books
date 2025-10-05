@@ -14,7 +14,7 @@ import com.carlosarroyoam.rest.books.book.dto.BookDto;
 import com.carlosarroyoam.rest.books.book.dto.BookFilterDto;
 import com.carlosarroyoam.rest.books.book.dto.CreateBookRequestDto;
 import com.carlosarroyoam.rest.books.book.dto.UpdateBookRequestDto;
-import com.carlosarroyoam.rest.books.core.exception.ControllerAdvisor;
+import com.carlosarroyoam.rest.books.core.exception.GlobalExceptionHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import java.math.BigDecimal;
@@ -51,7 +51,7 @@ class BookControllerTest {
     mapper = new ObjectMapper();
     mapper.findAndRegisterModules();
     mockMvc = MockMvcBuilders.standaloneSetup(bookController)
-        .setControllerAdvice(ControllerAdvisor.class)
+        .setControllerAdvice(GlobalExceptionHandler.class)
         .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
         .build();
   }
