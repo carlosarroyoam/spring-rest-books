@@ -1,7 +1,6 @@
 package com.carlosarroyoam.rest.books.core.exception;
 
 import com.carlosarroyoam.rest.books.core.exception.dto.AppExceptionDto;
-import jakarta.servlet.ServletException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Map;
@@ -32,19 +31,6 @@ public class GlobalExceptionHandler {
         request);
   }
 
-  @ExceptionHandler({ NoHandlerFoundException.class, NoResourceFoundException.class })
-  public ResponseEntity<AppExceptionDto> handleNotFound(ServletException ex, WebRequest request) {
-    String message = ex instanceof NoHandlerFoundException ? "Endpoint not found"
-        : "Static resource not found";
-    return buildResponseEntity(HttpStatus.NOT_FOUND, message, request);
-  }
-
-  @ExceptionHandler({ HttpRequestMethodNotSupportedException.class })
-  public ResponseEntity<AppExceptionDto> handleMethodNotSupported(
-      HttpRequestMethodNotSupportedException ex, WebRequest request) {
-    return buildResponseEntity(HttpStatus.METHOD_NOT_ALLOWED, ex.getMessage(), request);
-  }
-
   @ExceptionHandler({ MethodArgumentNotValidException.class })
   public ResponseEntity<AppExceptionDto> handleValidation(MethodArgumentNotValidException ex,
       WebRequest request) {
@@ -61,6 +47,24 @@ public class GlobalExceptionHandler {
   public ResponseEntity<AppExceptionDto> handleAuthorizationDenied(AuthorizationDeniedException ex,
       WebRequest request) {
     return buildResponseEntity(HttpStatus.FORBIDDEN, ex.getMessage(), request);
+  }
+
+  @ExceptionHandler({ NoHandlerFoundException.class })
+  public ResponseEntity<AppExceptionDto> handleNotFound(NoHandlerFoundException ex,
+      WebRequest request) {
+    return buildResponseEntity(HttpStatus.NOT_FOUND, "Endpoint not found", request);
+  }
+
+  @ExceptionHandler({ NoResourceFoundException.class })
+  public ResponseEntity<AppExceptionDto> handleNoResourceFound(NoResourceFoundException ex,
+      WebRequest request) {
+    return buildResponseEntity(HttpStatus.NOT_FOUND, "Static resource not found", request);
+  }
+
+  @ExceptionHandler({ HttpRequestMethodNotSupportedException.class })
+  public ResponseEntity<AppExceptionDto> handleMethodNotSupported(
+      HttpRequestMethodNotSupportedException ex, WebRequest request) {
+    return buildResponseEntity(HttpStatus.METHOD_NOT_ALLOWED, ex.getMessage(), request);
   }
 
   @ExceptionHandler({ Exception.class })
