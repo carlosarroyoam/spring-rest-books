@@ -98,7 +98,9 @@ public class CustomerService {
           AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION);
     });
 
-    customerById.setUpdatedAt(LocalDateTime.now());
+    LocalDateTime now = LocalDateTime.now();
+    customerById.setDeletedAt(now);
+    customerById.setUpdatedAt(now);
     customerRepository.save(customerById);
   }
 }

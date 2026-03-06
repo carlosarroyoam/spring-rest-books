@@ -40,4 +40,7 @@ public class Customer {
 
   @Column(name = "updated_at", nullable = false)
   private LocalDateTime updatedAt;
+
+  @Column(name = "deleted_at", nullable = true)
+  private LocalDateTime deletedAt;
 }
