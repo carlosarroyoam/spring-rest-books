@@ -9,6 +9,8 @@ import com.carlosarroyoam.rest.books.author.entity.Author;
 import com.carlosarroyoam.rest.books.book.dto.BookDto;
 import com.carlosarroyoam.rest.books.book.dto.BookDto.BookDtoMapper;
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
+import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
+import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto.PagedResponseDtoMapper;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -30,12 +32,14 @@ public class AuthorService {
     this.authorRepository = authorRepository;
   }
 
-  public List<AuthorDto> findAll(Pageable pageable, AuthorFilterDto filters) {
+  public PagedResponseDto<AuthorDto> findAll(Pageable pageable, AuthorFilterDto filters) {
     Specification<Author> spec = Specification.unrestricted();
     spec = spec.and(AuthorSpecification.nameContains(filters.getName()));
 
     Page<Author> authors = authorRepository.findAll(spec, pageable);
-    return AuthorDtoMapper.INSTANCE.toDtos(authors.getContent());
+
+    return PagedResponseDtoMapper.INSTANCE
+        .toPagedResponseDto(authors.map(AuthorDtoMapper.INSTANCE::toDto));
   }
 
   public AuthorDto findById(Long authorId) {

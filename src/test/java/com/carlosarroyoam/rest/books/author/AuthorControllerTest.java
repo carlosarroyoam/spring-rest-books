@@ -1,20 +1,14 @@
 package com.carlosarroyoam.rest.books.author;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-
 import com.carlosarroyoam.rest.books.author.dto.AuthorDto;
 import com.carlosarroyoam.rest.books.author.dto.AuthorFilterDto;
 import com.carlosarroyoam.rest.books.author.dto.CreateAuthorRequestDto;
 import com.carlosarroyoam.rest.books.author.dto.UpdateAuthorRequestDto;
 import com.carlosarroyoam.rest.books.book.dto.BookDto;
+import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
+import com.carlosarroyoam.rest.books.core.dto.PaginationDto;
 import com.carlosarroyoam.rest.books.core.exception.GlobalExceptionHandler;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import java.util.List;
@@ -32,6 +26,15 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 @ExtendWith(MockitoExtension.class)
 class AuthorControllerTest {
@@ -57,24 +60,27 @@ class AuthorControllerTest {
   @Test
   @DisplayName("Should return List<AuthorDto> when find all authors")
   void shouldReturnListOfAuthorsWhenFindAllAuthors() throws Exception {
-    List<AuthorDto> authors = List.of(AuthorDto.builder().build());
+    PagedResponseDto<AuthorDto> pagedResponse = PagedResponseDto.<AuthorDto>builder()
+        .items(List.of(AuthorDto.builder().build()))
+        .pagination(PaginationDto.builder().page(0).size(25).totalItems(1).totalPages(1).build())
+        .build();
 
     when(authorService.findAll(any(Pageable.class), any(AuthorFilterDto.class)))
-        .thenReturn(authors);
+        .thenReturn(pagedResponse);
 
     MvcResult mvcResult = mockMvc.perform(get("/authors").queryParam("page", "0")
         .queryParam("size", "25")
         .accept(MediaType.APPLICATION_JSON)).andReturn();
 
     String responseJson = mvcResult.getResponse().getContentAsString();
-    CollectionType collectionType = mapper.getTypeFactory()
-        .constructCollectionType(List.class, AuthorDto.class);
-    List<AuthorDto> responseDto = mapper.readValue(responseJson, collectionType);
+    JavaType parametricType = mapper.getTypeFactory()
+        .constructParametricType(PagedResponseDto.class, AuthorDto.class);
+    PagedResponseDto<AuthorDto> responseDto = mapper.readValue(responseJson, parametricType);
 
     assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
     assertThat(mvcResult.getResponse().getContentType())
         .isEqualTo(MediaType.APPLICATION_JSON_VALUE);
-    assertThat(responseDto).isNotNull().isNotEmpty().hasSize(1);
+    assertThat(responseDto.getItems()).isNotNull().isNotEmpty().hasSize(1);
   }
 
   @Test

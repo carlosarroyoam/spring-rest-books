@@ -1,12 +1,5 @@
 package com.carlosarroyoam.rest.books.author;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import com.carlosarroyoam.rest.books.author.dto.AuthorDto;
 import com.carlosarroyoam.rest.books.author.dto.AuthorDto.AuthorDtoMapper;
 import com.carlosarroyoam.rest.books.author.dto.AuthorFilterDto;
@@ -16,6 +9,7 @@ import com.carlosarroyoam.rest.books.author.entity.Author;
 import com.carlosarroyoam.rest.books.book.dto.BookDto;
 import com.carlosarroyoam.rest.books.book.entity.Book;
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
+import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -35,6 +29,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class AuthorServiceTest {
@@ -80,15 +81,17 @@ class AuthorServiceTest {
     when(authorRepository.findAll(ArgumentMatchers.<Specification<Author>>any(),
         any(Pageable.class))).thenReturn(new PageImpl<>(authors));
 
-    List<AuthorDto> authorsDto = authorService.findAll(PageRequest.of(0, 25),
+    PagedResponseDto<AuthorDto> response = authorService.findAll(PageRequest.of(0, 25),
         AuthorFilterDto.builder().build());
 
-    assertThat(authorsDto).isNotNull().isNotEmpty().hasSize(1);
-    assertThat(authorsDto.get(0)).isNotNull();
-    assertThat(authorsDto.get(0).getId()).isEqualTo(1L);
-    assertThat(authorsDto.get(0).getName()).isEqualTo("Yuval Noah Harari");
-    assertThat(authorsDto.get(0).getCreatedAt()).isNotNull();
-    assertThat(authorsDto.get(0).getUpdatedAt()).isNotNull();
+    AuthorDto authorDto = response.getItems().get(0);
+
+    assertThat(response.getItems()).isNotNull().isNotEmpty().hasSize(1);
+    assertThat(authorDto).isNotNull();
+    assertThat(authorDto.getId()).isEqualTo(1L);
+    assertThat(authorDto.getName()).isEqualTo("Yuval Noah Harari");
+    assertThat(authorDto.getCreatedAt()).isNotNull();
+    assertThat(authorDto.getUpdatedAt()).isNotNull();
   }
 
   @Test

@@ -5,6 +5,7 @@ import com.carlosarroyoam.rest.books.book.dto.BookDto;
 import com.carlosarroyoam.rest.books.book.dto.BookFilterDto;
 import com.carlosarroyoam.rest.books.book.dto.CreateBookRequestDto;
 import com.carlosarroyoam.rest.books.book.dto.UpdateBookRequestDto;
+import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.data.domain.Pageable;
@@ -33,10 +34,10 @@ public class BookController {
   }
 
   @GetMapping(produces = "application/json")
-  public ResponseEntity<List<BookDto>> findAll(
+  public ResponseEntity<PagedResponseDto<BookDto>> findAll(
       @PageableDefault(page = 0, size = 25) Pageable pageable,
       @Valid @ModelAttribute BookFilterDto filters) {
-    List<BookDto> books = bookService.findAll(pageable, filters);
+    PagedResponseDto<BookDto> books = bookService.findAll(pageable, filters);
     return ResponseEntity.ok(books);
   }
 

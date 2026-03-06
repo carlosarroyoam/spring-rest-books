@@ -1,6 +1,8 @@
 package com.carlosarroyoam.rest.books.customer;
 
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
+import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
+import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto.PagedResponseDtoMapper;
 import com.carlosarroyoam.rest.books.customer.dto.CreateCustomerRequestDto;
 import com.carlosarroyoam.rest.books.customer.dto.CustomerDto;
 import com.carlosarroyoam.rest.books.customer.dto.CustomerDto.CustomerDtoMapper;
@@ -9,7 +11,6 @@ import com.carlosarroyoam.rest.books.customer.dto.UpdateCustomerRequestDto;
 import com.carlosarroyoam.rest.books.customer.entity.Customer;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -30,7 +31,7 @@ public class CustomerService {
     this.keycloakService = keycloakService;
   }
 
-  public List<CustomerDto> findAll(Pageable pageable, CustomerFilterDto filters) {
+  public PagedResponseDto<CustomerDto> findAll(Pageable pageable, CustomerFilterDto filters) {
     Specification<Customer> spec = Specification.unrestricted();
     spec = spec.and(CustomerSpecification.firstNameContains(filters.getFirstName()))
         .and(CustomerSpecification.lastNameContains(filters.getLastName()))
@@ -38,7 +39,9 @@ public class CustomerService {
         .and(CustomerSpecification.usernameContains(filters.getUsername()));
 
     Page<Customer> customers = customerRepository.findAll(spec, pageable);
-    return CustomerDtoMapper.INSTANCE.toDtos(customers.getContent());
+
+    return PagedResponseDtoMapper.INSTANCE
+        .toPagedResponseDto(customers.map(CustomerDtoMapper.INSTANCE::toDto));
   }
 
   public CustomerDto findById(Long customerId) {

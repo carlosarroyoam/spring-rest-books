@@ -1,13 +1,5 @@
 package com.carlosarroyoam.rest.books.book;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import com.carlosarroyoam.rest.books.author.dto.AuthorDto;
 import com.carlosarroyoam.rest.books.author.entity.Author;
 import com.carlosarroyoam.rest.books.book.dto.BookDto;
@@ -17,6 +9,7 @@ import com.carlosarroyoam.rest.books.book.dto.CreateBookRequestDto;
 import com.carlosarroyoam.rest.books.book.dto.UpdateBookRequestDto;
 import com.carlosarroyoam.rest.books.book.entity.Book;
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
+import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -36,6 +29,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class BookServiceTest {
@@ -79,21 +80,23 @@ class BookServiceTest {
     when(bookRepository.findAll(ArgumentMatchers.<Specification<Book>>any(), any(Pageable.class)))
         .thenReturn(new PageImpl<>(List.of(book)));
 
-    List<BookDto> booksDto = bookService.findAll(PageRequest.of(0, 25),
+    PagedResponseDto<BookDto> response = bookService.findAll(PageRequest.of(0, 25),
         BookFilterDto.builder().build());
 
-    assertThat(booksDto).isNotNull().isNotEmpty().hasSize(1);
-    assertThat(booksDto.get(0)).isNotNull();
-    assertThat(booksDto.get(0).getId()).isEqualTo(1L);
-    assertThat(booksDto.get(0).getIsbn()).isEqualTo("978-1-3035-0529-4");
-    assertThat(booksDto.get(0).getTitle()).isEqualTo("Homo Deus: A Brief History of Tomorrow");
-    assertThat(booksDto.get(0).getCoverUrl())
+    BookDto bookDto = response.getItems().get(0);
+
+    assertThat(response.getItems()).isNotNull().isNotEmpty().hasSize(1);
+    assertThat(bookDto).isNotNull();
+    assertThat(bookDto.getId()).isEqualTo(1L);
+    assertThat(bookDto.getIsbn()).isEqualTo("978-1-3035-0529-4");
+    assertThat(bookDto.getTitle()).isEqualTo("Homo Deus: A Brief History of Tomorrow");
+    assertThat(bookDto.getCoverUrl())
         .isEqualTo("https://images.isbndb.com/covers/39/36/9781784703936.jpg");
-    assertThat(booksDto.get(0).getPrice()).isEqualTo(new BigDecimal("22.99"));
-    assertThat(booksDto.get(0).getIsAvailableOnline()).isEqualTo(Boolean.FALSE);
-    assertThat(booksDto.get(0).getPublishedAt()).isEqualTo(LocalDate.parse("2017-01-01"));
-    assertThat(booksDto.get(0).getCreatedAt()).isNotNull();
-    assertThat(booksDto.get(0).getUpdatedAt()).isNotNull();
+    assertThat(bookDto.getPrice()).isEqualTo(new BigDecimal("22.99"));
+    assertThat(bookDto.getIsAvailableOnline()).isEqualTo(Boolean.FALSE);
+    assertThat(bookDto.getPublishedAt()).isEqualTo(LocalDate.parse("2017-01-01"));
+    assertThat(bookDto.getCreatedAt()).isNotNull();
+    assertThat(bookDto.getUpdatedAt()).isNotNull();
   }
 
   @Test

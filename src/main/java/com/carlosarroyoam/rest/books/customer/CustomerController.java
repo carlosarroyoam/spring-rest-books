@@ -1,11 +1,11 @@
 package com.carlosarroyoam.rest.books.customer;
 
+import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
 import com.carlosarroyoam.rest.books.customer.dto.CreateCustomerRequestDto;
 import com.carlosarroyoam.rest.books.customer.dto.CustomerDto;
 import com.carlosarroyoam.rest.books.customer.dto.CustomerFilterDto;
 import com.carlosarroyoam.rest.books.customer.dto.UpdateCustomerRequestDto;
 import jakarta.validation.Valid;
-import java.util.List;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
@@ -33,10 +33,10 @@ public class CustomerController {
 
   @GetMapping(produces = "application/json")
   @PreAuthorize("hasRole('App/Admin')")
-  public ResponseEntity<List<CustomerDto>> findAll(
+  public ResponseEntity<PagedResponseDto<CustomerDto>> findAll(
       @PageableDefault(page = 0, size = 25) Pageable pageable,
       @Valid @ModelAttribute CustomerFilterDto filters) {
-    List<CustomerDto> customers = customerService.findAll(pageable, filters);
+    PagedResponseDto<CustomerDto> customers = customerService.findAll(pageable, filters);
     return ResponseEntity.ok(customers);
   }
 

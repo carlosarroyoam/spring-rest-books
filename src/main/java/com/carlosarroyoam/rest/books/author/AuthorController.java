@@ -5,6 +5,7 @@ import com.carlosarroyoam.rest.books.author.dto.AuthorFilterDto;
 import com.carlosarroyoam.rest.books.author.dto.CreateAuthorRequestDto;
 import com.carlosarroyoam.rest.books.author.dto.UpdateAuthorRequestDto;
 import com.carlosarroyoam.rest.books.book.dto.BookDto;
+import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.data.domain.Pageable;
@@ -33,10 +34,10 @@ public class AuthorController {
   }
 
   @GetMapping(produces = "application/json")
-  public ResponseEntity<List<AuthorDto>> findAll(
+  public ResponseEntity<PagedResponseDto<AuthorDto>> findAll(
       @PageableDefault(page = 0, size = 25) Pageable pageable,
       @Valid @ModelAttribute AuthorFilterDto filters) {
-    List<AuthorDto> authors = authorService.findAll(pageable, filters);
+    PagedResponseDto<AuthorDto> authors = authorService.findAll(pageable, filters);
     return ResponseEntity.ok(authors);
   }
 

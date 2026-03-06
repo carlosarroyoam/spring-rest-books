@@ -1,12 +1,7 @@
 package com.carlosarroyoam.rest.books.customer;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
+import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
 import com.carlosarroyoam.rest.books.customer.dto.CreateCustomerRequestDto;
 import com.carlosarroyoam.rest.books.customer.dto.CustomerDto;
 import com.carlosarroyoam.rest.books.customer.dto.CustomerDto.CustomerDtoMapper;
@@ -30,6 +25,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class CustomerServiceTest {
@@ -67,18 +68,20 @@ class CustomerServiceTest {
     when(customerRepository.findAll(ArgumentMatchers.<Specification<Customer>>any(),
         any(Pageable.class))).thenReturn(new PageImpl<>(customers));
 
-    List<CustomerDto> customersDto = customerService.findAll(PageRequest.of(0, 25),
+    PagedResponseDto<CustomerDto> response = customerService.findAll(PageRequest.of(0, 25),
         CustomerFilterDto.builder().build());
 
-    assertThat(customersDto).isNotNull().isNotEmpty().hasSize(1);
-    assertThat(customersDto.get(0)).isNotNull();
-    assertThat(customersDto.get(0).getId()).isEqualTo(1L);
-    assertThat(customersDto.get(0).getFirstName()).isEqualTo("Carlos Alberto");
-    assertThat(customersDto.get(0).getLastName()).isEqualTo("Arroyo Martínez");
-    assertThat(customersDto.get(0).getEmail()).isEqualTo("carroyom@mail.com");
-    assertThat(customersDto.get(0).getUsername()).isEqualTo("carroyom");
-    assertThat(customersDto.get(0).getCreatedAt()).isNotNull();
-    assertThat(customersDto.get(0).getUpdatedAt()).isNotNull();
+    CustomerDto customersDto = response.getItems().get(0);
+
+    assertThat(response.getItems()).isNotNull().isNotEmpty().hasSize(1);
+    assertThat(customersDto).isNotNull();
+    assertThat(customersDto.getId()).isEqualTo(1L);
+    assertThat(customersDto.getFirstName()).isEqualTo("Carlos Alberto");
+    assertThat(customersDto.getLastName()).isEqualTo("Arroyo Martínez");
+    assertThat(customersDto.getEmail()).isEqualTo("carroyom@mail.com");
+    assertThat(customersDto.getUsername()).isEqualTo("carroyom");
+    assertThat(customersDto.getCreatedAt()).isNotNull();
+    assertThat(customersDto.getUpdatedAt()).isNotNull();
   }
 
   @Test

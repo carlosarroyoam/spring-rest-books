@@ -9,6 +9,8 @@ import com.carlosarroyoam.rest.books.book.dto.CreateBookRequestDto;
 import com.carlosarroyoam.rest.books.book.dto.UpdateBookRequestDto;
 import com.carlosarroyoam.rest.books.book.entity.Book;
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
+import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
+import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto.PagedResponseDtoMapper;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -30,7 +32,7 @@ public class BookService {
     this.bookRepository = bookRepository;
   }
 
-  public List<BookDto> findAll(Pageable pageable, BookFilterDto filters) {
+  public PagedResponseDto<BookDto> findAll(Pageable pageable, BookFilterDto filters) {
     Specification<Book> spec = Specification.unrestricted();
     spec = spec.and(BookSpecification.isbnEquals(filters.getIsbn()))
         .and(BookSpecification.titleContains(filters.getTitle()))
@@ -38,7 +40,9 @@ public class BookService {
         .and(BookSpecification.isAvailableOnline(filters.getIsAvailableOnline()));
 
     Page<Book> books = bookRepository.findAll(spec, pageable);
-    return BookDtoMapper.INSTANCE.toDtos(books.getContent());
+
+    return PagedResponseDtoMapper.INSTANCE
+        .toPagedResponseDto(books.map(BookDtoMapper.INSTANCE::toDto));
   }
 
   public BookDto findById(Long bookId) {
