@@ -32,7 +32,8 @@ CREATE TABLE customers (
     email VARCHAR(128) NOT NULL UNIQUE,
     username VARCHAR(128) NOT NULL UNIQUE,
     created_at TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP NOT NULL
+    updated_at TIMESTAMP NOT NULL,
+    deleted_at TIMESTAMP
 );
 
 CREATE TABLE carts (
