@@ -60,7 +60,7 @@ class CustomerControllerIT {
   }
 
   @Test
-  @DisplayName("Should return List<CustomerDto> when find all customers")
+  @DisplayName("Should return paged customers when find all customers")
   void shouldReturnListOfCustomersWhenFindAllCustomers() throws Exception {
     String expectedJson = JsonUtils.readJson("/customers/find-all.json");
 
@@ -75,7 +75,7 @@ class CustomerControllerIT {
   }
 
   @Test
-  @DisplayName("Should return List<CustomerDto> when find all customers with filters")
+  @DisplayName("Should return paged customers when find all customers with filters")
   void shouldReturnListOfCustomersWhenFindAllCustomersWithFilters() throws Exception {
     String expectedJson = JsonUtils.readJson("/customers/find-all_with_filters.json");
 

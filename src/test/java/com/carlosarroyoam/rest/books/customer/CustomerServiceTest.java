@@ -61,7 +61,7 @@ class CustomerServiceTest {
   }
 
   @Test
-  @DisplayName("Should return List<CustomerDto> when find all customers")
+  @DisplayName("Should return PagedResponseDto<CustomerDto> when find all customers")
   void shouldReturnListOfCustomers() {
     List<Customer> customers = List.of(customer);
 

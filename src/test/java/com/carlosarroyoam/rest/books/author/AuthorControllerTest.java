@@ -8,9 +8,7 @@ import com.carlosarroyoam.rest.books.book.dto.BookDto;
 import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
 import com.carlosarroyoam.rest.books.core.dto.PaginationDto;
 import com.carlosarroyoam.rest.books.core.exception.GlobalExceptionHandler;
-import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.type.CollectionType;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -21,13 +19,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
@@ -35,9 +30,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 class AuthorControllerTest {
+
   private ObjectMapper mapper;
   private MockMvc mockMvc;
 
@@ -51,6 +51,7 @@ class AuthorControllerTest {
   void setup() {
     mapper = new ObjectMapper();
     mapper.findAndRegisterModules();
+
     mockMvc = MockMvcBuilders.standaloneSetup(authorController)
         .setControllerAdvice(GlobalExceptionHandler.class)
         .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
@@ -58,8 +59,8 @@ class AuthorControllerTest {
   }
 
   @Test
-  @DisplayName("Should return List<AuthorDto> when find all authors")
-  void shouldReturnListOfAuthorsWhenFindAllAuthors() throws Exception {
+  @DisplayName("Should return PagedResponseDto<AuthorDto> when find all authors")
+  void shouldReturnPagedAuthorsWhenFindAllAuthors() throws Exception {
     PagedResponseDto<AuthorDto> pagedResponse = PagedResponseDto.<AuthorDto>builder()
         .items(List.of(AuthorDto.builder().build()))
         .pagination(PaginationDto.builder().page(0).size(25).totalItems(1).totalPages(1).build())
@@ -68,39 +69,30 @@ class AuthorControllerTest {
     when(authorService.findAll(any(Pageable.class), any(AuthorFilterDto.class)))
         .thenReturn(pagedResponse);
 
-    MvcResult mvcResult = mockMvc.perform(get("/authors").queryParam("page", "0")
-        .queryParam("size", "25")
-        .accept(MediaType.APPLICATION_JSON)).andReturn();
-
-    String responseJson = mvcResult.getResponse().getContentAsString();
-    JavaType parametricType = mapper.getTypeFactory()
-        .constructParametricType(PagedResponseDto.class, AuthorDto.class);
-    PagedResponseDto<AuthorDto> responseDto = mapper.readValue(responseJson, parametricType);
-
-    assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
-    assertThat(mvcResult.getResponse().getContentType())
-        .isEqualTo(MediaType.APPLICATION_JSON_VALUE);
-    assertThat(responseDto.getItems()).isNotNull().isNotEmpty().hasSize(1);
+    mockMvc
+        .perform(get("/authors").queryParam("page", "0")
+            .queryParam("size", "25")
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.items.length()").value(1))
+        .andExpect(jsonPath("$.pagination.page").value(0))
+        .andExpect(jsonPath("$.pagination.size").value(25))
+        .andExpect(jsonPath("$.pagination.totalItems").value(1))
+        .andExpect(jsonPath("$.pagination.totalPages").value(1));
   }
 
   @Test
   @DisplayName("Should return AuthorDto when find author by id with existing id")
   void shouldReturnAuthorDtoWhenFindAuthorById() throws Exception {
-    AuthorDto author = AuthorDto.builder().build();
+    AuthorDto author = AuthorDto.builder().id(1L).name("Yuval Noah Harari").build();
 
     when(authorService.findById(anyLong())).thenReturn(author);
 
-    MvcResult mvcResult = mockMvc
-        .perform(get("/authors/{authorId}", 1L).accept(MediaType.APPLICATION_JSON))
-        .andReturn();
-
-    String responseJson = mvcResult.getResponse().getContentAsString();
-    AuthorDto responseDto = mapper.readValue(responseJson, AuthorDto.class);
-
-    assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
-    assertThat(mvcResult.getResponse().getContentType())
-        .isEqualTo(MediaType.APPLICATION_JSON_VALUE);
-    assertThat(responseDto).isNotNull();
+    mockMvc.perform(get("/authors/{authorId}", 1L).accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.id").value(1));
   }
 
   @Test
@@ -114,14 +106,11 @@ class AuthorControllerTest {
 
     when(authorService.create(any(CreateAuthorRequestDto.class))).thenReturn(author);
 
-    MvcResult mvcResult = mockMvc
+    mockMvc
         .perform(post("/authors").content(mapper.writeValueAsString(requestDto))
             .contentType(MediaType.APPLICATION_JSON))
-        .andReturn();
-
-    assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.CREATED.value());
-    assertThat(mvcResult.getResponse().getHeader("location"))
-        .isEqualTo("http://localhost/authors/1");
+        .andExpect(status().isCreated())
+        .andExpect(header().string("location", "http://localhost/authors/1"));
   }
 
   @Test
@@ -131,44 +120,28 @@ class AuthorControllerTest {
         .name("Yuval Noah Harari")
         .build();
 
-    MvcResult mvcResult = mockMvc
-        .perform(put("/authors/{authorId}", 1L).content(mapper.writeValueAsString(requestDto))
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON))
-        .andReturn();
-
-    assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    mockMvc.perform(put("/authors/{authorId}", 1L).content(mapper.writeValueAsString(requestDto))
+        .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNoContent());
   }
 
   @Test
   @DisplayName("Should return no content when delete author")
   void shouldReturnNoContentWhenDeleteAuthor() throws Exception {
-    MvcResult mvcResult = mockMvc
-        .perform(delete("/authors/{authorId}", 1L).accept(MediaType.APPLICATION_JSON))
-        .andReturn();
-
-    assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    mockMvc.perform(delete("/authors/{authorId}", 1L).accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isNoContent());
   }
 
   @Test
-  @DisplayName("Should return List<BookDto> when find books by author id")
+  @DisplayName("Should return books when find books by author id")
   void shouldReturnListOfBooksWhenFindBooksByAuthorId() throws Exception {
-    List<BookDto> books = List.of(BookDto.builder().build());
+    List<BookDto> books = List.of(BookDto.builder().id(1L).build());
 
     when(authorService.findBooksByAuthorId(anyLong())).thenReturn(books);
 
-    MvcResult mvcResult = mockMvc
-        .perform(get("/authors/{authorId}/books", 1L).accept(MediaType.APPLICATION_JSON))
-        .andReturn();
-
-    String responseJson = mvcResult.getResponse().getContentAsString();
-    CollectionType collectionType = mapper.getTypeFactory()
-        .constructCollectionType(List.class, BookDto.class);
-    List<BookDto> responseDto = mapper.readValue(responseJson, collectionType);
-
-    assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
-    assertThat(mvcResult.getResponse().getContentType())
-        .isEqualTo(MediaType.APPLICATION_JSON_VALUE);
-    assertThat(responseDto).isNotNull().isNotEmpty().hasSize(1);
+    mockMvc.perform(get("/authors/{authorId}/books", 1L).accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.length()").value(1))
+        .andExpect(jsonPath("$[0].id").value(1));
   }
 }

@@ -58,7 +58,7 @@ class BookControllerIT {
   }
 
   @Test
-  @DisplayName("Should return List<BookDto> when find all books")
+  @DisplayName("Should return paged books when find all books")
   void shouldReturnListOfBooksWhenFindAllBooks() throws Exception {
     String expectedJson = JsonUtils.readJson("/books/find-all.json");
 
@@ -73,7 +73,7 @@ class BookControllerIT {
   }
 
   @Test
-  @DisplayName("Should return List<BookDto> when find all books with filters")
+  @DisplayName("Should return paged books when find all books with filters")
   void shouldReturnListOfBooksWhenFindAllBooksWithFilters() throws Exception {
     String expectedJson = JsonUtils.readJson("/books/find-all_with_filters.json");
 

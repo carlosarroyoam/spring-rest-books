@@ -12,21 +12,22 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 class CartControllerTest {
+
   private ObjectMapper mapper;
   private MockMvc mockMvc;
 
@@ -40,6 +41,7 @@ class CartControllerTest {
   void setup() {
     mapper = new ObjectMapper();
     mapper.findAndRegisterModules();
+
     mockMvc = MockMvcBuilders.standaloneSetup(cartController)
         .setControllerAdvice(GlobalExceptionHandler.class)
         .setCustomArgumentResolvers(new JwtArgumentResolver())
@@ -49,20 +51,14 @@ class CartControllerTest {
   @Test
   @DisplayName("Should return CartDto when find cart by customer id")
   void shouldReturnCartDtoWhenFindCartByCustomerId() throws Exception {
-    CartDto cartDto = CartDto.builder().build();
+    CartDto cartDto = CartDto.builder().id(1L).build();
 
     when(cartService.findByCustomerId(anyLong())).thenReturn(cartDto);
 
-    MvcResult mvcResult = mockMvc.perform(get("/carts").accept(MediaType.APPLICATION_JSON))
-        .andReturn();
-
-    String responseJson = mvcResult.getResponse().getContentAsString();
-    CartDto responseDto = mapper.readValue(responseJson, CartDto.class);
-
-    assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
-    assertThat(mvcResult.getResponse().getContentType())
-        .isEqualTo(MediaType.APPLICATION_JSON_VALUE);
-    assertThat(responseDto).isNotNull();
+    mockMvc.perform(get("/carts").accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.id").value(1));
   }
 
   @Test
@@ -73,22 +69,13 @@ class CartControllerTest {
         .bookId(1L)
         .build();
 
-    MvcResult mvcResult = mockMvc
-        .perform(put("/carts/items").content(mapper.writeValueAsString(requestDto))
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON))
-        .andReturn();
-
-    assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    mockMvc.perform(put("/carts/items").content(mapper.writeValueAsString(requestDto))
+        .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNoContent());
   }
 
   @Test
   @DisplayName("Should return no content when delete cart item")
   void shouldReturnNoContentWhenDeleteCartItem() throws Exception {
-    MvcResult mvcResult = mockMvc
-        .perform(delete("/carts/items/{cartItemId}", 1L).accept(MediaType.APPLICATION_JSON))
-        .andReturn();
-
-    assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    mockMvc.perform(delete("/carts/items/{cartItemId}", 1L)).andExpect(status().isNoContent());
   }
 }

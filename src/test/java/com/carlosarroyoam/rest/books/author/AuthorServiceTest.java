@@ -74,7 +74,7 @@ class AuthorServiceTest {
   }
 
   @Test
-  @DisplayName("Should return List<AuthorDto> when find all authors")
+  @DisplayName("Should return PagedResponseDto<AuthorDto> when find all authors")
   void shouldReturnListOfAuthors() {
     List<Author> authors = List.of(author);
 

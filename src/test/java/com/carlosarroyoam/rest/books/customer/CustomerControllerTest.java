@@ -7,7 +7,6 @@ import com.carlosarroyoam.rest.books.customer.dto.CreateCustomerRequestDto;
 import com.carlosarroyoam.rest.books.customer.dto.CustomerDto;
 import com.carlosarroyoam.rest.books.customer.dto.CustomerFilterDto;
 import com.carlosarroyoam.rest.books.customer.dto.UpdateCustomerRequestDto;
-import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,13 +18,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
@@ -33,9 +29,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 class CustomerControllerTest {
+
   private ObjectMapper mapper;
   private MockMvc mockMvc;
 
@@ -49,6 +50,7 @@ class CustomerControllerTest {
   void setup() {
     mapper = new ObjectMapper();
     mapper.findAndRegisterModules();
+
     mockMvc = MockMvcBuilders.standaloneSetup(customerController)
         .setControllerAdvice(GlobalExceptionHandler.class)
         .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
@@ -56,29 +58,31 @@ class CustomerControllerTest {
   }
 
   @Test
-  @DisplayName("Should return List<CustomerDto> when find all customers")
-  void shouldReturnListOfCustomersWhenFindAllCustomers() throws Exception {
+  @DisplayName("Should return PagedResponseDto<CustomerDto> when find all customers")
+  void shouldReturnPagedCustomersWhenFindAllCustomers() throws Exception {
     PagedResponseDto<CustomerDto> pagedResponse = PagedResponseDto.<CustomerDto>builder()
-        .items(List.of(CustomerDto.builder().build()))
+        .items(List.of(CustomerDto.builder().id(1L).build()))
         .pagination(PaginationDto.builder().page(0).size(25).totalItems(1).totalPages(1).build())
         .build();
 
     when(customerService.findAll(any(Pageable.class), any(CustomerFilterDto.class)))
         .thenReturn(pagedResponse);
 
-    MvcResult mvcResult = mockMvc.perform(get("/customers").queryParam("page", "0")
-        .queryParam("size", "25")
-        .accept(MediaType.APPLICATION_JSON)).andReturn();
+    mockMvc
+        .perform(get("/customers").queryParam("page", "0")
+            .queryParam("size", "25")
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
 
-    String responseJson = mvcResult.getResponse().getContentAsString();
-    JavaType parametricType = mapper.getTypeFactory()
-        .constructParametricType(PagedResponseDto.class, CustomerDto.class);
-    PagedResponseDto<CustomerDto> responseDto = mapper.readValue(responseJson, parametricType);
+        .andExpect(jsonPath("$.items").isArray())
+        .andExpect(jsonPath("$.items.length()").value(1))
+        .andExpect(jsonPath("$.items[0].id").value(1))
 
-    assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
-    assertThat(mvcResult.getResponse().getContentType())
-        .isEqualTo(MediaType.APPLICATION_JSON_VALUE);
-    assertThat(responseDto.getItems()).isNotNull().isNotEmpty().hasSize(1);
+        .andExpect(jsonPath("$.pagination.page").value(0))
+        .andExpect(jsonPath("$.pagination.size").value(25))
+        .andExpect(jsonPath("$.pagination.totalItems").value(1))
+        .andExpect(jsonPath("$.pagination.totalPages").value(1));
   }
 
   @Test
@@ -88,18 +92,10 @@ class CustomerControllerTest {
 
     when(customerService.findById(anyLong())).thenReturn(customer);
 
-    MvcResult mvcResult = mockMvc
-        .perform(get("/customers/{customerId}", 1L).accept(MediaType.APPLICATION_JSON))
-        .andReturn();
-
-    String responseJson = mvcResult.getResponse().getContentAsString();
-    CustomerDto responseDto = mapper.readValue(responseJson, CustomerDto.class);
-
-    assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
-    assertThat(mvcResult.getResponse().getContentType())
-        .isEqualTo(MediaType.APPLICATION_JSON_VALUE);
-    assertThat(responseDto).isNotNull();
-    assertThat(responseDto.getId()).isEqualTo(1L);
+    mockMvc.perform(get("/customers/{customerId}", 1L).accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.id").value(1));
   }
 
   @Test
@@ -117,14 +113,11 @@ class CustomerControllerTest {
 
     when(customerService.create(any(CreateCustomerRequestDto.class))).thenReturn(customer);
 
-    MvcResult mvcResult = mockMvc
+    mockMvc
         .perform(post("/customers").content(mapper.writeValueAsString(requestDto))
             .contentType(MediaType.APPLICATION_JSON))
-        .andReturn();
-
-    assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.CREATED.value());
-    assertThat(mvcResult.getResponse().getHeader("location"))
-        .isEqualTo("http://localhost/customers/1");
+        .andExpect(status().isCreated())
+        .andExpect(header().string("location", "http://localhost/customers/1"));
   }
 
   @Test
@@ -135,22 +128,15 @@ class CustomerControllerTest {
         .lastName("Arroyo Martínez")
         .build();
 
-    MvcResult mvcResult = mockMvc
+    mockMvc
         .perform(put("/customers/{customerId}", 1L).content(mapper.writeValueAsString(requestDto))
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON))
-        .andReturn();
-
-    assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
+            .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isNoContent());
   }
 
   @Test
   @DisplayName("Should return no content when delete customer")
   void shouldReturnNoContentWhenDeleteCustomer() throws Exception {
-    MvcResult mvcResult = mockMvc
-        .perform(delete("/customers/{customerId}", 1L).accept(MediaType.APPLICATION_JSON))
-        .andReturn();
-
-    assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    mockMvc.perform(delete("/customers/{customerId}", 1L)).andExpect(status().isNoContent());
   }
 }

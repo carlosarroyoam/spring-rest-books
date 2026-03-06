@@ -57,7 +57,7 @@ class AuthorControllerIT {
   }
 
   @Test
-  @DisplayName("Should return authors when find all authors")
+  @DisplayName("Should return paged authors when find all authors")
   void shouldReturnListOfAuthorsWhenFindAllAuthors() throws Exception {
     String expectedJson = JsonUtils.readJson("/authors/find-all.json");
 
@@ -72,7 +72,7 @@ class AuthorControllerIT {
   }
 
   @Test
-  @DisplayName("Should return authors when find all authors with filters")
+  @DisplayName("Should return paged authors when find all authors with filters")
   void shouldReturnListOfAuthorsWhenFindAllAuthorsWithFilters() throws Exception {
     String expectedJson = JsonUtils.readJson("/authors/find-all_with_filters.json");
 

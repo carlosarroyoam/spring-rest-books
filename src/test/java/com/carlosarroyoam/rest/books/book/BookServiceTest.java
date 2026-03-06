@@ -75,7 +75,7 @@ class BookServiceTest {
   }
 
   @Test
-  @DisplayName("Should return List<BookDto> when find all books")
+  @DisplayName("Should return PagedResponseDto<BookDto> when find all books")
   void shouldReturnListOfBooks() {
     when(bookRepository.findAll(ArgumentMatchers.<Specification<Book>>any(), any(Pageable.class)))
         .thenReturn(new PageImpl<>(List.of(book)));
