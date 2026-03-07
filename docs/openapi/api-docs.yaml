@@ -54,23 +54,27 @@ paths:
         - name: isbn
           in: query
           required: false
+          description: Book's ISBN.
           schema:
             type: string
             minLength: 10
             maxLength: 17
         - name: title
           in: query
+          description: Book's title.
           required: false
           schema:
             type: string
             maxLength: 128
         - name: authorIds
           in: query
+          description: Comma separated author ids.
           required: false
           schema:
             type: string
         - name: isAvailableOnline
           in: query
+          description: Whether the book can be purchased online.
           required: false
           schema:
             type: boolean
@@ -252,6 +256,7 @@ paths:
         - name: name
           in: query
           required: false
+          description: Full name of the author.
           schema:
             type: string
             maxLength: 128
@@ -435,24 +440,28 @@ paths:
         - name: firstName
           in: query
           required: false
+          description: Customer's first name.
           schema:
             type: string
             maxLength: 128
         - name: lastName
           in: query
           required: false
+          description: Customer's last name.
           schema:
             type: string
             maxLength: 128
         - name: email
           in: query
           required: false
+          description: Customer's email address.
           schema:
             type: string
             maxLength: 128
         - name: username
           in: query
           required: false
+          description: Customer's username.
           schema:
             type: string
             maxLength: 128
@@ -1668,7 +1677,7 @@ components:
       name: page
       in: query
       required: false
-      description: Page index (0-based)
+      description: Page index (0-based).
       schema:
         type: integer
         format: int32
@@ -1678,7 +1687,7 @@ components:
       name: size
       in: query
       required: false
-      description: Number of items per page
+      description: Number of items per page.
       schema:
         type: integer
         format: int32
@@ -1687,8 +1696,10 @@ components:
   responses:
     Created:
       description: Created
+
     NoContent:
       description: No content
+
     NotFound:
       description: Not found
       content:
@@ -1698,6 +1709,13 @@ components:
 
     BadRequest:
       description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/AppExceptionDto"
+
+    UnprocesableEntity:
+      description: Unprocessable entity
       content:
         application/json:
           schema:
