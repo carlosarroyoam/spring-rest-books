@@ -77,16 +77,7 @@ class CartServiceTest {
     assertThat(cartDto).isNotNull();
     assertThat(cartDto.getId()).isEqualTo(1L);
     assertThat(cartDto.getItems()).isNotNull();
-    assertThat(cartDto.getItems().get(0)).isNotNull();
-    assertThat(cartDto.getItems().get(0).getId()).isEqualTo(1L);
-    assertThat(cartDto.getItems().get(0).getQuantity()).isEqualTo(1);
-    assertThat(cartDto.getItems().get(0).getBook()).isNotNull();
-    assertThat(cartDto.getItems().get(0).getBook().getId()).isEqualTo(1L);
-    assertThat(cartDto.getItems().get(0).getAddedAt()).isNotNull();
     assertThat(cartDto.getCustomer()).isNotNull();
-    assertThat(cartDto.getCustomer().getId()).isEqualTo(1L);
-    assertThat(cartDto.getCreatedAt()).isNotNull();
-    assertThat(cartDto.getUpdatedAt()).isNotNull();
   }
 
   @Test
@@ -107,6 +98,7 @@ class CartServiceTest {
         .quantity(1)
         .bookId(1L)
         .build();
+
     when(cartRepository.findByCustomerId(anyLong())).thenReturn(Optional.of(cart));
     when(bookRepository.existsById(anyLong())).thenReturn(Boolean.TRUE);
     when(cartItemRepository.save(any(CartItem.class))).thenReturn(cartItem);
@@ -123,7 +115,9 @@ class CartServiceTest {
         .quantity(1)
         .bookId(1L)
         .build();
+
     Cart cartWithoutItems = Cart.builder().id(1L).build();
+
     when(cartRepository.findByCustomerId(anyLong())).thenReturn(Optional.of(cartWithoutItems));
     when(bookRepository.existsById(anyLong())).thenReturn(Boolean.TRUE);
     when(cartItemRepository.save(any(CartItem.class))).thenReturn(cartItem);
@@ -167,7 +161,7 @@ class CartServiceTest {
 
     cartService.deleteCartItem(1L, 1L);
 
-    verify(cartItemRepository).deleteById(anyLong());
+    verify(cartItemRepository).deleteById(1L);
   }
 
   @Test

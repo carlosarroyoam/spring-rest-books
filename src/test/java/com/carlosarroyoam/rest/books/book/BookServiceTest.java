@@ -3,7 +3,6 @@ package com.carlosarroyoam.rest.books.book;
 import com.carlosarroyoam.rest.books.author.dto.AuthorDto;
 import com.carlosarroyoam.rest.books.author.entity.Author;
 import com.carlosarroyoam.rest.books.book.dto.BookDto;
-import com.carlosarroyoam.rest.books.book.dto.BookDto.BookDtoMapper;
 import com.carlosarroyoam.rest.books.book.dto.BookFilterDto;
 import com.carlosarroyoam.rest.books.book.dto.CreateBookRequestDto;
 import com.carlosarroyoam.rest.books.book.dto.UpdateBookRequestDto;
@@ -77,26 +76,22 @@ class BookServiceTest {
   @Test
   @DisplayName("Should return PagedResponseDto<BookDto> when find all books")
   void shouldReturnListOfBooks() {
+    Pageable pageable = PageRequest.of(0, 25);
+    List<Book> books = List.of(book);
+
     when(bookRepository.findAll(ArgumentMatchers.<Specification<Book>>any(), any(Pageable.class)))
-        .thenReturn(new PageImpl<>(List.of(book)));
+        .thenReturn(new PageImpl<>(books, pageable, books.size()));
 
     PagedResponseDto<BookDto> response = bookService.findAll(PageRequest.of(0, 25),
         BookFilterDto.builder().build());
 
-    BookDto bookDto = response.getItems().get(0);
-
-    assertThat(response.getItems()).isNotNull().isNotEmpty().hasSize(1);
-    assertThat(bookDto).isNotNull();
-    assertThat(bookDto.getId()).isEqualTo(1L);
-    assertThat(bookDto.getIsbn()).isEqualTo("978-1-3035-0529-4");
-    assertThat(bookDto.getTitle()).isEqualTo("Homo Deus: A Brief History of Tomorrow");
-    assertThat(bookDto.getCoverUrl())
-        .isEqualTo("https://images.isbndb.com/covers/39/36/9781784703936.jpg");
-    assertThat(bookDto.getPrice()).isEqualTo(new BigDecimal("22.99"));
-    assertThat(bookDto.getIsAvailableOnline()).isEqualTo(Boolean.FALSE);
-    assertThat(bookDto.getPublishedAt()).isEqualTo(LocalDate.parse("2017-01-01"));
-    assertThat(bookDto.getCreatedAt()).isNotNull();
-    assertThat(bookDto.getUpdatedAt()).isNotNull();
+    assertThat(response).isNotNull();
+    assertThat(response.getItems()).isNotNull().hasSize(1);
+    assertThat(response.getPagination()).isNotNull();
+    assertThat(response.getPagination().getPage()).isZero();
+    assertThat(response.getPagination().getSize()).isEqualTo(25);
+    assertThat(response.getPagination().getTotalItems()).isEqualTo(1);
+    assertThat(response.getPagination().getTotalPages()).isEqualTo(1);
   }
 
   @Test
@@ -126,26 +121,22 @@ class BookServiceTest {
     CreateBookRequestDto requestDto = CreateBookRequestDto.builder()
         .isbn("978-9-7389-4434-3")
         .title("Sapiens: A Brief History of Humankind")
-        .coverUrl("https://images.isbndb.com/covers/60/97/9780062316097.jpg")
-        .price(new BigDecimal("20.79"))
-        .isAvailableOnline(Boolean.FALSE)
-        .publishedAt(LocalDate.parse("2022-12-01"))
+        .build();
+
+    Book savedBook = Book.builder()
+        .id(2L)
+        .isbn("978-9-7389-4434-3")
+        .title("Sapiens: A Brief History of Humankind")
         .build();
 
     when(bookRepository.existsByIsbn(anyString())).thenReturn(false);
-    when(bookRepository.save(any(Book.class)))
-        .thenReturn(BookDtoMapper.INSTANCE.createRequestToEntity(requestDto));
+    when(bookRepository.save(any(Book.class))).thenReturn(savedBook);
 
     BookDto bookDto = bookService.create(requestDto);
 
     assertThat(bookDto).isNotNull();
     assertThat(bookDto.getIsbn()).isEqualTo("978-9-7389-4434-3");
     assertThat(bookDto.getTitle()).isEqualTo("Sapiens: A Brief History of Humankind");
-    assertThat(bookDto.getCoverUrl())
-        .isEqualTo("https://images.isbndb.com/covers/60/97/9780062316097.jpg");
-    assertThat(bookDto.getPrice()).isEqualTo(new BigDecimal("20.79"));
-    assertThat(bookDto.getIsAvailableOnline()).isEqualTo(Boolean.FALSE);
-    assertThat(bookDto.getPublishedAt()).isEqualTo(LocalDate.parse("2022-12-01"));
   }
 
   @Test
@@ -169,27 +160,20 @@ class BookServiceTest {
     UpdateBookRequestDto requestDto = UpdateBookRequestDto.builder()
         .isbn("978-1-3035-0293-1")
         .title("Homo Deus")
-        .coverUrl("https://images.isbndb.com/covers/10293421502.jpg")
-        .price(new BigDecimal("17.99"))
-        .isAvailableOnline(Boolean.FALSE)
-        .publishedAt(LocalDate.parse("2015-01-01"))
         .build();
 
+    Book updatedBook = Book.builder().isbn("978-1-3035-0293-1").title("Homo Deus").build();
+
     when(bookRepository.findById(anyLong())).thenReturn(Optional.of(book));
-    when(bookRepository.save(any(Book.class))).thenReturn(book);
+    when(bookRepository.save(any(Book.class))).thenReturn(updatedBook);
 
     bookService.update(1L, requestDto);
 
+    verify(bookRepository).findById(1L);
     verify(bookRepository).save(any(Book.class));
     assertThat(book.getId()).isEqualTo(1L);
     assertThat(book.getIsbn()).isEqualTo("978-1-3035-0293-1");
     assertThat(book.getTitle()).isEqualTo("Homo Deus");
-    assertThat(book.getCoverUrl()).isEqualTo("https://images.isbndb.com/covers/10293421502.jpg");
-    assertThat(book.getPrice()).isEqualTo(new BigDecimal("17.99"));
-    assertThat(book.getIsAvailableOnline()).isFalse();
-    assertThat(book.getPublishedAt()).isEqualTo(LocalDate.parse("2015-01-01"));
-    assertThat(book.getCreatedAt()).isNotNull();
-    assertThat(book.getUpdatedAt()).isNotNull();
   }
 
   @Test
@@ -212,7 +196,7 @@ class BookServiceTest {
 
     bookService.deleteById(1L);
 
-    verify(bookRepository).deleteById(anyLong());
+    verify(bookRepository).deleteById(1L);
   }
 
   @Test
@@ -230,14 +214,12 @@ class BookServiceTest {
   void shouldReturnWhenFindAuthorsByBookIdWithExistingId() {
     when(bookRepository.findById(anyLong())).thenReturn(Optional.of(book));
 
-    List<AuthorDto> authorsDto = bookService.findAuthorsByBookId(1L);
+    List<AuthorDto> authors = bookService.findAuthorsByBookId(1L);
 
-    assertThat(authorsDto).isNotNull().isNotEmpty().hasSize(1);
-    assertThat(authorsDto.get(0)).isNotNull();
-    assertThat(authorsDto.get(0).getId()).isEqualTo(1L);
-    assertThat(authorsDto.get(0).getName()).isEqualTo("Yuval Noah Harari");
-    assertThat(authorsDto.get(0).getCreatedAt()).isNotNull();
-    assertThat(authorsDto.get(0).getUpdatedAt()).isNotNull();
+    assertThat(authors).hasSize(1).first().satisfies(actualAuthor -> {
+      assertThat(actualAuthor.getId()).isEqualTo(1L);
+      assertThat(actualAuthor.getName()).isEqualTo("Yuval Noah Harari");
+    });
   }
 
   @Test

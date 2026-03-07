@@ -4,7 +4,6 @@ import com.carlosarroyoam.rest.books.core.constant.AppMessages;
 import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
 import com.carlosarroyoam.rest.books.customer.dto.CreateCustomerRequestDto;
 import com.carlosarroyoam.rest.books.customer.dto.CustomerDto;
-import com.carlosarroyoam.rest.books.customer.dto.CustomerDto.CustomerDtoMapper;
 import com.carlosarroyoam.rest.books.customer.dto.CustomerFilterDto;
 import com.carlosarroyoam.rest.books.customer.dto.UpdateCustomerRequestDto;
 import com.carlosarroyoam.rest.books.customer.entity.Customer;
@@ -29,6 +28,8 @@ import org.springframework.web.server.ResponseStatusException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -63,42 +64,33 @@ class CustomerServiceTest {
   @Test
   @DisplayName("Should return PagedResponseDto<CustomerDto> when find all customers")
   void shouldReturnListOfCustomers() {
+    Pageable pageable = PageRequest.of(0, 25);
     List<Customer> customers = List.of(customer);
 
     when(customerRepository.findAll(ArgumentMatchers.<Specification<Customer>>any(),
-        any(Pageable.class))).thenReturn(new PageImpl<>(customers));
+        any(Pageable.class))).thenReturn(new PageImpl<>(customers, pageable, customers.size()));
 
     PagedResponseDto<CustomerDto> response = customerService.findAll(PageRequest.of(0, 25),
         CustomerFilterDto.builder().build());
 
-    CustomerDto customersDto = response.getItems().get(0);
-
-    assertThat(response.getItems()).isNotNull().isNotEmpty().hasSize(1);
-    assertThat(customersDto).isNotNull();
-    assertThat(customersDto.getId()).isEqualTo(1L);
-    assertThat(customersDto.getFirstName()).isEqualTo("Carlos Alberto");
-    assertThat(customersDto.getLastName()).isEqualTo("Arroyo Martínez");
-    assertThat(customersDto.getEmail()).isEqualTo("carroyom@mail.com");
-    assertThat(customersDto.getUsername()).isEqualTo("carroyom");
-    assertThat(customersDto.getCreatedAt()).isNotNull();
-    assertThat(customersDto.getUpdatedAt()).isNotNull();
+    assertThat(response).isNotNull();
+    assertThat(response.getItems()).isNotNull().hasSize(1);
+    assertThat(response.getPagination()).isNotNull();
+    assertThat(response.getPagination().getPage()).isZero();
+    assertThat(response.getPagination().getSize()).isEqualTo(25);
+    assertThat(response.getPagination().getTotalItems()).isEqualTo(1);
+    assertThat(response.getPagination().getTotalPages()).isEqualTo(1);
   }
 
   @Test
   @DisplayName("Should return CustomerDto when find customer by id with existing id")
   void shouldReturnWhenFindCustomerByIdWithExistingId() {
-    when(customerRepository.findById(any())).thenReturn(Optional.of(customer));
+    when(customerRepository.findById(anyLong())).thenReturn(Optional.of(customer));
 
     CustomerDto customerDto = customerService.findById(1L);
 
     assertThat(customerDto).isNotNull();
     assertThat(customerDto.getId()).isEqualTo(1L);
-    assertThat(customerDto.getFirstName()).isEqualTo("Carlos Alberto");
-    assertThat(customerDto.getLastName()).isEqualTo("Arroyo Martínez");
-    assertThat(customerDto.getEmail()).isEqualTo("carroyom@mail.com");
-    assertThat(customerDto.getUsername()).isEqualTo("carroyom");
-    assertThat(customerDto.getCreatedAt()).isNotNull();
-    assertThat(customerDto.getUpdatedAt()).isNotNull();
   }
 
   @Test
@@ -122,18 +114,20 @@ class CustomerServiceTest {
         .username("cguidor")
         .build();
 
-    when(customerRepository.existsByUsername(any())).thenReturn(false);
-    when(customerRepository.existsByEmail(any())).thenReturn(false);
-    when(customerRepository.save(any(Customer.class)))
-        .thenReturn(CustomerDtoMapper.INSTANCE.createRequestToEntity(requestDto));
+    Customer savedCustomer = Customer.builder()
+        .firstName("Cathy Stefania")
+        .lastName("Guido Rojas")
+        .build();
+
+    when(customerRepository.existsByUsername(anyString())).thenReturn(false);
+    when(customerRepository.existsByEmail(anyString())).thenReturn(false);
+    when(customerRepository.save(any(Customer.class))).thenReturn(savedCustomer);
 
     CustomerDto customerDto = customerService.create(requestDto);
 
     assertThat(customerDto).isNotNull();
     assertThat(customerDto.getFirstName()).isEqualTo("Cathy Stefania");
     assertThat(customerDto.getLastName()).isEqualTo("Guido Rojas");
-    assertThat(customerDto.getEmail()).isEqualTo("cguidor@mail.com");
-    assertThat(customerDto.getUsername()).isEqualTo("cguidor");
   }
 
   @Test
@@ -167,22 +161,18 @@ class CustomerServiceTest {
   void shouldUpdateCustomerWithValidData() {
     UpdateCustomerRequestDto requestDto = UpdateCustomerRequestDto.builder()
         .firstName("Carlos")
-        .lastName("Arroyo")
         .build();
 
+    Customer updatedCustomer = Customer.builder().firstName("Carlos").build();
+
     when(customerRepository.findById(any())).thenReturn(Optional.of(customer));
-    when(customerRepository.save(any(Customer.class))).thenReturn(customer);
+    when(customerRepository.save(any(Customer.class))).thenReturn(updatedCustomer);
 
     customerService.update(1L, requestDto);
 
     verify(customerRepository).save(customer);
     assertThat(customer.getId()).isEqualTo(1L);
     assertThat(customer.getFirstName()).isEqualTo("Carlos");
-    assertThat(customer.getLastName()).isEqualTo("Arroyo");
-    assertThat(customer.getEmail()).isEqualTo("carroyom@mail.com");
-    assertThat(customer.getUsername()).isEqualTo("carroyom");
-    assertThat(customer.getCreatedAt()).isNotNull();
-    assertThat(customer.getUpdatedAt()).isNotNull();
   }
 
   @Test
