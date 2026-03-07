@@ -1,4 +1,5 @@
 openapi: 3.0.1
+
 info:
   title: Spring REST Books API
   description: |
@@ -19,24 +20,26 @@ info:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
   version: 0.0.1-SNAPSHOT
+
 servers:
   - url: http://localhost:8081
     description: Localhost server url
+
 tags:
   - name: Books
-    description: Operations about books
+    description: Operations related to book management
   - name: Authors
-    description: Operations about authors
+    description: Operations related to authors
   - name: Customers
-    description: Operations about customers
+    description: Customer management operations
   - name: Carts
-    description: Operations about carts
+    description: Cart management operations
   - name: Orders
-    description: Operations about orders
+    description: Order management and processing
   - name: Payments
-    description: Operations about payments
+    description: Payment processing operations
   - name: Shipments
-    description: Operations about shipments
+    description: Shipment and delivery tracking
 
 paths:
   /books:
@@ -46,20 +49,8 @@ paths:
       summary: Gets the list of books
       operationId: findAllBooks
       parameters:
-        - name: page
-          in: query
-          required: false
-          schema:
-            type: integer
-            format: int32
-            default: 0
-        - name: size
-          in: query
-          required: false
-          schema:
-            type: integer
-            format: int32
-            default: 25
+        - $ref: "#/components/parameters/PageParam"
+        - $ref: "#/components/parameters/SizeParam"
         - name: isbn
           in: query
           required: false
@@ -89,9 +80,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/BookDto"
+                $ref: "#/components/schemas/PagedBooksResponse"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -108,11 +97,11 @@ paths:
       summary: Creates a new book
       operationId: createBook
       requestBody:
+        required: true
         content:
           application/json:
             schema:
               $ref: "#/components/schemas/CreateBookRequestDto"
-        required: true
       responses:
         "201":
           $ref: "#/components/responses/Created"
@@ -171,11 +160,11 @@ paths:
             type: integer
             format: int64
       requestBody:
+        required: true
         content:
           application/json:
             schema:
               $ref: "#/components/schemas/UpdateBookRequestDto"
-        required: true
       responses:
         "204":
           $ref: "#/components/responses/NoContent"
@@ -258,20 +247,8 @@ paths:
       summary: Gets the list of authors
       operationId: findAllAuthors
       parameters:
-        - name: page
-          in: query
-          required: false
-          schema:
-            type: integer
-            format: int32
-            default: 0
-        - name: size
-          in: query
-          required: false
-          schema:
-            type: integer
-            format: int32
-            default: 25
+        - $ref: "#/components/parameters/PageParam"
+        - $ref: "#/components/parameters/SizeParam"
         - name: name
           in: query
           required: false
@@ -284,9 +261,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/AuthorDto"
+                $ref: "#/components/schemas/PagedAuthorsResponse"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -303,11 +278,11 @@ paths:
       summary: Creates a new author
       operationId: createAuthor
       requestBody:
+        required: true
         content:
           application/json:
             schema:
               $ref: "#/components/schemas/CreateAuthorRequestDto"
-        required: true
       responses:
         "201":
           $ref: "#/components/responses/Created"
@@ -368,11 +343,11 @@ paths:
             type: integer
             format: int64
       requestBody:
+        required: true
         content:
           application/json:
             schema:
               $ref: "#/components/schemas/UpdateAuthorRequestDto"
-        required: true
       responses:
         "204":
           $ref: "#/components/responses/NoContent"
@@ -455,20 +430,8 @@ paths:
       summary: Gets the list of customers
       operationId: findAllCustomers
       parameters:
-        - name: page
-          in: query
-          required: false
-          schema:
-            type: integer
-            format: int32
-            default: 0
-        - name: size
-          in: query
-          required: false
-          schema:
-            type: integer
-            format: int32
-            default: 25
+        - $ref: "#/components/parameters/PageParam"
+        - $ref: "#/components/parameters/SizeParam"
         - name: firstName
           in: query
           required: false
@@ -499,9 +462,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/CustomerDto"
+                $ref: "#/components/schemas/PagedCustomersResponse"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -518,11 +479,11 @@ paths:
       summary: Creates a new customer
       operationId: createCustomer
       requestBody:
+        required: true
         content:
           application/json:
             schema:
               $ref: "#/components/schemas/CreateCustomerRequestDto"
-        required: true
       responses:
         "201":
           $ref: "#/components/responses/Created"
@@ -581,14 +542,14 @@ paths:
             type: integer
             format: int64
       requestBody:
+        required: true
         content:
           application/json:
             schema:
               $ref: "#/components/schemas/UpdateCustomerRequestDto"
-        required: true
       responses:
         "204":
-          description: No Content
+          $ref: "#/components/responses/NoContent"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -615,7 +576,7 @@ paths:
             format: int64
       responses:
         "204":
-          description: No Content
+          $ref: "#/components/responses/NoContent"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -661,6 +622,7 @@ paths:
       summary: Updates a cart item
       operationId: updateCartItem
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -716,29 +678,15 @@ paths:
       summary: Gets the list of orders
       operationId: findAllOrders
       parameters:
-        - name: page
-          in: query
-          required: false
-          schema:
-            type: integer
-            format: int32
-            default: 0
-        - name: size
-          in: query
-          required: false
-          schema:
-            type: integer
-            format: int32
-            default: 25
+        - $ref: "#/components/parameters/PageParam"
+        - $ref: "#/components/parameters/SizeParam"
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/OrderDto"
+                $ref: "#/components/schemas/PagedOrdersResponse"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -755,11 +703,11 @@ paths:
       summary: Creates a new order
       operationId: createOrder
       requestBody:
+        required: true
         content:
           application/json:
             schema:
               $ref: "#/components/schemas/CreateOrderRequestDto"
-        required: true
       responses:
         "201":
           $ref: "#/components/responses/Created"
@@ -818,6 +766,7 @@ paths:
             type: integer
             format: int64
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -872,29 +821,15 @@ paths:
       summary: Gets the list of payments
       operationId: findAllPayments
       parameters:
-        - name: page
-          in: query
-          required: false
-          schema:
-            type: integer
-            format: int32
-            default: 0
-        - name: size
-          in: query
-          required: false
-          schema:
-            type: integer
-            format: int32
-            default: 25
+        - $ref: "#/components/parameters/PageParam"
+        - $ref: "#/components/parameters/SizeParam"
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/PaymentDto"
+                $ref: "#/components/schemas/PagedPaymentsResponse"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -911,11 +846,11 @@ paths:
       summary: Creates a new payment
       operationId: createPayment
       requestBody:
+        required: true
         content:
           application/json:
             schema:
               $ref: "#/components/schemas/CreatePaymentRequestDto"
-        required: true
       responses:
         "201":
           $ref: "#/components/responses/Created"
@@ -948,7 +883,6 @@ paths:
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/PaymentDto"
         "400":
           $ref: "#/components/responses/BadRequest"
@@ -970,29 +904,15 @@ paths:
       summary: Gets the list of shipments
       operationId: findAllShipments
       parameters:
-        - name: page
-          in: query
-          required: false
-          schema:
-            type: integer
-            format: int32
-            default: 0
-        - name: size
-          in: query
-          required: false
-          schema:
-            type: integer
-            format: int32
-            default: 25
+        - $ref: "#/components/parameters/PageParam"
+        - $ref: "#/components/parameters/SizeParam"
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/ShipmentDto"
+                $ref: "#/components/schemas/PagedShipmentsResponse"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -1038,7 +958,25 @@ paths:
 
 components:
   schemas:
+    PagedBooksResponse:
+      type: object
+      description: Paginated response containing a list of books and pagination metadata.
+      required:
+        - items
+        - pagination
+      properties:
+        items:
+          type: array
+          description: List of books for the current page.
+          items:
+            $ref: "#/components/schemas/BookDto"
+        pagination:
+          description: Pagination metadata describing the current page and total results.
+          $ref: "#/components/schemas/PaginationDto"
+
     CreateBookRequestDto:
+      type: object
+      description: Request payload used to create a new book.
       required:
         - cover_url
         - is_available_online
@@ -1046,28 +984,36 @@ components:
         - price
         - published_at
         - title
-      type: object
       properties:
         isbn:
           type: string
-          maxLength: 17
+          description: International Standard Book Number identifying the book.
           minLength: 10
+          maxLength: 17
         title:
           type: string
-          maxLength: 128
+          description: Title of the book.
           minLength: 3
+          maxLength: 128
         cover_url:
           type: string
-          maxLength: 512
+          description: URL pointing to the book cover image.
           minLength: 3
+          maxLength: 512
         price:
           type: number
+          description: Retail price of the book.
         is_available_online:
           type: boolean
+          description: Indicates whether the book can be purchased online.
         published_at:
           type: string
           format: date
+          description: Publication date of the book.
+
     UpdateBookRequestDto:
+      type: object
+      description: Request payload used to update an existing book.
       required:
         - cover_url
         - is_available_online
@@ -1075,260 +1021,410 @@ components:
         - price
         - published_at
         - title
-      type: object
       properties:
         isbn:
           type: string
-          maxLength: 17
+          description: Updated ISBN of the book.
           minLength: 10
+          maxLength: 17
         title:
           type: string
-          maxLength: 128
+          description: Updated title of the book.
           minLength: 3
+          maxLength: 128
         cover_url:
           type: string
-          maxLength: 512
+          description: Updated URL for the book cover image.
           minLength: 3
+          maxLength: 512
         price:
           type: number
+          description: Updated retail price.
         is_available_online:
           type: boolean
+          description: Indicates whether the book is available for online purchase.
         published_at:
           type: string
           format: date
+          description: Updated publication date.
+
+    PagedAuthorsResponse:
+      type: object
+      description: Paginated response containing authors.
+      required:
+        - items
+        - pagination
+      properties:
+        items:
+          type: array
+          description: List of authors in the current page.
+          items:
+            $ref: "#/components/schemas/AuthorDto"
+        pagination:
+          $ref: "#/components/schemas/PaginationDto"
+
     CreateAuthorRequestDto:
+      type: object
+      description: Request payload used to create a new author.
       required:
         - name
-      type: object
       properties:
         name:
           type: string
-          maxLength: 128
+          description: Full name of the author.
           minLength: 3
+          maxLength: 128
+
     UpdateAuthorRequestDto:
+      type: object
+      description: Request payload used to update an existing author.
       required:
         - name
-      type: object
       properties:
         name:
           type: string
-          maxLength: 128
+          description: Updated author name.
           minLength: 3
+          maxLength: 128
+
+    PagedCustomersResponse:
+      type: object
+      description: Paginated response containing customers.
+      required:
+        - items
+        - pagination
+      properties:
+        items:
+          type: array
+          description: List of customers for the current page.
+          items:
+            $ref: "#/components/schemas/CustomerDto"
+        pagination:
+          $ref: "#/components/schemas/PaginationDto"
+
     CreateCustomerRequestDto:
+      type: object
+      description: Request payload used to register a new customer.
       required:
         - first_name
         - last_name
         - username
         - email
-      type: object
       properties:
         first_name:
-          maxLength: 128
-          minLength: 3
           type: string
+          description: Customer's first name.
+          minLength: 3
+          maxLength: 128
         last_name:
-          maxLength: 128
-          minLength: 3
           type: string
+          description: Customer's last name.
+          minLength: 3
+          maxLength: 128
         email:
-          maxLength: 128
-          minLength: 3
           type: string
+          description: Customer email address.
+          minLength: 3
+          maxLength: 128
         username:
-          maxLength: 128
-          minLength: 3
           type: string
+          description: Unique username used by the customer.
+          minLength: 3
+          maxLength: 128
+
     UpdateCustomerRequestDto:
+      type: object
+      description: Request payload used to update customer information.
       required:
         - first_name
         - last_name
-      type: object
       properties:
         first_name:
-          maxLength: 128
-          minLength: 3
           type: string
+          description: Updated first name.
+          minLength: 3
+          maxLength: 128
         last_name:
-          maxLength: 128
-          minLength: 3
           type: string
+          description: Updated last name.
+          minLength: 3
+          maxLength: 128
+
     AddCartItemRequestDto:
+      type: object
+      description: Request payload used to add a book to the customer's shopping cart.
       required:
         - book_id
-        - shipping_address
-        - billing_address
-        - items
-      type: object
       properties:
         book_id:
           type: integer
           format: int64
+          description: Identifier of the book to add to the cart.
         quantity:
           type: integer
           format: int32
           minimum: 1
+          description: Number of units to add to the cart.
+
     UpdateCartItemRequestDto:
+      type: object
+      description: Request payload used to update the quantity of an item in the cart.
       required:
         - book_id
-        - shipping_address
-        - billing_address
-        - items
-      type: object
       properties:
         book_id:
           type: integer
           format: int64
+          description: Identifier of the book in the cart.
         quantity:
           type: integer
           format: int32
           minimum: 1
+          description: Updated quantity.
+
+    PagedOrdersResponse:
+      type: object
+      description: Paginated response containing orders.
+      required:
+        - items
+        - pagination
+      properties:
+        items:
+          type: array
+          description: Orders included in the current page.
+          items:
+            $ref: "#/components/schemas/OrderDto"
+        pagination:
+          $ref: "#/components/schemas/PaginationDto"
+
     CreateOrderRequestDto:
+      type: object
+      description: Request payload used to create a new order.
       required:
         - customer_id
         - shipping_address
         - billing_address
         - items
-      type: object
       properties:
         customer_id:
           type: integer
           format: int64
+          description: Identifier of the customer placing the order.
         shipping_address:
           type: string
-          maxLength: 512
+          description: Shipping address where the order will be delivered.
           minLength: 10
+          maxLength: 512
         billing_address:
           type: string
-          maxLength: 512
+          description: Billing address associated with the order.
           minLength: 10
+          maxLength: 512
         notes:
           type: string
+          description: Optional notes related to the order.
           maxLength: 1000
         items:
           type: array
+          description: List of items included in the order.
           minItems: 1
           items:
             $ref: "#/components/schemas/CreateOrderItemRequestDto"
+
     UpdateOrderRequestDto:
+      type: object
+      description: Request payload used to update shipping or billing information of an order.
       required:
         - shipping_address
         - billing_address
-      type: object
       properties:
         shipping_address:
           type: string
-          maxLength: 512
+          description: Updated shipping address.
           minLength: 10
+          maxLength: 512
         billing_address:
           type: string
-          maxLength: 512
+          description: Updated billing address.
           minLength: 10
+          maxLength: 512
         notes:
           type: string
+          description: Updated order notes.
           maxLength: 1000
+
     CreateOrderItemRequestDto:
+      type: object
+      description: Request payload representing an item within an order.
       required:
         - book_id
         - quantity
-      type: object
       properties:
         book_id:
           type: integer
           format: int64
+          description: Identifier of the book being purchased.
         quantity:
           type: integer
           format: int32
           minimum: 1
+          description: Quantity of the selected book.
+
+    PagedPaymentsResponse:
+      type: object
+      description: Paginated response containing payments.
+      required:
+        - items
+        - pagination
+      properties:
+        items:
+          type: array
+          description: Payments included in the current page.
+          items:
+            $ref: "#/components/schemas/PaymentDto"
+        pagination:
+          $ref: "#/components/schemas/PaginationDto"
+
     CreatePaymentRequestDto:
+      type: object
+      description: Request payload used to create a payment for an order.
       required:
         - order_id
         - method
-      type: object
       properties:
         order_id:
           type: integer
           format: int64
+          description: Identifier of the order being paid.
         method:
           type: string
+          description: Payment method used to complete the transaction.
           enum:
             - CREDIT_CARD
             - DEBIT_CARD
             - PAYPAL
             - BANK_TRANSFER
             - CASH_ON_DELIVERY
+
+    PagedShipmentsResponse:
+      type: object
+      description: Paginated response containing shipment records.
+      required:
+        - items
+        - pagination
+      properties:
+        items:
+          type: array
+          description: Shipments included in the current page.
+          items:
+            $ref: "#/components/schemas/ShipmentDto"
+        pagination:
+          $ref: "#/components/schemas/PaginationDto"
+
     BookDto:
       type: object
+      description: Representation of a book in the catalog.
       properties:
         id:
           type: integer
           format: int64
+          description: Unique identifier of the book.
         isbn:
           type: string
+          description: ISBN code identifying the book.
         title:
           type: string
+          description: Title of the book.
         cover_url:
           type: string
+          description: URL of the book cover image.
         authors:
           type: array
+          description: List of authors associated with the book.
           items:
             $ref: "#/components/schemas/AuthorDto"
         price:
           type: number
+          description: Price of the book.
         is_available_online:
           type: boolean
+          description: Indicates whether the book can be purchased online.
         published_at:
           type: string
           format: date
+          description: Date when the book was published.
         created_at:
           type: string
           format: date-time
+          description: Timestamp when the book record was created.
         updated_at:
           type: string
           format: date-time
+          description: Timestamp of the last update.
+
     AuthorDto:
       type: object
+      description: Representation of an author.
       properties:
         id:
           type: integer
           format: int64
+          description: Unique identifier of the author.
         name:
           type: string
+          description: Full name of the author.
         created_at:
           type: string
           format: date-time
+          description: Timestamp when the author record was created.
         updated_at:
           type: string
           format: date-time
+          description: Timestamp of the last update.
+
     CustomerDto:
       type: object
+      description: Representation of a customer registered in the system.
       properties:
         id:
           type: integer
           format: int64
+          description: Unique identifier of the customer.
         first_name:
           type: string
+          description: Customer's first name.
         last_name:
           type: string
+          description: Customer's last name.
         email:
           type: string
+          description: Customer's email address.
         username:
           type: string
+          description: Username used for authentication or identification.
         created_at:
           type: string
           format: date-time
+          description: Timestamp when the customer was created.
         updated_at:
           type: string
           format: date-time
+          description: Timestamp of the last update.
+
     OrderDto:
       type: object
+      description: Representation of a customer order including its items, payment, shipment information, and calculated totals.
       properties:
         id:
           type: integer
           format: int64
+          description: Unique identifier of the order.
         order_number:
           type: string
+          description: Human-readable unique order number.
         status:
           type: string
+          description: Current status of the order lifecycle.
           enum:
             - PENDING
             - CONFIRMED
@@ -1336,98 +1432,131 @@ components:
             - SHIPPED
             - DELIVERED
             - CANCELLED
-            - REFUNDE
+            - REFUNDED
         items:
           type: array
+          description: List of items included in the order.
           items:
             $ref: "#/components/schemas/OrderItemDto"
         subtotal:
           type: number
+          description: Sum of all order item prices before taxes and shipping.
         tax_amount:
           type: number
+          description: Total tax amount applied to the order.
         shipping_amount:
           type: number
+          description: Shipping cost applied to the order.
         total:
           type: number
+          description: Final total amount of the order including taxes and shipping.
         customer:
-          type: object
+          description: Customer who placed the order.
           $ref: "#/components/schemas/CustomerDto"
         payment:
-          type: object
+          description: Payment information associated with the order.
           $ref: "#/components/schemas/PaymentDto"
         shipment:
-          type: object
+          description: Shipment details for the order delivery.
           $ref: "#/components/schemas/ShipmentDto"
         created_at:
           type: string
           format: date-time
+          description: Timestamp when the order was created.
         updated_at:
           type: string
           format: date-time
+          description: Timestamp when the order was last updated.
+
     OrderItemDto:
       type: object
+      description: Representation of a single item within an order.
       properties:
         id:
           type: integer
           format: int64
+          description: Unique identifier of the order item.
         quantity:
           type: number
+          description: Number of units purchased for the associated book.
         unit_price:
           type: number
+          description: Price of a single unit of the book at the time of purchase.
         total_price:
           type: number
+          description: Total price for the item calculated as quantity multiplied by unit price.
         book_id:
           type: number
           format: int64
+          description: Identifier of the book included in the order.
         created_at:
           type: string
           format: date-time
+          description: Timestamp when the order item was created.
         updated_at:
           type: string
           format: date-time
+          description: Timestamp when the order item was last updated.
+
     CartDto:
       type: object
+      description: Representation of a customer's shopping cart containing selected books before checkout.
       properties:
         id:
           type: integer
           format: int64
+          description: Unique identifier of the shopping cart.
         items:
           type: array
+          description: List of items currently in the cart.
           items:
             $ref: "#/components/schemas/CartItemDto"
         customer:
-          type: object
+          description: Customer who owns the cart.
           $ref: "#/components/schemas/CustomerDto"
         created_at:
           type: string
           format: date-time
+          description: Timestamp when the cart was created.
         updated_at:
           type: string
           format: date-time
+          description: Timestamp when the cart was last updated.
+
     CartItemDto:
       type: object
+      description: Representation of a book item inside a shopping cart.
       properties:
         id:
           type: integer
           format: int64
+          description: Unique identifier of the cart item.
         quantity:
           type: number
+          description: Quantity of the selected book in the cart.
         book_id:
           type: number
           format: int64
+          description: Identifier of the book added to the cart.
         added_at:
           type: string
           format: date-time
+          description: Timestamp when the item was added to the cart.
+
     PaymentDto:
       type: object
+      description: Representation of a payment associated with an order.
       properties:
         id:
           type: integer
           format: int64
+          description: Unique identifier of the payment.
         amount:
           type: number
+          description: Total amount paid in the transaction.
         method:
           type: string
+          description: Payment method used to complete the transaction.
           enum:
             - CREDIT_CARD
             - DEBIT_CARD
@@ -1436,6 +1565,7 @@ components:
             - CASH_ON_DELIVERY
         status:
           type: string
+          description: Current payment processing status.
           enum:
             - PENDING
             - COMPLETED
@@ -1444,23 +1574,32 @@ components:
             - REFUNDED
         transaction_id:
           type: string
+          description: External transaction identifier returned by the payment provider.
         order_id:
           type: number
           format: int64
+          description: Identifier of the order associated with this payment.
+
     ShipmentDto:
       type: object
+      description: Representation of shipment information for an order delivery.
       properties:
         id:
           type: integer
           format: int64
+          description: Unique identifier of the shipment.
         attention_name:
           type: string
+          description: Name of the person who will receive the shipment.
         address:
           type: string
+          description: Delivery address where the order will be shipped.
         phone:
           type: string
+          description: Contact phone number for the shipment recipient.
         status:
           type: string
+          description: Current shipment status.
           enum:
             - PENDING
             - SHIPPED
@@ -1470,23 +1609,80 @@ components:
         order_id:
           type: integer
           format: int64
+          description: Identifier of the order associated with this shipment.
+
+    PaginationDto:
+      type: object
+      description: Metadata describing pagination information for a paginated response.
+      required:
+        - page
+        - size
+        - total_items
+        - total_pages
+      properties:
+        page:
+          type: integer
+          example: 0
+          description: Current page index (0-based).
+        size:
+          type: integer
+          example: 25
+          description: Number of items returned per page.
+        total_items:
+          type: integer
+          example: 1
+          description: Total number of available items.
+        total_pages:
+          type: integer
+          example: 1
+          description: Total number of pages available.
+
     AppExceptionDto:
       type: object
+      description: Standard error response returned when an application exception occurs.
       properties:
         message:
           type: string
+          description: Human-readable error message.
         error:
           type: string
+          description: Short error identifier or error type.
         status:
           type: integer
+          description: HTTP status code associated with the error.
         details:
           type: object
+          description: Additional validation or error details.
           additionalProperties:
             type: string
         path:
           type: string
+          description: API endpoint path where the error occurred.
         timestamp:
+          type: string
           format: date-time
+          description: Timestamp when the error was generated.
+
+  parameters:
+    PageParam:
+      name: page
+      in: query
+      required: false
+      description: Page index (0-based)
+      schema:
+        type: integer
+        format: int32
+        default: 0
+
+    SizeParam:
+      name: size
+      in: query
+      required: false
+      description: Number of items per page
+      schema:
+        type: integer
+        format: int32
+        default: 25
 
   responses:
     Created:
@@ -1499,24 +1695,28 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/AppExceptionDto"
+
     BadRequest:
       description: Bad request
       content:
         application/json:
           schema:
             $ref: "#/components/schemas/AppExceptionDto"
+
     Unauthorized:
       description: Unauthorized
       content:
         application/json:
           schema:
             $ref: "#/components/schemas/AppExceptionDto"
+
     Forbidden:
       description: Forbidden
       content:
         application/json:
           schema:
             $ref: "#/components/schemas/AppExceptionDto"
+
     InternalServerError:
       description: Internal server error
       content:
