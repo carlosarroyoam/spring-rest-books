@@ -1,5 +1,4 @@
 openapi: 3.0.1
-
 info:
   title: Spring REST Books API
   description: |
@@ -24,6 +23,9 @@ info:
 servers:
   - url: http://localhost:8081
     description: Localhost server url
+
+security:
+  - bearerAuth: []
 
 tags:
   - name: Books
@@ -95,6 +97,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
+
     post:
       tags:
         - Books
@@ -105,7 +108,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CreateBookRequestDto"
+              $ref: "#/components/schemas/CreateBookRequest"
       responses:
         "201":
           $ref: "#/components/responses/Created"
@@ -119,6 +122,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
+
   /books/{bookId}:
     get:
       tags:
@@ -129,6 +133,7 @@ paths:
         - name: bookId
           in: path
           required: true
+          description: ID of the book to query
           schema:
             type: integer
             format: int64
@@ -151,6 +156,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
+
     put:
       tags:
         - Books
@@ -160,6 +166,7 @@ paths:
         - name: bookId
           in: path
           required: true
+          description: ID of the book to update
           schema:
             type: integer
             format: int64
@@ -168,7 +175,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UpdateBookRequestDto"
+              $ref: "#/components/schemas/UpdateBookRequest"
       responses:
         "204":
           $ref: "#/components/responses/NoContent"
@@ -184,6 +191,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
+
     delete:
       tags:
         - Books
@@ -193,6 +201,7 @@ paths:
         - name: bookId
           in: path
           required: true
+          description: ID of the book to delete
           schema:
             type: integer
             format: int64
@@ -211,6 +220,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
+
   /books/{bookId}/authors:
     get:
       tags:
@@ -221,6 +231,7 @@ paths:
         - name: bookId
           in: path
           required: true
+          description: ID of the book to query
           schema:
             type: integer
             format: int64
@@ -277,6 +288,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
+
     post:
       tags:
         - Authors
@@ -287,7 +299,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CreateAuthorRequestDto"
+              $ref: "#/components/schemas/CreateAuthorRequest"
       responses:
         "201":
           $ref: "#/components/responses/Created"
@@ -303,6 +315,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
+
   /authors/{authorId}:
     get:
       tags:
@@ -313,6 +326,7 @@ paths:
         - name: authorId
           in: path
           required: true
+          description: ID of the author to query
           schema:
             type: integer
             format: int64
@@ -335,6 +349,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
+
     put:
       tags:
         - Authors
@@ -344,6 +359,7 @@ paths:
         - name: authorId
           in: path
           required: true
+          description: ID of the author to update
           schema:
             type: integer
             format: int64
@@ -352,7 +368,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UpdateAuthorRequestDto"
+              $ref: "#/components/schemas/UpdateAuthorRequest"
       responses:
         "204":
           $ref: "#/components/responses/NoContent"
@@ -368,6 +384,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
+
     delete:
       tags:
         - Authors
@@ -377,6 +394,7 @@ paths:
         - name: authorId
           in: path
           required: true
+          description: ID of the author to delete
           schema:
             type: integer
             format: int64
@@ -395,6 +413,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
+
   /authors/{authorId}/books:
     get:
       tags:
@@ -405,6 +424,7 @@ paths:
         - name: authorId
           in: path
           required: true
+          description: ID of the author to query
           schema:
             type: integer
             format: int64
@@ -482,6 +502,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
+
     post:
       tags:
         - Customers
@@ -492,7 +513,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CreateCustomerRequestDto"
+              $ref: "#/components/schemas/CreateCustomerRequest"
       responses:
         "201":
           $ref: "#/components/responses/Created"
@@ -506,6 +527,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
+
   /customers/{customerId}:
     get:
       tags:
@@ -516,6 +538,7 @@ paths:
         - name: customerId
           in: path
           required: true
+          description: ID of the customer to query
           schema:
             type: integer
             format: int64
@@ -538,6 +561,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
+
     put:
       tags:
         - Customers
@@ -547,6 +571,7 @@ paths:
         - name: customerId
           in: path
           required: true
+          description: ID of the customer to update
           schema:
             type: integer
             format: int64
@@ -555,7 +580,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UpdateCustomerRequestDto"
+              $ref: "#/components/schemas/UpdateCustomerRequest"
       responses:
         "204":
           $ref: "#/components/responses/NoContent"
@@ -571,6 +596,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
+
     delete:
       tags:
         - Customers
@@ -580,6 +606,7 @@ paths:
         - name: customerId
           in: path
           required: true
+          description: ID of the customer to delete
           schema:
             type: integer
             format: int64
@@ -624,6 +651,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
+
   /carts/items:
     put:
       tags:
@@ -635,7 +663,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UpdateCartItemRequestDto"
+              $ref: "#/components/schemas/UpdateCartItemRequest"
       responses:
         "204":
           $ref: "#/components/responses/NoContent"
@@ -651,6 +679,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
+
   /carts/items/{cartItemId}:
     delete:
       tags:
@@ -661,6 +690,7 @@ paths:
         - name: cartItemId
           in: path
           required: true
+          description: ID of the cart item to delete
           schema:
             type: integer
             format: int64
@@ -706,6 +736,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
+
     post:
       tags:
         - Orders
@@ -716,7 +747,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CreateOrderRequestDto"
+              $ref: "#/components/schemas/CreateOrderRequest"
       responses:
         "201":
           $ref: "#/components/responses/Created"
@@ -730,6 +761,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
+
   /orders/{orderId}:
     get:
       tags:
@@ -740,6 +772,7 @@ paths:
         - name: orderId
           in: path
           required: true
+          description: ID of the order to query
           schema:
             type: integer
             format: int64
@@ -762,6 +795,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
+
     put:
       tags:
         - Orders
@@ -771,6 +805,7 @@ paths:
         - name: orderId
           in: path
           required: true
+          description: ID of the order to update
           schema:
             type: integer
             format: int64
@@ -779,7 +814,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UpdateOrderRequestDto"
+              $ref: "#/components/schemas/UpdateOrderRequest"
       responses:
         "204":
           $ref: "#/components/responses/NoContent"
@@ -795,6 +830,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
+
     delete:
       tags:
         - Orders
@@ -804,6 +840,7 @@ paths:
         - name: orderId
           in: path
           required: true
+          description: ID of the order to delete
           schema:
             type: integer
             format: int64
@@ -849,6 +886,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
+
     post:
       tags:
         - Payments
@@ -859,7 +897,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CreatePaymentRequestDto"
+              $ref: "#/components/schemas/CreatePaymentRequest"
       responses:
         "201":
           $ref: "#/components/responses/Created"
@@ -873,6 +911,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
+
   /payments/{paymentId}:
     get:
       tags:
@@ -883,6 +922,7 @@ paths:
         - name: paymentId
           in: path
           required: true
+          description: ID of the payment to query
           schema:
             type: integer
             format: int64
@@ -932,6 +972,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
+
   /shipments/{shipmentId}:
     get:
       tags:
@@ -942,6 +983,7 @@ paths:
         - name: shipmentId
           in: path
           required: true
+          description: ID of the shipment to query
           schema:
             type: integer
             format: int64
@@ -983,7 +1025,7 @@ components:
           description: Pagination metadata describing the current page and total results.
           $ref: "#/components/schemas/PaginationDto"
 
-    CreateBookRequestDto:
+    CreateBookRequest:
       type: object
       description: Request payload used to create a new book.
       required:
@@ -1020,7 +1062,7 @@ components:
           format: date
           description: Publication date of the book.
 
-    UpdateBookRequestDto:
+    UpdateBookRequest:
       type: object
       description: Request payload used to update an existing book.
       required:
@@ -1070,9 +1112,10 @@ components:
           items:
             $ref: "#/components/schemas/AuthorDto"
         pagination:
+          description: Pagination metadata describing the current page and total results.
           $ref: "#/components/schemas/PaginationDto"
 
-    CreateAuthorRequestDto:
+    CreateAuthorRequest:
       type: object
       description: Request payload used to create a new author.
       required:
@@ -1084,7 +1127,7 @@ components:
           minLength: 3
           maxLength: 128
 
-    UpdateAuthorRequestDto:
+    UpdateAuthorRequest:
       type: object
       description: Request payload used to update an existing author.
       required:
@@ -1111,7 +1154,7 @@ components:
         pagination:
           $ref: "#/components/schemas/PaginationDto"
 
-    CreateCustomerRequestDto:
+    CreateCustomerRequest:
       type: object
       description: Request payload used to register a new customer.
       required:
@@ -1141,7 +1184,7 @@ components:
           minLength: 3
           maxLength: 128
 
-    UpdateCustomerRequestDto:
+    UpdateCustomerRequest:
       type: object
       description: Request payload used to update customer information.
       required:
@@ -1159,7 +1202,7 @@ components:
           minLength: 3
           maxLength: 128
 
-    AddCartItemRequestDto:
+    AddCartItemRequest:
       type: object
       description: Request payload used to add a book to the customer's shopping cart.
       required:
@@ -1175,7 +1218,7 @@ components:
           minimum: 1
           description: Number of units to add to the cart.
 
-    UpdateCartItemRequestDto:
+    UpdateCartItemRequest:
       type: object
       description: Request payload used to update the quantity of an item in the cart.
       required:
@@ -1202,11 +1245,11 @@ components:
           type: array
           description: Orders included in the current page.
           items:
-            $ref: "#/components/schemas/OrderDto"
+            $ref: "#/components/schemas/OrderItemDto"
         pagination:
           $ref: "#/components/schemas/PaginationDto"
 
-    CreateOrderRequestDto:
+    CreateOrderRequest:
       type: object
       description: Request payload used to create a new order.
       required:
@@ -1238,9 +1281,9 @@ components:
           description: List of items included in the order.
           minItems: 1
           items:
-            $ref: "#/components/schemas/CreateOrderItemRequestDto"
+            $ref: "#/components/schemas/CreateOrderItemRequest"
 
-    UpdateOrderRequestDto:
+    UpdateOrderRequest:
       type: object
       description: Request payload used to update shipping or billing information of an order.
       required:
@@ -1262,7 +1305,7 @@ components:
           description: Updated order notes.
           maxLength: 1000
 
-    CreateOrderItemRequestDto:
+    CreateOrderItemRequest:
       type: object
       description: Request payload representing an item within an order.
       required:
@@ -1292,9 +1335,10 @@ components:
           items:
             $ref: "#/components/schemas/PaymentDto"
         pagination:
+          description: Pagination metadata describing the current page and total results.
           $ref: "#/components/schemas/PaginationDto"
 
-    CreatePaymentRequestDto:
+    CreatePaymentRequest:
       type: object
       description: Request payload used to create a payment for an order.
       required:
@@ -1328,6 +1372,7 @@ components:
           items:
             $ref: "#/components/schemas/ShipmentDto"
         pagination:
+          description: Pagination metadata describing the current page and total results.
           $ref: "#/components/schemas/PaginationDto"
 
     BookDto:
@@ -1468,6 +1513,15 @@ components:
         shipment:
           description: Shipment details for the order delivery.
           $ref: "#/components/schemas/ShipmentDto"
+        notes:
+          type: string
+          description: Optional notes associated with the order.
+        shipping_address:
+          type: string
+          description: Shipping address for the order delivery.
+        billing_address:
+          type: string
+          description: Billing address associated with the order.
         created_at:
           type: string
           format: date-time
@@ -1498,6 +1552,9 @@ components:
           type: number
           format: int64
           description: Identifier of the book included in the order.
+        book:
+          description: Book details for the order item.
+          $ref: "#/components/schemas/BookDto"
         created_at:
           type: string
           format: date-time
@@ -1523,6 +1580,12 @@ components:
         customer:
           description: Customer who owns the cart.
           $ref: "#/components/schemas/CustomerDto"
+        total_items:
+          type: integer
+          description: Total number of items in the cart.
+        total_price:
+          type: number
+          description: Total price of all items in the cart.
         created_at:
           type: string
           format: date-time
@@ -1547,6 +1610,9 @@ components:
           type: number
           format: int64
           description: Identifier of the book added to the cart.
+        book:
+          description: Book details for the cart item.
+          $ref: "#/components/schemas/BookDto"
         added_at:
           type: string
           format: date-time
