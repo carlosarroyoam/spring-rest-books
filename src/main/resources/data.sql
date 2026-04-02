@@ -17,3 +17,16 @@ INSERT INTO carts(customer_id, created_at, updated_at) VALUES (2, '2025-01-01 00
 INSERT INTO cart_items(book_id, cart_id, quantity, added_at) VALUES (1, 1, 1, '2025-01-01 00:00:00');
 INSERT INTO cart_items(book_id, cart_id, quantity, added_at) VALUES (1, 2, 1, '2025-01-01 00:00:00');
 INSERT INTO cart_items(book_id, cart_id, quantity, added_at) VALUES (2, 2, 2, '2025-01-01 00:00:00');
+
+INSERT INTO orders(order_number, status, customer_id, subtotal, tax_amount, shipping_amount, total, notes, shipping_address, billing_address, created_at, updated_at) VALUES ('ORD-20250001', 'SHIPPED', 1, 45.98, 7.36, 0.00, 53.34, 'Leave at the front desk', '123 Main Street, Springfield', '123 Main Street, Springfield', '2025-01-02 10:00:00', '2025-01-03 09:30:00');
+INSERT INTO orders(order_number, status, customer_id, subtotal, tax_amount, shipping_amount, total, notes, shipping_address, billing_address, created_at, updated_at) VALUES ('ORD-20250002', 'DELIVERED', 2, 64.57, 10.33, 0.00, 74.90, 'Ring the bell twice', '456 Oak Avenue, Shelbyville', '456 Oak Avenue, Shelbyville', '2025-01-04 11:15:00', '2025-01-06 17:45:00');
+
+INSERT INTO order_items(order_id, book_id, quantity, unit_price, total_price, created_at, updated_at) VALUES (1, 1, 2, 22.99, 45.98, '2025-01-02 10:00:00', '2025-01-02 10:00:00');
+INSERT INTO order_items(order_id, book_id, quantity, unit_price, total_price, created_at, updated_at) VALUES (2, 1, 1, 22.99, 22.99, '2025-01-04 11:15:00', '2025-01-04 11:15:00');
+INSERT INTO order_items(order_id, book_id, quantity, unit_price, total_price, created_at, updated_at) VALUES (2, 2, 2, 20.79, 41.58, '2025-01-04 11:15:00', '2025-01-04 11:15:00');
+
+INSERT INTO payments(amount, method, status, transaction_id, order_id) VALUES (53.34, 'CREDIT_CARD', 'COMPLETED', 'PAY-SEED-000001', 1);
+INSERT INTO payments(amount, method, status, transaction_id, order_id) VALUES (74.90, 'PAYPAL', 'COMPLETED', 'PAY-SEED-000002', 2);
+
+INSERT INTO shipments(attention_name, address, phone, status, order_id) VALUES ('Carlos Alberto Arroyo Martínez', '123 Main Street, Springfield', '555-0101', 'SHIPPED', 1);
+INSERT INTO shipments(attention_name, address, phone, status, order_id) VALUES ('Cathy Stefania Guido Rojas', '456 Oak Avenue, Shelbyville', '555-0102', 'DELIVERED', 2);
