@@ -1,5 +1,6 @@
-package com.carlosarroyoam.rest.books.orders.entity;
+package com.carlosarroyoam.rest.books.payment.entity;
 
+import com.carlosarroyoam.rest.books.orders.entity.Order;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -41,10 +42,7 @@ public class Payment {
   @Column(name = "transaction_id", length = 128)
   private String transactionId;
 
-  @Column(name = "order_id", nullable = false, unique = true)
-  private Long orderId;
-
   @OneToOne
-  @JoinColumn(name = "order_id", referencedColumnName = "id", insertable = false, updatable = false, nullable = false)
+  @JoinColumn(name = "order_id", referencedColumnName = "id", nullable = false, unique = true)
   private Order order;
 }

@@ -45,12 +45,7 @@ public class CustomerService {
   }
 
   public CustomerDto findById(Long customerId) {
-    Customer customerById = customerRepository.findById(customerId).orElseThrow(() -> {
-      log.warn(AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION);
-      return new ResponseStatusException(HttpStatus.NOT_FOUND,
-          AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION);
-    });
-
+    Customer customerById = findCustomerEntityById(customerId);
     return CustomerDtoMapper.INSTANCE.toDto(customerById);
   }
 
@@ -69,9 +64,10 @@ public class CustomerService {
     }
 
     LocalDateTime now = LocalDateTime.now();
-    Customer customer = CustomerDtoMapper.INSTANCE.createRequestToEntity(requestDto);
+    Customer customer = CustomerDtoMapper.INSTANCE.toEntity(requestDto);
     customer.setCreatedAt(now);
     customer.setUpdatedAt(now);
+
     Customer createdCustomer = customerRepository.save(customer);
 
     keycloakService.createUser(requestDto, createdCustomer.getId());
@@ -81,11 +77,7 @@ public class CustomerService {
 
   @Transactional
   public void update(Long customerId, UpdateCustomerRequestDto requestDto) {
-    Customer customerById = customerRepository.findById(customerId).orElseThrow(() -> {
-      log.warn(AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION);
-      return new ResponseStatusException(HttpStatus.NOT_FOUND,
-          AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION);
-    });
+    Customer customerById = findCustomerEntityById(customerId);
 
     customerById.setFirstName(requestDto.getFirstName());
     customerById.setLastName(requestDto.getLastName());
@@ -95,15 +87,19 @@ public class CustomerService {
 
   @Transactional
   public void deleteById(Long customerId) {
-    Customer customerById = customerRepository.findById(customerId).orElseThrow(() -> {
-      log.warn(AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION);
-      return new ResponseStatusException(HttpStatus.NOT_FOUND,
-          AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION);
-    });
+    Customer customerById = findCustomerEntityById(customerId);
 
     LocalDateTime now = LocalDateTime.now();
     customerById.setDeletedAt(now);
     customerById.setUpdatedAt(now);
     customerRepository.save(customerById);
+  }
+
+  private Customer findCustomerEntityById(Long customerId) {
+    return customerRepository.findById(customerId).orElseThrow(() -> {
+      log.warn(AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION);
+      return new ResponseStatusException(HttpStatus.NOT_FOUND,
+          AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION);
+    });
   }
 }

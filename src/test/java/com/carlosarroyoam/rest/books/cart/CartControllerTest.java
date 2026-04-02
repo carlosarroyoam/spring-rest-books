@@ -27,7 +27,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(MockitoExtension.class)
 class CartControllerTest {
-
   private ObjectMapper mapper;
   private MockMvc mockMvc;
 

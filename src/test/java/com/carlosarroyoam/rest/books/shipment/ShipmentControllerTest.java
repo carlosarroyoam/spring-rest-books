@@ -3,8 +3,9 @@ package com.carlosarroyoam.rest.books.shipment;
 import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
 import com.carlosarroyoam.rest.books.core.dto.PaginationDto;
 import com.carlosarroyoam.rest.books.core.exception.GlobalExceptionHandler;
-import com.carlosarroyoam.rest.books.orders.dto.ShipmentDto;
-import com.carlosarroyoam.rest.books.orders.entity.ShipmentStatus;
+import com.carlosarroyoam.rest.books.shipment.dto.ShipmentDto;
+import com.carlosarroyoam.rest.books.shipment.dto.UpdateShipmentStatusRequestDto;
+import com.carlosarroyoam.rest.books.shipment.entity.ShipmentStatus;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,7 +32,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(MockitoExtension.class)
 class ShipmentControllerTest {
-
   private ObjectMapper mapper;
   private MockMvc mockMvc;
 

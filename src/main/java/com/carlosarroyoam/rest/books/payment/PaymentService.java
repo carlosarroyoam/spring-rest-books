@@ -4,17 +4,17 @@ import com.carlosarroyoam.rest.books.core.constant.AppMessages;
 import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
 import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto.PagedResponseDtoMapper;
 import com.carlosarroyoam.rest.books.orders.OrderRepository;
-import com.carlosarroyoam.rest.books.orders.dto.PaymentDto;
-import com.carlosarroyoam.rest.books.orders.dto.PaymentDto.PaymentDtoMapper;
 import com.carlosarroyoam.rest.books.orders.entity.Order;
 import com.carlosarroyoam.rest.books.orders.entity.OrderStatus;
-import com.carlosarroyoam.rest.books.orders.entity.Payment;
-import com.carlosarroyoam.rest.books.orders.entity.PaymentStatus;
-import com.carlosarroyoam.rest.books.orders.entity.Shipment;
-import com.carlosarroyoam.rest.books.orders.entity.ShipmentStatus;
 import com.carlosarroyoam.rest.books.payment.dto.CreatePaymentRequestDto;
+import com.carlosarroyoam.rest.books.payment.dto.PaymentDto;
+import com.carlosarroyoam.rest.books.payment.dto.PaymentDto.PaymentDtoMapper;
 import com.carlosarroyoam.rest.books.payment.dto.UpdatePaymentStatusRequestDto;
+import com.carlosarroyoam.rest.books.payment.entity.Payment;
+import com.carlosarroyoam.rest.books.payment.entity.PaymentStatus;
 import com.carlosarroyoam.rest.books.shipment.ShipmentRepository;
+import com.carlosarroyoam.rest.books.shipment.entity.Shipment;
+import com.carlosarroyoam.rest.books.shipment.entity.ShipmentStatus;
 import jakarta.transaction.Transactional;
 import java.util.UUID;
 import org.slf4j.Logger;
@@ -48,48 +48,48 @@ public class PaymentService {
 
   @Transactional
   public PaymentDto findById(Long paymentId) {
-    Payment payment = findPaymentEntityById(paymentId);
-    return PaymentDtoMapper.INSTANCE.toDto(payment);
+    Payment paymentById = findPaymentEntityById(paymentId);
+    return PaymentDtoMapper.INSTANCE.toDto(paymentById);
   }
 
   @Transactional
   public PaymentDto create(CreatePaymentRequestDto requestDto) {
-    Order order = findOrderEntityById(requestDto.getOrderId());
+    Order orderById = findOrderEntityById(requestDto.getOrderId());
 
-    if (Boolean.TRUE.equals(paymentRepository.existsByOrderId(order.getId()))) {
+    if (Boolean.TRUE.equals(paymentRepository.existsByOrderId(orderById.getId()))) {
       log.warn(AppMessages.PAYMENT_ALREADY_EXISTS_EXCEPTION);
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
           AppMessages.PAYMENT_ALREADY_EXISTS_EXCEPTION);
     }
 
     Payment payment = Payment.builder()
-        .amount(order.getTotal())
+        .amount(orderById.getTotal())
         .method(requestDto.getMethod())
         .status(PaymentStatus.COMPLETED)
         .transactionId(generateTransactionId())
-        .orderId(order.getId())
-        .order(order)
+        .order(orderById)
         .build();
 
     Payment savedPayment = paymentRepository.save(payment);
 
-    order.setStatus(OrderStatus.CONFIRMED);
-    orderRepository.save(order);
+    orderById.setStatus(OrderStatus.CONFIRMED);
+    orderRepository.save(orderById);
 
-    createShipmentIfMissing(order);
+    createShipmentIfMissing(orderById);
 
     return PaymentDtoMapper.INSTANCE.toDto(savedPayment);
   }
 
   @Transactional
   public void updateStatus(Long paymentId, UpdatePaymentStatusRequestDto requestDto) {
-    Payment payment = findPaymentEntityById(paymentId);
-    payment.setStatus(requestDto.getStatus());
-    paymentRepository.save(payment);
+    Payment paymentById = findPaymentEntityById(paymentId);
+    paymentById.setStatus(requestDto.getStatus());
+    paymentRepository.save(paymentById);
 
-    Order order = findOrderEntityById(payment.getOrderId());
-    order.setStatus(resolveOrderStatusFromPayment(requestDto.getStatus(), order.getStatus()));
-    orderRepository.save(order);
+    Order orderById = findOrderEntityById(paymentById.getOrder().getId());
+    orderById
+        .setStatus(resolveOrderStatusFromPayment(requestDto.getStatus(), orderById.getStatus()));
+    orderRepository.save(orderById);
   }
 
   private Payment findPaymentEntityById(Long paymentId) {
@@ -130,7 +130,6 @@ public class PaymentService {
         .attentionName(attentionName)
         .address(order.getShippingAddress())
         .status(ShipmentStatus.PENDING)
-        .orderId(order.getId())
         .order(order)
         .build();
 

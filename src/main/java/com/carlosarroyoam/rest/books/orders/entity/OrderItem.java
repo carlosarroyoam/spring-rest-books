@@ -36,15 +36,9 @@ public class OrderItem {
   @Column(name = "total_price", precision = 10, scale = 2, nullable = false)
   private BigDecimal totalPrice;
 
-  @Column(name = "book_id", nullable = false)
-  private Long bookId;
-
   @ManyToOne
-  @JoinColumn(name = "book_id", referencedColumnName = "id", insertable = false, updatable = false, nullable = false)
+  @JoinColumn(name = "book_id", referencedColumnName = "id", nullable = false)
   private Book book;
-
-  @Column(name = "order_id", nullable = false, insertable = false, updatable = false)
-  private Long orderId;
 
   @ManyToOne
   @JoinColumn(name = "order_id", referencedColumnName = "id", nullable = false)

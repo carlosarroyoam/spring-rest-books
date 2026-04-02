@@ -52,7 +52,6 @@ class CartServiceTest {
     cartItem = CartItem.builder()
         .id(1L)
         .quantity(1)
-        .bookId(1L)
         .book(Book.builder().id(1L).build())
         .addedAt(now)
         .build();
@@ -60,7 +59,6 @@ class CartServiceTest {
     cart = Cart.builder()
         .id(1L)
         .items(List.of(cartItem))
-        .customerId(1L)
         .customer(Customer.builder().id(1L).build())
         .createdAt(now)
         .updatedAt(now)

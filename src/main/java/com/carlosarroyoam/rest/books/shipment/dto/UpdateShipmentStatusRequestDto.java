@@ -1,6 +1,6 @@
-package com.carlosarroyoam.rest.books.shipment;
+package com.carlosarroyoam.rest.books.shipment.dto;
 
-import com.carlosarroyoam.rest.books.orders.entity.ShipmentStatus;
+import com.carlosarroyoam.rest.books.shipment.entity.ShipmentStatus;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -3,11 +3,12 @@ package com.carlosarroyoam.rest.books.shipment;
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
 import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
 import com.carlosarroyoam.rest.books.orders.OrderRepository;
-import com.carlosarroyoam.rest.books.orders.dto.ShipmentDto;
 import com.carlosarroyoam.rest.books.orders.entity.Order;
 import com.carlosarroyoam.rest.books.orders.entity.OrderStatus;
-import com.carlosarroyoam.rest.books.orders.entity.Shipment;
-import com.carlosarroyoam.rest.books.orders.entity.ShipmentStatus;
+import com.carlosarroyoam.rest.books.shipment.dto.ShipmentDto;
+import com.carlosarroyoam.rest.books.shipment.dto.UpdateShipmentStatusRequestDto;
+import com.carlosarroyoam.rest.books.shipment.entity.Shipment;
+import com.carlosarroyoam.rest.books.shipment.entity.ShipmentStatus;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,15 +47,15 @@ class ShipmentServiceTest {
 
   @BeforeEach
   void setUp() {
+    order = Order.builder().id(1L).status(OrderStatus.CONFIRMED).build();
+
     shipment = Shipment.builder()
         .id(1L)
         .attentionName("Carlos Arroyo")
         .address("123 Main Street, Springfield")
         .status(ShipmentStatus.PENDING)
-        .orderId(1L)
+        .order(order)
         .build();
-
-    order = Order.builder().id(1L).status(OrderStatus.CONFIRMED).build();
   }
 
   @Test

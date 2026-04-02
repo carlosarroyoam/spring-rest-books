@@ -39,7 +39,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(MockitoExtension.class)
 class BookControllerTest {
-
   private ObjectMapper mapper;
   private MockMvc mockMvc;
 

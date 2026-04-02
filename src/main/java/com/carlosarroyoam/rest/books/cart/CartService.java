@@ -31,21 +31,12 @@ public class CartService {
   }
 
   public CartDto findByCustomerId(Long customerId) {
-    Cart cartByCustomerId = cartRepository.findByCustomerId(customerId).orElseThrow(() -> {
-      log.warn(AppMessages.CART_NOT_FOUND_EXCEPTION);
-      return new ResponseStatusException(HttpStatus.NOT_FOUND,
-          AppMessages.CART_NOT_FOUND_EXCEPTION);
-    });
-
+    Cart cartByCustomerId = findCartEntityByCustomerId(customerId);
     return CartDtoMapper.INSTANCE.toDto(cartByCustomerId);
   }
 
   public void updateCartItem(Long customerId, UpdateCartItemRequestDto requestDto) {
-    Cart cartByCustomerId = cartRepository.findByCustomerId(customerId).orElseThrow(() -> {
-      log.warn(AppMessages.CART_NOT_FOUND_EXCEPTION);
-      return new ResponseStatusException(HttpStatus.NOT_FOUND,
-          AppMessages.CART_NOT_FOUND_EXCEPTION);
-    });
+    Cart cartByCustomerId = findCartEntityByCustomerId(customerId);
 
     if (Boolean.FALSE.equals(bookRepository.existsById(requestDto.getBookId()))) {
       log.warn(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
@@ -54,23 +45,19 @@ public class CartService {
 
     Optional<CartItem> cartItemOptional = cartByCustomerId.getItems()
         .stream()
-        .filter(item -> item.getBookId().equals(requestDto.getBookId()))
+        .filter(item -> item.getBook().getId().equals(requestDto.getBookId()))
         .findFirst();
 
     CartItem cartItem = cartItemOptional.isPresent() ? cartItemOptional.get()
         : CartItemDtoMapper.INSTANCE.updateCartItemToEntity(requestDto);
     cartItem.setQuantity(requestDto.getQuantity());
     cartItem.setAddedAt(LocalDateTime.now());
-    cartItem.setCartId(cartByCustomerId.getId());
+    cartItem.setCart(cartByCustomerId);
     cartItemRepository.save(cartItem);
   }
 
   public void deleteCartItem(Long customerId, Long cartItemId) {
-    Cart cartByCustomerId = cartRepository.findByCustomerId(customerId).orElseThrow(() -> {
-      log.warn(AppMessages.CART_NOT_FOUND_EXCEPTION);
-      return new ResponseStatusException(HttpStatus.NOT_FOUND,
-          AppMessages.CART_NOT_FOUND_EXCEPTION);
-    });
+    Cart cartByCustomerId = findCartEntityByCustomerId(customerId);
 
     CartItem cartItemOptional = cartByCustomerId.getItems()
         .stream()
@@ -83,5 +70,13 @@ public class CartService {
         });
 
     cartItemRepository.deleteById(cartItemOptional.getId());
+  }
+
+  private Cart findCartEntityByCustomerId(Long customerId) {
+    return cartRepository.findByCustomerId(customerId).orElseThrow(() -> {
+      log.warn(AppMessages.CART_NOT_FOUND_EXCEPTION);
+      return new ResponseStatusException(HttpStatus.NOT_FOUND,
+          AppMessages.CART_NOT_FOUND_EXCEPTION);
+    });
   }
 }

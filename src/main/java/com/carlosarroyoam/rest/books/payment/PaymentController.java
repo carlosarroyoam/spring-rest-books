@@ -1,8 +1,8 @@
 package com.carlosarroyoam.rest.books.payment;
 
 import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
-import com.carlosarroyoam.rest.books.orders.dto.PaymentDto;
 import com.carlosarroyoam.rest.books.payment.dto.CreatePaymentRequestDto;
+import com.carlosarroyoam.rest.books.payment.dto.PaymentDto;
 import com.carlosarroyoam.rest.books.payment.dto.UpdatePaymentStatusRequestDto;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;

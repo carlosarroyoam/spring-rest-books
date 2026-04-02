@@ -1,6 +1,6 @@
 package com.carlosarroyoam.rest.books.payment.dto;
 
-import com.carlosarroyoam.rest.books.orders.entity.PaymentStatus;
+import com.carlosarroyoam.rest.books.payment.entity.PaymentStatus;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

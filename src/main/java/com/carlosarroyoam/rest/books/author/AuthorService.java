@@ -43,12 +43,7 @@ public class AuthorService {
   }
 
   public AuthorDto findById(Long authorId) {
-    Author authorById = authorRepository.findById(authorId).orElseThrow(() -> {
-      log.warn(AppMessages.AUTHOR_NOT_FOUND_EXCEPTION);
-      return new ResponseStatusException(HttpStatus.NOT_FOUND,
-          AppMessages.AUTHOR_NOT_FOUND_EXCEPTION);
-    });
-
+    Author authorById = findAuthorEntityById(authorId);
     return AuthorDtoMapper.INSTANCE.toDto(authorById);
   }
 
@@ -63,12 +58,7 @@ public class AuthorService {
 
   @Transactional
   public void update(Long authorId, UpdateAuthorRequestDto requestDto) {
-    Author authorById = authorRepository.findById(authorId).orElseThrow(() -> {
-      log.warn(AppMessages.AUTHOR_NOT_FOUND_EXCEPTION);
-      return new ResponseStatusException(HttpStatus.NOT_FOUND,
-          AppMessages.AUTHOR_NOT_FOUND_EXCEPTION);
-    });
-
+    Author authorById = findAuthorEntityById(authorId);
     authorById.setName(requestDto.getName());
     authorById.setUpdatedAt(LocalDateTime.now());
     authorRepository.save(authorById);
@@ -86,12 +76,16 @@ public class AuthorService {
   }
 
   public List<BookDto> findBooksByAuthorId(Long authorId) {
-    Author authorById = authorRepository.findById(authorId).orElseThrow(() -> {
+    Author authorById = findAuthorEntityById(authorId);
+
+    return BookDtoMapper.INSTANCE.toDtos(authorById.getBooks());
+  }
+
+  private Author findAuthorEntityById(Long authorId) {
+    return authorRepository.findById(authorId).orElseThrow(() -> {
       log.warn(AppMessages.AUTHOR_NOT_FOUND_EXCEPTION);
       return new ResponseStatusException(HttpStatus.NOT_FOUND,
           AppMessages.AUTHOR_NOT_FOUND_EXCEPTION);
     });
-
-    return BookDtoMapper.INSTANCE.toDtos(authorById.getBooks());
   }
 }

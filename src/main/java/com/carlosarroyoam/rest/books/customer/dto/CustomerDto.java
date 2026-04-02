@@ -34,6 +34,6 @@ public class CustomerDto {
 
     List<CustomerDto> toDtos(List<Customer> entities);
 
-    Customer createRequestToEntity(CreateCustomerRequestDto requestDto);
+    Customer toEntity(CreateCustomerRequestDto requestDto);
   }
 }

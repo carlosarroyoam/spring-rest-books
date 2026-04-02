@@ -3,11 +3,11 @@ package com.carlosarroyoam.rest.books.payment;
 import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
 import com.carlosarroyoam.rest.books.core.dto.PaginationDto;
 import com.carlosarroyoam.rest.books.core.exception.GlobalExceptionHandler;
-import com.carlosarroyoam.rest.books.orders.dto.PaymentDto;
-import com.carlosarroyoam.rest.books.orders.entity.PaymentMethod;
-import com.carlosarroyoam.rest.books.orders.entity.PaymentStatus;
 import com.carlosarroyoam.rest.books.payment.dto.CreatePaymentRequestDto;
+import com.carlosarroyoam.rest.books.payment.dto.PaymentDto;
 import com.carlosarroyoam.rest.books.payment.dto.UpdatePaymentStatusRequestDto;
+import com.carlosarroyoam.rest.books.payment.entity.PaymentMethod;
+import com.carlosarroyoam.rest.books.payment.entity.PaymentStatus;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.math.BigDecimal;
 import java.util.List;
@@ -37,7 +37,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(MockitoExtension.class)
 class PaymentControllerTest {
-
   private ObjectMapper mapper;
   private MockMvc mockMvc;
 

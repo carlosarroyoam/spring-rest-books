@@ -1,7 +1,8 @@
 package com.carlosarroyoam.rest.books.shipment;
 
 import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
-import com.carlosarroyoam.rest.books.orders.dto.ShipmentDto;
+import com.carlosarroyoam.rest.books.shipment.dto.ShipmentDto;
+import com.carlosarroyoam.rest.books.shipment.dto.UpdateShipmentStatusRequestDto;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;

@@ -54,24 +54,17 @@ public class OrderService {
 
   @Transactional
   public OrderDto findById(Long orderId) {
-    Order order = findOrderEntityById(orderId);
-    return OrderDtoMapper.INSTANCE.toDto(order);
+    Order orderById = findOrderEntityById(orderId);
+    return OrderDtoMapper.INSTANCE.toDto(orderById);
   }
 
   @Transactional
   public OrderDto create(CreateOrderRequestDto requestDto) {
-    Customer customer = customerRepository.findById(requestDto.getCustomerId()).orElseThrow(() -> {
-      log.warn(AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION);
-      return new ResponseStatusException(HttpStatus.NOT_FOUND,
-          AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION);
-    });
+    Customer customerById = findCustomerEntityById(requestDto);
 
     LocalDateTime now = LocalDateTime.now();
-    Order order = Order.builder()
-        .notes(requestDto.getNotes())
-        .shippingAddress(requestDto.getShippingAddress())
-        .billingAddress(requestDto.getBillingAddress())
-        .build();
+    Order order = OrderDtoMapper.INSTANCE.toEntity(requestDto);
+
     List<OrderItem> items = buildOrderItems(requestDto.getItems(), now, order);
     BigDecimal subtotal = calculateSubtotal(items);
     BigDecimal taxAmount = subtotal.multiply(TAX_RATE).setScale(2, RoundingMode.HALF_UP);
@@ -82,13 +75,12 @@ public class OrderService {
 
     order.setOrderNumber(generateOrderNumber());
     order.setStatus(OrderStatus.PENDING);
-    order.setCustomerId(customer.getId());
-    order.setCustomer(customer);
-    order.setItems(items);
+    order.setCustomer(customerById);
     order.setSubtotal(subtotal);
     order.setTaxAmount(taxAmount);
     order.setShippingAmount(shippingAmount);
     order.setTotal(total);
+    order.setItems(items);
     order.setCreatedAt(now);
     order.setUpdatedAt(now);
 
@@ -97,12 +89,12 @@ public class OrderService {
 
   @Transactional
   public void update(Long orderId, UpdateOrderRequestDto requestDto) {
-    Order order = findOrderEntityById(orderId);
-    order.setShippingAddress(requestDto.getShippingAddress());
-    order.setBillingAddress(requestDto.getBillingAddress());
-    order.setNotes(requestDto.getNotes());
-    order.setUpdatedAt(LocalDateTime.now());
-    orderRepository.save(order);
+    Order orderById = findOrderEntityById(orderId);
+    orderById.setShippingAddress(requestDto.getShippingAddress());
+    orderById.setBillingAddress(requestDto.getBillingAddress());
+    orderById.setNotes(requestDto.getNotes());
+    orderById.setUpdatedAt(LocalDateTime.now());
+    orderRepository.save(orderById);
   }
 
   @Transactional
@@ -124,6 +116,14 @@ public class OrderService {
     });
   }
 
+  private Customer findCustomerEntityById(CreateOrderRequestDto requestDto) {
+    return customerRepository.findById(requestDto.getCustomerId()).orElseThrow(() -> {
+      log.warn(AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION);
+      return new ResponseStatusException(HttpStatus.NOT_FOUND,
+          AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION);
+    });
+  }
+
   private List<OrderItem> buildOrderItems(List<CreateOrderItemRequestDto> requestItems,
       LocalDateTime now, Order order) {
     return requestItems.stream().map(item -> {
@@ -141,7 +141,6 @@ public class OrderService {
           .quantity(item.getQuantity())
           .unitPrice(unitPrice)
           .totalPrice(totalPrice)
-          .bookId(book.getId())
           .book(book)
           .order(order)
           .createdAt(now)

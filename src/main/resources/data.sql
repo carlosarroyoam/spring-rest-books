@@ -28,5 +28,5 @@ INSERT INTO order_items(order_id, book_id, quantity, unit_price, total_price, cr
 INSERT INTO payments(amount, method, status, transaction_id, order_id) VALUES (53.34, 'CREDIT_CARD', 'COMPLETED', 'PAY-SEED-000001', 1);
 INSERT INTO payments(amount, method, status, transaction_id, order_id) VALUES (74.90, 'PAYPAL', 'COMPLETED', 'PAY-SEED-000002', 2);
 
-INSERT INTO shipments(attention_name, address, phone, status, order_id) VALUES ('Carlos Alberto Arroyo Martínez', '123 Main Street, Springfield', '555-0101', 'SHIPPED', 1);
-INSERT INTO shipments(attention_name, address, phone, status, order_id) VALUES ('Cathy Stefania Guido Rojas', '456 Oak Avenue, Shelbyville', '555-0102', 'DELIVERED', 2);
+INSERT INTO shipments(attention_name, address, phone, status, order_id) VALUES ('Carlos Alberto Arroyo Martínez', '123 Main Street, Springfield', '555-0101-1234', 'SHIPPED', 1);
+INSERT INTO shipments(attention_name, address, phone, status, order_id) VALUES ('Cathy Stefania Guido Rojas', '456 Oak Avenue, Shelbyville', '555-0102-2349', 'DELIVERED', 2);

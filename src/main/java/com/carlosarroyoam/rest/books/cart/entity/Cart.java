@@ -33,11 +33,8 @@ public class Cart {
   @OneToMany(mappedBy = "cart")
   private List<CartItem> items = new ArrayList<>();
 
-  @Column(name = "customer_id", nullable = false)
-  private Long customerId;
-
   @OneToOne
-  @JoinColumn(name = "customer_id", referencedColumnName = "id", insertable = false, updatable = false, nullable = false)
+  @JoinColumn(name = "customer_id", referencedColumnName = "id", nullable = false)
   private Customer customer;
 
   @Column(name = "created_at", nullable = false)

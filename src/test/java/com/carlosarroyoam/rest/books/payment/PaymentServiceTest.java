@@ -3,17 +3,17 @@ package com.carlosarroyoam.rest.books.payment;
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
 import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
 import com.carlosarroyoam.rest.books.orders.OrderRepository;
-import com.carlosarroyoam.rest.books.orders.dto.PaymentDto;
 import com.carlosarroyoam.rest.books.orders.entity.Order;
 import com.carlosarroyoam.rest.books.orders.entity.OrderStatus;
-import com.carlosarroyoam.rest.books.orders.entity.Payment;
-import com.carlosarroyoam.rest.books.orders.entity.PaymentMethod;
-import com.carlosarroyoam.rest.books.orders.entity.PaymentStatus;
-import com.carlosarroyoam.rest.books.orders.entity.Shipment;
-import com.carlosarroyoam.rest.books.orders.entity.ShipmentStatus;
 import com.carlosarroyoam.rest.books.payment.dto.CreatePaymentRequestDto;
+import com.carlosarroyoam.rest.books.payment.dto.PaymentDto;
 import com.carlosarroyoam.rest.books.payment.dto.UpdatePaymentStatusRequestDto;
+import com.carlosarroyoam.rest.books.payment.entity.Payment;
+import com.carlosarroyoam.rest.books.payment.entity.PaymentMethod;
+import com.carlosarroyoam.rest.books.payment.entity.PaymentStatus;
 import com.carlosarroyoam.rest.books.shipment.ShipmentRepository;
+import com.carlosarroyoam.rest.books.shipment.entity.Shipment;
+import com.carlosarroyoam.rest.books.shipment.entity.ShipmentStatus;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -75,7 +75,6 @@ class PaymentServiceTest {
         .method(PaymentMethod.CREDIT_CARD)
         .status(PaymentStatus.COMPLETED)
         .transactionId("PAY-ABC123")
-        .orderId(1L)
         .order(order)
         .build();
   }
@@ -175,8 +174,11 @@ class PaymentServiceTest {
     when(orderRepository.findById(1L)).thenReturn(Optional.of(order));
     when(paymentRepository.existsByOrderId(1L)).thenReturn(false);
     when(paymentRepository.save(any(Payment.class))).thenReturn(payment);
-    when(shipmentRepository.findByOrderId(1L)).thenReturn(
-        Optional.of(Shipment.builder().id(1L).orderId(1L).status(ShipmentStatus.PENDING).build()));
+    when(shipmentRepository.findByOrderId(1L)).thenReturn(Optional.of(Shipment.builder()
+        .id(1L)
+        .order(Order.builder().build())
+        .status(ShipmentStatus.PENDING)
+        .build()));
 
     paymentService.create(requestDto);
 

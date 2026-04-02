@@ -46,12 +46,7 @@ public class BookService {
   }
 
   public BookDto findById(Long bookId) {
-    Book bookById = bookRepository.findById(bookId).orElseThrow(() -> {
-      log.warn(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
-      return new ResponseStatusException(HttpStatus.NOT_FOUND,
-          AppMessages.BOOK_NOT_FOUND_EXCEPTION);
-    });
-
+    Book bookById = findBookEntityById(bookId);
     return BookDtoMapper.INSTANCE.toDto(bookById);
   }
 
@@ -64,7 +59,7 @@ public class BookService {
     }
 
     LocalDateTime now = LocalDateTime.now();
-    Book book = BookDtoMapper.INSTANCE.createRequestToEntity(requestDto);
+    Book book = BookDtoMapper.INSTANCE.toEntity(requestDto);
     book.setCreatedAt(now);
     book.setUpdatedAt(now);
     return BookDtoMapper.INSTANCE.toDto(bookRepository.save(book));
@@ -72,12 +67,7 @@ public class BookService {
 
   @Transactional
   public void update(Long bookId, UpdateBookRequestDto requestDto) {
-    Book bookById = bookRepository.findById(bookId).orElseThrow(() -> {
-      log.warn(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
-      return new ResponseStatusException(HttpStatus.NOT_FOUND,
-          AppMessages.BOOK_NOT_FOUND_EXCEPTION);
-    });
-
+    Book bookById = findBookEntityById(bookId);
     bookById.setIsbn(requestDto.getIsbn());
     bookById.setTitle(requestDto.getTitle());
     bookById.setCoverUrl(requestDto.getCoverUrl());
@@ -99,12 +89,16 @@ public class BookService {
   }
 
   public List<AuthorDto> findAuthorsByBookId(Long bookId) {
-    Book bookById = bookRepository.findById(bookId).orElseThrow(() -> {
+    Book bookById = findBookEntityById(bookId);
+
+    return AuthorDtoMapper.INSTANCE.toDtos(bookById.getAuthors());
+  }
+
+  private Book findBookEntityById(Long bookId) {
+    return bookRepository.findById(bookId).orElseThrow(() -> {
       log.warn(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
       return new ResponseStatusException(HttpStatus.NOT_FOUND,
           AppMessages.BOOK_NOT_FOUND_EXCEPTION);
     });
-
-    return AuthorDtoMapper.INSTANCE.toDtos(bookById.getAuthors());
   }
 }

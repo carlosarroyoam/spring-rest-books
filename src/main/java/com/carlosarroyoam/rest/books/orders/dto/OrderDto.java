@@ -3,6 +3,8 @@ package com.carlosarroyoam.rest.books.orders.dto;
 import com.carlosarroyoam.rest.books.customer.dto.CustomerDto;
 import com.carlosarroyoam.rest.books.orders.entity.Order;
 import com.carlosarroyoam.rest.books.orders.entity.OrderStatus;
+import com.carlosarroyoam.rest.books.payment.dto.PaymentDto;
+import com.carlosarroyoam.rest.books.shipment.dto.ShipmentDto;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -44,5 +46,7 @@ public class OrderDto {
     OrderDto toDto(Order entity);
 
     List<OrderDto> toDtos(List<Order> entities);
+
+    Order toEntity(CreateOrderRequestDto requestDto);
   }
 }

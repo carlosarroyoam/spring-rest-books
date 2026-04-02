@@ -29,18 +29,12 @@ public class CartItem {
   @Column(name = "quantity", nullable = false)
   private Integer quantity;
 
-  @Column(name = "book_id", nullable = false)
-  private Long bookId;
-
   @ManyToOne
-  @JoinColumn(name = "book_id", referencedColumnName = "id", insertable = false, updatable = false, nullable = false)
+  @JoinColumn(name = "book_id", referencedColumnName = "id", nullable = false)
   private Book book;
 
-  @Column(name = "cart_id", nullable = false)
-  private Long cartId;
-
   @ManyToOne
-  @JoinColumn(name = "cart_id", referencedColumnName = "id", insertable = false, updatable = false, nullable = false)
+  @JoinColumn(name = "cart_id", referencedColumnName = "id", nullable = false)
   private Cart cart;
 
   @Column(name = "added_at", nullable = false)

@@ -1,14 +1,15 @@
-package com.carlosarroyoam.rest.books.orders.dto;
+package com.carlosarroyoam.rest.books.payment.dto;
 
-import com.carlosarroyoam.rest.books.orders.entity.Payment;
-import com.carlosarroyoam.rest.books.orders.entity.PaymentMethod;
-import com.carlosarroyoam.rest.books.orders.entity.PaymentStatus;
+import com.carlosarroyoam.rest.books.payment.entity.Payment;
+import com.carlosarroyoam.rest.books.payment.entity.PaymentMethod;
+import com.carlosarroyoam.rest.books.payment.entity.PaymentStatus;
 import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
@@ -29,6 +30,7 @@ public class PaymentDto {
   public interface PaymentDtoMapper {
     PaymentDtoMapper INSTANCE = Mappers.getMapper(PaymentDtoMapper.class);
 
+    @Mapping(source = "order.id", target = "orderId")
     PaymentDto toDto(Payment entity);
   }
 }

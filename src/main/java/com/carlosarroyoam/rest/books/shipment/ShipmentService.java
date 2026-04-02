@@ -4,12 +4,13 @@ import com.carlosarroyoam.rest.books.core.constant.AppMessages;
 import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
 import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto.PagedResponseDtoMapper;
 import com.carlosarroyoam.rest.books.orders.OrderRepository;
-import com.carlosarroyoam.rest.books.orders.dto.ShipmentDto;
-import com.carlosarroyoam.rest.books.orders.dto.ShipmentDto.ShipmentDtoMapper;
 import com.carlosarroyoam.rest.books.orders.entity.Order;
 import com.carlosarroyoam.rest.books.orders.entity.OrderStatus;
-import com.carlosarroyoam.rest.books.orders.entity.Shipment;
-import com.carlosarroyoam.rest.books.orders.entity.ShipmentStatus;
+import com.carlosarroyoam.rest.books.shipment.dto.ShipmentDto;
+import com.carlosarroyoam.rest.books.shipment.dto.ShipmentDto.ShipmentDtoMapper;
+import com.carlosarroyoam.rest.books.shipment.dto.UpdateShipmentStatusRequestDto;
+import com.carlosarroyoam.rest.books.shipment.entity.Shipment;
+import com.carlosarroyoam.rest.books.shipment.entity.ShipmentStatus;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,23 +40,20 @@ public class ShipmentService {
 
   @Transactional
   public ShipmentDto findById(Long shipmentId) {
-    Shipment shipment = findShipmentEntityById(shipmentId);
-    return ShipmentDtoMapper.INSTANCE.toDto(shipment);
+    Shipment shipmentById = findShipmentEntityById(shipmentId);
+    return ShipmentDtoMapper.INSTANCE.toDto(shipmentById);
   }
 
   @Transactional
   public void updateStatus(Long shipmentId, UpdateShipmentStatusRequestDto requestDto) {
-    Shipment shipment = findShipmentEntityById(shipmentId);
-    shipment.setStatus(requestDto.getStatus());
-    shipmentRepository.save(shipment);
+    Shipment shipmentById = findShipmentEntityById(shipmentId);
+    shipmentById.setStatus(requestDto.getStatus());
+    shipmentRepository.save(shipmentById);
 
-    Order order = orderRepository.findById(shipment.getOrderId()).orElseThrow(() -> {
-      log.warn(AppMessages.ORDER_NOT_FOUND_EXCEPTION);
-      return new ResponseStatusException(HttpStatus.NOT_FOUND,
-          AppMessages.ORDER_NOT_FOUND_EXCEPTION);
-    });
-    order.setStatus(resolveOrderStatusFromShipment(requestDto.getStatus(), order.getStatus()));
-    orderRepository.save(order);
+    Order orderById = findOrderEntityById(shipmentById.getOrder().getId());
+    orderById
+        .setStatus(resolveOrderStatusFromShipment(requestDto.getStatus(), orderById.getStatus()));
+    orderRepository.save(orderById);
   }
 
   private Shipment findShipmentEntityById(Long shipmentId) {
@@ -63,6 +61,14 @@ public class ShipmentService {
       log.warn(AppMessages.SHIPMENT_NOT_FOUND_EXCEPTION);
       return new ResponseStatusException(HttpStatus.NOT_FOUND,
           AppMessages.SHIPMENT_NOT_FOUND_EXCEPTION);
+    });
+  }
+
+  private Order findOrderEntityById(Long orderId) {
+    return orderRepository.findById(orderId).orElseThrow(() -> {
+      log.warn(AppMessages.ORDER_NOT_FOUND_EXCEPTION);
+      return new ResponseStatusException(HttpStatus.NOT_FOUND,
+          AppMessages.ORDER_NOT_FOUND_EXCEPTION);
     });
   }
 

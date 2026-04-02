@@ -1,6 +1,8 @@
 package com.carlosarroyoam.rest.books.orders.entity;
 
 import com.carlosarroyoam.rest.books.customer.entity.Customer;
+import com.carlosarroyoam.rest.books.payment.entity.Payment;
+import com.carlosarroyoam.rest.books.shipment.entity.Shipment;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -57,11 +59,8 @@ public class Order {
   @Column(name = "total", precision = 10, scale = 2, nullable = false)
   private BigDecimal total;
 
-  @Column(name = "customer_id", nullable = false)
-  private Long customerId;
-
   @ManyToOne
-  @JoinColumn(name = "customer_id", referencedColumnName = "id", insertable = false, updatable = false, nullable = false)
+  @JoinColumn(name = "customer_id", referencedColumnName = "id", nullable = false)
   private Customer customer;
 
   @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
