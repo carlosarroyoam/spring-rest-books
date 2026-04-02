@@ -2,7 +2,7 @@ package com.carlosarroyoam.rest.books.author;
 
 import com.carlosarroyoam.rest.books.author.dto.AuthorDto;
 import com.carlosarroyoam.rest.books.author.dto.AuthorDto.AuthorDtoMapper;
-import com.carlosarroyoam.rest.books.author.dto.AuthorFilterDto;
+import com.carlosarroyoam.rest.books.author.dto.AuthorSpecsDto;
 import com.carlosarroyoam.rest.books.author.dto.CreateAuthorRequestDto;
 import com.carlosarroyoam.rest.books.author.dto.UpdateAuthorRequestDto;
 import com.carlosarroyoam.rest.books.author.entity.Author;
@@ -32,9 +32,9 @@ public class AuthorService {
     this.authorRepository = authorRepository;
   }
 
-  public PagedResponseDto<AuthorDto> findAll(Pageable pageable, AuthorFilterDto filters) {
+  public PagedResponseDto<AuthorDto> findAll(Pageable pageable, AuthorSpecsDto authorSpecs) {
     Specification<Author> spec = Specification.unrestricted();
-    spec = spec.and(AuthorSpecification.nameContains(filters.getName()));
+    spec = spec.and(AuthorSpecification.nameContains(authorSpecs.getName()));
 
     Page<Author> authors = authorRepository.findAll(spec, pageable);
 

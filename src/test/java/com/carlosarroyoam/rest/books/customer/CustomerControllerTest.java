@@ -5,7 +5,7 @@ import com.carlosarroyoam.rest.books.core.dto.PaginationDto;
 import com.carlosarroyoam.rest.books.core.exception.GlobalExceptionHandler;
 import com.carlosarroyoam.rest.books.customer.dto.CreateCustomerRequestDto;
 import com.carlosarroyoam.rest.books.customer.dto.CustomerDto;
-import com.carlosarroyoam.rest.books.customer.dto.CustomerFilterDto;
+import com.carlosarroyoam.rest.books.customer.dto.CustomerSpecsDto;
 import com.carlosarroyoam.rest.books.customer.dto.UpdateCustomerRequestDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
@@ -64,7 +64,7 @@ class CustomerControllerTest {
         .pagination(PaginationDto.builder().page(0).size(25).totalItems(1).totalPages(1).build())
         .build();
 
-    when(customerService.findAll(any(Pageable.class), any(CustomerFilterDto.class)))
+    when(customerService.findAll(any(Pageable.class), any(CustomerSpecsDto.class)))
         .thenReturn(pagedResponse);
 
     mockMvc

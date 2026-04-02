@@ -2,7 +2,7 @@ package com.carlosarroyoam.rest.books.book;
 
 import com.carlosarroyoam.rest.books.author.dto.AuthorDto;
 import com.carlosarroyoam.rest.books.book.dto.BookDto;
-import com.carlosarroyoam.rest.books.book.dto.BookFilterDto;
+import com.carlosarroyoam.rest.books.book.dto.BookSpecsDto;
 import com.carlosarroyoam.rest.books.book.dto.CreateBookRequestDto;
 import com.carlosarroyoam.rest.books.book.dto.UpdateBookRequestDto;
 import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
@@ -67,7 +67,7 @@ class BookControllerTest {
         .pagination(PaginationDto.builder().page(0).size(25).totalItems(1).totalPages(1).build())
         .build();
 
-    when(bookService.findAll(any(Pageable.class), any(BookFilterDto.class)))
+    when(bookService.findAll(any(Pageable.class), any(BookSpecsDto.class)))
         .thenReturn(pagedResponse);
 
     mockMvc

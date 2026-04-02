@@ -4,7 +4,7 @@ import com.carlosarroyoam.rest.books.author.dto.AuthorDto;
 import com.carlosarroyoam.rest.books.author.dto.AuthorDto.AuthorDtoMapper;
 import com.carlosarroyoam.rest.books.book.dto.BookDto;
 import com.carlosarroyoam.rest.books.book.dto.BookDto.BookDtoMapper;
-import com.carlosarroyoam.rest.books.book.dto.BookFilterDto;
+import com.carlosarroyoam.rest.books.book.dto.BookSpecsDto;
 import com.carlosarroyoam.rest.books.book.dto.CreateBookRequestDto;
 import com.carlosarroyoam.rest.books.book.dto.UpdateBookRequestDto;
 import com.carlosarroyoam.rest.books.book.entity.Book;
@@ -32,12 +32,12 @@ public class BookService {
     this.bookRepository = bookRepository;
   }
 
-  public PagedResponseDto<BookDto> findAll(Pageable pageable, BookFilterDto filters) {
+  public PagedResponseDto<BookDto> findAll(Pageable pageable, BookSpecsDto bookSpecs) {
     Specification<Book> spec = Specification.unrestricted();
-    spec = spec.and(BookSpecification.isbnEquals(filters.getIsbn()))
-        .and(BookSpecification.titleContains(filters.getTitle()))
-        .and(BookSpecification.authorIdIn(filters.getAuthorIds()))
-        .and(BookSpecification.isAvailableOnline(filters.getIsAvailableOnline()));
+    spec = spec.and(BookSpecification.isbnEquals(bookSpecs.getIsbn()))
+        .and(BookSpecification.titleContains(bookSpecs.getTitle()))
+        .and(BookSpecification.authorIdIn(bookSpecs.getAuthorIds()))
+        .and(BookSpecification.isAvailableOnline(bookSpecs.getIsAvailableOnline()));
 
     Page<Book> books = bookRepository.findAll(spec, pageable);
 

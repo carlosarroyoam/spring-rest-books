@@ -4,7 +4,7 @@ import com.carlosarroyoam.rest.books.core.constant.AppMessages;
 import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
 import com.carlosarroyoam.rest.books.customer.dto.CreateCustomerRequestDto;
 import com.carlosarroyoam.rest.books.customer.dto.CustomerDto;
-import com.carlosarroyoam.rest.books.customer.dto.CustomerFilterDto;
+import com.carlosarroyoam.rest.books.customer.dto.CustomerSpecsDto;
 import com.carlosarroyoam.rest.books.customer.dto.UpdateCustomerRequestDto;
 import com.carlosarroyoam.rest.books.customer.entity.Customer;
 import java.time.LocalDateTime;
@@ -71,7 +71,7 @@ class CustomerServiceTest {
         any(Pageable.class))).thenReturn(new PageImpl<>(customers, pageable, customers.size()));
 
     PagedResponseDto<CustomerDto> response = customerService.findAll(PageRequest.of(0, 25),
-        CustomerFilterDto.builder().build());
+        CustomerSpecsDto.builder().build());
 
     assertThat(response).isNotNull();
     assertThat(response.getItems()).isNotNull().hasSize(1);

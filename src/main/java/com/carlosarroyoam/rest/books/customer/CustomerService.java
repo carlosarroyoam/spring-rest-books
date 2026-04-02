@@ -6,7 +6,7 @@ import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto.PagedResponseDtoM
 import com.carlosarroyoam.rest.books.customer.dto.CreateCustomerRequestDto;
 import com.carlosarroyoam.rest.books.customer.dto.CustomerDto;
 import com.carlosarroyoam.rest.books.customer.dto.CustomerDto.CustomerDtoMapper;
-import com.carlosarroyoam.rest.books.customer.dto.CustomerFilterDto;
+import com.carlosarroyoam.rest.books.customer.dto.CustomerSpecsDto;
 import com.carlosarroyoam.rest.books.customer.dto.UpdateCustomerRequestDto;
 import com.carlosarroyoam.rest.books.customer.entity.Customer;
 import jakarta.transaction.Transactional;
@@ -31,12 +31,12 @@ public class CustomerService {
     this.keycloakService = keycloakService;
   }
 
-  public PagedResponseDto<CustomerDto> findAll(Pageable pageable, CustomerFilterDto filters) {
+  public PagedResponseDto<CustomerDto> findAll(Pageable pageable, CustomerSpecsDto customerSpecs) {
     Specification<Customer> spec = Specification.unrestricted();
-    spec = spec.and(CustomerSpecification.firstNameContains(filters.getFirstName()))
-        .and(CustomerSpecification.lastNameContains(filters.getLastName()))
-        .and(CustomerSpecification.emailContains(filters.getEmail()))
-        .and(CustomerSpecification.usernameContains(filters.getUsername()));
+    spec = spec.and(CustomerSpecification.firstNameContains(customerSpecs.getFirstName()))
+        .and(CustomerSpecification.lastNameContains(customerSpecs.getLastName()))
+        .and(CustomerSpecification.emailContains(customerSpecs.getEmail()))
+        .and(CustomerSpecification.usernameContains(customerSpecs.getUsername()));
 
     Page<Customer> customers = customerRepository.findAll(spec, pageable);
 

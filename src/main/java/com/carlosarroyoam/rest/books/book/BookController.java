@@ -2,7 +2,7 @@ package com.carlosarroyoam.rest.books.book;
 
 import com.carlosarroyoam.rest.books.author.dto.AuthorDto;
 import com.carlosarroyoam.rest.books.book.dto.BookDto;
-import com.carlosarroyoam.rest.books.book.dto.BookFilterDto;
+import com.carlosarroyoam.rest.books.book.dto.BookSpecsDto;
 import com.carlosarroyoam.rest.books.book.dto.CreateBookRequestDto;
 import com.carlosarroyoam.rest.books.book.dto.UpdateBookRequestDto;
 import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
@@ -36,8 +36,8 @@ public class BookController {
   @GetMapping(produces = "application/json")
   public ResponseEntity<PagedResponseDto<BookDto>> findAll(
       @PageableDefault(page = 0, size = 25) Pageable pageable,
-      @Valid @ModelAttribute BookFilterDto filters) {
-    PagedResponseDto<BookDto> books = bookService.findAll(pageable, filters);
+      @Valid @ModelAttribute BookSpecsDto bookSpecs) {
+    PagedResponseDto<BookDto> books = bookService.findAll(pageable, bookSpecs);
     return ResponseEntity.ok(books);
   }
 

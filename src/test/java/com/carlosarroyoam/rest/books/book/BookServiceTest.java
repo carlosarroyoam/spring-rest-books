@@ -3,7 +3,7 @@ package com.carlosarroyoam.rest.books.book;
 import com.carlosarroyoam.rest.books.author.dto.AuthorDto;
 import com.carlosarroyoam.rest.books.author.entity.Author;
 import com.carlosarroyoam.rest.books.book.dto.BookDto;
-import com.carlosarroyoam.rest.books.book.dto.BookFilterDto;
+import com.carlosarroyoam.rest.books.book.dto.BookSpecsDto;
 import com.carlosarroyoam.rest.books.book.dto.CreateBookRequestDto;
 import com.carlosarroyoam.rest.books.book.dto.UpdateBookRequestDto;
 import com.carlosarroyoam.rest.books.book.entity.Book;
@@ -83,7 +83,7 @@ class BookServiceTest {
         .thenReturn(new PageImpl<>(books, pageable, books.size()));
 
     PagedResponseDto<BookDto> response = bookService.findAll(PageRequest.of(0, 25),
-        BookFilterDto.builder().build());
+        BookSpecsDto.builder().build());
 
     assertThat(response).isNotNull();
     assertThat(response.getItems()).isNotNull().hasSize(1);

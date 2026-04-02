@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class AuthorFilterDto {
+public class AuthorSpecsDto {
   @Size(max = 128, message = "Name should be max 128")
   private String name;
 }

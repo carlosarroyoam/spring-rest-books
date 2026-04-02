@@ -1,7 +1,7 @@
 package com.carlosarroyoam.rest.books.author;
 
 import com.carlosarroyoam.rest.books.author.dto.AuthorDto;
-import com.carlosarroyoam.rest.books.author.dto.AuthorFilterDto;
+import com.carlosarroyoam.rest.books.author.dto.AuthorSpecsDto;
 import com.carlosarroyoam.rest.books.author.dto.CreateAuthorRequestDto;
 import com.carlosarroyoam.rest.books.author.dto.UpdateAuthorRequestDto;
 import com.carlosarroyoam.rest.books.book.dto.BookDto;
@@ -65,7 +65,7 @@ class AuthorControllerTest {
         .pagination(PaginationDto.builder().page(0).size(25).totalItems(1).totalPages(1).build())
         .build();
 
-    when(authorService.findAll(any(Pageable.class), any(AuthorFilterDto.class)))
+    when(authorService.findAll(any(Pageable.class), any(AuthorSpecsDto.class)))
         .thenReturn(pagedResponse);
 
     mockMvc

@@ -1,7 +1,7 @@
 package com.carlosarroyoam.rest.books.author;
 
 import com.carlosarroyoam.rest.books.author.dto.AuthorDto;
-import com.carlosarroyoam.rest.books.author.dto.AuthorFilterDto;
+import com.carlosarroyoam.rest.books.author.dto.AuthorSpecsDto;
 import com.carlosarroyoam.rest.books.author.dto.CreateAuthorRequestDto;
 import com.carlosarroyoam.rest.books.author.dto.UpdateAuthorRequestDto;
 import com.carlosarroyoam.rest.books.author.entity.Author;
@@ -82,7 +82,7 @@ class AuthorServiceTest {
         any(Pageable.class))).thenReturn(new PageImpl<>(authors, pageable, authors.size()));
 
     PagedResponseDto<AuthorDto> response = authorService.findAll(PageRequest.of(0, 25),
-        AuthorFilterDto.builder().build());
+        AuthorSpecsDto.builder().build());
 
     assertThat(response).isNotNull();
     assertThat(response.getItems()).isNotNull().hasSize(1);
