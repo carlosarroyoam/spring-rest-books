@@ -1,12 +1,15 @@
 # AGENTS.md
 
 ## Purpose
-This repository is a Java 17 / Spring Boot 3.5 REST API for a bookstore domain. The currently implemented modules are:
+This repository is a Java 17 / Spring Boot 3.5 REST API for a bookstore domain. The modules are:
 
 - `author`
 - `book`
 - `customer`
 - `cart`
+- `order`
+- `payment`
+- `shipment`
 - shared `core` infrastructure
 
 Use this file as the operating guide for agents making changes in this repo.
@@ -24,7 +27,7 @@ Use this file as the operating guide for agents making changes in this repo.
 
 ## Repository Layout
 - `src/main/java/com/carlosarroyoam/rest/books`
-  - `author`, `book`, `customer`, `cart`: feature modules
+  - `author`, `book`, `customer`, `cart`, `order`, `payment`, `shipment`: feature modules
   - `core`: security, config, exceptions, DTOs, validation, utilities, constants
 - `src/main/resources`
   - `application.properties`: default local runtime config
