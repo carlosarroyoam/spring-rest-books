@@ -1315,7 +1315,7 @@ components:
           type: array
           description: Orders included in the current page.
           items:
-            $ref: "#/components/schemas/OrderItemDto"
+            $ref: "#/components/schemas/OrderDto"
         pagination:
           $ref: "#/components/schemas/PaginationDto"
 
