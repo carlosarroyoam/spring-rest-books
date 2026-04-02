@@ -21,7 +21,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -149,8 +148,7 @@ class OrderServiceTest {
   void shouldThrowWhenFindOrderByIdWithNonExistingId() {
     when(orderRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-    assertThatThrownBy(() -> orderService.findById(1L))
-        .isInstanceOf(ResponseStatusException.class)
+    assertThatThrownBy(() -> orderService.findById(1L)).isInstanceOf(ResponseStatusException.class)
         .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
         .hasMessageContaining(AppMessages.ORDER_NOT_FOUND_EXCEPTION);
   }

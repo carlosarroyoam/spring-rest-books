@@ -26,6 +26,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -33,7 +34,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class PaymentControllerTest {
@@ -68,9 +68,10 @@ class PaymentControllerTest {
 
     when(paymentService.findAll(any(Pageable.class))).thenReturn(pagedResponse);
 
-    mockMvc.perform(get("/payments").queryParam("page", "0")
-        .queryParam("size", "25")
-        .accept(MediaType.APPLICATION_JSON))
+    mockMvc
+        .perform(get("/payments").queryParam("page", "0")
+            .queryParam("size", "25")
+            .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.items.length()").value(1))
@@ -110,8 +111,9 @@ class PaymentControllerTest {
     when(paymentService.create(any(CreatePaymentRequestDto.class)))
         .thenReturn(PaymentDto.builder().id(1L).build());
 
-    mockMvc.perform(post("/payments").content(mapper.writeValueAsString(requestDto))
-        .contentType(MediaType.APPLICATION_JSON))
+    mockMvc
+        .perform(post("/payments").content(mapper.writeValueAsString(requestDto))
+            .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isCreated())
         .andExpect(header().string("location", "http://localhost/payments/1"));
   }
@@ -123,9 +125,9 @@ class PaymentControllerTest {
         .status(PaymentStatus.REFUNDED)
         .build();
 
-    mockMvc.perform(put("/payments/{paymentId}/status", 1L)
-        .content(mapper.writeValueAsString(requestDto))
-        .contentType(MediaType.APPLICATION_JSON))
+    mockMvc.perform(
+        put("/payments/{paymentId}/status", 1L).content(mapper.writeValueAsString(requestDto))
+            .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isNoContent());
   }
 }

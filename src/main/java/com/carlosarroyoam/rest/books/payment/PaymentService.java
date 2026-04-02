@@ -111,10 +111,10 @@ public class PaymentService {
   private OrderStatus resolveOrderStatusFromPayment(PaymentStatus paymentStatus,
       OrderStatus currentStatus) {
     return switch (paymentStatus) {
-      case COMPLETED -> OrderStatus.CONFIRMED;
-      case FAILED, CANCELLED -> OrderStatus.CANCELLED;
-      case REFUNDED -> OrderStatus.REFUNDED;
-      case PENDING -> currentStatus == null ? OrderStatus.PENDING : currentStatus;
+    case COMPLETED -> OrderStatus.CONFIRMED;
+    case FAILED, CANCELLED -> OrderStatus.CANCELLED;
+    case REFUNDED -> OrderStatus.REFUNDED;
+    case PENDING -> currentStatus == null ? OrderStatus.PENDING : currentStatus;
     };
   }
 

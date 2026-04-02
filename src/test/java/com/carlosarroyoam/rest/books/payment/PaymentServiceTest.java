@@ -175,11 +175,8 @@ class PaymentServiceTest {
     when(orderRepository.findById(1L)).thenReturn(Optional.of(order));
     when(paymentRepository.existsByOrderId(1L)).thenReturn(false);
     when(paymentRepository.save(any(Payment.class))).thenReturn(payment);
-    when(shipmentRepository.findByOrderId(1L)).thenReturn(Optional.of(Shipment.builder()
-        .id(1L)
-        .orderId(1L)
-        .status(ShipmentStatus.PENDING)
-        .build()));
+    when(shipmentRepository.findByOrderId(1L)).thenReturn(
+        Optional.of(Shipment.builder().id(1L).orderId(1L).status(ShipmentStatus.PENDING).build()));
 
     paymentService.create(requestDto);
 

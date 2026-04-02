@@ -69,10 +69,10 @@ public class ShipmentService {
   private OrderStatus resolveOrderStatusFromShipment(ShipmentStatus shipmentStatus,
       OrderStatus currentStatus) {
     return switch (shipmentStatus) {
-      case SHIPPED -> OrderStatus.SHIPPED;
-      case DELIVERED -> OrderStatus.DELIVERED;
-      case CANCELLED, RETURNED -> OrderStatus.CANCELLED;
-      case PENDING -> currentStatus == null ? OrderStatus.PENDING : currentStatus;
+    case SHIPPED -> OrderStatus.SHIPPED;
+    case DELIVERED -> OrderStatus.DELIVERED;
+    case CANCELLED, RETURNED -> OrderStatus.CANCELLED;
+    case PENDING -> currentStatus == null ? OrderStatus.PENDING : currentStatus;
     };
   }
 }

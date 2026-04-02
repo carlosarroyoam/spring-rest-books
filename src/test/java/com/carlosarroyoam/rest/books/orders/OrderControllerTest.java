@@ -69,9 +69,10 @@ class OrderControllerTest {
 
     when(orderService.findAll(any(Pageable.class))).thenReturn(pagedResponse);
 
-    mockMvc.perform(get("/orders").queryParam("page", "0")
-        .queryParam("size", "25")
-        .accept(MediaType.APPLICATION_JSON))
+    mockMvc
+        .perform(get("/orders").queryParam("page", "0")
+            .queryParam("size", "25")
+            .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.items.length()").value(1))
@@ -113,8 +114,9 @@ class OrderControllerTest {
     when(orderService.create(any(CreateOrderRequestDto.class)))
         .thenReturn(OrderDto.builder().id(1L).build());
 
-    mockMvc.perform(post("/orders").content(mapper.writeValueAsString(requestDto))
-        .contentType(MediaType.APPLICATION_JSON))
+    mockMvc
+        .perform(post("/orders").content(mapper.writeValueAsString(requestDto))
+            .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isCreated())
         .andExpect(header().string("location", "http://localhost/orders/1"));
   }

@@ -54,10 +54,7 @@ class ShipmentServiceTest {
         .orderId(1L)
         .build();
 
-    order = Order.builder()
-        .id(1L)
-        .status(OrderStatus.CONFIRMED)
-        .build();
+    order = Order.builder().id(1L).status(OrderStatus.CONFIRMED).build();
   }
 
   @Test

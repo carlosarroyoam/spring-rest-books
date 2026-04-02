@@ -20,7 +20,7 @@ public class AppMessages {
 
   public static final String PAYMENT_NOT_FOUND_EXCEPTION = "Payment not found";
   public static final String PAYMENT_ALREADY_EXISTS_EXCEPTION = "Payment already exists for order";
-  
+
   public static final String SHIPMENT_NOT_FOUND_EXCEPTION = "Shipment not found";
 
   private AppMessages() {

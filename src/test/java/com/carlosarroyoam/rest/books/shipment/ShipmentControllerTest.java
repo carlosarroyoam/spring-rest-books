@@ -62,9 +62,10 @@ class ShipmentControllerTest {
 
     when(shipmentService.findAll(any(Pageable.class))).thenReturn(pagedResponse);
 
-    mockMvc.perform(get("/shipments").queryParam("page", "0")
-        .queryParam("size", "25")
-        .accept(MediaType.APPLICATION_JSON))
+    mockMvc
+        .perform(get("/shipments").queryParam("page", "0")
+            .queryParam("size", "25")
+            .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.items.length()").value(1))
@@ -99,9 +100,9 @@ class ShipmentControllerTest {
         .status(ShipmentStatus.SHIPPED)
         .build();
 
-    mockMvc.perform(put("/shipments/{shipmentId}/status", 1L)
-        .content(mapper.writeValueAsString(requestDto))
-        .contentType(MediaType.APPLICATION_JSON))
+    mockMvc.perform(
+        put("/shipments/{shipmentId}/status", 1L).content(mapper.writeValueAsString(requestDto))
+            .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isNoContent());
   }
 }

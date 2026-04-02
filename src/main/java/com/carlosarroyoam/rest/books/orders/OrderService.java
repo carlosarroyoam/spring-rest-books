@@ -76,7 +76,9 @@ public class OrderService {
     BigDecimal subtotal = calculateSubtotal(items);
     BigDecimal taxAmount = subtotal.multiply(TAX_RATE).setScale(2, RoundingMode.HALF_UP);
     BigDecimal shippingAmount = DEFAULT_SHIPPING_AMOUNT.setScale(2, RoundingMode.HALF_UP);
-    BigDecimal total = subtotal.add(taxAmount).add(shippingAmount).setScale(2, RoundingMode.HALF_UP);
+    BigDecimal total = subtotal.add(taxAmount)
+        .add(shippingAmount)
+        .setScale(2, RoundingMode.HALF_UP);
 
     order.setOrderNumber(generateOrderNumber());
     order.setStatus(OrderStatus.PENDING);
