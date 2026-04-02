@@ -946,6 +946,41 @@ paths:
       security:
         - bearerAuth: []
 
+    put:
+      tags:
+        - Payments
+      summary: Updates the status of a payment by its id
+      operationId: updatePaymentStatus
+      parameters:
+        - name: paymentId
+          in: path
+          required: true
+          description: ID of the payment to update
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatePaymentStatusRequest"
+      responses:
+        "204":
+          $ref: "#/components/responses/NoContent"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+      security:
+        - bearerAuth: []
+
   /shipments:
     get:
       tags:
@@ -994,6 +1029,41 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ShipmentDto"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+      security:
+        - bearerAuth: []
+
+    put:
+      tags:
+        - Shipments
+      summary: Updates the status of a shipment by its id
+      operationId: updateShipmentStatus
+      parameters:
+        - name: shipmentId
+          in: path
+          required: true
+          description: ID of the shipment to update
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateShipmentStatusRequest"
+      responses:
+        "204":
+          $ref: "#/components/responses/NoContent"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -1358,6 +1428,38 @@ components:
             - PAYPAL
             - BANK_TRANSFER
             - CASH_ON_DELIVERY
+
+    UpdatePaymentStatusRequest:
+      type: object
+      description: Request payload used to update the processing status of a payment.
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          description: Updated payment processing status.
+          enum:
+            - PENDING
+            - COMPLETED
+            - FAILED
+            - CANCELLED
+            - REFUNDED
+
+    UpdateShipmentStatusRequest:
+      type: object
+      description: Request payload used to update the delivery status of a shipment.
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          description: Updated shipment status.
+          enum:
+            - PENDING
+            - SHIPPED
+            - DELIVERED
+            - RETURNED
+            - CANCELLED
 
     PagedShipmentsResponse:
       type: object
