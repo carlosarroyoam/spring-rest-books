@@ -1,5 +1,6 @@
 package com.carlosarroyoam.rest.books.cart.dto;
 
+import com.carlosarroyoam.rest.books.cart.dto.CartItemDto.CartItemDtoMapper;
 import com.carlosarroyoam.rest.books.cart.entity.Cart;
 import com.carlosarroyoam.rest.books.customer.dto.CustomerDto;
 import java.time.LocalDateTime;
@@ -24,7 +25,8 @@ public class CartDto {
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
 
-  @Mapper(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, unmappedTargetPolicy = ReportingPolicy.IGNORE)
+  @Mapper(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = {
+      CartItemDtoMapper.class })
   public interface CartDtoMapper {
     CartDtoMapper INSTANCE = Mappers.getMapper(CartDtoMapper.class);
 

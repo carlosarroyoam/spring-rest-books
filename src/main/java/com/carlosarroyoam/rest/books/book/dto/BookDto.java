@@ -1,6 +1,7 @@
 package com.carlosarroyoam.rest.books.book.dto;
 
 import com.carlosarroyoam.rest.books.author.dto.AuthorDto;
+import com.carlosarroyoam.rest.books.author.dto.AuthorDto.AuthorDtoMapper;
 import com.carlosarroyoam.rest.books.book.entity.Book;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -31,7 +32,8 @@ public class BookDto {
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
 
-  @Mapper(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, unmappedTargetPolicy = ReportingPolicy.IGNORE)
+  @Mapper(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = {
+      AuthorDtoMapper.class })
   public interface BookDtoMapper {
     BookDtoMapper INSTANCE = Mappers.getMapper(BookDtoMapper.class);
 

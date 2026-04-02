@@ -1,6 +1,7 @@
 package com.carlosarroyoam.rest.books.orders.dto;
 
 import com.carlosarroyoam.rest.books.customer.dto.CustomerDto;
+import com.carlosarroyoam.rest.books.orders.dto.OrderItemDto.OrderItemDtoMapper;
 import com.carlosarroyoam.rest.books.orders.entity.Order;
 import com.carlosarroyoam.rest.books.orders.entity.OrderStatus;
 import com.carlosarroyoam.rest.books.payment.dto.PaymentDto;
@@ -39,7 +40,8 @@ public class OrderDto {
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
 
-  @Mapper(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, unmappedTargetPolicy = ReportingPolicy.IGNORE)
+  @Mapper(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = {
+      OrderItemDtoMapper.class, CustomerDto.class, PaymentDto.class, ShipmentDto.class })
   public interface OrderDtoMapper {
     OrderDtoMapper INSTANCE = Mappers.getMapper(OrderDtoMapper.class);
 
