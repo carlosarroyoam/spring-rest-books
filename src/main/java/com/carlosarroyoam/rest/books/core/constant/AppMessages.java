@@ -18,6 +18,9 @@ public class AppMessages {
 
   public static final String ORDER_NOT_FOUND_EXCEPTION = "Order not found";
 
+  public static final String PAYMENT_NOT_FOUND_EXCEPTION = "Payment not found";
+  public static final String PAYMENT_ALREADY_EXISTS_EXCEPTION = "Payment already exists for order";
+  
 
   private AppMessages() {
     throw new IllegalAccessError(ILLEGAL_ACCESS_EXCEPTION);
