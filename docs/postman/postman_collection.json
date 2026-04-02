@@ -1,6 +1,6 @@
 {
   "info": {
-    "_postman_id": "9d0d6f6c-720c-42be-aead-a2ed7036e40e",
+    "_postman_id": "9ba61c54-7b9a-4bcc-8dfa-41ec759d9fde",
     "name": "Spring Rest Books",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "6677786"
@@ -44,32 +44,38 @@
               ],
               "query": [
                 {
-                  "key": "page",
-                  "value": "0"
-                },
-                {
-                  "key": "size",
-                  "value": "25"
-                },
-                {
                   "key": "isbn",
                   "value": "978-1-3035-0529-4",
+                  "type": "text",
                   "disabled": true
                 },
                 {
                   "key": "title",
                   "value": "Homo Deus: A Brief History of Tomorrow",
+                  "type": "text",
                   "disabled": true
                 },
                 {
                   "key": "authorIds",
                   "value": "1,2",
+                  "type": "text",
                   "disabled": true
                 },
                 {
                   "key": "isAvailableOnline",
                   "value": "false",
+                  "type": "text",
                   "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "0",
+                  "type": "text"
+                },
+                {
+                  "key": "size",
+                  "value": "25",
+                  "type": "text"
                 }
               ]
             }
@@ -329,17 +335,20 @@
               ],
               "query": [
                 {
+                  "key": "name",
+                  "value": "Yuval Noah Harari",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
                   "key": "page",
-                  "value": "0"
+                  "value": "0",
+                  "type": "text"
                 },
                 {
                   "key": "size",
-                  "value": "25"
-                },
-                {
-                  "key": "name",
-                  "value": "Yuval Noah Harari",
-                  "disabled": true
+                  "value": "25",
+                  "type": "text"
                 }
               ]
             }
@@ -578,7 +587,8 @@
                   "})"
                 ],
                 "type": "text/javascript",
-                "packages": {}
+                "packages": {},
+                "requests": {}
               }
             }
           ],
@@ -595,14 +605,6 @@
               ],
               "query": [
                 {
-                  "key": "page",
-                  "value": "0"
-                },
-                {
-                  "key": "size",
-                  "value": "25"
-                },
-                {
                   "key": "firstName",
                   "value": "Carlos Alberto",
                   "type": "text",
@@ -611,6 +613,7 @@
                 {
                   "key": "lastName",
                   "value": "Arroyo Martínez",
+                  "type": "text",
                   "disabled": true
                 },
                 {
@@ -624,6 +627,14 @@
                   "value": "carroyom",
                   "type": "text",
                   "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "25"
                 }
               ]
             }
@@ -1034,7 +1045,9 @@
                   "});",
                   ""
                 ],
-                "type": "text/javascript"
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
@@ -1205,7 +1218,9 @@
                   "});\r",
                   ""
                 ],
-                "type": "text/javascript"
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
@@ -1537,8 +1552,7 @@
   "variable": [
     {
       "key": "baseUrl",
-      "value": "http://localhost:8081",
-      "type": "string"
+      "value": "http://localhost:8081"
     }
   ]
 }
