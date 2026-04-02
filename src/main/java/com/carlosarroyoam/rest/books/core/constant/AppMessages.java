@@ -16,6 +16,9 @@ public class AppMessages {
   public static final String CART_NOT_FOUND_EXCEPTION = "Cart not found";
   public static final String CART_ITEM_NOT_FOUND_EXCEPTION = "Cart item not found";
 
+  public static final String ORDER_NOT_FOUND_EXCEPTION = "Order not found";
+
+
   private AppMessages() {
     throw new IllegalAccessError(ILLEGAL_ACCESS_EXCEPTION);
   }
