@@ -56,9 +56,13 @@
                   "disabled": true
                 },
                 {
-                  "key": "authorIds",
-                  "value": "1,2",
-                  "type": "text",
+                  "key": "minPrice",
+                  "value": "0",
+                  "disabled": true
+                },
+                {
+                  "key": "maxPrice",
+                  "value": "100",
                   "disabled": true
                 },
                 {
@@ -68,14 +72,18 @@
                   "disabled": true
                 },
                 {
+                  "key": "authorIds",
+                  "value": "1,2",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
                   "key": "page",
-                  "value": "0",
-                  "type": "text"
+                  "value": "0"
                 },
                 {
                   "key": "size",
-                  "value": "25",
-                  "type": "text"
+                  "value": "25"
                 }
               ]
             }
@@ -923,7 +931,9 @@
                   "    pm.response.to.have.status(200)\r",
                   "})"
                 ],
-                "type": "text/javascript"
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
@@ -931,7 +941,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/orders?page=0&size=25",
+              "raw": "{{baseUrl}}/orders?customerId=1&page=0&size=25",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -939,6 +949,50 @@
                 "orders"
               ],
               "query": [
+                {
+                  "key": "orderNumber",
+                  "value": "ORD-20250001",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "minTotal",
+                  "value": "0",
+                  "disabled": true
+                },
+                {
+                  "key": "maxTotal",
+                  "value": " 100",
+                  "disabled": true
+                },
+                {
+                  "key": "shippingAddress",
+                  "value": "123 Main Street",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "startDate",
+                  "value": "01-01-2025",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "endDate",
+                  "value": "01-01-2025",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "status",
+                  "value": "PENDING",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "customerId",
+                  "value": "1"
+                },
                 {
                   "key": "page",
                   "value": "0"
@@ -963,7 +1017,9 @@
                   "    pm.response.to.have.status(200)\r",
                   "})"
                 ],
-                "type": "text/javascript"
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
@@ -982,7 +1038,7 @@
               "variable": [
                 {
                   "key": "orderId",
-                  "value": "1"
+                  "value": "3"
                 }
               ]
             }
@@ -1136,7 +1192,9 @@
                   "    pm.response.to.have.status(200)\r",
                   "})"
                 ],
-                "type": "text/javascript"
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
@@ -1152,6 +1210,36 @@
                 "payments"
               ],
               "query": [
+                {
+                  "key": "method",
+                  "value": "CREDIT_CARD",
+                  "disabled": true
+                },
+                {
+                  "key": "minAmount",
+                  "value": "0",
+                  "disabled": true
+                },
+                {
+                  "key": "maxAmount",
+                  "value": "100",
+                  "disabled": true
+                },
+                {
+                  "key": "status",
+                  "value": "COMPLETED",
+                  "disabled": true
+                },
+                {
+                  "key": "transactionId",
+                  "value": "PAY-SEED-000001",
+                  "disabled": true
+                },
+                {
+                  "key": "orderId",
+                  "value": "1",
+                  "disabled": true
+                },
                 {
                   "key": "page",
                   "value": "0"
@@ -1312,7 +1400,9 @@
                   "    pm.response.to.have.status(200)\r",
                   "})"
                 ],
-                "type": "text/javascript"
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
@@ -1328,6 +1418,35 @@
                 "shipments"
               ],
               "query": [
+                {
+                  "key": "attentionName",
+                  "value": "Carlos Alberto",
+                  "disabled": true
+                },
+                {
+                  "key": "address",
+                  "value": "123 Main Street",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "phone",
+                  "value": "555-0101-1234",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "status",
+                  "value": "SHIPPED",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "orderId",
+                  "value": "1",
+                  "type": "text",
+                  "disabled": true
+                },
                 {
                   "key": "page",
                   "value": "0"
