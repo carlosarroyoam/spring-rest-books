@@ -5,6 +5,7 @@ import com.carlosarroyoam.rest.books.book.entity.Book;
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import org.springframework.data.jpa.domain.Specification;
@@ -34,6 +35,36 @@ public class BookSpecification {
     };
   }
 
+  static Specification<Book> priceGreaterThanOrEqual(BigDecimal minPrice) {
+    return (book, cq, cb) -> {
+      if (minPrice == null) {
+        return cb.conjunction();
+      }
+
+      return cb.greaterThanOrEqualTo(book.get("price"), minPrice);
+    };
+  }
+
+  static Specification<Book> priceLessThanOrEqual(BigDecimal maxPrice) {
+    return (book, cq, cb) -> {
+      if (maxPrice == null) {
+        return cb.conjunction();
+      }
+
+      return cb.lessThanOrEqualTo(book.get("price"), maxPrice);
+    };
+  }
+
+  static Specification<Book> isAvailableOnline(Boolean isAvailableOnline) {
+    return (book, cq, cb) -> {
+      if (isAvailableOnline == null) {
+        return cb.conjunction();
+      }
+
+      return cb.equal(book.get("isAvailableOnline"), isAvailableOnline);
+    };
+  }
+
   static Specification<Book> authorIdIn(String authorIds) {
     return (book, cq, cb) -> {
       if (authorIds == null || authorIds.isBlank()) {
@@ -48,16 +79,6 @@ public class BookSpecification {
       Join<Book, Author> authorJoin = book.join("authors", JoinType.LEFT);
 
       return authorJoin.get("id").in(ids);
-    };
-  }
-
-  static Specification<Book> isAvailableOnline(Boolean isAvailableOnline) {
-    return (book, cq, cb) -> {
-      if (isAvailableOnline == null) {
-        return cb.conjunction();
-      }
-
-      return cb.equal(book.get("isAvailableOnline"), isAvailableOnline);
     };
   }
 }

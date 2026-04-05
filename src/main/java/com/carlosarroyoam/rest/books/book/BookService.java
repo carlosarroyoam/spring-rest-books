@@ -34,10 +34,12 @@ public class BookService {
 
   public PagedResponseDto<BookDto> findAll(Pageable pageable, BookSpecsDto bookSpecs) {
     Specification<Book> spec = Specification.unrestricted();
-    spec = spec.and(BookSpecification.isbnEquals(bookSpecs.getIsbn()))
-        .and(BookSpecification.titleContains(bookSpecs.getTitle()))
-        .and(BookSpecification.authorIdIn(bookSpecs.getAuthorIds()))
-        .and(BookSpecification.isAvailableOnline(bookSpecs.getIsAvailableOnline()));
+    spec = spec.and(BookSpecification.isbnEquals(bookSpecs.getIsbn()));
+    spec = spec.and(BookSpecification.titleContains(bookSpecs.getTitle()));
+    spec = spec.and(BookSpecification.priceGreaterThanOrEqual(bookSpecs.getMinPrice()));
+    spec = spec.and(BookSpecification.priceLessThanOrEqual(bookSpecs.getMaxPrice()));
+    spec = spec.and(BookSpecification.isAvailableOnline(bookSpecs.getIsAvailableOnline()));
+    spec = spec.and(BookSpecification.authorIdIn(bookSpecs.getAuthorIds()));
 
     Page<Book> books = bookRepository.findAll(spec, pageable);
 

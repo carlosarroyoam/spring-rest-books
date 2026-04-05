@@ -68,18 +68,30 @@ paths:
           schema:
             type: string
             maxLength: 128
-        - name: authorIds
+        - name: minPrice
           in: query
-          description: Comma separated author ids.
           required: false
+          description: Minimum price amount.
           schema:
-            type: string
+            type: number
+        - name: maxPrice
+          in: query
+          required: false
+          description: Maximum price amount.
+          schema:
+            type: number
         - name: isAvailableOnline
           in: query
           description: Whether the book can be purchased online.
           required: false
           schema:
             type: boolean
+        - name: authorIds
+          in: query
+          description: Comma separated author ids.
+          required: false
+          schema:
+            type: string
       responses:
         "200":
           description: OK

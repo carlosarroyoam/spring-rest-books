@@ -33,10 +33,10 @@ public class CustomerService {
 
   public PagedResponseDto<CustomerDto> findAll(Pageable pageable, CustomerSpecsDto customerSpecs) {
     Specification<Customer> spec = Specification.unrestricted();
-    spec = spec.and(CustomerSpecification.firstNameContains(customerSpecs.getFirstName()))
-        .and(CustomerSpecification.lastNameContains(customerSpecs.getLastName()))
-        .and(CustomerSpecification.emailContains(customerSpecs.getEmail()))
-        .and(CustomerSpecification.usernameContains(customerSpecs.getUsername()));
+    spec = spec.and(CustomerSpecification.firstNameContains(customerSpecs.getFirstName()));
+    spec = spec.and(CustomerSpecification.lastNameContains(customerSpecs.getLastName()));
+    spec = spec.and(CustomerSpecification.emailContains(customerSpecs.getEmail()));
+    spec = spec.and(CustomerSpecification.usernameContains(customerSpecs.getUsername()));
 
     Page<Customer> customers = customerRepository.findAll(spec, pageable);
 

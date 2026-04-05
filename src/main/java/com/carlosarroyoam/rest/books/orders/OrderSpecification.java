@@ -3,6 +3,7 @@ package com.carlosarroyoam.rest.books.orders;
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
 import com.carlosarroyoam.rest.books.orders.entity.Order;
 import com.carlosarroyoam.rest.books.orders.entity.OrderStatus;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -21,7 +22,7 @@ public class OrderSpecification {
     };
   }
 
-  static Specification<Order> totalGreaterThanOrEqual(java.math.BigDecimal minTotal) {
+  static Specification<Order> totalGreaterThanOrEqual(BigDecimal minTotal) {
     return (order, cq, cb) -> {
       if (minTotal == null) {
         return cb.conjunction();
@@ -31,7 +32,7 @@ public class OrderSpecification {
     };
   }
 
-  static Specification<Order> totalLessThanOrEqual(java.math.BigDecimal maxTotal) {
+  static Specification<Order> totalLessThanOrEqual(BigDecimal maxTotal) {
     return (order, cq, cb) -> {
       if (maxTotal == null) {
         return cb.conjunction();
