@@ -2,6 +2,7 @@ package com.carlosarroyoam.rest.books.shipment;
 
 import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
 import com.carlosarroyoam.rest.books.shipment.dto.ShipmentDto;
+import com.carlosarroyoam.rest.books.shipment.dto.ShipmentSpecsDto;
 import com.carlosarroyoam.rest.books.shipment.dto.UpdateShipmentStatusRequestDto;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
@@ -27,8 +28,8 @@ public class ShipmentController {
   @GetMapping(produces = "application/json")
   @PreAuthorize("hasRole('App/Admin')")
   public ResponseEntity<PagedResponseDto<ShipmentDto>> findAll(
-      @PageableDefault(page = 0, size = 25) Pageable pageable) {
-    PagedResponseDto<ShipmentDto> shipments = shipmentService.findAll(pageable);
+      @PageableDefault(page = 0, size = 25) Pageable pageable, ShipmentSpecsDto shipmentSpecs) {
+    PagedResponseDto<ShipmentDto> shipments = shipmentService.findAll(pageable, shipmentSpecs);
     return ResponseEntity.ok(shipments);
   }
 

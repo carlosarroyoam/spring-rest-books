@@ -8,6 +8,7 @@ import com.carlosarroyoam.rest.books.orders.entity.Order;
 import com.carlosarroyoam.rest.books.orders.entity.OrderStatus;
 import com.carlosarroyoam.rest.books.shipment.dto.ShipmentDto;
 import com.carlosarroyoam.rest.books.shipment.dto.ShipmentDto.ShipmentDtoMapper;
+import com.carlosarroyoam.rest.books.shipment.dto.ShipmentSpecsDto;
 import com.carlosarroyoam.rest.books.shipment.dto.UpdateShipmentStatusRequestDto;
 import com.carlosarroyoam.rest.books.shipment.entity.Shipment;
 import com.carlosarroyoam.rest.books.shipment.entity.ShipmentStatus;
@@ -16,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -32,8 +34,16 @@ public class ShipmentService {
   }
 
   @Transactional
-  public PagedResponseDto<ShipmentDto> findAll(Pageable pageable) {
-    Page<Shipment> shipments = shipmentRepository.findAll(pageable);
+  public PagedResponseDto<ShipmentDto> findAll(Pageable pageable, ShipmentSpecsDto shipmentSpecs) {
+    Specification<Shipment> spec = Specification.unrestricted();
+    spec = spec.and(ShipmentSpecification.attentionNameContains(shipmentSpecs.getAttentionName()));
+    spec = spec.and(ShipmentSpecification.addressContains(shipmentSpecs.getAddress()));
+    spec = spec.and(ShipmentSpecification.phoneContains(shipmentSpecs.getPhone()));
+    spec = spec.and(ShipmentSpecification.statusEquals(shipmentSpecs.getStatus()));
+    spec = spec.and(ShipmentSpecification.orderIdEquals(shipmentSpecs.getOrderId()));
+
+    Page<Shipment> shipments = shipmentRepository.findAll(spec, pageable);
+
     return PagedResponseDtoMapper.INSTANCE
         .toPagedResponseDto(shipments.map(ShipmentDtoMapper.INSTANCE::toDto));
   }

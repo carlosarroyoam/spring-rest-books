@@ -6,6 +6,7 @@ import com.carlosarroyoam.rest.books.orders.OrderRepository;
 import com.carlosarroyoam.rest.books.orders.entity.Order;
 import com.carlosarroyoam.rest.books.orders.entity.OrderStatus;
 import com.carlosarroyoam.rest.books.shipment.dto.ShipmentDto;
+import com.carlosarroyoam.rest.books.shipment.dto.ShipmentSpecsDto;
 import com.carlosarroyoam.rest.books.shipment.dto.UpdateShipmentStatusRequestDto;
 import com.carlosarroyoam.rest.books.shipment.entity.Shipment;
 import com.carlosarroyoam.rest.books.shipment.entity.ShipmentStatus;
@@ -21,6 +22,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -62,12 +64,13 @@ class ShipmentServiceTest {
   @DisplayName("Should return PagedResponseDto<ShipmentDto> when find all shipments")
   void shouldReturnListOfShipments() {
     Pageable pageable = PageRequest.of(0, 25);
+    ShipmentSpecsDto shipmentSpecs = ShipmentSpecsDto.builder().build();
     List<Shipment> shipments = List.of(shipment);
 
-    when(shipmentRepository.findAll(any(Pageable.class)))
+    when(shipmentRepository.findAll(any(Specification.class), any(Pageable.class)))
         .thenReturn(new PageImpl<>(shipments, pageable, shipments.size()));
 
-    PagedResponseDto<ShipmentDto> response = shipmentService.findAll(pageable);
+    PagedResponseDto<ShipmentDto> response = shipmentService.findAll(pageable, shipmentSpecs);
 
     assertThat(response).isNotNull();
     assertThat(response.getItems()).hasSize(1);

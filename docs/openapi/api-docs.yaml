@@ -978,6 +978,8 @@ paths:
           required: false
           description: Order identifier.
           schema:
+            type: integer
+            format: int64
       responses:
         "200":
           description: OK
@@ -1099,6 +1101,46 @@ paths:
       parameters:
         - $ref: "#/components/parameters/PageParam"
         - $ref: "#/components/parameters/SizeParam"
+        - name: attention_name
+          in: query
+          required: false
+          description: Attention name (partial match).
+          schema:
+            type: string
+            maxLength: 128
+        - name: address
+          in: query
+          required: false
+          description: Shipping address (partial match).
+          schema:
+            type: string
+            maxLength: 512
+        - name: phone
+          in: query
+          required: false
+          description: Phone number (partial match).
+          schema:
+            type: string
+            maxLength: 32
+        - name: status
+          in: query
+          required: false
+          description: Shipment status filter.
+          schema:
+            type: string
+            enum:
+              - PENDING
+              - SHIPPED
+              - DELIVERED
+              - RETURNED
+              - CANCELLED
+        - name: order_id
+          in: query
+          required: false
+          description: Order identifier.
+          schema:
+            type: integer
+            format: int64
       responses:
         "200":
           description: OK

@@ -4,6 +4,7 @@ import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
 import com.carlosarroyoam.rest.books.core.dto.PaginationDto;
 import com.carlosarroyoam.rest.books.core.exception.GlobalExceptionHandler;
 import com.carlosarroyoam.rest.books.shipment.dto.ShipmentDto;
+import com.carlosarroyoam.rest.books.shipment.dto.ShipmentSpecsDto;
 import com.carlosarroyoam.rest.books.shipment.dto.UpdateShipmentStatusRequestDto;
 import com.carlosarroyoam.rest.books.shipment.entity.ShipmentStatus;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -60,7 +61,8 @@ class ShipmentControllerTest {
         .pagination(PaginationDto.builder().page(0).size(25).totalItems(1).totalPages(1).build())
         .build();
 
-    when(shipmentService.findAll(any(Pageable.class))).thenReturn(pagedResponse);
+    when(shipmentService.findAll(any(Pageable.class), any(ShipmentSpecsDto.class)))
+        .thenReturn(pagedResponse);
 
     mockMvc
         .perform(get("/shipments").queryParam("page", "0")
