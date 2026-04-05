@@ -39,8 +39,8 @@ public class PaymentController {
   @GetMapping(value = "/{paymentId}", produces = "application/json")
   @PreAuthorize("hasRole('App/Admin')")
   public ResponseEntity<PaymentDto> findById(@PathVariable Long paymentId) {
-    PaymentDto payment = paymentService.findById(paymentId);
-    return ResponseEntity.ok(payment);
+    PaymentDto paymentById = paymentService.findById(paymentId);
+    return ResponseEntity.ok(paymentById);
   }
 
   @PostMapping(consumes = "application/json")

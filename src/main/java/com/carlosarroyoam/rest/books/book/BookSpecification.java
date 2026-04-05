@@ -4,6 +4,7 @@ import com.carlosarroyoam.rest.books.author.entity.Author;
 import com.carlosarroyoam.rest.books.book.entity.Book;
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
 import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
 import java.util.Arrays;
 import java.util.List;
 import org.springframework.data.jpa.domain.Specification;
@@ -44,7 +45,7 @@ public class BookSpecification {
           .map(Long::parseLong)
           .toList();
 
-      Join<Book, Author> authorJoin = book.join("authors");
+      Join<Book, Author> authorJoin = book.join("authors", JoinType.LEFT);
 
       return authorJoin.get("id").in(ids);
     };

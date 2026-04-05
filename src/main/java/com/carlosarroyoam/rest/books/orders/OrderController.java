@@ -40,8 +40,8 @@ public class OrderController {
   @GetMapping(value = "/{orderId}", produces = "application/json")
   @PreAuthorize("hasRole('App/Admin')")
   public ResponseEntity<OrderDto> findById(@PathVariable Long orderId) {
-    OrderDto order = orderService.findById(orderId);
-    return ResponseEntity.ok(order);
+    OrderDto orderById = orderService.findById(orderId);
+    return ResponseEntity.ok(orderById);
   }
 
   @PostMapping(consumes = "application/json")

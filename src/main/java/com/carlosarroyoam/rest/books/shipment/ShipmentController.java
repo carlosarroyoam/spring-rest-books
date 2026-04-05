@@ -35,8 +35,8 @@ public class ShipmentController {
   @GetMapping(value = "/{shipmentId}", produces = "application/json")
   @PreAuthorize("hasRole('App/Admin')")
   public ResponseEntity<ShipmentDto> findById(@PathVariable Long shipmentId) {
-    ShipmentDto shipment = shipmentService.findById(shipmentId);
-    return ResponseEntity.ok(shipment);
+    ShipmentDto shipmentById = shipmentService.findById(shipmentId);
+    return ResponseEntity.ok(shipmentById);
   }
 
   @PutMapping(value = "/{shipmentId}/status", consumes = "application/json")
