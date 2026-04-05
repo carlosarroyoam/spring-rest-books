@@ -9,6 +9,7 @@ import com.carlosarroyoam.rest.books.customer.entity.Customer;
 import com.carlosarroyoam.rest.books.orders.dto.CreateOrderItemRequestDto;
 import com.carlosarroyoam.rest.books.orders.dto.CreateOrderRequestDto;
 import com.carlosarroyoam.rest.books.orders.dto.OrderDto;
+import com.carlosarroyoam.rest.books.orders.dto.OrderSpecsDto;
 import com.carlosarroyoam.rest.books.orders.dto.UpdateOrderRequestDto;
 import com.carlosarroyoam.rest.books.orders.entity.Order;
 import com.carlosarroyoam.rest.books.orders.entity.OrderItem;
@@ -21,12 +22,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -115,10 +118,11 @@ class OrderServiceTest {
     Pageable pageable = PageRequest.of(0, 25);
     List<Order> orders = List.of(order);
 
-    when(orderRepository.findAll(any(Pageable.class)))
+    when(orderRepository.findAll(ArgumentMatchers.<Specification<Order>>any(), any(Pageable.class)))
         .thenReturn(new PageImpl<>(orders, pageable, orders.size()));
 
-    PagedResponseDto<OrderDto> response = orderService.findAll(pageable);
+    PagedResponseDto<OrderDto> response = orderService.findAll(pageable,
+        OrderSpecsDto.builder().build());
 
     assertThat(response).isNotNull();
     assertThat(response.getItems()).hasSize(1);

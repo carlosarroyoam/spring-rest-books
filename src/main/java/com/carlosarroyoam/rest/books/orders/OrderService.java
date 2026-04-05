@@ -11,6 +11,7 @@ import com.carlosarroyoam.rest.books.orders.dto.CreateOrderItemRequestDto;
 import com.carlosarroyoam.rest.books.orders.dto.CreateOrderRequestDto;
 import com.carlosarroyoam.rest.books.orders.dto.OrderDto;
 import com.carlosarroyoam.rest.books.orders.dto.OrderDto.OrderDtoMapper;
+import com.carlosarroyoam.rest.books.orders.dto.OrderSpecsDto;
 import com.carlosarroyoam.rest.books.orders.dto.UpdateOrderRequestDto;
 import com.carlosarroyoam.rest.books.orders.entity.Order;
 import com.carlosarroyoam.rest.books.orders.entity.OrderItem;
@@ -25,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -34,6 +36,7 @@ public class OrderService {
   private static final Logger log = LoggerFactory.getLogger(OrderService.class);
   private static final BigDecimal TAX_RATE = new BigDecimal("0.16");
   private static final BigDecimal DEFAULT_SHIPPING_AMOUNT = new BigDecimal("0.00");
+
   private final OrderRepository orderRepository;
   private final CustomerRepository customerRepository;
   private final BookRepository bookRepository;
@@ -46,8 +49,19 @@ public class OrderService {
   }
 
   @Transactional
-  public PagedResponseDto<OrderDto> findAll(Pageable pageable) {
-    Page<Order> orders = orderRepository.findAll(pageable);
+  public PagedResponseDto<OrderDto> findAll(Pageable pageable, OrderSpecsDto orderSpecs) {
+    Specification<Order> spec = Specification.unrestricted();
+    spec = spec.and(OrderSpecification.orderNumberEquals(orderSpecs.getOrderNumber()));
+    spec = spec.and(OrderSpecification.totalGreaterThanOrEqual(orderSpecs.getMinTotal()));
+    spec = spec.and(OrderSpecification.totalLessThanOrEqual(orderSpecs.getMaxTotal()));
+    spec = spec.and(OrderSpecification.shippingAddressContains(orderSpecs.getShippingAddress()));
+    spec = spec.and(
+        OrderSpecification.createdAtBetween(orderSpecs.getStartDate(), orderSpecs.getEndDate()));
+    spec = spec.and(OrderSpecification.statusEquals(orderSpecs.getStatus()));
+    spec = spec.and(OrderSpecification.customerIdEquals(orderSpecs.getCustomerId()));
+
+    Page<Order> orders = orderRepository.findAll(spec, pageable);
+
     return PagedResponseDtoMapper.INSTANCE
         .toPagedResponseDto(orders.map(OrderDtoMapper.INSTANCE::toDto));
   }

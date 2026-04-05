@@ -6,6 +6,7 @@ import com.carlosarroyoam.rest.books.core.exception.GlobalExceptionHandler;
 import com.carlosarroyoam.rest.books.orders.dto.CreateOrderItemRequestDto;
 import com.carlosarroyoam.rest.books.orders.dto.CreateOrderRequestDto;
 import com.carlosarroyoam.rest.books.orders.dto.OrderDto;
+import com.carlosarroyoam.rest.books.orders.dto.OrderSpecsDto;
 import com.carlosarroyoam.rest.books.orders.dto.UpdateOrderRequestDto;
 import com.carlosarroyoam.rest.books.orders.entity.OrderStatus;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -66,7 +67,8 @@ class OrderControllerTest {
         .pagination(PaginationDto.builder().page(0).size(25).totalItems(1).totalPages(1).build())
         .build();
 
-    when(orderService.findAll(any(Pageable.class))).thenReturn(pagedResponse);
+    when(orderService.findAll(any(Pageable.class), any(OrderSpecsDto.class)))
+        .thenReturn(pagedResponse);
 
     mockMvc
         .perform(get("/orders").queryParam("page", "0")

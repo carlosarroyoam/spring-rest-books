@@ -719,6 +719,67 @@ paths:
       parameters:
         - $ref: "#/components/parameters/PageParam"
         - $ref: "#/components/parameters/SizeParam"
+        - name: orderNumber
+          in: query
+          required: false
+          description: Unique order number.
+          schema:
+            type: string
+            maxLength: 32
+        - name: minTotal
+          in: query
+          required: false
+          description: Minimum total amount.
+          schema:
+            type: number
+        - name: maxTotal
+          in: query
+          required: false
+          description: Maximum total amount.
+          schema:
+            type: number
+        - name: shippingAddress
+          in: query
+          required: false
+          description: Shipping address (partial match).
+          schema:
+            type: string
+            maxLength: 512
+        - name: status
+          in: query
+          required: false
+          description: Order status filter.
+          schema:
+            type: string
+            enum:
+              - PENDING
+              - CONFIRMED
+              - PROCESSING
+              - SHIPPED
+              - DELIVERED
+              - CANCELLED
+              - REFUNDED
+        - name: startDate
+          in: query
+          required: false
+          description: Start date for order date range filter.
+          schema:
+            type: string
+            format: date-time
+        - name: endDate
+          in: query
+          required: false
+          description: End date for order date range filter.
+          schema:
+            type: string
+            format: date-time
+        - name: customerId
+          in: query
+          required: false
+          description: Customer identifier.
+          schema:
+            type: integer
+            format: int64
       responses:
         "200":
           description: OK
