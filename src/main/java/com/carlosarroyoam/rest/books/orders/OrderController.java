@@ -34,7 +34,7 @@ public class OrderController {
   @GetMapping(produces = "application/json")
   @PreAuthorize("hasRole('App/Admin')")
   public ResponseEntity<PagedResponseDto<OrderDto>> findAll(
-      @PageableDefault(page = 0, size = 25) Pageable pageable,
+      @PageableDefault(page = 0, size = 25, sort = "id") Pageable pageable,
       @Valid @ModelAttribute OrderSpecsDto orderSpecs) {
     PagedResponseDto<OrderDto> orders = orderService.findAll(pageable, orderSpecs);
     return ResponseEntity.ok(orders);

@@ -32,7 +32,8 @@ public class PaymentController {
   @GetMapping(produces = "application/json")
   @PreAuthorize("hasRole('App/Admin')")
   public ResponseEntity<PagedResponseDto<PaymentDto>> findAll(
-      @PageableDefault(page = 0, size = 25) Pageable pageable, PaymentSpecsDto paymentSpecs) {
+      @PageableDefault(page = 0, size = 25, sort = "id") Pageable pageable,
+      PaymentSpecsDto paymentSpecs) {
     PagedResponseDto<PaymentDto> payments = paymentService.findAll(pageable, paymentSpecs);
     return ResponseEntity.ok(payments);
   }

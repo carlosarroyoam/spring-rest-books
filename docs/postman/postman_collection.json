@@ -35,7 +35,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/books?page=0&size=25",
+              "raw": "{{baseUrl}}/books?page=0&size=25&sort=id,asc",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -58,11 +58,13 @@
                 {
                   "key": "minPrice",
                   "value": "0",
+                  "type": "text",
                   "disabled": true
                 },
                 {
                   "key": "maxPrice",
                   "value": "100",
+                  "type": "text",
                   "disabled": true
                 },
                 {
@@ -79,11 +81,18 @@
                 },
                 {
                   "key": "page",
-                  "value": "0"
+                  "value": "0",
+                  "type": "text"
                 },
                 {
                   "key": "size",
-                  "value": "25"
+                  "value": "25",
+                  "type": "text"
+                },
+                {
+                  "key": "sort",
+                  "value": "id,asc",
+                  "type": "text"
                 }
               ]
             }
@@ -334,7 +343,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/authors?page=0&size=25",
+              "raw": "{{baseUrl}}/authors?page=0&size=25&sort=id,asc",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -356,6 +365,11 @@
                 {
                   "key": "size",
                   "value": "25",
+                  "type": "text"
+                },
+                {
+                  "key": "sort",
+                  "value": "id,asc",
                   "type": "text"
                 }
               ]
@@ -604,7 +618,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/customers?page=0&size=25",
+              "raw": "{{baseUrl}}/customers?page=0&size=25&sort=id,asc",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -638,11 +652,18 @@
                 },
                 {
                   "key": "page",
-                  "value": "0"
+                  "value": "0",
+                  "type": "text"
                 },
                 {
                   "key": "size",
-                  "value": "25"
+                  "value": "25",
+                  "type": "text"
+                },
+                {
+                  "key": "sort",
+                  "value": "id,asc",
+                  "type": "text"
                 }
               ]
             }
@@ -941,7 +962,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/orders?customerId=1&page=0&size=25",
+              "raw": "{{baseUrl}}/orders?page=0&size=25&sort=id,asc",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -958,11 +979,13 @@
                 {
                   "key": "minTotal",
                   "value": "0",
+                  "type": "text",
                   "disabled": true
                 },
                 {
                   "key": "maxTotal",
                   "value": " 100",
+                  "type": "text",
                   "disabled": true
                 },
                 {
@@ -991,15 +1014,24 @@
                 },
                 {
                   "key": "customerId",
-                  "value": "1"
+                  "value": "1",
+                  "type": "text",
+                  "disabled": true
                 },
                 {
                   "key": "page",
-                  "value": "0"
+                  "value": "0",
+                  "type": "text"
                 },
                 {
                   "key": "size",
-                  "value": "25"
+                  "value": "25",
+                  "type": "text"
+                },
+                {
+                  "key": "sort",
+                  "value": "id,asc",
+                  "type": "text"
                 }
               ]
             }
@@ -1202,7 +1234,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/payments?page=0&size=25",
+              "raw": "{{baseUrl}}/payments?page=0&size=25&sort=id,asc",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1213,40 +1245,53 @@
                 {
                   "key": "method",
                   "value": "CREDIT_CARD",
+                  "type": "text",
                   "disabled": true
                 },
                 {
                   "key": "minAmount",
                   "value": "0",
+                  "type": "text",
                   "disabled": true
                 },
                 {
                   "key": "maxAmount",
                   "value": "100",
+                  "type": "text",
                   "disabled": true
                 },
                 {
                   "key": "status",
                   "value": "COMPLETED",
+                  "type": "text",
                   "disabled": true
                 },
                 {
                   "key": "transactionId",
                   "value": "PAY-SEED-000001",
+                  "type": "text",
                   "disabled": true
                 },
                 {
                   "key": "orderId",
                   "value": "1",
+                  "type": "text",
                   "disabled": true
                 },
                 {
                   "key": "page",
-                  "value": "0"
+                  "value": "0",
+                  "type": "text"
                 },
                 {
                   "key": "size",
-                  "value": "25"
+                  "value": "25",
+                  "type": "text"
+                },
+                {
+                  "key": "sort",
+                  "value": "id,asc",
+                  "type": "text"
                 }
               ]
             }
@@ -1410,7 +1455,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/shipments?page=0&size=25",
+              "raw": "{{baseUrl}}/shipments?page=0&size=25&sort=id,asc",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1421,6 +1466,7 @@
                 {
                   "key": "attentionName",
                   "value": "Carlos Alberto",
+                  "type": "text",
                   "disabled": true
                 },
                 {
@@ -1449,11 +1495,18 @@
                 },
                 {
                   "key": "page",
-                  "value": "0"
+                  "value": "0",
+                  "type": "text"
                 },
                 {
                   "key": "size",
-                  "value": "25"
+                  "value": "25",
+                  "type": "text"
+                },
+                {
+                  "key": "sort",
+                  "value": "id,asc",
+                  "type": "text"
                 }
               ]
             }

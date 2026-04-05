@@ -28,7 +28,8 @@ public class ShipmentController {
   @GetMapping(produces = "application/json")
   @PreAuthorize("hasRole('App/Admin')")
   public ResponseEntity<PagedResponseDto<ShipmentDto>> findAll(
-      @PageableDefault(page = 0, size = 25) Pageable pageable, ShipmentSpecsDto shipmentSpecs) {
+      @PageableDefault(page = 0, size = 25, sort = "id") Pageable pageable,
+      ShipmentSpecsDto shipmentSpecs) {
     PagedResponseDto<ShipmentDto> shipments = shipmentService.findAll(pageable, shipmentSpecs);
     return ResponseEntity.ok(shipments);
   }

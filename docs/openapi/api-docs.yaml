@@ -53,6 +53,7 @@ paths:
       parameters:
         - $ref: "#/components/parameters/PageParam"
         - $ref: "#/components/parameters/SizeParam"
+        - $ref: "#/components/parameters/SortParam"
         - name: isbn
           in: query
           required: false
@@ -276,6 +277,7 @@ paths:
       parameters:
         - $ref: "#/components/parameters/PageParam"
         - $ref: "#/components/parameters/SizeParam"
+        - $ref: "#/components/parameters/SortParam"
         - name: name
           in: query
           required: false
@@ -469,6 +471,7 @@ paths:
       parameters:
         - $ref: "#/components/parameters/PageParam"
         - $ref: "#/components/parameters/SizeParam"
+        - $ref: "#/components/parameters/SortParam"
         - name: firstName
           in: query
           required: false
@@ -731,6 +734,7 @@ paths:
       parameters:
         - $ref: "#/components/parameters/PageParam"
         - $ref: "#/components/parameters/SizeParam"
+        - $ref: "#/components/parameters/SortParam"
         - name: orderNumber
           in: query
           required: false
@@ -942,6 +946,7 @@ paths:
       parameters:
         - $ref: "#/components/parameters/PageParam"
         - $ref: "#/components/parameters/SizeParam"
+        - $ref: "#/components/parameters/SortParam"
         - name: method
           in: query
           required: false
@@ -1113,6 +1118,7 @@ paths:
       parameters:
         - $ref: "#/components/parameters/PageParam"
         - $ref: "#/components/parameters/SizeParam"
+        - $ref: "#/components/parameters/SortParam"
         - name: attention_name
           in: query
           required: false
@@ -2023,6 +2029,15 @@ components:
         type: integer
         format: int32
         default: 25
+
+    SortParam:
+      name: sort
+      in: query
+      required: false
+      description: Sorting criteria in the format field,asc or field,desc.
+      schema:
+        type: string
+        default: id,asc
 
   responses:
     Created:
