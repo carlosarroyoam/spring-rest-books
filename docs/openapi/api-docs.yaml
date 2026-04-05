@@ -930,6 +930,54 @@ paths:
       parameters:
         - $ref: "#/components/parameters/PageParam"
         - $ref: "#/components/parameters/SizeParam"
+        - name: method
+          in: query
+          required: false
+          description: Payment method filter.
+          schema:
+            type: string
+            enum:
+              - CREDIT_CARD
+              - DEBIT_CARD
+              - PAYPAL
+              - BANK_TRANSFER
+              - CASH_ON_DELIVERY
+        - name: status
+          in: query
+          required: false
+          description: Payment status filter.
+          schema:
+            type: string
+            enum:
+              - PENDING
+              - COMPLETED
+              - FAILED
+              - CANCELLED
+              - REFUNDED
+        - name: min_amount
+          in: query
+          required: false
+          description: Minimum payment amount.
+          schema:
+            type: number
+        - name: max_amount
+          in: query
+          required: false
+          description: Maximum payment amount.
+          schema:
+            type: number
+        - name: transaction_id
+          in: query
+          required: false
+          description: Transaction ID (partial match).
+          schema:
+            type: string
+            maxLength: 128
+        - name: order_id
+          in: query
+          required: false
+          description: Order identifier.
+          schema:
       responses:
         "200":
           description: OK

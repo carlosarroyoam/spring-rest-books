@@ -5,6 +5,7 @@ import com.carlosarroyoam.rest.books.core.dto.PaginationDto;
 import com.carlosarroyoam.rest.books.core.exception.GlobalExceptionHandler;
 import com.carlosarroyoam.rest.books.payment.dto.CreatePaymentRequestDto;
 import com.carlosarroyoam.rest.books.payment.dto.PaymentDto;
+import com.carlosarroyoam.rest.books.payment.dto.PaymentSpecsDto;
 import com.carlosarroyoam.rest.books.payment.dto.UpdatePaymentStatusRequestDto;
 import com.carlosarroyoam.rest.books.payment.entity.PaymentMethod;
 import com.carlosarroyoam.rest.books.payment.entity.PaymentStatus;
@@ -65,7 +66,8 @@ class PaymentControllerTest {
         .pagination(PaginationDto.builder().page(0).size(25).totalItems(1).totalPages(1).build())
         .build();
 
-    when(paymentService.findAll(any(Pageable.class))).thenReturn(pagedResponse);
+    when(paymentService.findAll(any(Pageable.class), any(PaymentSpecsDto.class)))
+        .thenReturn(pagedResponse);
 
     mockMvc
         .perform(get("/payments").queryParam("page", "0")

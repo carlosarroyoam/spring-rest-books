@@ -7,6 +7,7 @@ import com.carlosarroyoam.rest.books.orders.entity.Order;
 import com.carlosarroyoam.rest.books.orders.entity.OrderStatus;
 import com.carlosarroyoam.rest.books.payment.dto.CreatePaymentRequestDto;
 import com.carlosarroyoam.rest.books.payment.dto.PaymentDto;
+import com.carlosarroyoam.rest.books.payment.dto.PaymentSpecsDto;
 import com.carlosarroyoam.rest.books.payment.dto.UpdatePaymentStatusRequestDto;
 import com.carlosarroyoam.rest.books.payment.entity.Payment;
 import com.carlosarroyoam.rest.books.payment.entity.PaymentMethod;
@@ -28,6 +29,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -83,12 +85,13 @@ class PaymentServiceTest {
   @DisplayName("Should return PagedResponseDto<PaymentDto> when find all payments")
   void shouldReturnListOfPayments() {
     Pageable pageable = PageRequest.of(0, 25);
+    PaymentSpecsDto paymentSpecs = PaymentSpecsDto.builder().build();
     List<Payment> payments = List.of(payment);
 
-    when(paymentRepository.findAll(any(Pageable.class)))
+    when(paymentRepository.findAll(any(Specification.class), any(Pageable.class)))
         .thenReturn(new PageImpl<>(payments, pageable, payments.size()));
 
-    PagedResponseDto<PaymentDto> response = paymentService.findAll(pageable);
+    PagedResponseDto<PaymentDto> response = paymentService.findAll(pageable, paymentSpecs);
 
     assertThat(response).isNotNull();
     assertThat(response.getItems()).hasSize(1);

@@ -3,6 +3,7 @@ package com.carlosarroyoam.rest.books.payment;
 import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
 import com.carlosarroyoam.rest.books.payment.dto.CreatePaymentRequestDto;
 import com.carlosarroyoam.rest.books.payment.dto.PaymentDto;
+import com.carlosarroyoam.rest.books.payment.dto.PaymentSpecsDto;
 import com.carlosarroyoam.rest.books.payment.dto.UpdatePaymentStatusRequestDto;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
@@ -31,8 +32,8 @@ public class PaymentController {
   @GetMapping(produces = "application/json")
   @PreAuthorize("hasRole('App/Admin')")
   public ResponseEntity<PagedResponseDto<PaymentDto>> findAll(
-      @PageableDefault(page = 0, size = 25) Pageable pageable) {
-    PagedResponseDto<PaymentDto> payments = paymentService.findAll(pageable);
+      @PageableDefault(page = 0, size = 25) Pageable pageable, PaymentSpecsDto paymentSpecs) {
+    PagedResponseDto<PaymentDto> payments = paymentService.findAll(pageable, paymentSpecs);
     return ResponseEntity.ok(payments);
   }
 

@@ -9,6 +9,7 @@ import com.carlosarroyoam.rest.books.orders.entity.OrderStatus;
 import com.carlosarroyoam.rest.books.payment.dto.CreatePaymentRequestDto;
 import com.carlosarroyoam.rest.books.payment.dto.PaymentDto;
 import com.carlosarroyoam.rest.books.payment.dto.PaymentDto.PaymentDtoMapper;
+import com.carlosarroyoam.rest.books.payment.dto.PaymentSpecsDto;
 import com.carlosarroyoam.rest.books.payment.dto.UpdatePaymentStatusRequestDto;
 import com.carlosarroyoam.rest.books.payment.entity.Payment;
 import com.carlosarroyoam.rest.books.payment.entity.PaymentStatus;
@@ -21,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -40,8 +42,17 @@ public class PaymentService {
   }
 
   @Transactional
-  public PagedResponseDto<PaymentDto> findAll(Pageable pageable) {
-    Page<Payment> payments = paymentRepository.findAll(pageable);
+  public PagedResponseDto<PaymentDto> findAll(Pageable pageable, PaymentSpecsDto paymentSpecs) {
+    Specification<Payment> spec = Specification.unrestricted();
+    spec = spec.and(PaymentSpecification.methodEquals(paymentSpecs.getMethod()));
+    spec = spec.and(PaymentSpecification.amountGreaterThanOrEqual(paymentSpecs.getMinAmount()));
+    spec = spec.and(PaymentSpecification.amountLessThanOrEqual(paymentSpecs.getMaxAmount()));
+    spec = spec.and(PaymentSpecification.statusEquals(paymentSpecs.getStatus()));
+    spec = spec.and(PaymentSpecification.transactionIdContains(paymentSpecs.getTransactionId()));
+    spec = spec.and(PaymentSpecification.orderIdEquals(paymentSpecs.getOrderId()));
+
+    Page<Payment> payments = paymentRepository.findAll(spec, pageable);
+
     return PagedResponseDtoMapper.INSTANCE
         .toPagedResponseDto(payments.map(PaymentDtoMapper.INSTANCE::toDto));
   }
