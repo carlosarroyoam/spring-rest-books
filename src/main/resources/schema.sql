@@ -2,7 +2,8 @@ CREATE TABLE authors (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(128) NOT NULL,
     created_at TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP NOT NULL
+    updated_at TIMESTAMP NOT NULL,
+    deleted_at TIMESTAMP
 );
 
 CREATE TABLE books (
@@ -14,7 +15,8 @@ CREATE TABLE books (
     is_available_online BOOLEAN NOT NULL,
     published_at DATE NOT NULL,
     created_at TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP NOT NULL
+    updated_at TIMESTAMP NOT NULL,
+    deleted_at TIMESTAMP
 );
 
 CREATE TABLE book_authors (
@@ -91,6 +93,8 @@ CREATE TABLE payments (
     status VARCHAR(32) NOT NULL,
     transaction_id VARCHAR(128),
     order_id BIGINT NOT NULL UNIQUE,
+    created_at TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP NOT NULL,
     FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
 );
 
@@ -101,5 +105,7 @@ CREATE TABLE shipments (
     phone VARCHAR(32),
     status VARCHAR(32) NOT NULL,
     order_id BIGINT NOT NULL UNIQUE,
+    created_at TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP NOT NULL,
     FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
 );

@@ -21,6 +21,7 @@ public class AuthorDto {
   private String name;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
+  private LocalDateTime deletedAt;
 
   @Mapper(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, unmappedTargetPolicy = ReportingPolicy.IGNORE)
   public interface AuthorDtoMapper {

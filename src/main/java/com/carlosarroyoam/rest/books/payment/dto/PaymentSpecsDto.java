@@ -5,8 +5,10 @@ import com.carlosarroyoam.rest.books.payment.entity.PaymentStatus;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import lombok.Builder;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Data
 @Builder
@@ -19,6 +21,12 @@ public class PaymentSpecsDto {
 
   @Size(max = 128, message = "Transaction id should be max 128")
   private String transactionId;
+
+  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+  private LocalDate startDate;
+
+  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+  private LocalDate endDate;
 
   private PaymentStatus status;
   private PaymentMethod method;

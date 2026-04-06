@@ -12,6 +12,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -45,4 +46,10 @@ public class Payment {
   @OneToOne
   @JoinColumn(name = "order_id", referencedColumnName = "id", nullable = false, unique = true)
   private Order order;
+
+  @Column(name = "created_at", nullable = false)
+  private LocalDateTime createdAt;
+
+  @Column(name = "updated_at", nullable = false)
+  private LocalDateTime updatedAt;
 }

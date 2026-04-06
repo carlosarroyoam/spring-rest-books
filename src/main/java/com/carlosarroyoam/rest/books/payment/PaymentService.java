@@ -51,6 +51,8 @@ public class PaymentService {
         .betweenIfPresent(root -> root.get(Payment_.amount), paymentSpecs.getMinAmount(),
             paymentSpecs.getMaxAmount())
         .equalsIfPresent(root -> root.get(Payment_.status), paymentSpecs.getStatus())
+        .betweenDatesIfPresent(root -> root.get(Payment_.createdAt), paymentSpecs.getStartDate(),
+            paymentSpecs.getEndDate())
         .likeIfPresent(root -> root.get(Payment_.transactionId), paymentSpecs.getTransactionId())
         .equalsIfPresent(root -> root.join(Payment_.order).get(Order_.id),
             paymentSpecs.getOrderId())

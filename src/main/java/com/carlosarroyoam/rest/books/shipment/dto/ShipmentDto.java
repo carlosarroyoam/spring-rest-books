@@ -2,6 +2,7 @@ package com.carlosarroyoam.rest.books.shipment.dto;
 
 import com.carlosarroyoam.rest.books.shipment.entity.Shipment;
 import com.carlosarroyoam.rest.books.shipment.entity.ShipmentStatus;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,6 +24,8 @@ public class ShipmentDto {
   private String phone;
   private ShipmentStatus status;
   private Long orderId;
+  private LocalDateTime createdAt;
+  private LocalDateTime updatedAt;
 
   @Mapper(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, unmappedTargetPolicy = ReportingPolicy.IGNORE)
   public interface ShipmentDtoMapper {

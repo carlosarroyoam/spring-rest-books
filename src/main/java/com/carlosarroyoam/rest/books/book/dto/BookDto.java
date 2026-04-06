@@ -31,6 +31,7 @@ public class BookDto {
   private LocalDate publishedAt;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
+  private LocalDateTime deletedAt;
 
   @Mapper(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = {
       AuthorDtoMapper.class })
