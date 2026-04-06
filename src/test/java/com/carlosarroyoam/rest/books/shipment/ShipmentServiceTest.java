@@ -2,9 +2,9 @@ package com.carlosarroyoam.rest.books.shipment;
 
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
 import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
-import com.carlosarroyoam.rest.books.orders.OrderRepository;
-import com.carlosarroyoam.rest.books.orders.entity.Order;
-import com.carlosarroyoam.rest.books.orders.entity.OrderStatus;
+import com.carlosarroyoam.rest.books.order.OrderRepository;
+import com.carlosarroyoam.rest.books.order.entity.Order;
+import com.carlosarroyoam.rest.books.order.entity.OrderStatus;
 import com.carlosarroyoam.rest.books.shipment.dto.ShipmentDto;
 import com.carlosarroyoam.rest.books.shipment.dto.ShipmentSpecsDto;
 import com.carlosarroyoam.rest.books.shipment.dto.UpdateShipmentStatusRequestDto;
@@ -16,6 +16,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -67,8 +68,8 @@ class ShipmentServiceTest {
     ShipmentSpecsDto shipmentSpecs = ShipmentSpecsDto.builder().build();
     List<Shipment> shipments = List.of(shipment);
 
-    when(shipmentRepository.findAll(any(Specification.class), any(Pageable.class)))
-        .thenReturn(new PageImpl<>(shipments, pageable, shipments.size()));
+    when(shipmentRepository.findAll(ArgumentMatchers.<Specification<Shipment>>any(),
+        any(Pageable.class))).thenReturn(new PageImpl<>(shipments, pageable, shipments.size()));
 
     PagedResponseDto<ShipmentDto> response = shipmentService.findAll(pageable, shipmentSpecs);
 

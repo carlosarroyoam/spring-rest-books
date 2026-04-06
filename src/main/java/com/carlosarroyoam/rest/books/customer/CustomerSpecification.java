@@ -2,6 +2,7 @@ package com.carlosarroyoam.rest.books.customer;
 
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
 import com.carlosarroyoam.rest.books.customer.entity.Customer;
+import com.carlosarroyoam.rest.books.customer.entity.Customer_;
 import org.springframework.data.jpa.domain.Specification;
 
 public class CustomerSpecification {
@@ -10,42 +11,42 @@ public class CustomerSpecification {
   }
 
   static Specification<Customer> firstNameContains(String firstName) {
-    return (customer, cq, cb) -> {
+    return (root, cq, cb) -> {
       if (firstName == null || firstName.isBlank()) {
         return cb.conjunction();
       }
 
-      return cb.like(cb.lower(customer.get("firstName")), "%" + firstName.toLowerCase() + "%");
+      return cb.like(cb.lower(root.get(Customer_.firstName)), "%" + firstName.toLowerCase() + "%");
     };
   }
 
   static Specification<Customer> lastNameContains(String lastName) {
-    return (customer, cq, cb) -> {
+    return (root, cq, cb) -> {
       if (lastName == null || lastName.isBlank()) {
         return cb.conjunction();
       }
 
-      return cb.like(cb.lower(customer.get("lastName")), "%" + lastName.toLowerCase() + "%");
+      return cb.like(cb.lower(root.get(Customer_.lastName)), "%" + lastName.toLowerCase() + "%");
     };
   }
 
   static Specification<Customer> emailContains(String email) {
-    return (customer, cq, cb) -> {
+    return (root, cq, cb) -> {
       if (email == null || email.isBlank()) {
         return cb.conjunction();
       }
 
-      return cb.like(cb.lower(customer.get("email")), "%" + email.toLowerCase() + "%");
+      return cb.like(cb.lower(root.get(Customer_.email)), "%" + email.toLowerCase() + "%");
     };
   }
 
   static Specification<Customer> usernameContains(String username) {
-    return (customer, cq, cb) -> {
+    return (root, cq, cb) -> {
       if (username == null || username.isBlank()) {
         return cb.conjunction();
       }
 
-      return cb.like(cb.lower(customer.get("username")), "%" + username.toLowerCase() + "%");
+      return cb.like(cb.lower(root.get(Customer_.username)), "%" + username.toLowerCase() + "%");
     };
   }
 }

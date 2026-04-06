@@ -1,6 +1,7 @@
 package com.carlosarroyoam.rest.books.author;
 
 import com.carlosarroyoam.rest.books.author.entity.Author;
+import com.carlosarroyoam.rest.books.author.entity.Author_;
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -10,12 +11,12 @@ public class AuthorSpecification {
   }
 
   static Specification<Author> nameContains(String name) {
-    return (author, cq, cb) -> {
+    return (root, cq, cb) -> {
       if (name == null || name.isBlank()) {
         return cb.conjunction();
       }
 
-      return cb.like(cb.lower(author.get("name")), "%" + name.toLowerCase() + "%");
+      return cb.like(cb.lower(root.get(Author_.name)), "%" + name.toLowerCase() + "%");
     };
   }
 }

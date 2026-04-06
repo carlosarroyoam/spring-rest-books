@@ -2,9 +2,9 @@ package com.carlosarroyoam.rest.books.payment;
 
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
 import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
-import com.carlosarroyoam.rest.books.orders.OrderRepository;
-import com.carlosarroyoam.rest.books.orders.entity.Order;
-import com.carlosarroyoam.rest.books.orders.entity.OrderStatus;
+import com.carlosarroyoam.rest.books.order.OrderRepository;
+import com.carlosarroyoam.rest.books.order.entity.Order;
+import com.carlosarroyoam.rest.books.order.entity.OrderStatus;
 import com.carlosarroyoam.rest.books.payment.dto.CreatePaymentRequestDto;
 import com.carlosarroyoam.rest.books.payment.dto.PaymentDto;
 import com.carlosarroyoam.rest.books.payment.dto.PaymentSpecsDto;
@@ -23,6 +23,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -88,8 +89,8 @@ class PaymentServiceTest {
     PaymentSpecsDto paymentSpecs = PaymentSpecsDto.builder().build();
     List<Payment> payments = List.of(payment);
 
-    when(paymentRepository.findAll(any(Specification.class), any(Pageable.class)))
-        .thenReturn(new PageImpl<>(payments, pageable, payments.size()));
+    when(paymentRepository.findAll(ArgumentMatchers.<Specification<Payment>>any(),
+        any(Pageable.class))).thenReturn(new PageImpl<>(payments, pageable, payments.size()));
 
     PagedResponseDto<PaymentDto> response = paymentService.findAll(pageable, paymentSpecs);
 

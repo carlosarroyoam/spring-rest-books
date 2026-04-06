@@ -1,6 +1,6 @@
 package com.carlosarroyoam.rest.books.payment.entity;
 
-import com.carlosarroyoam.rest.books.orders.entity.Order;
+import com.carlosarroyoam.rest.books.order.entity.Order;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

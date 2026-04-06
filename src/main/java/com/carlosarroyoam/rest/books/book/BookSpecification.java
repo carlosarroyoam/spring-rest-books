@@ -1,7 +1,9 @@
 package com.carlosarroyoam.rest.books.book;
 
 import com.carlosarroyoam.rest.books.author.entity.Author;
+import com.carlosarroyoam.rest.books.author.entity.Author_;
 import com.carlosarroyoam.rest.books.book.entity.Book;
+import com.carlosarroyoam.rest.books.book.entity.Book_;
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
@@ -16,57 +18,57 @@ public class BookSpecification {
   }
 
   static Specification<Book> isbnEquals(String isbn) {
-    return (book, cq, cb) -> {
+    return (root, cq, cb) -> {
       if (isbn == null || isbn.isBlank()) {
         return cb.conjunction();
       }
 
-      return cb.equal(book.get("isbn"), isbn);
+      return cb.equal(root.get(Book_.isbn), isbn);
     };
   }
 
   static Specification<Book> titleContains(String title) {
-    return (book, cq, cb) -> {
+    return (root, cq, cb) -> {
       if (title == null || title.isBlank()) {
         return cb.conjunction();
       }
 
-      return cb.like(cb.lower(book.get("title")), "%" + title.toLowerCase() + "%");
+      return cb.like(cb.lower(root.get(Book_.title)), "%" + title.toLowerCase() + "%");
     };
   }
 
   static Specification<Book> priceGreaterThanOrEqual(BigDecimal minPrice) {
-    return (book, cq, cb) -> {
+    return (root, cq, cb) -> {
       if (minPrice == null) {
         return cb.conjunction();
       }
 
-      return cb.greaterThanOrEqualTo(book.get("price"), minPrice);
+      return cb.greaterThanOrEqualTo(root.get(Book_.price), minPrice);
     };
   }
 
   static Specification<Book> priceLessThanOrEqual(BigDecimal maxPrice) {
-    return (book, cq, cb) -> {
+    return (root, cq, cb) -> {
       if (maxPrice == null) {
         return cb.conjunction();
       }
 
-      return cb.lessThanOrEqualTo(book.get("price"), maxPrice);
+      return cb.lessThanOrEqualTo(root.get(Book_.price), maxPrice);
     };
   }
 
   static Specification<Book> isAvailableOnline(Boolean isAvailableOnline) {
-    return (book, cq, cb) -> {
+    return (root, cq, cb) -> {
       if (isAvailableOnline == null) {
         return cb.conjunction();
       }
 
-      return cb.equal(book.get("isAvailableOnline"), isAvailableOnline);
+      return cb.equal(root.get(Book_.isAvailableOnline), isAvailableOnline);
     };
   }
 
   static Specification<Book> authorIdIn(String authorIds) {
-    return (book, cq, cb) -> {
+    return (root, cq, cb) -> {
       if (authorIds == null || authorIds.isBlank()) {
         return cb.conjunction();
       }
@@ -76,9 +78,9 @@ public class BookSpecification {
           .map(Long::parseLong)
           .toList();
 
-      Join<Book, Author> authorJoin = book.join("authors", JoinType.LEFT);
+      Join<Book, Author> authorJoin = root.join(Book_.authors, JoinType.LEFT);
 
-      return authorJoin.get("id").in(ids);
+      return authorJoin.get(Author_.id).in(ids);
     };
   }
 }
