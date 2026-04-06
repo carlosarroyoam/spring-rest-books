@@ -65,7 +65,7 @@ class AuthorControllerTest {
         .pagination(PaginationDto.builder().page(0).size(25).totalItems(1).totalPages(1).build())
         .build();
 
-    when(authorService.findAll(any(Pageable.class), any(AuthorSpecsDto.class)))
+    when(authorService.findAll(any(AuthorSpecsDto.class), any(Pageable.class)))
         .thenReturn(pagedResponse);
 
     mockMvc

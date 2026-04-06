@@ -67,7 +67,7 @@ class BookControllerTest {
         .pagination(PaginationDto.builder().page(0).size(25).totalItems(1).totalPages(1).build())
         .build();
 
-    when(bookService.findAll(any(Pageable.class), any(BookSpecsDto.class)))
+    when(bookService.findAll(any(BookSpecsDto.class), any(Pageable.class)))
         .thenReturn(pagedResponse);
 
     mockMvc

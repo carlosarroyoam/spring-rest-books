@@ -70,8 +70,8 @@ class CustomerServiceTest {
     when(customerRepository.findAll(ArgumentMatchers.<Specification<Customer>>any(),
         any(Pageable.class))).thenReturn(new PageImpl<>(customers, pageable, customers.size()));
 
-    PagedResponseDto<CustomerDto> response = customerService.findAll(PageRequest.of(0, 25),
-        CustomerSpecsDto.builder().build());
+    PagedResponseDto<CustomerDto> response = customerService
+        .findAll(CustomerSpecsDto.builder().build(), PageRequest.of(0, 25));
 
     assertThat(response).isNotNull();
     assertThat(response.getItems()).isNotNull().hasSize(1);

@@ -34,9 +34,9 @@ public class CustomerController {
   @GetMapping(produces = "application/json")
   @PreAuthorize("hasRole('App/Admin')")
   public ResponseEntity<PagedResponseDto<CustomerDto>> findAll(
-      @PageableDefault(page = 0, size = 25, sort = "id") Pageable pageable,
-      @Valid @ModelAttribute CustomerSpecsDto customerSpecs) {
-    PagedResponseDto<CustomerDto> customers = customerService.findAll(pageable, customerSpecs);
+      @Valid @ModelAttribute CustomerSpecsDto customerSpecs,
+      @PageableDefault(page = 0, size = 25, sort = "id") Pageable pageable) {
+    PagedResponseDto<CustomerDto> customers = customerService.findAll(customerSpecs, pageable);
     return ResponseEntity.ok(customers);
   }
 

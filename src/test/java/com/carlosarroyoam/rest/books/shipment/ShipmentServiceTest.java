@@ -71,7 +71,7 @@ class ShipmentServiceTest {
     when(shipmentRepository.findAll(ArgumentMatchers.<Specification<Shipment>>any(),
         any(Pageable.class))).thenReturn(new PageImpl<>(shipments, pageable, shipments.size()));
 
-    PagedResponseDto<ShipmentDto> response = shipmentService.findAll(pageable, shipmentSpecs);
+    PagedResponseDto<ShipmentDto> response = shipmentService.findAll(shipmentSpecs, pageable);
 
     assertThat(response).isNotNull();
     assertThat(response.getItems()).hasSize(1);

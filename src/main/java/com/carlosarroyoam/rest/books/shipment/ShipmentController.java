@@ -10,6 +10,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,9 +29,9 @@ public class ShipmentController {
   @GetMapping(produces = "application/json")
   @PreAuthorize("hasRole('App/Admin')")
   public ResponseEntity<PagedResponseDto<ShipmentDto>> findAll(
-      @PageableDefault(page = 0, size = 25, sort = "id") Pageable pageable,
-      ShipmentSpecsDto shipmentSpecs) {
-    PagedResponseDto<ShipmentDto> shipments = shipmentService.findAll(pageable, shipmentSpecs);
+      @Valid @ModelAttribute ShipmentSpecsDto shipmentSpecs,
+      @PageableDefault(page = 0, size = 25, sort = "id") Pageable pageable) {
+    PagedResponseDto<ShipmentDto> shipments = shipmentService.findAll(shipmentSpecs, pageable);
     return ResponseEntity.ok(shipments);
   }
 

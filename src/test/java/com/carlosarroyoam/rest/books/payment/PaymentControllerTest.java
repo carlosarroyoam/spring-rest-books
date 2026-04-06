@@ -66,7 +66,7 @@ class PaymentControllerTest {
         .pagination(PaginationDto.builder().page(0).size(25).totalItems(1).totalPages(1).build())
         .build();
 
-    when(paymentService.findAll(any(Pageable.class), any(PaymentSpecsDto.class)))
+    when(paymentService.findAll(any(PaymentSpecsDto.class), any(Pageable.class)))
         .thenReturn(pagedResponse);
 
     mockMvc

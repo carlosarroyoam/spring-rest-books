@@ -64,7 +64,7 @@ class CustomerControllerTest {
         .pagination(PaginationDto.builder().page(0).size(25).totalItems(1).totalPages(1).build())
         .build();
 
-    when(customerService.findAll(any(Pageable.class), any(CustomerSpecsDto.class)))
+    when(customerService.findAll(any(CustomerSpecsDto.class), any(Pageable.class)))
         .thenReturn(pagedResponse);
 
     mockMvc

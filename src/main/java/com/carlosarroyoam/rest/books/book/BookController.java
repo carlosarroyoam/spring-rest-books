@@ -35,9 +35,9 @@ public class BookController {
 
   @GetMapping(produces = "application/json")
   public ResponseEntity<PagedResponseDto<BookDto>> findAll(
-      @PageableDefault(page = 0, size = 25, sort = "id") Pageable pageable,
-      @Valid @ModelAttribute BookSpecsDto bookSpecs) {
-    PagedResponseDto<BookDto> books = bookService.findAll(pageable, bookSpecs);
+      @Valid @ModelAttribute BookSpecsDto bookSpecs,
+      @PageableDefault(page = 0, size = 25, sort = "id") Pageable pageable) {
+    PagedResponseDto<BookDto> books = bookService.findAll(bookSpecs, pageable);
     return ResponseEntity.ok(books);
   }
 

@@ -3,12 +3,14 @@ package com.carlosarroyoam.rest.books.customer;
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
 import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
 import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto.PagedResponseDtoMapper;
+import com.carlosarroyoam.rest.books.core.specification.SpecificationBuilder;
 import com.carlosarroyoam.rest.books.customer.dto.CreateCustomerRequestDto;
 import com.carlosarroyoam.rest.books.customer.dto.CustomerDto;
 import com.carlosarroyoam.rest.books.customer.dto.CustomerDto.CustomerDtoMapper;
 import com.carlosarroyoam.rest.books.customer.dto.CustomerSpecsDto;
 import com.carlosarroyoam.rest.books.customer.dto.UpdateCustomerRequestDto;
 import com.carlosarroyoam.rest.books.customer.entity.Customer;
+import com.carlosarroyoam.rest.books.customer.entity.Customer_;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import org.slf4j.Logger;
@@ -31,12 +33,13 @@ public class CustomerService {
     this.keycloakService = keycloakService;
   }
 
-  public PagedResponseDto<CustomerDto> findAll(Pageable pageable, CustomerSpecsDto customerSpecs) {
-    Specification<Customer> spec = Specification.unrestricted();
-    spec = spec.and(CustomerSpecification.firstNameContains(customerSpecs.getFirstName()));
-    spec = spec.and(CustomerSpecification.lastNameContains(customerSpecs.getLastName()));
-    spec = spec.and(CustomerSpecification.emailContains(customerSpecs.getEmail()));
-    spec = spec.and(CustomerSpecification.usernameContains(customerSpecs.getUsername()));
+  public PagedResponseDto<CustomerDto> findAll(CustomerSpecsDto customerSpecs, Pageable pageable) {
+    Specification<Customer> spec = SpecificationBuilder.<Customer>builder()
+        .likeIfPresent(root -> root.get(Customer_.firstName), customerSpecs.getFirstName())
+        .likeIfPresent(root -> root.get(Customer_.lastName), customerSpecs.getLastName())
+        .likeIfPresent(root -> root.get(Customer_.email), customerSpecs.getEmail())
+        .likeIfPresent(root -> root.get(Customer_.username), customerSpecs.getUsername())
+        .build();
 
     Page<Customer> customers = customerRepository.findAll(spec, pageable);
 

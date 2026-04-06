@@ -6,11 +6,13 @@ import com.carlosarroyoam.rest.books.author.dto.AuthorSpecsDto;
 import com.carlosarroyoam.rest.books.author.dto.CreateAuthorRequestDto;
 import com.carlosarroyoam.rest.books.author.dto.UpdateAuthorRequestDto;
 import com.carlosarroyoam.rest.books.author.entity.Author;
+import com.carlosarroyoam.rest.books.author.entity.Author_;
 import com.carlosarroyoam.rest.books.book.dto.BookDto;
 import com.carlosarroyoam.rest.books.book.dto.BookDto.BookDtoMapper;
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
 import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
 import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto.PagedResponseDtoMapper;
+import com.carlosarroyoam.rest.books.core.specification.SpecificationBuilder;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -32,9 +34,10 @@ public class AuthorService {
     this.authorRepository = authorRepository;
   }
 
-  public PagedResponseDto<AuthorDto> findAll(Pageable pageable, AuthorSpecsDto authorSpecs) {
-    Specification<Author> spec = Specification.unrestricted();
-    spec = spec.and(AuthorSpecification.nameContains(authorSpecs.getName()));
+  public PagedResponseDto<AuthorDto> findAll(AuthorSpecsDto authorSpecs, Pageable pageable) {
+    Specification<Author> spec = SpecificationBuilder.<Author>builder()
+        .likeIfPresent(root -> root.get(Author_.name), authorSpecs.getName())
+        .build();
 
     Page<Author> authors = authorRepository.findAll(spec, pageable);
 

@@ -35,9 +35,9 @@ public class AuthorController {
 
   @GetMapping(produces = "application/json")
   public ResponseEntity<PagedResponseDto<AuthorDto>> findAll(
-      @PageableDefault(page = 0, size = 25, sort = "id") Pageable pageable,
-      @Valid @ModelAttribute AuthorSpecsDto authorSpecs) {
-    PagedResponseDto<AuthorDto> authors = authorService.findAll(pageable, authorSpecs);
+      @Valid @ModelAttribute AuthorSpecsDto authorSpecs,
+      @PageableDefault(page = 0, size = 25, sort = "id") Pageable pageable) {
+    PagedResponseDto<AuthorDto> authors = authorService.findAll(authorSpecs, pageable);
     return ResponseEntity.ok(authors);
   }
 

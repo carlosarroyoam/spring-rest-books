@@ -69,7 +69,7 @@ class OrderControllerTest {
         .pagination(PaginationDto.builder().page(0).size(25).totalItems(1).totalPages(1).build())
         .build();
 
-    when(orderService.findAll(any(Pageable.class), any(OrderSpecsDto.class)))
+    when(orderService.findAll(any(OrderSpecsDto.class), any(Pageable.class)))
         .thenReturn(pagedResponse);
 
     mockMvc

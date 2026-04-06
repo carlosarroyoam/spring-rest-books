@@ -11,6 +11,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -32,9 +33,9 @@ public class PaymentController {
   @GetMapping(produces = "application/json")
   @PreAuthorize("hasRole('App/Admin')")
   public ResponseEntity<PagedResponseDto<PaymentDto>> findAll(
-      @PageableDefault(page = 0, size = 25, sort = "id") Pageable pageable,
-      PaymentSpecsDto paymentSpecs) {
-    PagedResponseDto<PaymentDto> payments = paymentService.findAll(pageable, paymentSpecs);
+      @Valid @ModelAttribute PaymentSpecsDto paymentSpecs,
+      @PageableDefault(page = 0, size = 25, sort = "id") Pageable pageable) {
+    PagedResponseDto<PaymentDto> payments = paymentService.findAll(paymentSpecs, pageable);
     return ResponseEntity.ok(payments);
   }
 

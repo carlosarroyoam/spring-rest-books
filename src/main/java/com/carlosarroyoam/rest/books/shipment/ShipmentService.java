@@ -3,15 +3,18 @@ package com.carlosarroyoam.rest.books.shipment;
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
 import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
 import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto.PagedResponseDtoMapper;
+import com.carlosarroyoam.rest.books.core.specification.SpecificationBuilder;
 import com.carlosarroyoam.rest.books.order.OrderRepository;
 import com.carlosarroyoam.rest.books.order.entity.Order;
 import com.carlosarroyoam.rest.books.order.entity.OrderStatus;
+import com.carlosarroyoam.rest.books.order.entity.Order_;
 import com.carlosarroyoam.rest.books.shipment.dto.ShipmentDto;
 import com.carlosarroyoam.rest.books.shipment.dto.ShipmentDto.ShipmentDtoMapper;
 import com.carlosarroyoam.rest.books.shipment.dto.ShipmentSpecsDto;
 import com.carlosarroyoam.rest.books.shipment.dto.UpdateShipmentStatusRequestDto;
 import com.carlosarroyoam.rest.books.shipment.entity.Shipment;
 import com.carlosarroyoam.rest.books.shipment.entity.ShipmentStatus;
+import com.carlosarroyoam.rest.books.shipment.entity.Shipment_;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,13 +37,15 @@ public class ShipmentService {
   }
 
   @Transactional
-  public PagedResponseDto<ShipmentDto> findAll(Pageable pageable, ShipmentSpecsDto shipmentSpecs) {
-    Specification<Shipment> spec = Specification.unrestricted();
-    spec = spec.and(ShipmentSpecification.attentionNameContains(shipmentSpecs.getAttentionName()));
-    spec = spec.and(ShipmentSpecification.addressContains(shipmentSpecs.getAddress()));
-    spec = spec.and(ShipmentSpecification.phoneContains(shipmentSpecs.getPhone()));
-    spec = spec.and(ShipmentSpecification.statusEquals(shipmentSpecs.getStatus()));
-    spec = spec.and(ShipmentSpecification.orderIdEquals(shipmentSpecs.getOrderId()));
+  public PagedResponseDto<ShipmentDto> findAll(ShipmentSpecsDto shipmentSpecs, Pageable pageable) {
+    Specification<Shipment> spec = SpecificationBuilder.<Shipment>builder()
+        .likeIfPresent(root -> root.get(Shipment_.attentionName), shipmentSpecs.getAttentionName())
+        .likeIfPresent(root -> root.get(Shipment_.address), shipmentSpecs.getAddress())
+        .likeIfPresent(root -> root.get(Shipment_.phone), shipmentSpecs.getPhone())
+        .equalsIfPresent(root -> root.get(Shipment_.status), shipmentSpecs.getStatus())
+        .equalsIfPresent(root -> root.get(Shipment_.order).get(Order_.id),
+            shipmentSpecs.getOrderId())
+        .build();
 
     Page<Shipment> shipments = shipmentRepository.findAll(spec, pageable);
 

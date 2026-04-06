@@ -82,8 +82,8 @@ class BookServiceTest {
     when(bookRepository.findAll(ArgumentMatchers.<Specification<Book>>any(), any(Pageable.class)))
         .thenReturn(new PageImpl<>(books, pageable, books.size()));
 
-    PagedResponseDto<BookDto> response = bookService.findAll(PageRequest.of(0, 25),
-        BookSpecsDto.builder().build());
+    PagedResponseDto<BookDto> response = bookService.findAll(BookSpecsDto.builder().build(),
+        PageRequest.of(0, 25));
 
     assertThat(response).isNotNull();
     assertThat(response.getItems()).isNotNull().hasSize(1);

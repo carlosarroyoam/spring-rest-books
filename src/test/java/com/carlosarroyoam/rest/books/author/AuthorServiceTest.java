@@ -81,8 +81,8 @@ class AuthorServiceTest {
     when(authorRepository.findAll(ArgumentMatchers.<Specification<Author>>any(),
         any(Pageable.class))).thenReturn(new PageImpl<>(authors, pageable, authors.size()));
 
-    PagedResponseDto<AuthorDto> response = authorService.findAll(PageRequest.of(0, 25),
-        AuthorSpecsDto.builder().build());
+    PagedResponseDto<AuthorDto> response = authorService.findAll(AuthorSpecsDto.builder().build(),
+        PageRequest.of(0, 25));
 
     assertThat(response).isNotNull();
     assertThat(response.getItems()).isNotNull().hasSize(1);

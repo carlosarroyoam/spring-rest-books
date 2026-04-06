@@ -61,7 +61,7 @@ class ShipmentControllerTest {
         .pagination(PaginationDto.builder().page(0).size(25).totalItems(1).totalPages(1).build())
         .build();
 
-    when(shipmentService.findAll(any(Pageable.class), any(ShipmentSpecsDto.class)))
+    when(shipmentService.findAll(any(ShipmentSpecsDto.class), any(Pageable.class)))
         .thenReturn(pagedResponse);
 
     mockMvc

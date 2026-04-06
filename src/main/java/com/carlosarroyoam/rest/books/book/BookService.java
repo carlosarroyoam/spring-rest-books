@@ -2,15 +2,19 @@ package com.carlosarroyoam.rest.books.book;
 
 import com.carlosarroyoam.rest.books.author.dto.AuthorDto;
 import com.carlosarroyoam.rest.books.author.dto.AuthorDto.AuthorDtoMapper;
+import com.carlosarroyoam.rest.books.author.entity.Author_;
 import com.carlosarroyoam.rest.books.book.dto.BookDto;
 import com.carlosarroyoam.rest.books.book.dto.BookDto.BookDtoMapper;
 import com.carlosarroyoam.rest.books.book.dto.BookSpecsDto;
 import com.carlosarroyoam.rest.books.book.dto.CreateBookRequestDto;
 import com.carlosarroyoam.rest.books.book.dto.UpdateBookRequestDto;
 import com.carlosarroyoam.rest.books.book.entity.Book;
+import com.carlosarroyoam.rest.books.book.entity.Book_;
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
 import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
 import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto.PagedResponseDtoMapper;
+import com.carlosarroyoam.rest.books.core.specification.SpecificationBuilder;
+import jakarta.persistence.criteria.JoinType;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -32,14 +36,17 @@ public class BookService {
     this.bookRepository = bookRepository;
   }
 
-  public PagedResponseDto<BookDto> findAll(Pageable pageable, BookSpecsDto bookSpecs) {
-    Specification<Book> spec = Specification.unrestricted();
-    spec = spec.and(BookSpecification.isbnEquals(bookSpecs.getIsbn()));
-    spec = spec.and(BookSpecification.titleContains(bookSpecs.getTitle()));
-    spec = spec.and(BookSpecification.priceGreaterThanOrEqual(bookSpecs.getMinPrice()));
-    spec = spec.and(BookSpecification.priceLessThanOrEqual(bookSpecs.getMaxPrice()));
-    spec = spec.and(BookSpecification.isAvailableOnline(bookSpecs.getIsAvailableOnline()));
-    spec = spec.and(BookSpecification.authorIdIn(bookSpecs.getAuthorIds()));
+  public PagedResponseDto<BookDto> findAll(BookSpecsDto bookSpecs, Pageable pageable) {
+    Specification<Book> spec = SpecificationBuilder.<Book>builder()
+        .likeIfPresent(root -> root.get(Book_.isbn), bookSpecs.getIsbn())
+        .likeIfPresent(root -> root.get(Book_.title), bookSpecs.getTitle())
+        .betweenIfPresent(root -> root.get(Book_.price), bookSpecs.getMinPrice(),
+            bookSpecs.getMaxPrice())
+        .equalsIfPresent(root -> root.get(Book_.isAvailableOnline),
+            bookSpecs.getIsAvailableOnline())
+        .inIdsIfPresent(root -> root.join(Book_.authors, JoinType.LEFT).get(Author_.id),
+            bookSpecs.getAuthorIds())
+        .build();
 
     Page<Book> books = bookRepository.findAll(spec, pageable);
 

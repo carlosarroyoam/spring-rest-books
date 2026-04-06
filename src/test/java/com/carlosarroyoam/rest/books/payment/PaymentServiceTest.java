@@ -92,7 +92,7 @@ class PaymentServiceTest {
     when(paymentRepository.findAll(ArgumentMatchers.<Specification<Payment>>any(),
         any(Pageable.class))).thenReturn(new PageImpl<>(payments, pageable, payments.size()));
 
-    PagedResponseDto<PaymentDto> response = paymentService.findAll(pageable, paymentSpecs);
+    PagedResponseDto<PaymentDto> response = paymentService.findAll(paymentSpecs, pageable);
 
     assertThat(response).isNotNull();
     assertThat(response.getItems()).hasSize(1);

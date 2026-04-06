@@ -5,17 +5,20 @@ import com.carlosarroyoam.rest.books.book.entity.Book;
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
 import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
 import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto.PagedResponseDtoMapper;
+import com.carlosarroyoam.rest.books.core.specification.SpecificationBuilder;
 import com.carlosarroyoam.rest.books.customer.CustomerRepository;
 import com.carlosarroyoam.rest.books.customer.entity.Customer;
+import com.carlosarroyoam.rest.books.customer.entity.Customer_;
 import com.carlosarroyoam.rest.books.order.dto.CreateOrderItemRequestDto;
 import com.carlosarroyoam.rest.books.order.dto.CreateOrderRequestDto;
 import com.carlosarroyoam.rest.books.order.dto.OrderDto;
+import com.carlosarroyoam.rest.books.order.dto.OrderDto.OrderDtoMapper;
 import com.carlosarroyoam.rest.books.order.dto.OrderSpecsDto;
 import com.carlosarroyoam.rest.books.order.dto.UpdateOrderRequestDto;
-import com.carlosarroyoam.rest.books.order.dto.OrderDto.OrderDtoMapper;
 import com.carlosarroyoam.rest.books.order.entity.Order;
 import com.carlosarroyoam.rest.books.order.entity.OrderItem;
 import com.carlosarroyoam.rest.books.order.entity.OrderStatus;
+import com.carlosarroyoam.rest.books.order.entity.Order_;
 import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -49,16 +52,18 @@ public class OrderService {
   }
 
   @Transactional
-  public PagedResponseDto<OrderDto> findAll(Pageable pageable, OrderSpecsDto orderSpecs) {
-    Specification<Order> spec = Specification.unrestricted();
-    spec = spec.and(OrderSpecification.orderNumberEquals(orderSpecs.getOrderNumber()));
-    spec = spec.and(OrderSpecification.totalGreaterThanOrEqual(orderSpecs.getMinTotal()));
-    spec = spec.and(OrderSpecification.totalLessThanOrEqual(orderSpecs.getMaxTotal()));
-    spec = spec.and(OrderSpecification.shippingAddressContains(orderSpecs.getShippingAddress()));
-    spec = spec.and(
-        OrderSpecification.createdAtBetween(orderSpecs.getStartDate(), orderSpecs.getEndDate()));
-    spec = spec.and(OrderSpecification.statusEquals(orderSpecs.getStatus()));
-    spec = spec.and(OrderSpecification.customerIdEquals(orderSpecs.getCustomerId()));
+  public PagedResponseDto<OrderDto> findAll(OrderSpecsDto orderSpecs, Pageable pageable) {
+    Specification<Order> spec = SpecificationBuilder.<Order>builder()
+        .likeIfPresent(root -> root.get(Order_.orderNumber), orderSpecs.getOrderNumber())
+        .betweenIfPresent(root -> root.get(Order_.total), orderSpecs.getMinTotal(),
+            orderSpecs.getMaxTotal())
+        .likeIfPresent(root -> root.get(Order_.shippingAddress), orderSpecs.getShippingAddress())
+        .betweenIfPresent(root -> root.get(Order_.createdAt), orderSpecs.getStartDate(),
+            orderSpecs.getEndDate())
+        .equalsIfPresent(root -> root.get(Order_.status), orderSpecs.getStatus())
+        .equalsIfPresent(root -> root.get(Order_.customer).get(Customer_.id),
+            orderSpecs.getCustomerId())
+        .build();
 
     Page<Order> orders = orderRepository.findAll(spec, pageable);
 

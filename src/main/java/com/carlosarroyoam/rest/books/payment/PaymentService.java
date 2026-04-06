@@ -3,9 +3,11 @@ package com.carlosarroyoam.rest.books.payment;
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
 import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
 import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto.PagedResponseDtoMapper;
+import com.carlosarroyoam.rest.books.core.specification.SpecificationBuilder;
 import com.carlosarroyoam.rest.books.order.OrderRepository;
 import com.carlosarroyoam.rest.books.order.entity.Order;
 import com.carlosarroyoam.rest.books.order.entity.OrderStatus;
+import com.carlosarroyoam.rest.books.order.entity.Order_;
 import com.carlosarroyoam.rest.books.payment.dto.CreatePaymentRequestDto;
 import com.carlosarroyoam.rest.books.payment.dto.PaymentDto;
 import com.carlosarroyoam.rest.books.payment.dto.PaymentDto.PaymentDtoMapper;
@@ -13,6 +15,7 @@ import com.carlosarroyoam.rest.books.payment.dto.PaymentSpecsDto;
 import com.carlosarroyoam.rest.books.payment.dto.UpdatePaymentStatusRequestDto;
 import com.carlosarroyoam.rest.books.payment.entity.Payment;
 import com.carlosarroyoam.rest.books.payment.entity.PaymentStatus;
+import com.carlosarroyoam.rest.books.payment.entity.Payment_;
 import com.carlosarroyoam.rest.books.shipment.ShipmentRepository;
 import com.carlosarroyoam.rest.books.shipment.entity.Shipment;
 import com.carlosarroyoam.rest.books.shipment.entity.ShipmentStatus;
@@ -42,14 +45,15 @@ public class PaymentService {
   }
 
   @Transactional
-  public PagedResponseDto<PaymentDto> findAll(Pageable pageable, PaymentSpecsDto paymentSpecs) {
-    Specification<Payment> spec = Specification.unrestricted();
-    spec = spec.and(PaymentSpecification.methodEquals(paymentSpecs.getMethod()));
-    spec = spec.and(PaymentSpecification.amountGreaterThanOrEqual(paymentSpecs.getMinAmount()));
-    spec = spec.and(PaymentSpecification.amountLessThanOrEqual(paymentSpecs.getMaxAmount()));
-    spec = spec.and(PaymentSpecification.statusEquals(paymentSpecs.getStatus()));
-    spec = spec.and(PaymentSpecification.transactionIdContains(paymentSpecs.getTransactionId()));
-    spec = spec.and(PaymentSpecification.orderIdEquals(paymentSpecs.getOrderId()));
+  public PagedResponseDto<PaymentDto> findAll(PaymentSpecsDto paymentSpecs, Pageable pageable) {
+    Specification<Payment> spec = SpecificationBuilder.<Payment>builder()
+        .equalsIfPresent(root -> root.get(Payment_.method), paymentSpecs.getMethod())
+        .betweenIfPresent(root -> root.get(Payment_.amount), paymentSpecs.getMinAmount(),
+            paymentSpecs.getMaxAmount())
+        .equalsIfPresent(root -> root.get(Payment_.status), paymentSpecs.getStatus())
+        .likeIfPresent(root -> root.get(Payment_.transactionId), paymentSpecs.getTransactionId())
+        .equalsIfPresent(root -> root.get(Payment_.order).get(Order_.id), paymentSpecs.getOrderId())
+        .build();
 
     Page<Payment> payments = paymentRepository.findAll(spec, pageable);
 

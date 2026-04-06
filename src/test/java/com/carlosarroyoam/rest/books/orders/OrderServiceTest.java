@@ -123,8 +123,8 @@ class OrderServiceTest {
     when(orderRepository.findAll(ArgumentMatchers.<Specification<Order>>any(), any(Pageable.class)))
         .thenReturn(new PageImpl<>(orders, pageable, orders.size()));
 
-    PagedResponseDto<OrderDto> response = orderService.findAll(pageable,
-        OrderSpecsDto.builder().build());
+    PagedResponseDto<OrderDto> response = orderService.findAll(OrderSpecsDto.builder().build(),
+        pageable);
 
     assertThat(response).isNotNull();
     assertThat(response.getItems()).hasSize(1);
