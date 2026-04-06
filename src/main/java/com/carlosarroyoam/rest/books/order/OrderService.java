@@ -55,13 +55,13 @@ public class OrderService {
   public PagedResponseDto<OrderDto> findAll(OrderSpecsDto orderSpecs, Pageable pageable) {
     Specification<Order> spec = SpecificationBuilder.<Order>builder()
         .likeIfPresent(root -> root.get(Order_.orderNumber), orderSpecs.getOrderNumber())
+        .likeIfPresent(root -> root.get(Order_.shippingAddress), orderSpecs.getShippingAddress())
         .betweenIfPresent(root -> root.get(Order_.total), orderSpecs.getMinTotal(),
             orderSpecs.getMaxTotal())
-        .likeIfPresent(root -> root.get(Order_.shippingAddress), orderSpecs.getShippingAddress())
-        .betweenIfPresent(root -> root.get(Order_.createdAt), orderSpecs.getStartDate(),
-            orderSpecs.getEndDate())
         .equalsIfPresent(root -> root.get(Order_.status), orderSpecs.getStatus())
-        .equalsIfPresent(root -> root.get(Order_.customer).get(Customer_.id),
+        .betweenDatesIfPresent(root -> root.get(Order_.createdAt), orderSpecs.getStartDate(),
+            orderSpecs.getEndDate())
+        .equalsIfPresent(root -> root.join(Order_.customer).get(Customer_.id),
             orderSpecs.getCustomerId())
         .build();
 

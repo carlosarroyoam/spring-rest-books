@@ -2,6 +2,8 @@ package com.carlosarroyoam.rest.books.core.specification;
 
 import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Root;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -43,6 +45,21 @@ public class SpecificationBuilder<T> {
     } else if (max != null) {
       specs.add((root, query, cb) -> cb.lessThanOrEqualTo(path.apply(root), max));
     }
+    return this;
+  }
+
+  public SpecificationBuilder<T> betweenDatesIfPresent(Function<Root<T>, Path<LocalDateTime>> path,
+      LocalDate start, LocalDate end) {
+    if (start != null) {
+      specs.add(
+          (root, query, cb) -> cb.greaterThanOrEqualTo(path.apply(root), start.atStartOfDay()));
+    }
+
+    if (end != null) {
+      specs
+          .add((root, query, cb) -> cb.lessThanOrEqualTo(path.apply(root), end.atTime(23, 59, 59)));
+    }
+
     return this;
   }
 
