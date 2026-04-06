@@ -52,7 +52,8 @@ public class PaymentService {
             paymentSpecs.getMaxAmount())
         .equalsIfPresent(root -> root.get(Payment_.status), paymentSpecs.getStatus())
         .likeIfPresent(root -> root.get(Payment_.transactionId), paymentSpecs.getTransactionId())
-        .equalsIfPresent(root -> root.get(Payment_.order).get(Order_.id), paymentSpecs.getOrderId())
+        .equalsIfPresent(root -> root.join(Payment_.order).get(Order_.id),
+            paymentSpecs.getOrderId())
         .build();
 
     Page<Payment> payments = paymentRepository.findAll(spec, pageable);

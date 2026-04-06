@@ -43,7 +43,7 @@ public class ShipmentService {
         .likeIfPresent(root -> root.get(Shipment_.address), shipmentSpecs.getAddress())
         .likeIfPresent(root -> root.get(Shipment_.phone), shipmentSpecs.getPhone())
         .equalsIfPresent(root -> root.get(Shipment_.status), shipmentSpecs.getStatus())
-        .equalsIfPresent(root -> root.get(Shipment_.order).get(Order_.id),
+        .equalsIfPresent(root -> root.join(Shipment_.order).get(Order_.id),
             shipmentSpecs.getOrderId())
         .build();
 
