@@ -1,6 +1,6 @@
-package com.carlosarroyoam.rest.books.orders;
+package com.carlosarroyoam.rest.books.order;
 
-import com.carlosarroyoam.rest.books.orders.entity.Order;
+import com.carlosarroyoam.rest.books.order.entity.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 

@@ -1,4 +1,4 @@
-package com.carlosarroyoam.rest.books.orders.entity;
+package com.carlosarroyoam.rest.books.order.entity;
 
 import com.carlosarroyoam.rest.books.book.entity.Book;
 import jakarta.persistence.Column;

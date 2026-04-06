@@ -1,6 +1,6 @@
-package com.carlosarroyoam.rest.books.orders.dto;
+package com.carlosarroyoam.rest.books.order.dto;
 
-import com.carlosarroyoam.rest.books.orders.entity.OrderStatus;
+import com.carlosarroyoam.rest.books.order.entity.OrderStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Size;

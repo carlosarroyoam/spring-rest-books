@@ -1,9 +1,9 @@
-package com.carlosarroyoam.rest.books.orders.dto;
+package com.carlosarroyoam.rest.books.order.dto;
 
 import com.carlosarroyoam.rest.books.customer.dto.CustomerDto;
-import com.carlosarroyoam.rest.books.orders.dto.OrderItemDto.OrderItemDtoMapper;
-import com.carlosarroyoam.rest.books.orders.entity.Order;
-import com.carlosarroyoam.rest.books.orders.entity.OrderStatus;
+import com.carlosarroyoam.rest.books.order.dto.OrderItemDto.OrderItemDtoMapper;
+import com.carlosarroyoam.rest.books.order.entity.Order;
+import com.carlosarroyoam.rest.books.order.entity.OrderStatus;
 import com.carlosarroyoam.rest.books.payment.dto.PaymentDto;
 import com.carlosarroyoam.rest.books.shipment.dto.ShipmentDto;
 import java.math.BigDecimal;

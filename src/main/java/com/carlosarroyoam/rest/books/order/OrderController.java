@@ -1,10 +1,10 @@
-package com.carlosarroyoam.rest.books.orders;
+package com.carlosarroyoam.rest.books.order;
 
 import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
-import com.carlosarroyoam.rest.books.orders.dto.CreateOrderRequestDto;
-import com.carlosarroyoam.rest.books.orders.dto.OrderDto;
-import com.carlosarroyoam.rest.books.orders.dto.OrderSpecsDto;
-import com.carlosarroyoam.rest.books.orders.dto.UpdateOrderRequestDto;
+import com.carlosarroyoam.rest.books.order.dto.CreateOrderRequestDto;
+import com.carlosarroyoam.rest.books.order.dto.OrderDto;
+import com.carlosarroyoam.rest.books.order.dto.OrderSpecsDto;
+import com.carlosarroyoam.rest.books.order.dto.UpdateOrderRequestDto;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;

@@ -1,8 +1,8 @@
-package com.carlosarroyoam.rest.books.orders.dto;
+package com.carlosarroyoam.rest.books.order.dto;
 
 import com.carlosarroyoam.rest.books.book.dto.BookDto;
 import com.carlosarroyoam.rest.books.book.dto.BookDto.BookDtoMapper;
-import com.carlosarroyoam.rest.books.orders.entity.OrderItem;
+import com.carlosarroyoam.rest.books.order.entity.OrderItem;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;

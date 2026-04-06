@@ -1,4 +1,4 @@
-package com.carlosarroyoam.rest.books.orders.dto;
+package com.carlosarroyoam.rest.books.order.dto;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;

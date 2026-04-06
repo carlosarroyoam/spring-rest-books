@@ -1,4 +1,4 @@
-package com.carlosarroyoam.rest.books.orders.entity;
+package com.carlosarroyoam.rest.books.order.entity;
 
 import com.carlosarroyoam.rest.books.customer.entity.Customer;
 import com.carlosarroyoam.rest.books.payment.entity.Payment;
