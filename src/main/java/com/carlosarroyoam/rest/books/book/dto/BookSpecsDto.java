@@ -1,9 +1,9 @@
 package com.carlosarroyoam.rest.books.book.dto;
 
-import com.carlosarroyoam.rest.books.core.validation.CommaSeparatedLong;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
+import java.util.List;
 import lombok.Builder;
 import lombok.Data;
 
@@ -22,8 +22,6 @@ public class BookSpecsDto {
   @DecimalMin(value = "0.0", message = "Max price should be positive")
   private BigDecimal maxPrice;
 
-  @CommaSeparatedLong(message = "AuthorIds should contain only valid ids")
-  private String authorIds;
-
   private Boolean isAvailableOnline;
+  private List<Long> authorIds;
 }

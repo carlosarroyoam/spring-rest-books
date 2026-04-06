@@ -5,7 +5,6 @@ import jakarta.persistence.criteria.Root;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 import org.springframework.data.jpa.domain.Specification;
@@ -67,23 +66,6 @@ public class SpecificationBuilder<T> {
     if (values != null && !values.isEmpty()) {
       specs.add((root, query, cb) -> path.apply(root).in(values));
     }
-    return this;
-  }
-
-  public SpecificationBuilder<T> inIdsIfPresent(Function<Root<T>, Path<Long>> path, String csvIds) {
-    if (csvIds != null && !csvIds.isBlank()) {
-
-      List<Long> ids = Arrays.stream(csvIds.split(","))
-          .map(String::trim)
-          .filter(s -> !s.isEmpty())
-          .map(Long::parseLong)
-          .toList();
-
-      if (!ids.isEmpty()) {
-        specs.add((root, query, cb) -> path.apply(root).in(ids));
-      }
-    }
-
     return this;
   }
 }

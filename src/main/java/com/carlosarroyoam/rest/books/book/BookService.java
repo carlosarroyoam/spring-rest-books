@@ -44,7 +44,7 @@ public class BookService {
             bookSpecs.getMaxPrice())
         .equalsIfPresent(root -> root.get(Book_.isAvailableOnline),
             bookSpecs.getIsAvailableOnline())
-        .inIdsIfPresent(root -> root.join(Book_.authors, JoinType.LEFT).get(Author_.id),
+        .inIfPresent(root -> root.join(Book_.authors, JoinType.LEFT).get(Author_.id),
             bookSpecs.getAuthorIds())
         .build();
 
