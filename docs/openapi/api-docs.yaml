@@ -778,17 +778,17 @@ paths:
         - name: startDate
           in: query
           required: false
-          description: Start date for order date range filter.
+          description: Start date for date range filter in the ISO format YYYY-MM-DD.
           schema:
             type: string
-            format: date-time
+            format: date
         - name: endDate
           in: query
           required: false
-          description: End date for order date range filter.
+          description: End date for date range filter in the ISO format YYYY-MM-DD.
           schema:
             type: string
-            format: date-time
+            format: date
         - name: customerId
           in: query
           required: false
@@ -983,6 +983,20 @@ paths:
           description: Maximum payment amount.
           schema:
             type: number
+        - name: startDate
+          in: query
+          required: false
+          description: Start date for date range filter in the ISO format YYYY-MM-DD.
+          schema:
+            type: string
+            format: date
+        - name: endDate
+          in: query
+          required: false
+          description: End date for date range filter in the ISO format YYYY-MM-DD.
+          schema:
+            type: string
+            format: date
         - name: transaction_id
           in: query
           required: false
@@ -1152,6 +1166,20 @@ paths:
               - DELIVERED
               - RETURNED
               - CANCELLED
+        - name: startDate
+          in: query
+          required: false
+          description: Start date for date range filter in the ISO format YYYY-MM-DD.
+          schema:
+            type: string
+            format: date
+        - name: endDate
+          in: query
+          required: false
+          description: End date for date range filter in the ISO format YYYY-MM-DD.
+          schema:
+            type: string
+            format: date
         - name: order_id
           in: query
           required: false

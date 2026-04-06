@@ -64,35 +64,29 @@
                 {
                   "key": "maxPrice",
                   "value": "100",
-                  "type": "text",
                   "disabled": true
                 },
                 {
                   "key": "isAvailableOnline",
                   "value": "false",
-                  "type": "text",
                   "disabled": true
                 },
                 {
                   "key": "authorIds",
                   "value": "1,2",
-                  "type": "text",
                   "disabled": true
                 },
                 {
                   "key": "page",
-                  "value": "0",
-                  "type": "text"
+                  "value": "0"
                 },
                 {
                   "key": "size",
-                  "value": "25",
-                  "type": "text"
+                  "value": "25"
                 },
                 {
                   "key": "sort",
-                  "value": "id,asc",
-                  "type": "text"
+                  "value": "id,asc"
                 }
               ]
             }
@@ -359,18 +353,15 @@
                 },
                 {
                   "key": "page",
-                  "value": "0",
-                  "type": "text"
+                  "value": "0"
                 },
                 {
                   "key": "size",
-                  "value": "25",
-                  "type": "text"
+                  "value": "25"
                 },
                 {
                   "key": "sort",
-                  "value": "id,asc",
-                  "type": "text"
+                  "value": "id,asc"
                 }
               ]
             }
@@ -647,23 +638,19 @@
                 {
                   "key": "username",
                   "value": "carroyom",
-                  "type": "text",
                   "disabled": true
                 },
                 {
                   "key": "page",
-                  "value": "0",
-                  "type": "text"
+                  "value": "0"
                 },
                 {
                   "key": "size",
-                  "value": "25",
-                  "type": "text"
+                  "value": "25"
                 },
                 {
                   "key": "sort",
-                  "value": "id,asc",
-                  "type": "text"
+                  "value": "id,asc"
                 }
               ]
             }
@@ -977,6 +964,12 @@
                   "disabled": true
                 },
                 {
+                  "key": "shippingAddress",
+                  "value": "123 Main Street",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
                   "key": "minTotal",
                   "value": "0",
                   "type": "text",
@@ -989,27 +982,19 @@
                   "disabled": true
                 },
                 {
-                  "key": "shippingAddress",
-                  "value": "123 Main Street",
+                  "key": "status",
+                  "value": "DELIVERED",
                   "type": "text",
                   "disabled": true
                 },
                 {
                   "key": "startDate",
-                  "value": "01-01-2025",
-                  "type": "text",
+                  "value": "2025-01-01",
                   "disabled": true
                 },
                 {
                   "key": "endDate",
-                  "value": "01-01-2025",
-                  "type": "text",
-                  "disabled": true
-                },
-                {
-                  "key": "status",
-                  "value": "PENDING",
-                  "type": "text",
+                  "value": "2025-01-04",
                   "disabled": true
                 },
                 {
@@ -1020,18 +1005,15 @@
                 },
                 {
                   "key": "page",
-                  "value": "0",
-                  "type": "text"
+                  "value": "0"
                 },
                 {
                   "key": "size",
-                  "value": "25",
-                  "type": "text"
+                  "value": "25"
                 },
                 {
                   "key": "sort",
-                  "value": "id,asc",
-                  "type": "text"
+                  "value": "id,asc"
                 }
               ]
             }
@@ -1267,6 +1249,18 @@
                   "disabled": true
                 },
                 {
+                  "key": "startDate",
+                  "value": "2025-01-01",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "endDate",
+                  "value": "2025-01-04",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
                   "key": "transactionId",
                   "value": "PAY-SEED-000001",
                   "type": "text",
@@ -1477,13 +1471,25 @@
                 },
                 {
                   "key": "phone",
-                  "value": "555-0101-1234",
+                  "value": "5501011234",
                   "type": "text",
                   "disabled": true
                 },
                 {
                   "key": "status",
                   "value": "SHIPPED",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "startDate",
+                  "value": "2025-01-01",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "endDate",
+                  "value": "2025-01-04",
                   "type": "text",
                   "disabled": true
                 },
