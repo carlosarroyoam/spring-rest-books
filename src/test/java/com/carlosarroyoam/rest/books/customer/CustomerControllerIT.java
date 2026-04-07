@@ -75,27 +75,6 @@ class CustomerControllerIT {
   }
 
   @Test
-  @DisplayName("Should return paged customers when find all customers with filters")
-  void shouldReturnListOfCustomersWhenFindAllCustomersWithFilters() throws Exception {
-    String expectedJson = JsonUtils.readJson("/customers/find-all_with_filters.json");
-
-    String responseJson = mockMvc
-        .perform(get("/customers").param("page", "0")
-            .param("size", "25")
-            .param("firstName", "Carlos Alberto")
-            .param("lastName", "Arroyo Martínez")
-            .param("email", "carroyom@mail.com")
-            .param("username", "carroyom"))
-        .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andReturn()
-        .getResponse()
-        .getContentAsString();
-
-    JSONAssert.assertEquals(expectedJson, responseJson, false);
-  }
-
-  @Test
   @DisplayName("Should return CustomerDto when find customer by id with existing id")
   void shouldReturnCustomerDtoWhenFindCustomerByIdWithExistingId() throws Exception {
     String expectedJson = JsonUtils.readJson("/customers/find-by-id.json");

@@ -25,10 +25,10 @@ public class BookDto {
   private String isbn;
   private String title;
   private String coverUrl;
-  private List<AuthorDto> authors;
   private BigDecimal price;
   private Boolean isAvailableOnline;
   private LocalDate publishedAt;
+  private List<AuthorDto> authors;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
   private LocalDateTime deletedAt;

@@ -25,18 +25,18 @@ import org.mapstruct.factory.Mappers;
 public class OrderDto {
   private Long id;
   private String orderNumber;
+  private String notes;
+  private String shippingAddress;
+  private String billingAddress;
   private OrderStatus status;
-  private List<OrderItemDto> items;
   private BigDecimal subtotal;
   private BigDecimal taxAmount;
   private BigDecimal shippingAmount;
   private BigDecimal total;
+  private List<OrderItemDto> items;
   private CustomerDto customer;
   private PaymentDto payment;
   private ShipmentDto shipment;
-  private String notes;
-  private String shippingAddress;
-  private String billingAddress;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
 
