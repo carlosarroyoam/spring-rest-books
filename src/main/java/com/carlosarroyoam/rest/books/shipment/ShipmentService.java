@@ -16,6 +16,7 @@ import com.carlosarroyoam.rest.books.shipment.entity.Shipment;
 import com.carlosarroyoam.rest.books.shipment.entity.ShipmentStatus;
 import com.carlosarroyoam.rest.books.shipment.entity.Shipment_;
 import jakarta.transaction.Transactional;
+import java.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -63,13 +64,16 @@ public class ShipmentService {
 
   @Transactional
   public void updateStatus(Long shipmentId, UpdateShipmentStatusRequestDto requestDto) {
+    LocalDateTime now = LocalDateTime.now();
     Shipment shipmentById = findShipmentEntityById(shipmentId);
     shipmentById.setStatus(requestDto.getStatus());
+    shipmentById.setUpdatedAt(now);
     shipmentRepository.save(shipmentById);
 
     Order orderById = findOrderEntityById(shipmentById.getOrder().getId());
     orderById
         .setStatus(resolveOrderStatusFromShipment(requestDto.getStatus(), orderById.getStatus()));
+    orderById.setUpdatedAt(now);
     orderRepository.save(orderById);
   }
 

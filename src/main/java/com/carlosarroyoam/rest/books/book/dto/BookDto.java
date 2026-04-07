@@ -41,7 +41,5 @@ public class BookDto {
     BookDto toDto(Book entity);
 
     List<BookDto> toDtos(List<Book> entities);
-
-    Book toEntity(CreateBookRequestDto requestDto);
   }
 }

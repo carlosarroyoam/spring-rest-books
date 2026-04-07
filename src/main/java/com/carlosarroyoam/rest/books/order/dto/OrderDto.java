@@ -48,7 +48,5 @@ public class OrderDto {
     OrderDto toDto(Order entity);
 
     List<OrderDto> toDtos(List<Order> entities);
-
-    Order toEntity(CreateOrderRequestDto requestDto);
   }
 }

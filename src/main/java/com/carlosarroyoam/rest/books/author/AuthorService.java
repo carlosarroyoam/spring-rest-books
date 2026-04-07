@@ -53,34 +53,35 @@ public class AuthorService {
   @Transactional
   public AuthorDto create(CreateAuthorRequestDto requestDto) {
     LocalDateTime now = LocalDateTime.now();
-    Author author = AuthorDtoMapper.INSTANCE.toEntity(requestDto);
-    author.setCreatedAt(now);
-    author.setUpdatedAt(now);
+    Author author = Author.builder()
+        .name(requestDto.getName())
+        .createdAt(now)
+        .updatedAt(now)
+        .build();
+
     return AuthorDtoMapper.INSTANCE.toDto(authorRepository.save(author));
   }
 
   @Transactional
   public void update(Long authorId, UpdateAuthorRequestDto requestDto) {
+    LocalDateTime now = LocalDateTime.now();
     Author authorById = findAuthorEntityById(authorId);
     authorById.setName(requestDto.getName());
-    authorById.setUpdatedAt(LocalDateTime.now());
+    authorById.setUpdatedAt(now);
     authorRepository.save(authorById);
   }
 
   @Transactional
   public void deleteById(Long authorId) {
-    if (Boolean.FALSE.equals(authorRepository.existsById(authorId))) {
-      log.warn(AppMessages.AUTHOR_NOT_FOUND_EXCEPTION);
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-          AppMessages.AUTHOR_NOT_FOUND_EXCEPTION);
-    }
-
-    authorRepository.deleteById(authorId);
+    LocalDateTime now = LocalDateTime.now();
+    Author authorById = findAuthorEntityById(authorId);
+    authorById.setUpdatedAt(now);
+    authorById.setDeletedAt(now);
+    authorRepository.save(authorById);
   }
 
   public List<BookDto> findBooksByAuthorId(Long authorId) {
     Author authorById = findAuthorEntityById(authorId);
-
     return BookDtoMapper.INSTANCE.toDtos(authorById.getBooks());
   }
 

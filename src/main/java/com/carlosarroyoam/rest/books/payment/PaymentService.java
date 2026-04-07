@@ -20,6 +20,7 @@ import com.carlosarroyoam.rest.books.shipment.ShipmentRepository;
 import com.carlosarroyoam.rest.books.shipment.entity.Shipment;
 import com.carlosarroyoam.rest.books.shipment.entity.ShipmentStatus;
 import jakarta.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,17 +81,21 @@ public class PaymentService {
           AppMessages.PAYMENT_ALREADY_EXISTS_EXCEPTION);
     }
 
+    LocalDateTime now = LocalDateTime.now();
     Payment payment = Payment.builder()
         .amount(orderById.getTotal())
         .method(requestDto.getMethod())
         .status(PaymentStatus.COMPLETED)
         .transactionId(generateTransactionId())
         .order(orderById)
+        .createdAt(now)
+        .updatedAt(now)
         .build();
 
     Payment savedPayment = paymentRepository.save(payment);
 
     orderById.setStatus(OrderStatus.CONFIRMED);
+    orderById.setUpdatedAt(now);
     orderRepository.save(orderById);
 
     createShipmentIfMissing(orderById);
@@ -100,13 +105,16 @@ public class PaymentService {
 
   @Transactional
   public void updateStatus(Long paymentId, UpdatePaymentStatusRequestDto requestDto) {
+    LocalDateTime now = LocalDateTime.now();
     Payment paymentById = findPaymentEntityById(paymentId);
     paymentById.setStatus(requestDto.getStatus());
+    paymentById.setUpdatedAt(now);
     paymentRepository.save(paymentById);
 
     Order orderById = findOrderEntityById(paymentById.getOrder().getId());
     orderById
         .setStatus(resolveOrderStatusFromPayment(requestDto.getStatus(), orderById.getStatus()));
+    orderById.setUpdatedAt(now);
     orderRepository.save(orderById);
   }
 
@@ -144,11 +152,14 @@ public class PaymentService {
     String attentionName = order.getCustomer() == null ? null
         : order.getCustomer().getFirstName() + " " + order.getCustomer().getLastName();
 
+    LocalDateTime now = LocalDateTime.now();
     Shipment shipment = Shipment.builder()
         .attentionName(attentionName)
         .address(order.getShippingAddress())
         .status(ShipmentStatus.PENDING)
         .order(order)
+        .createdAt(now)
+        .updatedAt(now)
         .build();
 
     shipmentRepository.save(shipment);

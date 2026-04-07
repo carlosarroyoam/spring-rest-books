@@ -192,17 +192,17 @@ class BookServiceTest {
   @Test
   @DisplayName("Should delete book with existing id")
   void shouldDeleteBookWithExistingId() {
-    when(bookRepository.existsById(anyLong())).thenReturn(true);
+    when(bookRepository.findById(anyLong())).thenReturn(Optional.of(book));
 
     bookService.deleteById(1L);
 
-    verify(bookRepository).deleteById(1L);
+    verify(bookRepository).save(any(Book.class));
   }
 
   @Test
   @DisplayName("Should throw ResponseStatusException when delete book with non existing id")
   void shouldThrowWhenDeleteBookWithNonExistingId() {
-    when(bookRepository.existsById(anyLong())).thenReturn(false);
+    when(bookRepository.findById(anyLong())).thenReturn(Optional.empty());
 
     assertThatThrownBy(() -> bookService.deleteById(1L)).isInstanceOf(ResponseStatusException.class)
         .hasMessageContaining(HttpStatus.NOT_FOUND.toString())

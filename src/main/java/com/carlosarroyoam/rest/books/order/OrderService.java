@@ -82,37 +82,40 @@ public class OrderService {
     Customer customerById = findCustomerEntityById(requestDto);
 
     LocalDateTime now = LocalDateTime.now();
-    Order order = OrderDtoMapper.INSTANCE.toEntity(requestDto);
+    Order order = Order.builder()
+        .orderNumber(generateOrderNumber())
+        .shippingAddress(requestDto.getShippingAddress())
+        .billingAddress(requestDto.getBillingAddress())
+        .notes(requestDto.getNotes())
+        .status(OrderStatus.PENDING)
+        .customer(customerById)
+        .createdAt(now)
+        .updatedAt(now)
+        .build();
 
     List<OrderItem> items = buildOrderItems(requestDto.getItems(), now, order);
     BigDecimal subtotal = calculateSubtotal(items);
-    BigDecimal taxAmount = subtotal.multiply(TAX_RATE).setScale(2, RoundingMode.HALF_UP);
-    BigDecimal shippingAmount = DEFAULT_SHIPPING_AMOUNT.setScale(2, RoundingMode.HALF_UP);
-    BigDecimal total = subtotal.add(taxAmount)
-        .add(shippingAmount)
-        .setScale(2, RoundingMode.HALF_UP);
+    BigDecimal taxAmount = calculateTaxAmount(subtotal);
+    BigDecimal shippingAmount = calculateShippingAmount();
+    BigDecimal total = calculateTotal(subtotal, taxAmount, shippingAmount);
 
-    order.setOrderNumber(generateOrderNumber());
-    order.setStatus(OrderStatus.PENDING);
-    order.setCustomer(customerById);
+    order.setItems(items);
     order.setSubtotal(subtotal);
     order.setTaxAmount(taxAmount);
     order.setShippingAmount(shippingAmount);
     order.setTotal(total);
-    order.setItems(items);
-    order.setCreatedAt(now);
-    order.setUpdatedAt(now);
 
     return OrderDtoMapper.INSTANCE.toDto(orderRepository.save(order));
   }
 
   @Transactional
   public void update(Long orderId, UpdateOrderRequestDto requestDto) {
+    LocalDateTime now = LocalDateTime.now();
     Order orderById = findOrderEntityById(orderId);
     orderById.setShippingAddress(requestDto.getShippingAddress());
     orderById.setBillingAddress(requestDto.getBillingAddress());
     orderById.setNotes(requestDto.getNotes());
-    orderById.setUpdatedAt(LocalDateTime.now());
+    orderById.setUpdatedAt(now);
     orderRepository.save(orderById);
   }
 
@@ -173,6 +176,19 @@ public class OrderService {
         .map(OrderItem::getTotalPrice)
         .reduce(BigDecimal.ZERO, BigDecimal::add)
         .setScale(2, RoundingMode.HALF_UP);
+  }
+
+  private BigDecimal calculateTaxAmount(BigDecimal subtotal) {
+    return subtotal.multiply(TAX_RATE).setScale(2, RoundingMode.HALF_UP);
+  }
+
+  private BigDecimal calculateShippingAmount() {
+    return DEFAULT_SHIPPING_AMOUNT.setScale(2, RoundingMode.HALF_UP);
+  }
+
+  private BigDecimal calculateTotal(BigDecimal subtotal, BigDecimal taxAmount,
+      BigDecimal shippingAmount) {
+    return subtotal.add(taxAmount).add(shippingAmount).setScale(2, RoundingMode.HALF_UP);
   }
 
   private String generateOrderNumber() {

@@ -29,7 +29,5 @@ public class CartItemDto {
     CartItemDtoMapper INSTANCE = Mappers.getMapper(CartItemDtoMapper.class);
 
     CartItemDto toDto(CartItem entity);
-
-    CartItem updateCartItemToEntity(UpdateCartItemRequestDto requestDto);
   }
 }

@@ -30,7 +30,5 @@ public class AuthorDto {
     AuthorDto toDto(Author entity);
 
     List<AuthorDto> toDtos(List<Author> entities);
-
-    Author toEntity(CreateAuthorRequestDto requestDto);
   }
 }

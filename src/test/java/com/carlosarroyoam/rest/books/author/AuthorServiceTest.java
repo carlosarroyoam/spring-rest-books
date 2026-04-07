@@ -166,17 +166,17 @@ class AuthorServiceTest {
   @Test
   @DisplayName("Should delete author with existing id")
   void shouldDeleteAuthorWithExistingId() {
-    when(authorRepository.existsById(anyLong())).thenReturn(true);
+    when(authorRepository.findById(anyLong())).thenReturn(Optional.of(author));
 
     authorService.deleteById(1L);
 
-    verify(authorRepository).deleteById(1L);
+    verify(authorRepository).save(any(Author.class));
   }
 
   @Test
   @DisplayName("Should throw ResponseStatusException when delete author with non existing id")
   void shouldThrowWhenDeleteAuthorWithNonExistingId() {
-    when(authorRepository.existsById(anyLong())).thenReturn(false);
+    when(authorRepository.findById(anyLong())).thenReturn(Optional.empty());
 
     assertThatThrownBy(() -> authorService.deleteById(1L))
         .isInstanceOf(ResponseStatusException.class)

@@ -68,14 +68,23 @@ public class BookService {
     }
 
     LocalDateTime now = LocalDateTime.now();
-    Book book = BookDtoMapper.INSTANCE.toEntity(requestDto);
-    book.setCreatedAt(now);
-    book.setUpdatedAt(now);
+    Book book = Book.builder()
+        .isbn(requestDto.getIsbn())
+        .title(requestDto.getTitle())
+        .coverUrl(requestDto.getCoverUrl())
+        .price(requestDto.getPrice())
+        .isAvailableOnline(requestDto.getIsAvailableOnline())
+        .publishedAt(requestDto.getPublishedAt())
+        .createdAt(now)
+        .updatedAt(now)
+        .build();
+
     return BookDtoMapper.INSTANCE.toDto(bookRepository.save(book));
   }
 
   @Transactional
   public void update(Long bookId, UpdateBookRequestDto requestDto) {
+    LocalDateTime now = LocalDateTime.now();
     Book bookById = findBookEntityById(bookId);
     bookById.setIsbn(requestDto.getIsbn());
     bookById.setTitle(requestDto.getTitle());
@@ -83,23 +92,21 @@ public class BookService {
     bookById.setPrice(requestDto.getPrice());
     bookById.setPublishedAt(requestDto.getPublishedAt());
     bookById.setIsAvailableOnline(requestDto.getIsAvailableOnline());
-    bookById.setUpdatedAt(LocalDateTime.now());
+    bookById.setUpdatedAt(now);
     bookRepository.save(bookById);
   }
 
   @Transactional
   public void deleteById(Long bookId) {
-    if (Boolean.FALSE.equals(bookRepository.existsById(bookId))) {
-      log.warn(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, AppMessages.BOOK_NOT_FOUND_EXCEPTION);
-    }
-
-    bookRepository.deleteById(bookId);
+    LocalDateTime now = LocalDateTime.now();
+    Book bookById = findBookEntityById(bookId);
+    bookById.setUpdatedAt(now);
+    bookById.setDeletedAt(now);
+    bookRepository.save(bookById);
   }
 
   public List<AuthorDto> findAuthorsByBookId(Long bookId) {
     Book bookById = findBookEntityById(bookId);
-
     return AuthorDtoMapper.INSTANCE.toDtos(bookById.getAuthors());
   }
 

@@ -1,9 +1,9 @@
 package com.carlosarroyoam.rest.books.cart;
 
 import com.carlosarroyoam.rest.books.book.BookRepository;
+import com.carlosarroyoam.rest.books.book.entity.Book;
 import com.carlosarroyoam.rest.books.cart.dto.CartDto;
 import com.carlosarroyoam.rest.books.cart.dto.CartDto.CartDtoMapper;
-import com.carlosarroyoam.rest.books.cart.dto.CartItemDto.CartItemDtoMapper;
 import com.carlosarroyoam.rest.books.cart.dto.UpdateCartItemRequestDto;
 import com.carlosarroyoam.rest.books.cart.entity.Cart;
 import com.carlosarroyoam.rest.books.cart.entity.CartItem;
@@ -37,11 +37,7 @@ public class CartService {
 
   public void updateCartItem(Long customerId, UpdateCartItemRequestDto requestDto) {
     Cart cartByCustomerId = findCartEntityByCustomerId(customerId);
-
-    if (Boolean.FALSE.equals(bookRepository.existsById(requestDto.getBookId()))) {
-      log.warn(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, AppMessages.BOOK_NOT_FOUND_EXCEPTION);
-    }
+    Book bookById = findBookEntityById(requestDto.getBookId());
 
     Optional<CartItem> cartItemOptional = cartByCustomerId.getItems()
         .stream()
@@ -49,10 +45,13 @@ public class CartService {
         .findFirst();
 
     CartItem cartItem = cartItemOptional.isPresent() ? cartItemOptional.get()
-        : CartItemDtoMapper.INSTANCE.updateCartItemToEntity(requestDto);
-    cartItem.setQuantity(requestDto.getQuantity());
-    cartItem.setAddedAt(LocalDateTime.now());
-    cartItem.setCart(cartByCustomerId);
+        : CartItem.builder()
+            .book(bookById)
+            .quantity(requestDto.getQuantity())
+            .addedAt(LocalDateTime.now())
+            .cart(cartByCustomerId)
+            .build();
+
     cartItemRepository.save(cartItem);
   }
 
@@ -77,6 +76,14 @@ public class CartService {
       log.warn(AppMessages.CART_NOT_FOUND_EXCEPTION);
       return new ResponseStatusException(HttpStatus.NOT_FOUND,
           AppMessages.CART_NOT_FOUND_EXCEPTION);
+    });
+  }
+
+  private Book findBookEntityById(Long bookId) {
+    return bookRepository.findById(bookId).orElseThrow(() -> {
+      log.warn(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
+      return new ResponseStatusException(HttpStatus.NOT_FOUND,
+          AppMessages.BOOK_NOT_FOUND_EXCEPTION);
     });
   }
 }

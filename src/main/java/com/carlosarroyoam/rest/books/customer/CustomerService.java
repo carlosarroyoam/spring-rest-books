@@ -67,9 +67,14 @@ public class CustomerService {
     }
 
     LocalDateTime now = LocalDateTime.now();
-    Customer customer = CustomerDtoMapper.INSTANCE.toEntity(requestDto);
-    customer.setCreatedAt(now);
-    customer.setUpdatedAt(now);
+    Customer customer = Customer.builder()
+        .firstName(requestDto.getFirstName())
+        .lastName(requestDto.getLastName())
+        .email(requestDto.getEmail())
+        .username(requestDto.getUsername())
+        .createdAt(now)
+        .updatedAt(now)
+        .build();
 
     Customer createdCustomer = customerRepository.save(customer);
 
@@ -80,21 +85,20 @@ public class CustomerService {
 
   @Transactional
   public void update(Long customerId, UpdateCustomerRequestDto requestDto) {
+    LocalDateTime now = LocalDateTime.now();
     Customer customerById = findCustomerEntityById(customerId);
-
     customerById.setFirstName(requestDto.getFirstName());
     customerById.setLastName(requestDto.getLastName());
-    customerById.setUpdatedAt(LocalDateTime.now());
+    customerById.setUpdatedAt(now);
     customerRepository.save(customerById);
   }
 
   @Transactional
   public void deleteById(Long customerId) {
-    Customer customerById = findCustomerEntityById(customerId);
-
     LocalDateTime now = LocalDateTime.now();
-    customerById.setDeletedAt(now);
+    Customer customerById = findCustomerEntityById(customerId);
     customerById.setUpdatedAt(now);
+    customerById.setDeletedAt(now);
     customerRepository.save(customerById);
   }
 

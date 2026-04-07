@@ -42,6 +42,7 @@ class CartServiceTest {
   @InjectMocks
   private CartService cartService;
 
+  private Book book;
   private Cart cart;
   private CartItem cartItem;
 
@@ -49,12 +50,9 @@ class CartServiceTest {
   void setUp() {
     LocalDateTime now = LocalDateTime.now();
 
-    cartItem = CartItem.builder()
-        .id(1L)
-        .quantity(1)
-        .book(Book.builder().id(1L).build())
-        .addedAt(now)
-        .build();
+    book = Book.builder().id(1L).build();
+
+    cartItem = CartItem.builder().id(1L).quantity(1).book(book).addedAt(now).build();
 
     cart = Cart.builder()
         .id(1L)
@@ -81,7 +79,7 @@ class CartServiceTest {
   @Test
   @DisplayName("Should throw ResponseStatusException when find cart by customer id with no carts")
   void shouldThrowWhenFindCartByUsernameWithNoCarts() {
-    when(cartRepository.findByCustomerId(anyLong())).thenReturn(Optional.ofNullable(null));
+    when(cartRepository.findByCustomerId(anyLong())).thenReturn(Optional.empty());
 
     assertThatThrownBy(() -> cartService.findByCustomerId(1L))
         .isInstanceOf(ResponseStatusException.class)
@@ -98,7 +96,7 @@ class CartServiceTest {
         .build();
 
     when(cartRepository.findByCustomerId(anyLong())).thenReturn(Optional.of(cart));
-    when(bookRepository.existsById(anyLong())).thenReturn(Boolean.TRUE);
+    when(bookRepository.findById(anyLong())).thenReturn(Optional.of(book));
     when(cartItemRepository.save(any(CartItem.class))).thenReturn(cartItem);
 
     cartService.updateCartItem(1L, requestDto);
@@ -117,7 +115,7 @@ class CartServiceTest {
     Cart cartWithoutItems = Cart.builder().id(1L).build();
 
     when(cartRepository.findByCustomerId(anyLong())).thenReturn(Optional.of(cartWithoutItems));
-    when(bookRepository.existsById(anyLong())).thenReturn(Boolean.TRUE);
+    when(bookRepository.findById(anyLong())).thenReturn(Optional.of(book));
     when(cartItemRepository.save(any(CartItem.class))).thenReturn(cartItem);
 
     cartService.updateCartItem(1L, requestDto);
@@ -130,7 +128,7 @@ class CartServiceTest {
   void shouldThrowWhenUpdateCartItemWhitNonExistingCartId() {
     UpdateCartItemRequestDto requestDto = UpdateCartItemRequestDto.builder().build();
 
-    when(cartRepository.findByCustomerId(anyLong())).thenReturn(Optional.ofNullable(null));
+    when(cartRepository.findByCustomerId(anyLong())).thenReturn(Optional.empty());
 
     assertThatThrownBy(() -> cartService.updateCartItem(1L, requestDto))
         .isInstanceOf(ResponseStatusException.class)
@@ -144,7 +142,7 @@ class CartServiceTest {
     UpdateCartItemRequestDto requestDto = UpdateCartItemRequestDto.builder().bookId(1L).build();
 
     when(cartRepository.findByCustomerId(anyLong())).thenReturn(Optional.of(cart));
-    when(bookRepository.existsById(anyLong())).thenReturn(Boolean.FALSE);
+    when(bookRepository.findById(anyLong())).thenReturn(Optional.empty());
 
     assertThatThrownBy(() -> cartService.updateCartItem(1L, requestDto))
         .isInstanceOf(ResponseStatusException.class)
@@ -165,7 +163,7 @@ class CartServiceTest {
   @Test
   @DisplayName("Should throw ResponseStatusException when delete cart item with non existing cart item id")
   void shouldThrowWhenDeleteCartItemWhitNonExistingCartItemId() {
-    when(cartRepository.findByCustomerId(anyLong())).thenReturn(Optional.ofNullable(null));
+    when(cartRepository.findByCustomerId(anyLong())).thenReturn(Optional.empty());
 
     assertThatThrownBy(() -> cartService.deleteCartItem(1L, 1L))
         .isInstanceOf(ResponseStatusException.class)
