@@ -39,13 +39,14 @@ public class Order {
   @Column(name = "order_number", length = 32, nullable = false, unique = true)
   private String orderNumber;
 
-  @Enumerated(EnumType.STRING)
-  @Column(name = "status", length = 32, nullable = false)
-  private OrderStatus status;
+  @Column(name = "notes", length = 1000)
+  private String notes;
 
-  @Builder.Default
-  @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<OrderItem> items = new ArrayList<>();
+  @Column(name = "shipping_address", length = 512, nullable = false)
+  private String shippingAddress;
+
+  @Column(name = "billing_address", length = 512, nullable = false)
+  private String billingAddress;
 
   @Column(name = "subtotal", precision = 10, scale = 2, nullable = false)
   private BigDecimal subtotal;
@@ -59,6 +60,14 @@ public class Order {
   @Column(name = "total", precision = 10, scale = 2, nullable = false)
   private BigDecimal total;
 
+  @Enumerated(EnumType.STRING)
+  @Column(name = "status", length = 32, nullable = false)
+  private OrderStatus status;
+
+  @Builder.Default
+  @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<OrderItem> items = new ArrayList<>();
+
   @ManyToOne
   @JoinColumn(name = "customer_id", referencedColumnName = "id", nullable = false)
   private Customer customer;
@@ -68,15 +77,6 @@ public class Order {
 
   @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
   private Shipment shipment;
-
-  @Column(name = "notes", length = 1000)
-  private String notes;
-
-  @Column(name = "shipping_address", length = 512, nullable = false)
-  private String shippingAddress;
-
-  @Column(name = "billing_address", length = 512, nullable = false)
-  private String billingAddress;
 
   @Column(name = "created_at", nullable = false)
   private LocalDateTime createdAt;

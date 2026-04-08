@@ -62,8 +62,6 @@ CREATE TABLE cart_items (
 CREATE TABLE orders (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     order_number VARCHAR(32) NOT NULL UNIQUE,
-    status VARCHAR(32) NOT NULL,
-    customer_id BIGINT NOT NULL,
     subtotal DECIMAL(10, 2) NOT NULL,
     tax_amount DECIMAL(10, 2) NOT NULL,
     shipping_amount DECIMAL(10, 2) NOT NULL,
@@ -71,6 +69,8 @@ CREATE TABLE orders (
     notes VARCHAR(1000),
     shipping_address VARCHAR(512) NOT NULL,
     billing_address VARCHAR(512) NOT NULL,
+    status VARCHAR(32) NOT NULL,
+    customer_id BIGINT NOT NULL,
     created_at TIMESTAMP NOT NULL,
     updated_at TIMESTAMP NOT NULL,
     FOREIGN KEY (customer_id) REFERENCES customers(id)
@@ -78,11 +78,11 @@ CREATE TABLE orders (
 
 CREATE TABLE order_items (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    order_id BIGINT NOT NULL,
-    book_id BIGINT NOT NULL,
     quantity INT NOT NULL,
     unit_price DECIMAL(10, 2) NOT NULL,
     total_price DECIMAL(10, 2) NOT NULL,
+    order_id BIGINT NOT NULL,
+    book_id BIGINT NOT NULL,
     created_at TIMESTAMP NOT NULL,
     updated_at TIMESTAMP NOT NULL,
     FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,

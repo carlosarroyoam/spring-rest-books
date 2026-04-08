@@ -28,11 +28,11 @@ public class OrderDto {
   private String notes;
   private String shippingAddress;
   private String billingAddress;
-  private OrderStatus status;
   private BigDecimal subtotal;
   private BigDecimal taxAmount;
   private BigDecimal shippingAmount;
   private BigDecimal total;
+  private OrderStatus status;
   private List<OrderItemDto> items;
   private CustomerDto customer;
   private PaymentDto payment;
