@@ -1,7 +1,7 @@
 package com.carlosarroyoam.rest.books.book;
 
-import com.carlosarroyoam.rest.books.book.dto.CreateBookRequestDto;
-import com.carlosarroyoam.rest.books.book.dto.UpdateBookRequestDto;
+import com.carlosarroyoam.rest.books.book.dto.CreateBookRequest;
+import com.carlosarroyoam.rest.books.book.dto.UpdateBookRequest;
 import com.carlosarroyoam.rest.books.common.JsonUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
@@ -73,8 +73,8 @@ class BookControllerIT {
   }
 
   @Test
-  @DisplayName("Should return BookDto when find book by id with existing id")
-  void shouldReturnBookDtoWhenFindBookByIdWithExistingId() throws Exception {
+  @DisplayName("Should return BookResponse when find book by id with existing id")
+  void shouldReturnBookResponseWhenFindBookByIdWithExistingId() throws Exception {
     String expectedJson = JsonUtils.readJson("/books/find-by-id.json");
 
     String responseJson = mockMvc.perform(get("/books/{bookId}", 1L))
@@ -88,7 +88,7 @@ class BookControllerIT {
   }
 
   @Test
-  @DisplayName("Should throw AppExceptionDto when find book by id with non existing id")
+  @DisplayName("Should throw AppExceptionResponse when find book by id with non existing id")
   void shouldThrowWhenFindBookByIdWithNonExistingId() throws Exception {
     String expectedJson = JsonUtils.readJson("/books/find-by-id_with_non_existing_id.json");
 
@@ -106,7 +106,7 @@ class BookControllerIT {
   @Test
   @DisplayName("Should return when create a book with valid data")
   void shouldReturnCreatedWhenCreateBookWithValidData() throws Exception {
-    CreateBookRequestDto requestDto = CreateBookRequestDto.builder()
+    CreateBookRequest requestResponse = CreateBookRequest.builder()
         .isbn("978-1-7873-3067-2")
         .title("21 Lessons for the 21st Century")
         .coverUrl("https://images.isbndb.com/covers/9835763482824.jpg")
@@ -117,17 +117,17 @@ class BookControllerIT {
 
     mockMvc
         .perform(post("/books").contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(requestDto)))
+            .content(mapper.writeValueAsString(requestResponse)))
         .andExpect(status().isCreated())
         .andExpect(header().string("Location", "http://localhost/books/3"));
   }
 
   @Test
-  @DisplayName("Should throw AppExceptionDto when create a book with existing ISBN")
+  @DisplayName("Should throw AppExceptionResponse when create a book with existing ISBN")
   void shouldThrowWhenCreateBookWithExistingIsbn() throws Exception {
     String expectedJson = JsonUtils.readJson("/books/create_with_existing_isbn.json");
 
-    CreateBookRequestDto requestDto = CreateBookRequestDto.builder()
+    CreateBookRequest requestResponse = CreateBookRequest.builder()
         .isbn("978-9-7389-4434-3")
         .title("Sapiens: A Brief History of Humankind")
         .coverUrl("https://images.isbndb.com/covers/60/97/9780062316097.jpg")
@@ -138,7 +138,7 @@ class BookControllerIT {
 
     String responseJson = mockMvc
         .perform(post("/books").contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(requestDto)))
+            .content(mapper.writeValueAsString(requestResponse)))
         .andExpect(status().isBadRequest())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andReturn()
@@ -152,7 +152,7 @@ class BookControllerIT {
   @Test
   @DisplayName("Should return no content when update book with valid data")
   void shouldReturnNoContentWhenUpdateBookWithValidData() throws Exception {
-    UpdateBookRequestDto requestDto = UpdateBookRequestDto.builder()
+    UpdateBookRequest requestResponse = UpdateBookRequest.builder()
         .isbn("978-9-7389-4434-3")
         .title("Sapiens: A Brief History of Humankind")
         .coverUrl("https://images.isbndb.com/covers/60/97/9780062316097.jpg")
@@ -162,15 +162,15 @@ class BookControllerIT {
         .build();
 
     mockMvc.perform(put("/books/{bookId}", 1L).contentType(MediaType.APPLICATION_JSON)
-        .content(mapper.writeValueAsString(requestDto))).andExpect(status().isNoContent());
+        .content(mapper.writeValueAsString(requestResponse))).andExpect(status().isNoContent());
   }
 
   @Test
-  @DisplayName("Should throw AppExceptionDto when update book with non existing id")
+  @DisplayName("Should throw AppExceptionResponse when update book with non existing id")
   void shouldThrowWhenUpdateBookWithNonExistingId() throws Exception {
     String expectedJson = JsonUtils.readJson("/books/update_with_non_existing_id.json");
 
-    UpdateBookRequestDto requestDto = UpdateBookRequestDto.builder()
+    UpdateBookRequest requestResponse = UpdateBookRequest.builder()
         .isbn("978-9-7389-4434-3")
         .title("Sapiens: A Brief History of Humankind")
         .coverUrl("https://images.isbndb.com/covers/60/97/9780062316097.jpg")
@@ -181,7 +181,7 @@ class BookControllerIT {
 
     String responseJson = mockMvc
         .perform(put("/books/{bookId}", 1000L).contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(requestDto)))
+            .content(mapper.writeValueAsString(requestResponse)))
         .andExpect(status().isNotFound())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andReturn()
@@ -199,7 +199,7 @@ class BookControllerIT {
   }
 
   @Test
-  @DisplayName("Should throw AppExceptionDto when delete book with non existing id")
+  @DisplayName("Should throw AppExceptionResponse when delete book with non existing id")
   void shouldThrowWhenDeleteBookWithNonExistingId() throws Exception {
     String expectedJson = JsonUtils.readJson("/books/delete_with_non_existing_id.json");
 
@@ -215,7 +215,7 @@ class BookControllerIT {
   }
 
   @Test
-  @DisplayName("Should return List<AuthorDto> when find authors by book id with existing id")
+  @DisplayName("Should return List<AuthorResponse> when find authors by book id with existing id")
   void shouldReturnListOfAuthorsWhenFindAuthorsByBookIdWithExistingId() throws Exception {
     String expectedJson = JsonUtils.readJson("/books/find-authors-by-book.json");
 

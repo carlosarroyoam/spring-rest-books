@@ -1,7 +1,7 @@
 package com.carlosarroyoam.rest.books.cart.dto;
 
-import com.carlosarroyoam.rest.books.book.dto.BookDto;
-import com.carlosarroyoam.rest.books.book.dto.BookDto.BookDtoMapper;
+import com.carlosarroyoam.rest.books.book.dto.BookResponse;
+import com.carlosarroyoam.rest.books.book.dto.BookResponse.BookResponseMapper;
 import com.carlosarroyoam.rest.books.cart.entity.CartItem;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
@@ -17,17 +17,17 @@ import org.mapstruct.factory.Mappers;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CartItemDto {
+public class CartItemResponse {
   private Long id;
   private Integer quantity;
-  private BookDto book;
+  private BookResponse book;
   private LocalDateTime addedAt;
 
   @Mapper(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = {
-      BookDtoMapper.class })
-  public interface CartItemDtoMapper {
-    CartItemDtoMapper INSTANCE = Mappers.getMapper(CartItemDtoMapper.class);
+      BookResponseMapper.class })
+  public interface CartItemResponseMapper {
+    CartItemResponseMapper INSTANCE = Mappers.getMapper(CartItemResponseMapper.class);
 
-    CartItemDto toDto(CartItem entity);
+    CartItemResponse toDto(CartItem entity);
   }
 }

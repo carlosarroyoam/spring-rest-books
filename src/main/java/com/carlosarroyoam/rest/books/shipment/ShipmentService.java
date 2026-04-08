@@ -1,17 +1,17 @@
 package com.carlosarroyoam.rest.books.shipment;
 
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
-import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
-import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto.PagedResponseDtoMapper;
+import com.carlosarroyoam.rest.books.core.dto.PagedResponse;
+import com.carlosarroyoam.rest.books.core.dto.PagedResponse.PagedResponseMapper;
 import com.carlosarroyoam.rest.books.core.specification.SpecificationBuilder;
 import com.carlosarroyoam.rest.books.order.OrderRepository;
 import com.carlosarroyoam.rest.books.order.entity.Order;
 import com.carlosarroyoam.rest.books.order.entity.OrderStatus;
 import com.carlosarroyoam.rest.books.order.entity.Order_;
-import com.carlosarroyoam.rest.books.shipment.dto.ShipmentDto;
-import com.carlosarroyoam.rest.books.shipment.dto.ShipmentDto.ShipmentDtoMapper;
-import com.carlosarroyoam.rest.books.shipment.dto.ShipmentSpecsDto;
-import com.carlosarroyoam.rest.books.shipment.dto.UpdateShipmentStatusRequestDto;
+import com.carlosarroyoam.rest.books.shipment.dto.ShipmentResponse;
+import com.carlosarroyoam.rest.books.shipment.dto.ShipmentResponse.ShipmentResponseMapper;
+import com.carlosarroyoam.rest.books.shipment.dto.ShipmentSpecs;
+import com.carlosarroyoam.rest.books.shipment.dto.UpdateShipmentStatusRequest;
 import com.carlosarroyoam.rest.books.shipment.entity.Shipment;
 import com.carlosarroyoam.rest.books.shipment.entity.ShipmentStatus;
 import com.carlosarroyoam.rest.books.shipment.entity.Shipment_;
@@ -38,7 +38,7 @@ public class ShipmentService {
   }
 
   @Transactional
-  public PagedResponseDto<ShipmentDto> findAll(ShipmentSpecsDto shipmentSpecs, Pageable pageable) {
+  public PagedResponse<ShipmentResponse> findAll(ShipmentSpecs shipmentSpecs, Pageable pageable) {
     Specification<Shipment> spec = SpecificationBuilder.<Shipment>builder()
         .likeIfPresent(root -> root.get(Shipment_.attentionName), shipmentSpecs.getAttentionName())
         .likeIfPresent(root -> root.get(Shipment_.address), shipmentSpecs.getAddress())
@@ -52,27 +52,26 @@ public class ShipmentService {
 
     Page<Shipment> shipments = shipmentRepository.findAll(spec, pageable);
 
-    return PagedResponseDtoMapper.INSTANCE
-        .toPagedResponseDto(shipments.map(ShipmentDtoMapper.INSTANCE::toDto));
+    return PagedResponseMapper.INSTANCE
+        .toPagedResponse(shipments.map(ShipmentResponseMapper.INSTANCE::toDto));
   }
 
   @Transactional
-  public ShipmentDto findById(Long shipmentId) {
+  public ShipmentResponse findById(Long shipmentId) {
     Shipment shipmentById = findShipmentEntityById(shipmentId);
-    return ShipmentDtoMapper.INSTANCE.toDto(shipmentById);
+    return ShipmentResponseMapper.INSTANCE.toDto(shipmentById);
   }
 
   @Transactional
-  public void updateStatus(Long shipmentId, UpdateShipmentStatusRequestDto requestDto) {
+  public void updateStatus(Long shipmentId, UpdateShipmentStatusRequest request) {
     LocalDateTime now = LocalDateTime.now();
     Shipment shipmentById = findShipmentEntityById(shipmentId);
-    shipmentById.setStatus(requestDto.getStatus());
+    shipmentById.setStatus(request.getStatus());
     shipmentById.setUpdatedAt(now);
     shipmentRepository.save(shipmentById);
 
     Order orderById = findOrderEntityById(shipmentById.getOrder().getId());
-    orderById
-        .setStatus(resolveOrderStatusFromShipment(requestDto.getStatus(), orderById.getStatus()));
+    orderById.setStatus(resolveOrderStatusFromShipment(request.getStatus(), orderById.getStatus()));
     orderById.setUpdatedAt(now);
     orderRepository.save(orderById);
   }

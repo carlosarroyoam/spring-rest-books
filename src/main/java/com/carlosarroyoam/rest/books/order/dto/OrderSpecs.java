@@ -11,7 +11,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 @Data
 @Builder
-public class OrderSpecsDto {
+public class OrderSpecs {
   @Size(max = 32, message = "Order number should be max 32")
   private String orderNumber;
 

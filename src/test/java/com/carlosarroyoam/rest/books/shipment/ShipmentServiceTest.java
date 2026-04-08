@@ -1,13 +1,13 @@
 package com.carlosarroyoam.rest.books.shipment;
 
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
-import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
+import com.carlosarroyoam.rest.books.core.dto.PagedResponse;
 import com.carlosarroyoam.rest.books.order.OrderRepository;
 import com.carlosarroyoam.rest.books.order.entity.Order;
 import com.carlosarroyoam.rest.books.order.entity.OrderStatus;
-import com.carlosarroyoam.rest.books.shipment.dto.ShipmentDto;
-import com.carlosarroyoam.rest.books.shipment.dto.ShipmentSpecsDto;
-import com.carlosarroyoam.rest.books.shipment.dto.UpdateShipmentStatusRequestDto;
+import com.carlosarroyoam.rest.books.shipment.dto.ShipmentResponse;
+import com.carlosarroyoam.rest.books.shipment.dto.ShipmentSpecs;
+import com.carlosarroyoam.rest.books.shipment.dto.UpdateShipmentStatusRequest;
 import com.carlosarroyoam.rest.books.shipment.entity.Shipment;
 import com.carlosarroyoam.rest.books.shipment.entity.ShipmentStatus;
 import java.util.List;
@@ -62,16 +62,16 @@ class ShipmentServiceTest {
   }
 
   @Test
-  @DisplayName("Should return PagedResponseDto<ShipmentDto> when find all shipments")
+  @DisplayName("Should return PagedResponse<ShipmentResponse> when find all shipments")
   void shouldReturnListOfShipments() {
     Pageable pageable = PageRequest.of(0, 25);
-    ShipmentSpecsDto shipmentSpecs = ShipmentSpecsDto.builder().build();
+    ShipmentSpecs shipmentSpecs = ShipmentSpecs.builder().build();
     List<Shipment> shipments = List.of(shipment);
 
     when(shipmentRepository.findAll(ArgumentMatchers.<Specification<Shipment>>any(),
         any(Pageable.class))).thenReturn(new PageImpl<>(shipments, pageable, shipments.size()));
 
-    PagedResponseDto<ShipmentDto> response = shipmentService.findAll(shipmentSpecs, pageable);
+    PagedResponse<ShipmentResponse> response = shipmentService.findAll(shipmentSpecs, pageable);
 
     assertThat(response).isNotNull();
     assertThat(response.getItems()).hasSize(1);
@@ -79,11 +79,11 @@ class ShipmentServiceTest {
   }
 
   @Test
-  @DisplayName("Should return ShipmentDto when find shipment by id with existing id")
+  @DisplayName("Should return ShipmentResponse when find shipment by id with existing id")
   void shouldReturnWhenFindShipmentByIdWithExistingId() {
     when(shipmentRepository.findById(anyLong())).thenReturn(Optional.of(shipment));
 
-    ShipmentDto shipmentDto = shipmentService.findById(1L);
+    ShipmentResponse shipmentDto = shipmentService.findById(1L);
 
     assertThat(shipmentDto).isNotNull();
     assertThat(shipmentDto.getId()).isEqualTo(1L);
@@ -92,7 +92,7 @@ class ShipmentServiceTest {
   @Test
   @DisplayName("Should update shipment status and sync order status")
   void shouldUpdateShipmentStatusAndSyncOrderStatus() {
-    UpdateShipmentStatusRequestDto requestDto = UpdateShipmentStatusRequestDto.builder()
+    UpdateShipmentStatusRequest requestDto = UpdateShipmentStatusRequest.builder()
         .status(ShipmentStatus.DELIVERED)
         .build();
 

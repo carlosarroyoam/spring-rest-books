@@ -9,7 +9,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 @Data
 @Builder
-public class ShipmentSpecsDto {
+public class ShipmentSpecs {
   @Size(max = 128, message = "Attention name should be max 128")
   private String attentionName;
 

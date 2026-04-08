@@ -1,19 +1,19 @@
 package com.carlosarroyoam.rest.books.book;
 
-import com.carlosarroyoam.rest.books.author.dto.AuthorDto;
-import com.carlosarroyoam.rest.books.author.dto.AuthorDto.AuthorDtoMapper;
+import com.carlosarroyoam.rest.books.author.dto.AuthorResponse;
+import com.carlosarroyoam.rest.books.author.dto.AuthorResponse.AuthorResponseMapper;
 import com.carlosarroyoam.rest.books.author.entity.Author_;
-import com.carlosarroyoam.rest.books.book.dto.BookDto;
-import com.carlosarroyoam.rest.books.book.dto.BookDto.BookDtoMapper;
-import com.carlosarroyoam.rest.books.book.dto.BookSpecsDto;
-import com.carlosarroyoam.rest.books.book.dto.CreateBookRequestDto;
-import com.carlosarroyoam.rest.books.book.dto.UpdateBookRequestDto;
+import com.carlosarroyoam.rest.books.book.dto.BookResponse;
+import com.carlosarroyoam.rest.books.book.dto.BookResponse.BookResponseMapper;
+import com.carlosarroyoam.rest.books.book.dto.BookSpecs;
+import com.carlosarroyoam.rest.books.book.dto.CreateBookRequest;
+import com.carlosarroyoam.rest.books.book.dto.UpdateBookRequest;
 import com.carlosarroyoam.rest.books.book.entity.Book;
 import com.carlosarroyoam.rest.books.book.entity.BookStatus;
 import com.carlosarroyoam.rest.books.book.entity.Book_;
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
-import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
-import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto.PagedResponseDtoMapper;
+import com.carlosarroyoam.rest.books.core.dto.PagedResponse;
+import com.carlosarroyoam.rest.books.core.dto.PagedResponse.PagedResponseMapper;
 import com.carlosarroyoam.rest.books.core.specification.SpecificationBuilder;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.transaction.Transactional;
@@ -37,7 +37,7 @@ public class BookService {
     this.bookRepository = bookRepository;
   }
 
-  public PagedResponseDto<BookDto> findAll(BookSpecsDto bookSpecs, Pageable pageable) {
+  public PagedResponse<BookResponse> findAll(BookSpecs bookSpecs, Pageable pageable) {
     Specification<Book> spec = SpecificationBuilder.<Book>builder()
         .likeIfPresent(root -> root.get(Book_.isbn), bookSpecs.getIsbn())
         .likeIfPresent(root -> root.get(Book_.title), bookSpecs.getTitle())
@@ -52,18 +52,18 @@ public class BookService {
 
     Page<Book> books = bookRepository.findAll(spec, pageable);
 
-    return PagedResponseDtoMapper.INSTANCE
-        .toPagedResponseDto(books.map(BookDtoMapper.INSTANCE::toDto));
+    return PagedResponseMapper.INSTANCE
+        .toPagedResponse(books.map(BookResponseMapper.INSTANCE::toDto));
   }
 
-  public BookDto findById(Long bookId) {
+  public BookResponse findById(Long bookId) {
     Book bookById = findBookEntityById(bookId);
-    return BookDtoMapper.INSTANCE.toDto(bookById);
+    return BookResponseMapper.INSTANCE.toDto(bookById);
   }
 
   @Transactional
-  public BookDto create(CreateBookRequestDto requestDto) {
-    if (Boolean.TRUE.equals(bookRepository.existsByIsbn(requestDto.getIsbn()))) {
+  public BookResponse create(CreateBookRequest request) {
+    if (Boolean.TRUE.equals(bookRepository.existsByIsbn(request.getIsbn()))) {
       log.warn(AppMessages.ISBN_ALREADY_EXISTS_EXCEPTION);
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
           AppMessages.ISBN_ALREADY_EXISTS_EXCEPTION);
@@ -71,30 +71,30 @@ public class BookService {
 
     LocalDateTime now = LocalDateTime.now();
     Book book = Book.builder()
-        .isbn(requestDto.getIsbn())
-        .title(requestDto.getTitle())
-        .coverUrl(requestDto.getCoverUrl())
-        .price(requestDto.getPrice())
-        .isAvailableOnline(requestDto.getIsAvailableOnline())
+        .isbn(request.getIsbn())
+        .title(request.getTitle())
+        .coverUrl(request.getCoverUrl())
+        .price(request.getPrice())
+        .isAvailableOnline(request.getIsAvailableOnline())
         .status(BookStatus.ACTIVE)
-        .publishedAt(requestDto.getPublishedAt())
+        .publishedAt(request.getPublishedAt())
         .createdAt(now)
         .updatedAt(now)
         .build();
 
-    return BookDtoMapper.INSTANCE.toDto(bookRepository.save(book));
+    return BookResponseMapper.INSTANCE.toDto(bookRepository.save(book));
   }
 
   @Transactional
-  public void update(Long bookId, UpdateBookRequestDto requestDto) {
+  public void update(Long bookId, UpdateBookRequest request) {
     LocalDateTime now = LocalDateTime.now();
     Book bookById = findBookEntityById(bookId);
-    bookById.setIsbn(requestDto.getIsbn());
-    bookById.setTitle(requestDto.getTitle());
-    bookById.setCoverUrl(requestDto.getCoverUrl());
-    bookById.setPrice(requestDto.getPrice());
-    bookById.setPublishedAt(requestDto.getPublishedAt());
-    bookById.setIsAvailableOnline(requestDto.getIsAvailableOnline());
+    bookById.setIsbn(request.getIsbn());
+    bookById.setTitle(request.getTitle());
+    bookById.setCoverUrl(request.getCoverUrl());
+    bookById.setPrice(request.getPrice());
+    bookById.setPublishedAt(request.getPublishedAt());
+    bookById.setIsAvailableOnline(request.getIsAvailableOnline());
     bookById.setUpdatedAt(now);
     bookRepository.save(bookById);
   }
@@ -109,9 +109,9 @@ public class BookService {
     bookRepository.save(bookById);
   }
 
-  public List<AuthorDto> findAuthorsByBookId(Long bookId) {
+  public List<AuthorResponse> findAuthorsByBookId(Long bookId) {
     Book bookById = findBookEntityById(bookId);
-    return AuthorDtoMapper.INSTANCE.toDtos(bookById.getAuthors());
+    return AuthorResponseMapper.INSTANCE.toDtos(bookById.getAuthors());
   }
 
   private Book findBookEntityById(Long bookId) {

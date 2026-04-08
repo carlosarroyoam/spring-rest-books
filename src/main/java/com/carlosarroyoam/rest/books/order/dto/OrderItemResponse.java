@@ -1,7 +1,7 @@
 package com.carlosarroyoam.rest.books.order.dto;
 
-import com.carlosarroyoam.rest.books.book.dto.BookDto;
-import com.carlosarroyoam.rest.books.book.dto.BookDto.BookDtoMapper;
+import com.carlosarroyoam.rest.books.book.dto.BookResponse;
+import com.carlosarroyoam.rest.books.book.dto.BookResponse.BookResponseMapper;
 import com.carlosarroyoam.rest.books.order.entity.OrderItem;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -19,23 +19,23 @@ import org.mapstruct.factory.Mappers;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class OrderItemDto {
+public class OrderItemResponse {
   private Long id;
   private Integer quantity;
   private BigDecimal unitPrice;
   private BigDecimal totalPrice;
   private Long bookId;
-  private BookDto book;
+  private BookResponse book;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
 
   @Mapper(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = {
-      BookDtoMapper.class })
-  public interface OrderItemDtoMapper {
-    OrderItemDtoMapper INSTANCE = Mappers.getMapper(OrderItemDtoMapper.class);
+      BookResponseMapper.class })
+  public interface OrderItemResponseMapper {
+    OrderItemResponseMapper INSTANCE = Mappers.getMapper(OrderItemResponseMapper.class);
 
-    OrderItemDto toDto(OrderItem entity);
+    OrderItemResponse toDto(OrderItem entity);
 
-    List<OrderItemDto> toDtos(List<OrderItem> entities);
+    List<OrderItemResponse> toDtos(List<OrderItem> entities);
   }
 }

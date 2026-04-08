@@ -1,6 +1,6 @@
-package com.carlosarroyoam.rest.books.shipment.dto;
+package com.carlosarroyoam.rest.books.payment.dto;
 
-import com.carlosarroyoam.rest.books.shipment.entity.ShipmentStatus;
+import com.carlosarroyoam.rest.books.payment.entity.PaymentStatus;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UpdateShipmentStatusRequestDto {
+public class UpdatePaymentStatusRequest {
   @NotNull(message = "Status should not be null")
-  private ShipmentStatus status;
+  private PaymentStatus status;
 }

@@ -1,8 +1,8 @@
 package com.carlosarroyoam.rest.books.cart.dto;
 
-import com.carlosarroyoam.rest.books.cart.dto.CartItemDto.CartItemDtoMapper;
+import com.carlosarroyoam.rest.books.cart.dto.CartItemResponse.CartItemResponseMapper;
 import com.carlosarroyoam.rest.books.cart.entity.Cart;
-import com.carlosarroyoam.rest.books.customer.dto.CustomerDto;
+import com.carlosarroyoam.rest.books.customer.dto.CustomerResponse;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -18,18 +18,18 @@ import org.mapstruct.factory.Mappers;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CartDto {
+public class CartResponse {
   private Long id;
-  private List<CartItemDto> items;
-  private CustomerDto customer;
+  private List<CartItemResponse> items;
+  private CustomerResponse customer;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
 
   @Mapper(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = {
-      CartItemDtoMapper.class })
-  public interface CartDtoMapper {
-    CartDtoMapper INSTANCE = Mappers.getMapper(CartDtoMapper.class);
+      CartItemResponseMapper.class })
+  public interface CartResponseMapper {
+    CartResponseMapper INSTANCE = Mappers.getMapper(CartResponseMapper.class);
 
-    CartDto toDto(Cart entity);
+    CartResponse toDto(Cart entity);
   }
 }

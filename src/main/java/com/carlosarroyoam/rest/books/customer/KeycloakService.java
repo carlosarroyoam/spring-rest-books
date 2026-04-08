@@ -2,7 +2,7 @@ package com.carlosarroyoam.rest.books.customer;
 
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
 import com.carlosarroyoam.rest.books.core.property.KeycloakAdminProps;
-import com.carlosarroyoam.rest.books.customer.dto.CreateCustomerRequestDto;
+import com.carlosarroyoam.rest.books.customer.dto.CreateCustomerRequest;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 import java.util.Collections;
@@ -28,13 +28,13 @@ public class KeycloakService {
     this.keycloakAdminProps = keycloakAdminProps;
   }
 
-  public void createUser(CreateCustomerRequestDto requestDto, Long customerId) {
+  public void createUser(CreateCustomerRequest request, Long customerId) {
     UsersResource usersResource = keycloak.realm(keycloakAdminProps.getRealm()).users();
 
     List<UserRepresentation> existingUsersByUsername = usersResource
-        .searchByUsername(requestDto.getUsername(), true);
-    List<UserRepresentation> existingUsersByEmail = usersResource
-        .searchByEmail(requestDto.getEmail(), true);
+        .searchByUsername(request.getUsername(), true);
+    List<UserRepresentation> existingUsersByEmail = usersResource.searchByEmail(request.getEmail(),
+        true);
 
     if (Boolean.FALSE.equals(existingUsersByUsername.isEmpty())
         || Boolean.FALSE.equals(existingUsersByEmail.isEmpty())) {
@@ -47,13 +47,13 @@ public class KeycloakService {
     CredentialRepresentation credential = new CredentialRepresentation();
     credential.setTemporary(false);
     credential.setType(CredentialRepresentation.PASSWORD);
-    credential.setValue(requestDto.getPassword());
+    credential.setValue(request.getPassword());
 
     UserRepresentation user = new UserRepresentation();
-    user.setFirstName(requestDto.getFirstName());
-    user.setLastName(requestDto.getLastName());
-    user.setUsername(requestDto.getUsername());
-    user.setEmail(requestDto.getEmail());
+    user.setFirstName(request.getFirstName());
+    user.setLastName(request.getLastName());
+    user.setUsername(request.getUsername());
+    user.setEmail(request.getEmail());
     user.setEnabled(true);
     user.setAttributes(attributes);
     user.setCredentials(Collections.singletonList(credential));

@@ -19,7 +19,7 @@ import org.mapstruct.factory.Mappers;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PaymentDto {
+public class PaymentResponse {
   private Long id;
   private BigDecimal amount;
   private PaymentMethod method;
@@ -30,10 +30,10 @@ public class PaymentDto {
   private LocalDateTime updatedAt;
 
   @Mapper(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, unmappedTargetPolicy = ReportingPolicy.IGNORE)
-  public interface PaymentDtoMapper {
-    PaymentDtoMapper INSTANCE = Mappers.getMapper(PaymentDtoMapper.class);
+  public interface PaymentResponseMapper {
+    PaymentResponseMapper INSTANCE = Mappers.getMapper(PaymentResponseMapper.class);
 
     @Mapping(source = "order.id", target = "orderId")
-    PaymentDto toDto(Payment entity);
+    PaymentResponse toDto(Payment entity);
   }
 }

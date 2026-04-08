@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CreatePaymentRequestDto {
+public class CreatePaymentRequest {
   @NotNull(message = "Order id should not be null")
   private Long orderId;
 

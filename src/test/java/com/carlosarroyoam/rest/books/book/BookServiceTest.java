@@ -1,14 +1,14 @@
 package com.carlosarroyoam.rest.books.book;
 
-import com.carlosarroyoam.rest.books.author.dto.AuthorDto;
+import com.carlosarroyoam.rest.books.author.dto.AuthorResponse;
 import com.carlosarroyoam.rest.books.author.entity.Author;
-import com.carlosarroyoam.rest.books.book.dto.BookDto;
-import com.carlosarroyoam.rest.books.book.dto.BookSpecsDto;
-import com.carlosarroyoam.rest.books.book.dto.CreateBookRequestDto;
-import com.carlosarroyoam.rest.books.book.dto.UpdateBookRequestDto;
+import com.carlosarroyoam.rest.books.book.dto.BookResponse;
+import com.carlosarroyoam.rest.books.book.dto.BookSpecs;
+import com.carlosarroyoam.rest.books.book.dto.CreateBookRequest;
+import com.carlosarroyoam.rest.books.book.dto.UpdateBookRequest;
 import com.carlosarroyoam.rest.books.book.entity.Book;
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
-import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
+import com.carlosarroyoam.rest.books.core.dto.PagedResponse;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -74,7 +74,7 @@ class BookServiceTest {
   }
 
   @Test
-  @DisplayName("Should return PagedResponseDto<BookDto> when find all books")
+  @DisplayName("Should return PagedResponse<BookResponse> when find all books")
   void shouldReturnListOfBooks() {
     Pageable pageable = PageRequest.of(0, 25);
     List<Book> books = List.of(book);
@@ -82,7 +82,7 @@ class BookServiceTest {
     when(bookRepository.findAll(ArgumentMatchers.<Specification<Book>>any(), any(Pageable.class)))
         .thenReturn(new PageImpl<>(books, pageable, books.size()));
 
-    PagedResponseDto<BookDto> response = bookService.findAll(BookSpecsDto.builder().build(),
+    PagedResponse<BookResponse> response = bookService.findAll(BookSpecs.builder().build(),
         PageRequest.of(0, 25));
 
     assertThat(response).isNotNull();
@@ -95,14 +95,14 @@ class BookServiceTest {
   }
 
   @Test
-  @DisplayName("Should return BookDto when find book by id with existing id")
+  @DisplayName("Should return BookResponse when find book by id with existing id")
   void shouldReturnWhenFindBookByIdWithExisitingId() {
     when(bookRepository.findById(anyLong())).thenReturn(Optional.of(book));
 
-    BookDto bookDto = bookService.findById(1L);
+    BookResponse bookResponse = bookService.findById(1L);
 
-    assertThat(bookDto).isNotNull();
-    assertThat(bookDto.getId()).isEqualTo(1L);
+    assertThat(bookResponse).isNotNull();
+    assertThat(bookResponse.getId()).isEqualTo(1L);
   }
 
   @Test
@@ -116,9 +116,9 @@ class BookServiceTest {
   }
 
   @Test
-  @DisplayName("Should return BookDto when create a book with valid data")
+  @DisplayName("Should return BookResponse when create a book with valid data")
   void shouldReturnWhenCreateBookWithValidData() {
-    CreateBookRequestDto requestDto = CreateBookRequestDto.builder()
+    CreateBookRequest requestResponse = CreateBookRequest.builder()
         .isbn("978-9-7389-4434-3")
         .title("Sapiens: A Brief History of Humankind")
         .build();
@@ -132,23 +132,23 @@ class BookServiceTest {
     when(bookRepository.existsByIsbn(anyString())).thenReturn(false);
     when(bookRepository.save(any(Book.class))).thenReturn(savedBook);
 
-    BookDto bookDto = bookService.create(requestDto);
+    BookResponse bookResponse = bookService.create(requestResponse);
 
-    assertThat(bookDto).isNotNull();
-    assertThat(bookDto.getIsbn()).isEqualTo("978-9-7389-4434-3");
-    assertThat(bookDto.getTitle()).isEqualTo("Sapiens: A Brief History of Humankind");
+    assertThat(bookResponse).isNotNull();
+    assertThat(bookResponse.getIsbn()).isEqualTo("978-9-7389-4434-3");
+    assertThat(bookResponse.getTitle()).isEqualTo("Sapiens: A Brief History of Humankind");
   }
 
   @Test
   @DisplayName("Should thow ResponseStatusException when create a book with existing ISBN")
   void shouldThrowWhenCreateBookWithExistingIsbn() {
-    CreateBookRequestDto requestDto = CreateBookRequestDto.builder()
+    CreateBookRequest requestResponse = CreateBookRequest.builder()
         .isbn("978-1-3035-0529-4")
         .build();
 
     when(bookRepository.existsByIsbn(anyString())).thenReturn(true);
 
-    assertThatThrownBy(() -> bookService.create(requestDto))
+    assertThatThrownBy(() -> bookService.create(requestResponse))
         .isInstanceOf(ResponseStatusException.class)
         .hasMessageContaining(HttpStatus.BAD_REQUEST.toString())
         .hasMessageContaining(AppMessages.ISBN_ALREADY_EXISTS_EXCEPTION);
@@ -157,7 +157,7 @@ class BookServiceTest {
   @Test
   @DisplayName("Should update book with valid data")
   void shouldUpdateBookWithValidData() {
-    UpdateBookRequestDto requestDto = UpdateBookRequestDto.builder()
+    UpdateBookRequest requestResponse = UpdateBookRequest.builder()
         .isbn("978-1-3035-0293-1")
         .title("Homo Deus")
         .build();
@@ -167,7 +167,7 @@ class BookServiceTest {
     when(bookRepository.findById(anyLong())).thenReturn(Optional.of(book));
     when(bookRepository.save(any(Book.class))).thenReturn(updatedBook);
 
-    bookService.update(1L, requestDto);
+    bookService.update(1L, requestResponse);
 
     verify(bookRepository).findById(1L);
     verify(bookRepository).save(any(Book.class));
@@ -179,11 +179,11 @@ class BookServiceTest {
   @Test
   @DisplayName("Should throw ResponseStatusException when update book with non existing id")
   void shouldThrowWhenUpdateBookWithInvalidData() {
-    UpdateBookRequestDto requestDto = UpdateBookRequestDto.builder().build();
+    UpdateBookRequest requestResponse = UpdateBookRequest.builder().build();
 
     when(bookRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-    assertThatThrownBy(() -> bookService.update(1L, requestDto))
+    assertThatThrownBy(() -> bookService.update(1L, requestResponse))
         .isInstanceOf(ResponseStatusException.class)
         .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
         .hasMessageContaining(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
@@ -210,11 +210,11 @@ class BookServiceTest {
   }
 
   @Test
-  @DisplayName("Should return List<AuthorDto> when find authors by book id with existing id")
+  @DisplayName("Should return List<AuthorResponse> when find authors by book id with existing id")
   void shouldReturnWhenFindAuthorsByBookIdWithExistingId() {
     when(bookRepository.findById(anyLong())).thenReturn(Optional.of(book));
 
-    List<AuthorDto> authors = bookService.findAuthorsByBookId(1L);
+    List<AuthorResponse> authors = bookService.findAuthorsByBookId(1L);
 
     assertThat(authors).hasSize(1).first().satisfies(actualAuthor -> {
       assertThat(actualAuthor.getId()).isEqualTo(1L);

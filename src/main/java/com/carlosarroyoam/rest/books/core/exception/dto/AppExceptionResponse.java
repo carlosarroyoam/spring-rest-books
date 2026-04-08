@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AppExceptionDto {
+public class AppExceptionResponse {
   private String message;
   private String error;
   private Map<String, String> details;

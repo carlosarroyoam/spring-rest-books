@@ -15,23 +15,23 @@ import org.springframework.data.domain.Page;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PagedResponseDto<T> {
+public class PagedResponse<T> {
   private List<T> items;
-  private PaginationDto pagination;
+  private PaginationResponse pagination;
 
   @Mapper(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, unmappedTargetPolicy = ReportingPolicy.IGNORE)
-  public interface PagedResponseDtoMapper {
-    PagedResponseDtoMapper INSTANCE = Mappers.getMapper(PagedResponseDtoMapper.class);
+  public interface PagedResponseMapper {
+    PagedResponseMapper INSTANCE = Mappers.getMapper(PagedResponseMapper.class);
 
-    default <T> PagedResponseDto<T> toPagedResponseDto(Page<T> page) {
-      PaginationDto pagination = PaginationDto.builder()
+    default <T> PagedResponse<T> toPagedResponse(Page<T> page) {
+      PaginationResponse pagination = PaginationResponse.builder()
           .page(page.getNumber())
           .size(page.getSize())
           .totalItems(page.getTotalElements())
           .totalPages(page.getTotalPages())
           .build();
 
-      return PagedResponseDto.<T>builder().items(page.getContent()).pagination(pagination).build();
+      return PagedResponse.<T>builder().items(page.getContent()).pagination(pagination).build();
     }
   }
 }

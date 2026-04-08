@@ -1,10 +1,10 @@
 package com.carlosarroyoam.rest.books.payment;
 
-import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
-import com.carlosarroyoam.rest.books.payment.dto.CreatePaymentRequestDto;
-import com.carlosarroyoam.rest.books.payment.dto.PaymentDto;
-import com.carlosarroyoam.rest.books.payment.dto.PaymentSpecsDto;
-import com.carlosarroyoam.rest.books.payment.dto.UpdatePaymentStatusRequestDto;
+import com.carlosarroyoam.rest.books.core.dto.PagedResponse;
+import com.carlosarroyoam.rest.books.payment.dto.CreatePaymentRequest;
+import com.carlosarroyoam.rest.books.payment.dto.PaymentResponse;
+import com.carlosarroyoam.rest.books.payment.dto.PaymentSpecs;
+import com.carlosarroyoam.rest.books.payment.dto.UpdatePaymentStatusRequest;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -32,25 +32,25 @@ public class PaymentController {
 
   @GetMapping(produces = "application/json")
   @PreAuthorize("hasRole('App/Admin')")
-  public ResponseEntity<PagedResponseDto<PaymentDto>> findAll(
-      @Valid @ModelAttribute PaymentSpecsDto paymentSpecs,
+  public ResponseEntity<PagedResponse<PaymentResponse>> findAll(
+      @Valid @ModelAttribute PaymentSpecs paymentSpecs,
       @PageableDefault(page = 0, size = 25, sort = "id") Pageable pageable) {
-    PagedResponseDto<PaymentDto> payments = paymentService.findAll(paymentSpecs, pageable);
+    PagedResponse<PaymentResponse> payments = paymentService.findAll(paymentSpecs, pageable);
     return ResponseEntity.ok(payments);
   }
 
   @GetMapping(value = "/{paymentId}", produces = "application/json")
   @PreAuthorize("hasRole('App/Admin')")
-  public ResponseEntity<PaymentDto> findById(@PathVariable Long paymentId) {
-    PaymentDto paymentById = paymentService.findById(paymentId);
+  public ResponseEntity<PaymentResponse> findById(@PathVariable Long paymentId) {
+    PaymentResponse paymentById = paymentService.findById(paymentId);
     return ResponseEntity.ok(paymentById);
   }
 
   @PostMapping(consumes = "application/json")
   @PreAuthorize("hasRole('App/Admin')")
-  public ResponseEntity<Void> create(@Valid @RequestBody CreatePaymentRequestDto requestDto,
+  public ResponseEntity<Void> create(@Valid @RequestBody CreatePaymentRequest request,
       UriComponentsBuilder builder) {
-    PaymentDto createdPayment = paymentService.create(requestDto);
+    PaymentResponse createdPayment = paymentService.create(request);
     UriComponents uriComponents = builder.path("/payments/{paymentId}")
         .buildAndExpand(createdPayment.getId());
     return ResponseEntity.created(uriComponents.toUri()).build();
@@ -59,8 +59,8 @@ public class PaymentController {
   @PutMapping(value = "/{paymentId}/status", consumes = "application/json")
   @PreAuthorize("hasRole('App/Admin')")
   public ResponseEntity<Void> updateStatus(@PathVariable Long paymentId,
-      @Valid @RequestBody UpdatePaymentStatusRequestDto requestDto) {
-    paymentService.updateStatus(paymentId, requestDto);
+      @Valid @RequestBody UpdatePaymentStatusRequest request) {
+    paymentService.updateStatus(paymentId, request);
     return ResponseEntity.noContent().build();
   }
 }

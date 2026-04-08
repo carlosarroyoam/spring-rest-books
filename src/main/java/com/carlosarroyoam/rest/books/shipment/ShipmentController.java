@@ -1,9 +1,9 @@
 package com.carlosarroyoam.rest.books.shipment;
 
-import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
-import com.carlosarroyoam.rest.books.shipment.dto.ShipmentDto;
-import com.carlosarroyoam.rest.books.shipment.dto.ShipmentSpecsDto;
-import com.carlosarroyoam.rest.books.shipment.dto.UpdateShipmentStatusRequestDto;
+import com.carlosarroyoam.rest.books.core.dto.PagedResponse;
+import com.carlosarroyoam.rest.books.shipment.dto.ShipmentResponse;
+import com.carlosarroyoam.rest.books.shipment.dto.ShipmentSpecs;
+import com.carlosarroyoam.rest.books.shipment.dto.UpdateShipmentStatusRequest;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -28,25 +28,25 @@ public class ShipmentController {
 
   @GetMapping(produces = "application/json")
   @PreAuthorize("hasRole('App/Admin')")
-  public ResponseEntity<PagedResponseDto<ShipmentDto>> findAll(
-      @Valid @ModelAttribute ShipmentSpecsDto shipmentSpecs,
+  public ResponseEntity<PagedResponse<ShipmentResponse>> findAll(
+      @Valid @ModelAttribute ShipmentSpecs shipmentSpecs,
       @PageableDefault(page = 0, size = 25, sort = "id") Pageable pageable) {
-    PagedResponseDto<ShipmentDto> shipments = shipmentService.findAll(shipmentSpecs, pageable);
+    PagedResponse<ShipmentResponse> shipments = shipmentService.findAll(shipmentSpecs, pageable);
     return ResponseEntity.ok(shipments);
   }
 
   @GetMapping(value = "/{shipmentId}", produces = "application/json")
   @PreAuthorize("hasRole('App/Admin')")
-  public ResponseEntity<ShipmentDto> findById(@PathVariable Long shipmentId) {
-    ShipmentDto shipmentById = shipmentService.findById(shipmentId);
+  public ResponseEntity<ShipmentResponse> findById(@PathVariable Long shipmentId) {
+    ShipmentResponse shipmentById = shipmentService.findById(shipmentId);
     return ResponseEntity.ok(shipmentById);
   }
 
   @PutMapping(value = "/{shipmentId}/status", consumes = "application/json")
   @PreAuthorize("hasRole('App/Admin')")
   public ResponseEntity<Void> updateStatus(@PathVariable Long shipmentId,
-      @Valid @RequestBody UpdateShipmentStatusRequestDto requestDto) {
-    shipmentService.updateStatus(shipmentId, requestDto);
+      @Valid @RequestBody UpdateShipmentStatusRequest request) {
+    shipmentService.updateStatus(shipmentId, request);
     return ResponseEntity.noContent().build();
   }
 }

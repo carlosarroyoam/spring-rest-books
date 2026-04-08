@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PaginationDto {
+public class PaginationResponse {
   private int page;
   private int size;
   private long totalItems;

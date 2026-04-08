@@ -1,8 +1,8 @@
 package com.carlosarroyoam.rest.books.customer;
 
 import com.carlosarroyoam.rest.books.common.JsonUtils;
-import com.carlosarroyoam.rest.books.customer.dto.CreateCustomerRequestDto;
-import com.carlosarroyoam.rest.books.customer.dto.UpdateCustomerRequestDto;
+import com.carlosarroyoam.rest.books.customer.dto.CreateCustomerRequest;
+import com.carlosarroyoam.rest.books.customer.dto.UpdateCustomerRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
@@ -75,8 +75,8 @@ class CustomerControllerIT {
   }
 
   @Test
-  @DisplayName("Should return CustomerDto when find customer by id with existing id")
-  void shouldReturnCustomerDtoWhenFindCustomerByIdWithExistingId() throws Exception {
+  @DisplayName("Should return CustomerResponse when find customer by id with existing id")
+  void shouldReturnCustomerResponseWhenFindCustomerByIdWithExistingId() throws Exception {
     String expectedJson = JsonUtils.readJson("/customers/find-by-id.json");
 
     String responseJson = mockMvc.perform(get("/customers/{customerId}", 1L))
@@ -90,7 +90,7 @@ class CustomerControllerIT {
   }
 
   @Test
-  @DisplayName("Should throw AppExceptionDto when find customer by id with non existing id")
+  @DisplayName("Should throw AppExceptionResponse when find customer by id with non existing id")
   void shouldThrowWhenFindCustomerByIdWithNonExistingId() throws Exception {
     String expectedJson = JsonUtils.readJson("/customers/find-by-id_with_non_existing_id.json");
 
@@ -108,7 +108,7 @@ class CustomerControllerIT {
   @Test
   @DisplayName("Should return created when create a customer with valid data")
   void shouldReturnCreatedWhenCreateCustomerWithValidData() throws Exception {
-    CreateCustomerRequestDto requestDto = CreateCustomerRequestDto.builder()
+    CreateCustomerRequest requestResponse = CreateCustomerRequest.builder()
         .firstName("Carlos Alberto")
         .lastName("Arroyo Martínez")
         .password("secret123#")
@@ -118,17 +118,17 @@ class CustomerControllerIT {
 
     mockMvc
         .perform(post("/customers").contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(requestDto)))
+            .content(mapper.writeValueAsString(requestResponse)))
         .andExpect(status().isCreated())
         .andExpect(header().string("Location", "http://localhost/customers/3"));
   }
 
   @Test
-  @DisplayName("Should throw AppExceptionDto when create a customer with existing username")
+  @DisplayName("Should throw AppExceptionResponse when create a customer with existing username")
   void shouldThrowWhenCreateCustomerWithExistingUsername() throws Exception {
     String expectedJson = JsonUtils.readJson("/customers/create_with_existing_username.json");
 
-    CreateCustomerRequestDto requestDto = CreateCustomerRequestDto.builder()
+    CreateCustomerRequest requestResponse = CreateCustomerRequest.builder()
         .firstName("Carlos Alberto")
         .lastName("Arroyo Martínez")
         .password("secret123#")
@@ -138,7 +138,7 @@ class CustomerControllerIT {
 
     String responseJson = mockMvc
         .perform(post("/customers").contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(requestDto)))
+            .content(mapper.writeValueAsString(requestResponse)))
         .andExpect(status().isBadRequest())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andReturn()
@@ -150,11 +150,11 @@ class CustomerControllerIT {
   }
 
   @Test
-  @DisplayName("Should throw AppExceptionDto when create a customer with existing email")
+  @DisplayName("Should throw AppExceptionResponse when create a customer with existing email")
   void shouldThrowWhenCreateCustomerWithExistingEmail() throws Exception {
     String expectedJson = JsonUtils.readJson("/customers/create_with_existing_email.json");
 
-    CreateCustomerRequestDto requestDto = CreateCustomerRequestDto.builder()
+    CreateCustomerRequest requestResponse = CreateCustomerRequest.builder()
         .firstName("Carlos Alberto")
         .lastName("Arroyo Martínez")
         .password("secret123#")
@@ -164,7 +164,7 @@ class CustomerControllerIT {
 
     String responseJson = mockMvc
         .perform(post("/customers").contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(requestDto)))
+            .content(mapper.writeValueAsString(requestResponse)))
         .andExpect(status().isBadRequest())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andReturn()
@@ -178,28 +178,28 @@ class CustomerControllerIT {
   @Test
   @DisplayName("Should return no content update customer with valid data")
   void shouldReturnNoContentWhenUpdateCustomerWithValidData() throws Exception {
-    UpdateCustomerRequestDto requestDto = UpdateCustomerRequestDto.builder()
+    UpdateCustomerRequest requestResponse = UpdateCustomerRequest.builder()
         .firstName("Carlos Alberto")
         .lastName("Arroyo Martínez")
         .build();
 
     mockMvc.perform(put("/customers/{customerId}", 1L).contentType(MediaType.APPLICATION_JSON)
-        .content(mapper.writeValueAsString(requestDto))).andExpect(status().isNoContent());
+        .content(mapper.writeValueAsString(requestResponse))).andExpect(status().isNoContent());
   }
 
   @Test
-  @DisplayName("Should throw AppExceptionDto when update customer with non existing id")
+  @DisplayName("Should throw AppExceptionResponse when update customer with non existing id")
   void shouldThrowWhenUpdateCustomerWithNonExistingId() throws Exception {
     String expectedJson = JsonUtils.readJson("/customers/update_with_non_existing_id.json");
 
-    UpdateCustomerRequestDto requestDto = UpdateCustomerRequestDto.builder()
+    UpdateCustomerRequest requestResponse = UpdateCustomerRequest.builder()
         .firstName("Carlos Alberto")
         .lastName("Arroyo Martínez")
         .build();
 
     String responseJson = mockMvc
         .perform(put("/customers/{customerId}", 1000L).contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(requestDto)))
+            .content(mapper.writeValueAsString(requestResponse)))
         .andExpect(status().isNotFound())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andReturn()
@@ -217,7 +217,7 @@ class CustomerControllerIT {
   }
 
   @Test
-  @DisplayName("Should throw AppExceptionDto when delete customer with non existing id")
+  @DisplayName("Should throw AppExceptionResponse when delete customer with non existing id")
   void shouldThrowWhenDeleteCustomerWithNonExistingId() throws Exception {
     String expectedJson = JsonUtils.readJson("/customers/delete_with_non_existing_id.json");
 

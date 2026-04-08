@@ -1,14 +1,14 @@
 package com.carlosarroyoam.rest.books.customer;
 
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
-import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
-import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto.PagedResponseDtoMapper;
+import com.carlosarroyoam.rest.books.core.dto.PagedResponse;
+import com.carlosarroyoam.rest.books.core.dto.PagedResponse.PagedResponseMapper;
 import com.carlosarroyoam.rest.books.core.specification.SpecificationBuilder;
-import com.carlosarroyoam.rest.books.customer.dto.CreateCustomerRequestDto;
-import com.carlosarroyoam.rest.books.customer.dto.CustomerDto;
-import com.carlosarroyoam.rest.books.customer.dto.CustomerDto.CustomerDtoMapper;
-import com.carlosarroyoam.rest.books.customer.dto.CustomerSpecsDto;
-import com.carlosarroyoam.rest.books.customer.dto.UpdateCustomerRequestDto;
+import com.carlosarroyoam.rest.books.customer.dto.CreateCustomerRequest;
+import com.carlosarroyoam.rest.books.customer.dto.CustomerResponse;
+import com.carlosarroyoam.rest.books.customer.dto.CustomerResponse.CustomerResponseMapper;
+import com.carlosarroyoam.rest.books.customer.dto.CustomerSpecs;
+import com.carlosarroyoam.rest.books.customer.dto.UpdateCustomerRequest;
 import com.carlosarroyoam.rest.books.customer.entity.Customer;
 import com.carlosarroyoam.rest.books.customer.entity.CustomerStatus;
 import com.carlosarroyoam.rest.books.customer.entity.Customer_;
@@ -34,7 +34,7 @@ public class CustomerService {
     this.keycloakService = keycloakService;
   }
 
-  public PagedResponseDto<CustomerDto> findAll(CustomerSpecsDto customerSpecs, Pageable pageable) {
+  public PagedResponse<CustomerResponse> findAll(CustomerSpecs customerSpecs, Pageable pageable) {
     Specification<Customer> spec = SpecificationBuilder.<Customer>builder()
         .likeIfPresent(root -> root.get(Customer_.firstName), customerSpecs.getFirstName())
         .likeIfPresent(root -> root.get(Customer_.lastName), customerSpecs.getLastName())
@@ -45,24 +45,24 @@ public class CustomerService {
 
     Page<Customer> customers = customerRepository.findAll(spec, pageable);
 
-    return PagedResponseDtoMapper.INSTANCE
-        .toPagedResponseDto(customers.map(CustomerDtoMapper.INSTANCE::toDto));
+    return PagedResponseMapper.INSTANCE
+        .toPagedResponse(customers.map(CustomerResponseMapper.INSTANCE::toDto));
   }
 
-  public CustomerDto findById(Long customerId) {
+  public CustomerResponse findById(Long customerId) {
     Customer customerById = findCustomerEntityById(customerId);
-    return CustomerDtoMapper.INSTANCE.toDto(customerById);
+    return CustomerResponseMapper.INSTANCE.toDto(customerById);
   }
 
   @Transactional
-  public CustomerDto create(CreateCustomerRequestDto requestDto) {
-    if (Boolean.TRUE.equals(customerRepository.existsByUsername(requestDto.getUsername()))) {
+  public CustomerResponse create(CreateCustomerRequest request) {
+    if (Boolean.TRUE.equals(customerRepository.existsByUsername(request.getUsername()))) {
       log.warn(AppMessages.USERNAME_ALREADY_EXISTS_EXCEPTION);
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
           AppMessages.USERNAME_ALREADY_EXISTS_EXCEPTION);
     }
 
-    if (Boolean.TRUE.equals(customerRepository.existsByEmail(requestDto.getEmail()))) {
+    if (Boolean.TRUE.equals(customerRepository.existsByEmail(request.getEmail()))) {
       log.warn(AppMessages.EMAIL_ALREADY_EXISTS_EXCEPTION);
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
           AppMessages.EMAIL_ALREADY_EXISTS_EXCEPTION);
@@ -70,10 +70,10 @@ public class CustomerService {
 
     LocalDateTime now = LocalDateTime.now();
     Customer customer = Customer.builder()
-        .firstName(requestDto.getFirstName())
-        .lastName(requestDto.getLastName())
-        .email(requestDto.getEmail())
-        .username(requestDto.getUsername())
+        .firstName(request.getFirstName())
+        .lastName(request.getLastName())
+        .email(request.getEmail())
+        .username(request.getUsername())
         .status(CustomerStatus.ACTIVE)
         .createdAt(now)
         .updatedAt(now)
@@ -81,17 +81,17 @@ public class CustomerService {
 
     Customer createdCustomer = customerRepository.save(customer);
 
-    keycloakService.createUser(requestDto, createdCustomer.getId());
+    keycloakService.createUser(request, createdCustomer.getId());
 
-    return CustomerDtoMapper.INSTANCE.toDto(createdCustomer);
+    return CustomerResponseMapper.INSTANCE.toDto(createdCustomer);
   }
 
   @Transactional
-  public void update(Long customerId, UpdateCustomerRequestDto requestDto) {
+  public void update(Long customerId, UpdateCustomerRequest request) {
     LocalDateTime now = LocalDateTime.now();
     Customer customerById = findCustomerEntityById(customerId);
-    customerById.setFirstName(requestDto.getFirstName());
-    customerById.setLastName(requestDto.getLastName());
+    customerById.setFirstName(request.getFirstName());
+    customerById.setLastName(request.getLastName());
     customerById.setUpdatedAt(now);
     customerRepository.save(customerById);
   }

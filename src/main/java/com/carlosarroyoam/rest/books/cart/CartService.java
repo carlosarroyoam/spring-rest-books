@@ -2,9 +2,9 @@ package com.carlosarroyoam.rest.books.cart;
 
 import com.carlosarroyoam.rest.books.book.BookRepository;
 import com.carlosarroyoam.rest.books.book.entity.Book;
-import com.carlosarroyoam.rest.books.cart.dto.CartDto;
-import com.carlosarroyoam.rest.books.cart.dto.CartDto.CartDtoMapper;
-import com.carlosarroyoam.rest.books.cart.dto.UpdateCartItemRequestDto;
+import com.carlosarroyoam.rest.books.cart.dto.CartResponse;
+import com.carlosarroyoam.rest.books.cart.dto.CartResponse.CartResponseMapper;
+import com.carlosarroyoam.rest.books.cart.dto.UpdateCartItemRequest;
 import com.carlosarroyoam.rest.books.cart.entity.Cart;
 import com.carlosarroyoam.rest.books.cart.entity.CartItem;
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
@@ -30,24 +30,24 @@ public class CartService {
     this.bookRepository = bookRepository;
   }
 
-  public CartDto findByCustomerId(Long customerId) {
+  public CartResponse findByCustomerId(Long customerId) {
     Cart cartByCustomerId = findCartEntityByCustomerId(customerId);
-    return CartDtoMapper.INSTANCE.toDto(cartByCustomerId);
+    return CartResponseMapper.INSTANCE.toDto(cartByCustomerId);
   }
 
-  public void updateCartItem(Long customerId, UpdateCartItemRequestDto requestDto) {
+  public void updateCartItem(Long customerId, UpdateCartItemRequest request) {
     Cart cartByCustomerId = findCartEntityByCustomerId(customerId);
-    Book bookById = findBookEntityById(requestDto.getBookId());
+    Book bookById = findBookEntityById(request.getBookId());
 
     Optional<CartItem> cartItemOptional = cartByCustomerId.getItems()
         .stream()
-        .filter(item -> item.getBook().getId().equals(requestDto.getBookId()))
+        .filter(item -> item.getBook().getId().equals(request.getBookId()))
         .findFirst();
 
     CartItem cartItem = cartItemOptional.isPresent() ? cartItemOptional.get()
         : CartItem.builder()
             .book(bookById)
-            .quantity(requestDto.getQuantity())
+            .quantity(request.getQuantity())
             .addedAt(LocalDateTime.now())
             .cart(cartByCustomerId)
             .build();

@@ -1,18 +1,18 @@
 package com.carlosarroyoam.rest.books.author;
 
-import com.carlosarroyoam.rest.books.author.dto.AuthorDto;
-import com.carlosarroyoam.rest.books.author.dto.AuthorDto.AuthorDtoMapper;
-import com.carlosarroyoam.rest.books.author.dto.AuthorSpecsDto;
-import com.carlosarroyoam.rest.books.author.dto.CreateAuthorRequestDto;
-import com.carlosarroyoam.rest.books.author.dto.UpdateAuthorRequestDto;
+import com.carlosarroyoam.rest.books.author.dto.AuthorResponse;
+import com.carlosarroyoam.rest.books.author.dto.AuthorResponse.AuthorResponseMapper;
+import com.carlosarroyoam.rest.books.author.dto.AuthorSpecs;
+import com.carlosarroyoam.rest.books.author.dto.CreateAuthorRequest;
+import com.carlosarroyoam.rest.books.author.dto.UpdateAuthorRequest;
 import com.carlosarroyoam.rest.books.author.entity.Author;
 import com.carlosarroyoam.rest.books.author.entity.AuthorStatus;
 import com.carlosarroyoam.rest.books.author.entity.Author_;
-import com.carlosarroyoam.rest.books.book.dto.BookDto;
-import com.carlosarroyoam.rest.books.book.dto.BookDto.BookDtoMapper;
+import com.carlosarroyoam.rest.books.book.dto.BookResponse;
+import com.carlosarroyoam.rest.books.book.dto.BookResponse.BookResponseMapper;
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
-import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
-import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto.PagedResponseDtoMapper;
+import com.carlosarroyoam.rest.books.core.dto.PagedResponse;
+import com.carlosarroyoam.rest.books.core.dto.PagedResponse.PagedResponseMapper;
 import com.carlosarroyoam.rest.books.core.specification.SpecificationBuilder;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -35,7 +35,7 @@ public class AuthorService {
     this.authorRepository = authorRepository;
   }
 
-  public PagedResponseDto<AuthorDto> findAll(AuthorSpecsDto authorSpecs, Pageable pageable) {
+  public PagedResponse<AuthorResponse> findAll(AuthorSpecs authorSpecs, Pageable pageable) {
     Specification<Author> spec = SpecificationBuilder.<Author>builder()
         .likeIfPresent(root -> root.get(Author_.name), authorSpecs.getName())
         .equalsIfPresent(root -> root.get(Author_.status), authorSpecs.getStatus())
@@ -43,33 +43,33 @@ public class AuthorService {
 
     Page<Author> authors = authorRepository.findAll(spec, pageable);
 
-    return PagedResponseDtoMapper.INSTANCE
-        .toPagedResponseDto(authors.map(AuthorDtoMapper.INSTANCE::toDto));
+    return PagedResponseMapper.INSTANCE
+        .toPagedResponse(authors.map(AuthorResponseMapper.INSTANCE::toDto));
   }
 
-  public AuthorDto findById(Long authorId) {
+  public AuthorResponse findById(Long authorId) {
     Author authorById = findAuthorEntityById(authorId);
-    return AuthorDtoMapper.INSTANCE.toDto(authorById);
+    return AuthorResponseMapper.INSTANCE.toDto(authorById);
   }
 
   @Transactional
-  public AuthorDto create(CreateAuthorRequestDto requestDto) {
+  public AuthorResponse create(CreateAuthorRequest request) {
     LocalDateTime now = LocalDateTime.now();
     Author author = Author.builder()
-        .name(requestDto.getName())
+        .name(request.getName())
         .status(AuthorStatus.ACTIVE)
         .createdAt(now)
         .updatedAt(now)
         .build();
 
-    return AuthorDtoMapper.INSTANCE.toDto(authorRepository.save(author));
+    return AuthorResponseMapper.INSTANCE.toDto(authorRepository.save(author));
   }
 
   @Transactional
-  public void update(Long authorId, UpdateAuthorRequestDto requestDto) {
+  public void update(Long authorId, UpdateAuthorRequest request) {
     LocalDateTime now = LocalDateTime.now();
     Author authorById = findAuthorEntityById(authorId);
-    authorById.setName(requestDto.getName());
+    authorById.setName(request.getName());
     authorById.setUpdatedAt(now);
     authorRepository.save(authorById);
   }
@@ -84,9 +84,9 @@ public class AuthorService {
     authorRepository.save(authorById);
   }
 
-  public List<BookDto> findBooksByAuthorId(Long authorId) {
+  public List<BookResponse> findBooksByAuthorId(Long authorId) {
     Author authorById = findAuthorEntityById(authorId);
-    return BookDtoMapper.INSTANCE.toDtos(authorById.getBooks());
+    return BookResponseMapper.INSTANCE.toDtos(authorById.getBooks());
   }
 
   private Author findAuthorEntityById(Long authorId) {

@@ -11,12 +11,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UpdateBookRequestDto {
+public class CreateBookRequest {
   @NotBlank(message = "ISBN should not be blank")
   @Size(min = 10, max = 17, message = "Isbn should be between 10 and 17")
   private String isbn;
@@ -36,6 +37,7 @@ public class UpdateBookRequestDto {
   @NotNull(message = "Is_available_online should not be null")
   private Boolean isAvailableOnline;
 
+  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
   @NotNull(message = "Published_at should not be null")
   @PastOrPresent(message = "Published_at should be a date in past or present")
   private LocalDate publishedAt;

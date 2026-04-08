@@ -1,14 +1,14 @@
 package com.carlosarroyoam.rest.books.payment;
 
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
-import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
+import com.carlosarroyoam.rest.books.core.dto.PagedResponse;
 import com.carlosarroyoam.rest.books.order.OrderRepository;
 import com.carlosarroyoam.rest.books.order.entity.Order;
 import com.carlosarroyoam.rest.books.order.entity.OrderStatus;
-import com.carlosarroyoam.rest.books.payment.dto.CreatePaymentRequestDto;
-import com.carlosarroyoam.rest.books.payment.dto.PaymentDto;
-import com.carlosarroyoam.rest.books.payment.dto.PaymentSpecsDto;
-import com.carlosarroyoam.rest.books.payment.dto.UpdatePaymentStatusRequestDto;
+import com.carlosarroyoam.rest.books.payment.dto.CreatePaymentRequest;
+import com.carlosarroyoam.rest.books.payment.dto.PaymentResponse;
+import com.carlosarroyoam.rest.books.payment.dto.PaymentSpecs;
+import com.carlosarroyoam.rest.books.payment.dto.UpdatePaymentStatusRequest;
 import com.carlosarroyoam.rest.books.payment.entity.Payment;
 import com.carlosarroyoam.rest.books.payment.entity.PaymentMethod;
 import com.carlosarroyoam.rest.books.payment.entity.PaymentStatus;
@@ -83,16 +83,16 @@ class PaymentServiceTest {
   }
 
   @Test
-  @DisplayName("Should return PagedResponseDto<PaymentDto> when find all payments")
+  @DisplayName("Should return PagedResponse<PaymentResponse> when find all payments")
   void shouldReturnListOfPayments() {
     Pageable pageable = PageRequest.of(0, 25);
-    PaymentSpecsDto paymentSpecs = PaymentSpecsDto.builder().build();
+    PaymentSpecs paymentSpecs = PaymentSpecs.builder().build();
     List<Payment> payments = List.of(payment);
 
     when(paymentRepository.findAll(ArgumentMatchers.<Specification<Payment>>any(),
         any(Pageable.class))).thenReturn(new PageImpl<>(payments, pageable, payments.size()));
 
-    PagedResponseDto<PaymentDto> response = paymentService.findAll(paymentSpecs, pageable);
+    PagedResponse<PaymentResponse> response = paymentService.findAll(paymentSpecs, pageable);
 
     assertThat(response).isNotNull();
     assertThat(response.getItems()).hasSize(1);
@@ -100,14 +100,14 @@ class PaymentServiceTest {
   }
 
   @Test
-  @DisplayName("Should return PaymentDto when find payment by id with existing id")
+  @DisplayName("Should return PaymentResponse when find payment by id with existing id")
   void shouldReturnWhenFindPaymentByIdWithExistingId() {
     when(paymentRepository.findById(anyLong())).thenReturn(Optional.of(payment));
 
-    PaymentDto paymentDto = paymentService.findById(1L);
+    PaymentResponse paymentResponse = paymentService.findById(1L);
 
-    assertThat(paymentDto).isNotNull();
-    assertThat(paymentDto.getId()).isEqualTo(1L);
+    assertThat(paymentResponse).isNotNull();
+    assertThat(paymentResponse.getId()).isEqualTo(1L);
   }
 
   @Test
@@ -122,9 +122,9 @@ class PaymentServiceTest {
   }
 
   @Test
-  @DisplayName("Should return PaymentDto when create payment with valid data and create shipment if missing")
+  @DisplayName("Should return PaymentResponse when create payment with valid data and create shipment if missing")
   void shouldReturnWhenCreatePaymentWithValidData() {
-    CreatePaymentRequestDto requestDto = CreatePaymentRequestDto.builder()
+    CreatePaymentRequest requestResponse = CreatePaymentRequest.builder()
         .orderId(1L)
         .method(PaymentMethod.CREDIT_CARD)
         .build();
@@ -138,13 +138,13 @@ class PaymentServiceTest {
     });
     when(shipmentRepository.findByOrderId(1L)).thenReturn(Optional.empty());
 
-    PaymentDto paymentDto = paymentService.create(requestDto);
+    PaymentResponse paymentResponse = paymentService.create(requestResponse);
 
-    assertThat(paymentDto).isNotNull();
-    assertThat(paymentDto.getId()).isEqualTo(1L);
-    assertThat(paymentDto.getAmount()).isEqualByComparingTo("53.34");
-    assertThat(paymentDto.getStatus()).isEqualTo(PaymentStatus.COMPLETED);
-    assertThat(paymentDto.getOrderId()).isEqualTo(1L);
+    assertThat(paymentResponse).isNotNull();
+    assertThat(paymentResponse.getId()).isEqualTo(1L);
+    assertThat(paymentResponse.getAmount()).isEqualByComparingTo("53.34");
+    assertThat(paymentResponse.getStatus()).isEqualTo(PaymentStatus.COMPLETED);
+    assertThat(paymentResponse.getOrderId()).isEqualTo(1L);
     assertThat(order.getStatus()).isEqualTo(OrderStatus.CONFIRMED);
     verify(shipmentRepository).save(any(Shipment.class));
   }
@@ -152,14 +152,14 @@ class PaymentServiceTest {
   @Test
   @DisplayName("Should update payment status and sync order status")
   void shouldUpdatePaymentStatusAndSyncOrderStatus() {
-    UpdatePaymentStatusRequestDto requestDto = UpdatePaymentStatusRequestDto.builder()
+    UpdatePaymentStatusRequest requestResponse = UpdatePaymentStatusRequest.builder()
         .status(PaymentStatus.REFUNDED)
         .build();
 
     when(paymentRepository.findById(1L)).thenReturn(Optional.of(payment));
     when(orderRepository.findById(1L)).thenReturn(Optional.of(order));
 
-    paymentService.updateStatus(1L, requestDto);
+    paymentService.updateStatus(1L, requestResponse);
 
     verify(paymentRepository).save(any(Payment.class));
     verify(orderRepository).save(any(Order.class));
@@ -170,7 +170,7 @@ class PaymentServiceTest {
   @Test
   @DisplayName("Should not create shipment when one already exists for order")
   void shouldNotCreateShipmentWhenOneAlreadyExists() {
-    CreatePaymentRequestDto requestDto = CreatePaymentRequestDto.builder()
+    CreatePaymentRequest requestResponse = CreatePaymentRequest.builder()
         .orderId(1L)
         .method(PaymentMethod.CREDIT_CARD)
         .build();
@@ -184,7 +184,7 @@ class PaymentServiceTest {
         .status(ShipmentStatus.PENDING)
         .build()));
 
-    paymentService.create(requestDto);
+    paymentService.create(requestResponse);
 
     verify(shipmentRepository).findByOrderId(1L);
   }
@@ -192,14 +192,14 @@ class PaymentServiceTest {
   @Test
   @DisplayName("Should throw ResponseStatusException when create payment with non existing order")
   void shouldThrowWhenCreatePaymentWithNonExistingOrder() {
-    CreatePaymentRequestDto requestDto = CreatePaymentRequestDto.builder()
+    CreatePaymentRequest requestResponse = CreatePaymentRequest.builder()
         .orderId(99L)
         .method(PaymentMethod.CREDIT_CARD)
         .build();
 
     when(orderRepository.findById(99L)).thenReturn(Optional.empty());
 
-    assertThatThrownBy(() -> paymentService.create(requestDto))
+    assertThatThrownBy(() -> paymentService.create(requestResponse))
         .isInstanceOf(ResponseStatusException.class)
         .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
         .hasMessageContaining(AppMessages.ORDER_NOT_FOUND_EXCEPTION);
@@ -208,7 +208,7 @@ class PaymentServiceTest {
   @Test
   @DisplayName("Should throw ResponseStatusException when create payment for order already paid")
   void shouldThrowWhenCreatePaymentForOrderAlreadyPaid() {
-    CreatePaymentRequestDto requestDto = CreatePaymentRequestDto.builder()
+    CreatePaymentRequest requestResponse = CreatePaymentRequest.builder()
         .orderId(1L)
         .method(PaymentMethod.CREDIT_CARD)
         .build();
@@ -216,7 +216,7 @@ class PaymentServiceTest {
     when(orderRepository.findById(1L)).thenReturn(Optional.of(order));
     when(paymentRepository.existsByOrderId(1L)).thenReturn(true);
 
-    assertThatThrownBy(() -> paymentService.create(requestDto))
+    assertThatThrownBy(() -> paymentService.create(requestResponse))
         .isInstanceOf(ResponseStatusException.class)
         .hasMessageContaining(HttpStatus.BAD_REQUEST.toString())
         .hasMessageContaining(AppMessages.PAYMENT_ALREADY_EXISTS_EXCEPTION);

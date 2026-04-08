@@ -1,18 +1,18 @@
 package com.carlosarroyoam.rest.books.payment;
 
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
-import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
-import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto.PagedResponseDtoMapper;
+import com.carlosarroyoam.rest.books.core.dto.PagedResponse;
+import com.carlosarroyoam.rest.books.core.dto.PagedResponse.PagedResponseMapper;
 import com.carlosarroyoam.rest.books.core.specification.SpecificationBuilder;
 import com.carlosarroyoam.rest.books.order.OrderRepository;
 import com.carlosarroyoam.rest.books.order.entity.Order;
 import com.carlosarroyoam.rest.books.order.entity.OrderStatus;
 import com.carlosarroyoam.rest.books.order.entity.Order_;
-import com.carlosarroyoam.rest.books.payment.dto.CreatePaymentRequestDto;
-import com.carlosarroyoam.rest.books.payment.dto.PaymentDto;
-import com.carlosarroyoam.rest.books.payment.dto.PaymentDto.PaymentDtoMapper;
-import com.carlosarroyoam.rest.books.payment.dto.PaymentSpecsDto;
-import com.carlosarroyoam.rest.books.payment.dto.UpdatePaymentStatusRequestDto;
+import com.carlosarroyoam.rest.books.payment.dto.CreatePaymentRequest;
+import com.carlosarroyoam.rest.books.payment.dto.PaymentResponse;
+import com.carlosarroyoam.rest.books.payment.dto.PaymentResponse.PaymentResponseMapper;
+import com.carlosarroyoam.rest.books.payment.dto.PaymentSpecs;
+import com.carlosarroyoam.rest.books.payment.dto.UpdatePaymentStatusRequest;
 import com.carlosarroyoam.rest.books.payment.entity.Payment;
 import com.carlosarroyoam.rest.books.payment.entity.PaymentStatus;
 import com.carlosarroyoam.rest.books.payment.entity.Payment_;
@@ -46,7 +46,7 @@ public class PaymentService {
   }
 
   @Transactional
-  public PagedResponseDto<PaymentDto> findAll(PaymentSpecsDto paymentSpecs, Pageable pageable) {
+  public PagedResponse<PaymentResponse> findAll(PaymentSpecs paymentSpecs, Pageable pageable) {
     Specification<Payment> spec = SpecificationBuilder.<Payment>builder()
         .equalsIfPresent(root -> root.get(Payment_.method), paymentSpecs.getMethod())
         .betweenIfPresent(root -> root.get(Payment_.amount), paymentSpecs.getMinAmount(),
@@ -61,19 +61,19 @@ public class PaymentService {
 
     Page<Payment> payments = paymentRepository.findAll(spec, pageable);
 
-    return PagedResponseDtoMapper.INSTANCE
-        .toPagedResponseDto(payments.map(PaymentDtoMapper.INSTANCE::toDto));
+    return PagedResponseMapper.INSTANCE
+        .toPagedResponse(payments.map(PaymentResponseMapper.INSTANCE::toDto));
   }
 
   @Transactional
-  public PaymentDto findById(Long paymentId) {
+  public PaymentResponse findById(Long paymentId) {
     Payment paymentById = findPaymentEntityById(paymentId);
-    return PaymentDtoMapper.INSTANCE.toDto(paymentById);
+    return PaymentResponseMapper.INSTANCE.toDto(paymentById);
   }
 
   @Transactional
-  public PaymentDto create(CreatePaymentRequestDto requestDto) {
-    Order orderById = findOrderEntityById(requestDto.getOrderId());
+  public PaymentResponse create(CreatePaymentRequest request) {
+    Order orderById = findOrderEntityById(request.getOrderId());
 
     if (Boolean.TRUE.equals(paymentRepository.existsByOrderId(orderById.getId()))) {
       log.warn(AppMessages.PAYMENT_ALREADY_EXISTS_EXCEPTION);
@@ -84,7 +84,7 @@ public class PaymentService {
     LocalDateTime now = LocalDateTime.now();
     Payment payment = Payment.builder()
         .amount(orderById.getTotal())
-        .method(requestDto.getMethod())
+        .method(request.getMethod())
         .status(PaymentStatus.COMPLETED)
         .transactionId(generateTransactionId())
         .order(orderById)
@@ -100,20 +100,19 @@ public class PaymentService {
 
     createShipmentIfMissing(orderById);
 
-    return PaymentDtoMapper.INSTANCE.toDto(savedPayment);
+    return PaymentResponseMapper.INSTANCE.toDto(savedPayment);
   }
 
   @Transactional
-  public void updateStatus(Long paymentId, UpdatePaymentStatusRequestDto requestDto) {
+  public void updateStatus(Long paymentId, UpdatePaymentStatusRequest request) {
     LocalDateTime now = LocalDateTime.now();
     Payment paymentById = findPaymentEntityById(paymentId);
-    paymentById.setStatus(requestDto.getStatus());
+    paymentById.setStatus(request.getStatus());
     paymentById.setUpdatedAt(now);
     paymentRepository.save(paymentById);
 
     Order orderById = findOrderEntityById(paymentById.getOrder().getId());
-    orderById
-        .setStatus(resolveOrderStatusFromPayment(requestDto.getStatus(), orderById.getStatus()));
+    orderById.setStatus(resolveOrderStatusFromPayment(request.getStatus(), orderById.getStatus()));
     orderById.setUpdatedAt(now);
     orderRepository.save(orderById);
   }

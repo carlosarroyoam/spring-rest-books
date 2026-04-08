@@ -1,10 +1,10 @@
 package com.carlosarroyoam.rest.books.order;
 
-import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
-import com.carlosarroyoam.rest.books.order.dto.CreateOrderRequestDto;
-import com.carlosarroyoam.rest.books.order.dto.OrderDto;
-import com.carlosarroyoam.rest.books.order.dto.OrderSpecsDto;
-import com.carlosarroyoam.rest.books.order.dto.UpdateOrderRequestDto;
+import com.carlosarroyoam.rest.books.core.dto.PagedResponse;
+import com.carlosarroyoam.rest.books.order.dto.CreateOrderRequest;
+import com.carlosarroyoam.rest.books.order.dto.OrderResponse;
+import com.carlosarroyoam.rest.books.order.dto.OrderSpecs;
+import com.carlosarroyoam.rest.books.order.dto.UpdateOrderRequest;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -33,25 +33,25 @@ public class OrderController {
 
   @GetMapping(produces = "application/json")
   @PreAuthorize("hasRole('App/Admin')")
-  public ResponseEntity<PagedResponseDto<OrderDto>> findAll(
-      @Valid @ModelAttribute OrderSpecsDto orderSpecs,
+  public ResponseEntity<PagedResponse<OrderResponse>> findAll(
+      @Valid @ModelAttribute OrderSpecs orderSpecs,
       @PageableDefault(page = 0, size = 25, sort = "id") Pageable pageable) {
-    PagedResponseDto<OrderDto> orders = orderService.findAll(orderSpecs, pageable);
+    PagedResponse<OrderResponse> orders = orderService.findAll(orderSpecs, pageable);
     return ResponseEntity.ok(orders);
   }
 
   @GetMapping(value = "/{orderId}", produces = "application/json")
   @PreAuthorize("hasRole('App/Admin')")
-  public ResponseEntity<OrderDto> findById(@PathVariable Long orderId) {
-    OrderDto orderById = orderService.findById(orderId);
+  public ResponseEntity<OrderResponse> findById(@PathVariable Long orderId) {
+    OrderResponse orderById = orderService.findById(orderId);
     return ResponseEntity.ok(orderById);
   }
 
   @PostMapping(consumes = "application/json")
   @PreAuthorize("hasRole('App/Admin')")
-  public ResponseEntity<Void> create(@Valid @RequestBody CreateOrderRequestDto requestDto,
+  public ResponseEntity<Void> create(@Valid @RequestBody CreateOrderRequest request,
       UriComponentsBuilder builder) {
-    OrderDto createdOrder = orderService.create(requestDto);
+    OrderResponse createdOrder = orderService.create(request);
     UriComponents uriComponents = builder.path("/orders/{orderId}")
         .buildAndExpand(createdOrder.getId());
     return ResponseEntity.created(uriComponents.toUri()).build();
@@ -60,8 +60,8 @@ public class OrderController {
   @PutMapping(value = "/{orderId}", consumes = "application/json")
   @PreAuthorize("hasRole('App/Admin')")
   public ResponseEntity<Void> update(@PathVariable Long orderId,
-      @Valid @RequestBody UpdateOrderRequestDto requestDto) {
-    orderService.update(orderId, requestDto);
+      @Valid @RequestBody UpdateOrderRequest request) {
+    orderService.update(orderId, request);
     return ResponseEntity.noContent().build();
   }
 

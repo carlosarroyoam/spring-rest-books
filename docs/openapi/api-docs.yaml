@@ -1,4 +1,4 @@
-openapi: 3.0.1
+openapi: 3.0.3
 info:
   title: Spring REST Books API
   description: |
@@ -25,7 +25,7 @@ servers:
     description: Localhost server url
 
 security:
-  - bearerAuth: []
+  - BearerAuth: []
 
 tags:
   - name: Books
@@ -48,7 +48,7 @@ paths:
     get:
       tags:
         - Books
-      summary: Gets the list of books
+      summary: Lists all books
       operationId: findAllBooks
       parameters:
         - $ref: "#/components/parameters/PageParam"
@@ -116,10 +116,12 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+        "422":
+          $ref: "#/components/responses/UnprocesableEntity"
         "500":
           $ref: "#/components/responses/InternalServerError"
       security:
-        - bearerAuth: []
+        - BearerAuth: []
 
     post:
       tags:
@@ -141,10 +143,12 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+        "422":
+          $ref: "#/components/responses/UnprocesableEntity"
         "500":
           $ref: "#/components/responses/InternalServerError"
       security:
-        - bearerAuth: []
+        - BearerAuth: []
 
   /books/{bookId}:
     get:
@@ -166,7 +170,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/BookDto"
+                $ref: "#/components/schemas/BookResponse"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -178,7 +182,7 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
       security:
-        - bearerAuth: []
+        - BearerAuth: []
 
     put:
       tags:
@@ -208,12 +212,14 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+        "422":
+          $ref: "#/components/responses/UnprocesableEntity"
         "404":
           $ref: "#/components/responses/NotFound"
         "500":
           $ref: "#/components/responses/InternalServerError"
       security:
-        - bearerAuth: []
+        - BearerAuth: []
 
     delete:
       tags:
@@ -231,8 +237,6 @@ paths:
       responses:
         "204":
           $ref: "#/components/responses/NoContent"
-        "400":
-          $ref: "#/components/responses/BadRequest"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
@@ -242,13 +246,13 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
       security:
-        - bearerAuth: []
+        - BearerAuth: []
 
   /books/{bookId}/authors:
     get:
       tags:
         - Books
-      summary: Gets the list of authors by bookId
+      summary: Lists all authors by bookId
       operationId: findBookAuthors
       parameters:
         - name: bookId
@@ -266,7 +270,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/AuthorDto"
+                  $ref: "#/components/schemas/AuthorResponse"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -276,13 +280,13 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
       security:
-        - bearerAuth: []
+        - BearerAuth: []
 
   /authors:
     get:
       tags:
         - Authors
-      summary: Gets the list of authors
+      summary: Lists all authors
       operationId: findAllAuthors
       parameters:
         - $ref: "#/components/parameters/PageParam"
@@ -318,10 +322,12 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+        "422":
+          $ref: "#/components/responses/UnprocesableEntity"
         "500":
           $ref: "#/components/responses/InternalServerError"
       security:
-        - bearerAuth: []
+        - BearerAuth: []
 
     post:
       tags:
@@ -343,12 +349,14 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+        "422":
+          $ref: "#/components/responses/UnprocesableEntity"
         "404":
           $ref: "#/components/responses/NotFound"
         "500":
           $ref: "#/components/responses/InternalServerError"
       security:
-        - bearerAuth: []
+        - BearerAuth: []
 
   /authors/{authorId}:
     get:
@@ -370,7 +378,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AuthorDto"
+                $ref: "#/components/schemas/AuthorResponse"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -382,7 +390,7 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
       security:
-        - bearerAuth: []
+        - BearerAuth: []
 
     put:
       tags:
@@ -412,12 +420,14 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+        "422":
+          $ref: "#/components/responses/UnprocesableEntity"
         "404":
           $ref: "#/components/responses/NotFound"
         "500":
           $ref: "#/components/responses/InternalServerError"
       security:
-        - bearerAuth: []
+        - BearerAuth: []
 
     delete:
       tags:
@@ -435,8 +445,6 @@ paths:
       responses:
         "204":
           $ref: "#/components/responses/NoContent"
-        "400":
-          $ref: "#/components/responses/BadRequest"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
@@ -446,13 +454,13 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
       security:
-        - bearerAuth: []
+        - BearerAuth: []
 
   /authors/{authorId}/books:
     get:
       tags:
         - Authors
-      summary: Gets the list of books by authorId
+      summary: Lists all books by authorId
       operationId: findAuthorBooks
       parameters:
         - name: authorId
@@ -470,7 +478,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/BookDto"
+                  $ref: "#/components/schemas/BookResponse"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -480,13 +488,13 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
       security:
-        - bearerAuth: []
+        - BearerAuth: []
 
   /customers:
     get:
       tags:
         - Customers
-      summary: Gets the list of customers
+      summary: Lists all customers
       operationId: findAllCustomers
       parameters:
         - $ref: "#/components/parameters/PageParam"
@@ -537,17 +545,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PagedCustomersResponse"
+                $ref: "#/components/schemas/PagedAuthorsResponse"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+        "422":
+          $ref: "#/components/responses/UnprocesableEntity"
         "500":
           $ref: "#/components/responses/InternalServerError"
       security:
-        - bearerAuth: []
+        - BearerAuth: []
 
     post:
       tags:
@@ -569,10 +579,12 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+        "422":
+          $ref: "#/components/responses/UnprocesableEntity"
         "500":
           $ref: "#/components/responses/InternalServerError"
       security:
-        - bearerAuth: []
+        - BearerAuth: []
 
   /customers/{customerId}:
     get:
@@ -594,7 +606,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/CustomerDto"
+                $ref: "#/components/schemas/CustomerResponse"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -606,7 +618,7 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
       security:
-        - bearerAuth: []
+        - BearerAuth: []
 
     put:
       tags:
@@ -636,12 +648,14 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+        "422":
+          $ref: "#/components/responses/UnprocesableEntity"
         "404":
           $ref: "#/components/responses/NotFound"
         "500":
           $ref: "#/components/responses/InternalServerError"
       security:
-        - bearerAuth: []
+        - BearerAuth: []
 
     delete:
       tags:
@@ -670,7 +684,7 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
       security:
-        - bearerAuth: []
+        - BearerAuth: []
 
   /carts:
     get:
@@ -684,7 +698,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/CartDto"
+                $ref: "#/components/schemas/CartResponse"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -696,7 +710,7 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
       security:
-        - bearerAuth: []
+        - BearerAuth: []
 
   /carts/items:
     put:
@@ -719,12 +733,14 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+        "422":
+          $ref: "#/components/responses/UnprocesableEntity"
         "404":
           $ref: "#/components/responses/NotFound"
         "500":
           $ref: "#/components/responses/InternalServerError"
       security:
-        - bearerAuth: []
+        - BearerAuth: []
 
   /carts/items/{cartItemId}:
     delete:
@@ -754,13 +770,13 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
       security:
-        - bearerAuth: []
+        - BearerAuth: []
 
   /orders:
     get:
       tags:
         - Orders
-      summary: Gets the list of orders
+      summary: Lists all orders
       operationId: findAllOrders
       parameters:
         - $ref: "#/components/parameters/PageParam"
@@ -833,17 +849,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PagedOrdersResponse"
+                $ref: "#/components/schemas/PagedCustomersResponse"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+        "422":
+          $ref: "#/components/responses/UnprocesableEntity"
         "500":
           $ref: "#/components/responses/InternalServerError"
       security:
-        - bearerAuth: []
+        - BearerAuth: []
 
     post:
       tags:
@@ -865,10 +883,12 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+        "422":
+          $ref: "#/components/responses/UnprocesableEntity"
         "500":
           $ref: "#/components/responses/InternalServerError"
       security:
-        - bearerAuth: []
+        - BearerAuth: []
 
   /orders/{orderId}:
     get:
@@ -890,7 +910,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/OrderDto"
+                $ref: "#/components/schemas/OrderResponse"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -902,7 +922,7 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
       security:
-        - bearerAuth: []
+        - BearerAuth: []
 
     put:
       tags:
@@ -932,12 +952,14 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+        "422":
+          $ref: "#/components/responses/UnprocesableEntity"
         "404":
           $ref: "#/components/responses/NotFound"
         "500":
           $ref: "#/components/responses/InternalServerError"
       security:
-        - bearerAuth: []
+        - BearerAuth: []
 
     delete:
       tags:
@@ -966,13 +988,13 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
       security:
-        - bearerAuth: []
+        - BearerAuth: []
 
   /payments:
     get:
       tags:
         - Payments
-      summary: Gets the list of payments
+      summary: Lists all payments
       operationId: findAllPayments
       parameters:
         - $ref: "#/components/parameters/PageParam"
@@ -1055,10 +1077,12 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+        "422":
+          $ref: "#/components/responses/UnprocesableEntity"
         "500":
           $ref: "#/components/responses/InternalServerError"
       security:
-        - bearerAuth: []
+        - BearerAuth: []
 
     post:
       tags:
@@ -1083,7 +1107,7 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
       security:
-        - bearerAuth: []
+        - BearerAuth: []
 
   /payments/{paymentId}:
     get:
@@ -1105,7 +1129,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PaymentDto"
+                $ref: "#/components/schemas/PaymentResponse"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -1117,7 +1141,7 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
       security:
-        - bearerAuth: []
+        - BearerAuth: []
 
     put:
       tags:
@@ -1147,18 +1171,20 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+        "422":
+          $ref: "#/components/responses/UnprocesableEntity"
         "404":
           $ref: "#/components/responses/NotFound"
         "500":
           $ref: "#/components/responses/InternalServerError"
       security:
-        - bearerAuth: []
+        - BearerAuth: []
 
   /shipments:
     get:
       tags:
         - Shipments
-      summary: Gets the list of shipments
+      summary: Lists all shipments
       operationId: findAllShipments
       parameters:
         - $ref: "#/components/parameters/PageParam"
@@ -1231,10 +1257,12 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+        "422":
+          $ref: "#/components/responses/UnprocesableEntity"
         "500":
           $ref: "#/components/responses/InternalServerError"
       security:
-        - bearerAuth: []
+        - BearerAuth: []
 
   /shipments/{shipmentId}:
     get:
@@ -1256,7 +1284,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ShipmentDto"
+                $ref: "#/components/schemas/ShipmentResponse"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -1268,7 +1296,7 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
       security:
-        - bearerAuth: []
+        - BearerAuth: []
 
     put:
       tags:
@@ -1298,12 +1326,14 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+        "422":
+          $ref: "#/components/responses/UnprocesableEntity"
         "404":
           $ref: "#/components/responses/NotFound"
         "500":
           $ref: "#/components/responses/InternalServerError"
       security:
-        - bearerAuth: []
+        - BearerAuth: []
 
 components:
   schemas:
@@ -1318,10 +1348,9 @@ components:
           type: array
           description: List of books for the current page.
           items:
-            $ref: "#/components/schemas/BookDto"
+            $ref: "#/components/schemas/BookResponse"
         pagination:
-          description: Pagination metadata describing the current page and total results.
-          $ref: "#/components/schemas/PaginationDto"
+          $ref: "#/components/schemas/PaginationResponse"
 
     CreateBookRequest:
       type: object
@@ -1408,10 +1437,9 @@ components:
           type: array
           description: List of authors in the current page.
           items:
-            $ref: "#/components/schemas/AuthorDto"
+            $ref: "#/components/schemas/AuthorResponse"
         pagination:
-          description: Pagination metadata describing the current page and total results.
-          $ref: "#/components/schemas/PaginationDto"
+          $ref: "#/components/schemas/PaginationResponse"
 
     CreateAuthorRequest:
       type: object
@@ -1448,9 +1476,9 @@ components:
           type: array
           description: List of customers for the current page.
           items:
-            $ref: "#/components/schemas/CustomerDto"
+            $ref: "#/components/schemas/CustomerResponse"
         pagination:
-          $ref: "#/components/schemas/PaginationDto"
+          $ref: "#/components/schemas/PaginationResponse"
 
     CreateCustomerRequest:
       type: object
@@ -1500,22 +1528,6 @@ components:
           minLength: 3
           maxLength: 128
 
-    AddCartItemRequest:
-      type: object
-      description: Request payload used to add a book to the customer's shopping cart.
-      required:
-        - book_id
-      properties:
-        book_id:
-          type: integer
-          format: int64
-          description: Identifier of the book to add to the cart.
-        quantity:
-          type: integer
-          format: int32
-          minimum: 1
-          description: Number of units to add to the cart.
-
     UpdateCartItemRequest:
       type: object
       description: Request payload used to update the quantity of an item in the cart.
@@ -1543,9 +1555,9 @@ components:
           type: array
           description: Orders included in the current page.
           items:
-            $ref: "#/components/schemas/OrderDto"
+            $ref: "#/components/schemas/OrderResponse"
         pagination:
-          $ref: "#/components/schemas/PaginationDto"
+          $ref: "#/components/schemas/PaginationResponse"
 
     CreateOrderRequest:
       type: object
@@ -1631,10 +1643,9 @@ components:
           type: array
           description: Payments included in the current page.
           items:
-            $ref: "#/components/schemas/PaymentDto"
+            $ref: "#/components/schemas/PaymentResponse"
         pagination:
-          description: Pagination metadata describing the current page and total results.
-          $ref: "#/components/schemas/PaginationDto"
+          $ref: "#/components/schemas/PaginationResponse"
 
     CreatePaymentRequest:
       type: object
@@ -1673,6 +1684,21 @@ components:
             - CANCELLED
             - REFUNDED
 
+    PagedShipmentsResponse:
+      type: object
+      description: Paginated response containing shipment records.
+      required:
+        - items
+        - pagination
+      properties:
+        items:
+          type: array
+          description: Shipments included in the current page.
+          items:
+            $ref: "#/components/schemas/ShipmentResponse"
+        pagination:
+          $ref: "#/components/schemas/PaginationResponse"
+
     UpdateShipmentStatusRequest:
       type: object
       description: Request payload used to update the delivery status of a shipment.
@@ -1689,23 +1715,7 @@ components:
             - RETURNED
             - CANCELLED
 
-    PagedShipmentsResponse:
-      type: object
-      description: Paginated response containing shipment records.
-      required:
-        - items
-        - pagination
-      properties:
-        items:
-          type: array
-          description: Shipments included in the current page.
-          items:
-            $ref: "#/components/schemas/ShipmentDto"
-        pagination:
-          description: Pagination metadata describing the current page and total results.
-          $ref: "#/components/schemas/PaginationDto"
-
-    BookDto:
+    BookResponse:
       type: object
       description: Representation of a book in the catalog.
       properties:
@@ -1726,7 +1736,7 @@ components:
           type: array
           description: List of authors associated with the book.
           items:
-            $ref: "#/components/schemas/AuthorDto"
+            $ref: "#/components/schemas/AuthorResponse"
         price:
           type: number
           description: Price of the book.
@@ -1753,7 +1763,7 @@ components:
           format: date-time
           description: Timestamp of the last update.
 
-    AuthorDto:
+    AuthorResponse:
       type: object
       description: Representation of an author.
       properties:
@@ -1780,7 +1790,7 @@ components:
           format: date-time
           description: Timestamp of the last update.
 
-    CustomerDto:
+    CustomerResponse:
       type: object
       description: Representation of a customer registered in the system.
       properties:
@@ -1817,7 +1827,7 @@ components:
           format: date-time
           description: Timestamp of the last update.
 
-    OrderDto:
+    OrderResponse:
       type: object
       description: Representation of a customer order including its items, payment, shipment information, and calculated totals.
       properties:
@@ -1843,7 +1853,7 @@ components:
           type: array
           description: List of items included in the order.
           items:
-            $ref: "#/components/schemas/OrderItemDto"
+            $ref: "#/components/schemas/OrderItemResponse"
         subtotal:
           type: number
           description: Sum of all order item prices before taxes and shipping.
@@ -1857,14 +1867,11 @@ components:
           type: number
           description: Final total amount of the order including taxes and shipping.
         customer:
-          description: Customer who placed the order.
-          $ref: "#/components/schemas/CustomerDto"
+          $ref: "#/components/schemas/CustomerResponse"
         payment:
-          description: Payment information associated with the order.
-          $ref: "#/components/schemas/PaymentDto"
+          $ref: "#/components/schemas/PaymentResponse"
         shipment:
-          description: Shipment details for the order delivery.
-          $ref: "#/components/schemas/ShipmentDto"
+          $ref: "#/components/schemas/ShipmentResponse"
         notes:
           type: string
           description: Optional notes associated with the order.
@@ -1883,7 +1890,7 @@ components:
           format: date-time
           description: Timestamp when the order was last updated.
 
-    OrderItemDto:
+    OrderItemResponse:
       type: object
       description: Representation of a single item within an order.
       properties:
@@ -1892,7 +1899,9 @@ components:
           format: int64
           description: Unique identifier of the order item.
         quantity:
-          type: number
+          type: integer
+          format: int32
+          minimum: 1
           description: Number of units purchased for the associated book.
         unit_price:
           type: number
@@ -1905,8 +1914,7 @@ components:
           format: int64
           description: Identifier of the book included in the order.
         book:
-          description: Book details for the order item.
-          $ref: "#/components/schemas/BookDto"
+          $ref: "#/components/schemas/BookResponse"
         created_at:
           type: string
           format: date-time
@@ -1916,7 +1924,7 @@ components:
           format: date-time
           description: Timestamp when the order item was last updated.
 
-    CartDto:
+    CartResponse:
       type: object
       description: Representation of a customer's shopping cart containing selected books before checkout.
       properties:
@@ -1928,10 +1936,9 @@ components:
           type: array
           description: List of items currently in the cart.
           items:
-            $ref: "#/components/schemas/CartItemDto"
+            $ref: "#/components/schemas/CartItemResponse"
         customer:
-          description: Customer who owns the cart.
-          $ref: "#/components/schemas/CustomerDto"
+          $ref: "#/components/schemas/CustomerResponse"
         total_items:
           type: integer
           description: Total number of items in the cart.
@@ -1947,7 +1954,7 @@ components:
           format: date-time
           description: Timestamp when the cart was last updated.
 
-    CartItemDto:
+    CartItemResponse:
       type: object
       description: Representation of a book item inside a shopping cart.
       properties:
@@ -1956,21 +1963,22 @@ components:
           format: int64
           description: Unique identifier of the cart item.
         quantity:
-          type: number
+          type: integer
+          format: int32
+          minimum: 1
           description: Quantity of the selected book in the cart.
         book_id:
           type: number
           format: int64
           description: Identifier of the book added to the cart.
         book:
-          description: Book details for the cart item.
-          $ref: "#/components/schemas/BookDto"
+          $ref: "#/components/schemas/BookResponse"
         added_at:
           type: string
           format: date-time
           description: Timestamp when the item was added to the cart.
 
-    PaymentDto:
+    PaymentResponse:
       type: object
       description: Representation of a payment associated with an order.
       properties:
@@ -2007,7 +2015,7 @@ components:
           format: int64
           description: Identifier of the order associated with this payment.
 
-    ShipmentDto:
+    ShipmentResponse:
       type: object
       description: Representation of shipment information for an order delivery.
       properties:
@@ -2038,7 +2046,7 @@ components:
           format: int64
           description: Identifier of the order associated with this shipment.
 
-    PaginationDto:
+    PaginationResponse:
       type: object
       description: Metadata describing pagination information for a paginated response.
       required:
@@ -2064,7 +2072,7 @@ components:
           example: 1
           description: Total number of pages available.
 
-    AppExceptionDto:
+    AppExceptionResponse:
       type: object
       description: Standard error response returned when an application exception occurs.
       properties:
@@ -2132,45 +2140,45 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/AppExceptionDto"
+            $ref: "#/components/schemas/AppExceptionResponse"
 
     BadRequest:
       description: Bad request
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/AppExceptionDto"
+            $ref: "#/components/schemas/AppExceptionResponse"
 
     UnprocesableEntity:
       description: Unprocessable entity
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/AppExceptionDto"
+            $ref: "#/components/schemas/AppExceptionResponse"
 
     Unauthorized:
       description: Unauthorized
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/AppExceptionDto"
+            $ref: "#/components/schemas/AppExceptionResponse"
 
     Forbidden:
       description: Forbidden
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/AppExceptionDto"
+            $ref: "#/components/schemas/AppExceptionResponse"
 
     InternalServerError:
       description: Internal server error
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/AppExceptionDto"
+            $ref: "#/components/schemas/AppExceptionResponse"
 
   securitySchemes:
-    bearerAuth:
+    BearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT

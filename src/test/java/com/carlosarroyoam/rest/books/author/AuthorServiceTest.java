@@ -1,14 +1,14 @@
 package com.carlosarroyoam.rest.books.author;
 
-import com.carlosarroyoam.rest.books.author.dto.AuthorDto;
-import com.carlosarroyoam.rest.books.author.dto.AuthorSpecsDto;
-import com.carlosarroyoam.rest.books.author.dto.CreateAuthorRequestDto;
-import com.carlosarroyoam.rest.books.author.dto.UpdateAuthorRequestDto;
+import com.carlosarroyoam.rest.books.author.dto.AuthorResponse;
+import com.carlosarroyoam.rest.books.author.dto.AuthorSpecs;
+import com.carlosarroyoam.rest.books.author.dto.CreateAuthorRequest;
+import com.carlosarroyoam.rest.books.author.dto.UpdateAuthorRequest;
 import com.carlosarroyoam.rest.books.author.entity.Author;
-import com.carlosarroyoam.rest.books.book.dto.BookDto;
+import com.carlosarroyoam.rest.books.book.dto.BookResponse;
 import com.carlosarroyoam.rest.books.book.entity.Book;
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
-import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
+import com.carlosarroyoam.rest.books.core.dto.PagedResponse;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -73,7 +73,7 @@ class AuthorServiceTest {
   }
 
   @Test
-  @DisplayName("Should return PagedResponseDto<AuthorDto> when find all authors")
+  @DisplayName("Should return PagedResponse<AuthorResponse> when find all authors")
   void shouldReturnListOfAuthors() {
     Pageable pageable = PageRequest.of(0, 25);
     List<Author> authors = List.of(author);
@@ -81,7 +81,7 @@ class AuthorServiceTest {
     when(authorRepository.findAll(ArgumentMatchers.<Specification<Author>>any(),
         any(Pageable.class))).thenReturn(new PageImpl<>(authors, pageable, authors.size()));
 
-    PagedResponseDto<AuthorDto> response = authorService.findAll(AuthorSpecsDto.builder().build(),
+    PagedResponse<AuthorResponse> response = authorService.findAll(AuthorSpecs.builder().build(),
         PageRequest.of(0, 25));
 
     assertThat(response).isNotNull();
@@ -94,14 +94,14 @@ class AuthorServiceTest {
   }
 
   @Test
-  @DisplayName("Should return AuthorDto when find author by id with existing id")
+  @DisplayName("Should return AuthorResponse when find author by id with existing id")
   void shouldReturnWhenFindAuthorByIdWithExistingId() {
     when(authorRepository.findById(anyLong())).thenReturn(Optional.of(author));
 
-    AuthorDto authorDto = authorService.findById(1L);
+    AuthorResponse authorResponse = authorService.findById(1L);
 
-    assertThat(authorDto).isNotNull();
-    assertThat(authorDto.getId()).isEqualTo(1L);
+    assertThat(authorResponse).isNotNull();
+    assertThat(authorResponse.getId()).isEqualTo(1L);
   }
 
   @Test
@@ -115,34 +115,32 @@ class AuthorServiceTest {
   }
 
   @Test
-  @DisplayName("Should return AuthorDto when create an author with valid data")
+  @DisplayName("Should return AuthorResponse when create an author with valid data")
   void shouldReturnWhenCreateAuthorWithValidData() {
-    CreateAuthorRequestDto requestDto = CreateAuthorRequestDto.builder()
-        .name("Itzik Yahav")
-        .build();
+    CreateAuthorRequest requestResponse = CreateAuthorRequest.builder().name("Itzik Yahav").build();
 
     Author savedAuthor = Author.builder().id(2L).name("Itzik Yahav").build();
 
     when(authorRepository.save(any(Author.class))).thenReturn(savedAuthor);
 
-    AuthorDto authorDto = authorService.create(requestDto);
+    AuthorResponse authorResponse = authorService.create(requestResponse);
 
-    assertThat(authorDto).isNotNull();
-    assertThat(authorDto.getId()).isEqualTo(2L);
-    assertThat(authorDto.getName()).isEqualTo("Itzik Yahav");
+    assertThat(authorResponse).isNotNull();
+    assertThat(authorResponse.getId()).isEqualTo(2L);
+    assertThat(authorResponse.getName()).isEqualTo("Itzik Yahav");
   }
 
   @Test
   @DisplayName("Should update author with valid data")
   void shouldUpdateAuthorWithValidData() {
-    UpdateAuthorRequestDto requestDto = UpdateAuthorRequestDto.builder().name("Yuval").build();
+    UpdateAuthorRequest requestResponse = UpdateAuthorRequest.builder().name("Yuval").build();
 
     Author updatedAuthor = Author.builder().id(2L).name("Yuval").build();
 
     when(authorRepository.findById(anyLong())).thenReturn(Optional.of(author));
     when(authorRepository.save(any(Author.class))).thenReturn(updatedAuthor);
 
-    authorService.update(1L, requestDto);
+    authorService.update(1L, requestResponse);
 
     verify(authorRepository).findById(1L);
     verify(authorRepository).save(any(Author.class));
@@ -153,11 +151,11 @@ class AuthorServiceTest {
   @Test
   @DisplayName("Should throw ResponseStatusException when update author with non existing id")
   void shouldUpdateAuthorWithNonExistingId() {
-    UpdateAuthorRequestDto requestDto = UpdateAuthorRequestDto.builder().build();
+    UpdateAuthorRequest requestResponse = UpdateAuthorRequest.builder().build();
 
     when(authorRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-    assertThatThrownBy(() -> authorService.update(1L, requestDto))
+    assertThatThrownBy(() -> authorService.update(1L, requestResponse))
         .isInstanceOf(ResponseStatusException.class)
         .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
         .hasMessageContaining(AppMessages.AUTHOR_NOT_FOUND_EXCEPTION);
@@ -185,11 +183,11 @@ class AuthorServiceTest {
   }
 
   @Test
-  @DisplayName("Should return List<BookDto> when find books by author id with existing id")
+  @DisplayName("Should return List<BookResponse> when find books by author id with existing id")
   void shouldReturnWhenFindBooksByAuthorIdWithExistingId() {
     when(authorRepository.findById(anyLong())).thenReturn(Optional.of(author));
 
-    List<BookDto> books = authorService.findBooksByAuthorId(1L);
+    List<BookResponse> books = authorService.findBooksByAuthorId(1L);
 
     assertThat(books).hasSize(1).first().satisfies(actualBook -> {
       assertThat(actualBook.getId()).isEqualTo(1L);

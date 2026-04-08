@@ -1,7 +1,7 @@
 package com.carlosarroyoam.rest.books.cart;
 
-import com.carlosarroyoam.rest.books.cart.dto.CartDto;
-import com.carlosarroyoam.rest.books.cart.dto.UpdateCartItemRequestDto;
+import com.carlosarroyoam.rest.books.cart.dto.CartResponse;
+import com.carlosarroyoam.rest.books.cart.dto.UpdateCartItemRequest;
 import com.carlosarroyoam.rest.books.common.JwtArgumentResolver;
 import com.carlosarroyoam.rest.books.core.exception.GlobalExceptionHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -48,11 +48,11 @@ class CartControllerTest {
   }
 
   @Test
-  @DisplayName("Should return CartDto when find cart by customer id")
-  void shouldReturnCartDtoWhenFindCartByCustomerId() throws Exception {
-    CartDto cartDto = CartDto.builder().id(1L).build();
+  @DisplayName("Should return CartResponse when find cart by customer id")
+  void shouldReturnCartResponseWhenFindCartByCustomerId() throws Exception {
+    CartResponse cartResponse = CartResponse.builder().id(1L).build();
 
-    when(cartService.findByCustomerId(anyLong())).thenReturn(cartDto);
+    when(cartService.findByCustomerId(anyLong())).thenReturn(cartResponse);
 
     mockMvc.perform(get("/carts").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
@@ -63,12 +63,12 @@ class CartControllerTest {
   @Test
   @DisplayName("Should return no content when update cart item")
   void shouldReturnNoContentWhenUpdateCartItem() throws Exception {
-    UpdateCartItemRequestDto requestDto = UpdateCartItemRequestDto.builder()
+    UpdateCartItemRequest requestResponse = UpdateCartItemRequest.builder()
         .quantity(1)
         .bookId(1L)
         .build();
 
-    mockMvc.perform(put("/carts/items").content(mapper.writeValueAsString(requestDto))
+    mockMvc.perform(put("/carts/items").content(mapper.writeValueAsString(requestResponse))
         .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNoContent());
   }
 

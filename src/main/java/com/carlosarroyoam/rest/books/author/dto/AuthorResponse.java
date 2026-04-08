@@ -1,7 +1,7 @@
-package com.carlosarroyoam.rest.books.customer.dto;
+package com.carlosarroyoam.rest.books.author.dto;
 
-import com.carlosarroyoam.rest.books.customer.entity.Customer;
-import com.carlosarroyoam.rest.books.customer.entity.CustomerStatus;
+import com.carlosarroyoam.rest.books.author.entity.Author;
+import com.carlosarroyoam.rest.books.author.entity.AuthorStatus;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -17,23 +17,20 @@ import org.mapstruct.factory.Mappers;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CustomerDto {
+public class AuthorResponse {
   private Long id;
-  private String firstName;
-  private String lastName;
-  private String email;
-  private String username;
-  private CustomerStatus status;
+  private String name;
+  private AuthorStatus status;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
   private LocalDateTime deletedAt;
 
   @Mapper(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, unmappedTargetPolicy = ReportingPolicy.IGNORE)
-  public interface CustomerDtoMapper {
-    CustomerDtoMapper INSTANCE = Mappers.getMapper(CustomerDtoMapper.class);
+  public interface AuthorResponseMapper {
+    AuthorResponseMapper INSTANCE = Mappers.getMapper(AuthorResponseMapper.class);
 
-    CustomerDto toDto(Customer entity);
+    AuthorResponse toDto(Author entity);
 
-    List<CustomerDto> toDtos(List<Customer> entities);
+    List<AuthorResponse> toDtos(List<Author> entities);
   }
 }

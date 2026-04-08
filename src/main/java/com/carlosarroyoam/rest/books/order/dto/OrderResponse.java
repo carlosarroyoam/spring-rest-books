@@ -1,11 +1,11 @@
 package com.carlosarroyoam.rest.books.order.dto;
 
-import com.carlosarroyoam.rest.books.customer.dto.CustomerDto;
-import com.carlosarroyoam.rest.books.order.dto.OrderItemDto.OrderItemDtoMapper;
+import com.carlosarroyoam.rest.books.customer.dto.CustomerResponse;
+import com.carlosarroyoam.rest.books.order.dto.OrderItemResponse.OrderItemResponseMapper;
 import com.carlosarroyoam.rest.books.order.entity.Order;
 import com.carlosarroyoam.rest.books.order.entity.OrderStatus;
-import com.carlosarroyoam.rest.books.payment.dto.PaymentDto;
-import com.carlosarroyoam.rest.books.shipment.dto.ShipmentDto;
+import com.carlosarroyoam.rest.books.payment.dto.PaymentResponse;
+import com.carlosarroyoam.rest.books.shipment.dto.ShipmentResponse;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,7 +22,7 @@ import org.mapstruct.factory.Mappers;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class OrderDto {
+public class OrderResponse {
   private Long id;
   private String orderNumber;
   private String notes;
@@ -33,20 +33,21 @@ public class OrderDto {
   private BigDecimal shippingAmount;
   private BigDecimal total;
   private OrderStatus status;
-  private List<OrderItemDto> items;
-  private CustomerDto customer;
-  private PaymentDto payment;
-  private ShipmentDto shipment;
+  private List<OrderItemResponse> items;
+  private CustomerResponse customer;
+  private PaymentResponse payment;
+  private ShipmentResponse shipment;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
 
   @Mapper(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = {
-      OrderItemDtoMapper.class, CustomerDto.class, PaymentDto.class, ShipmentDto.class })
-  public interface OrderDtoMapper {
-    OrderDtoMapper INSTANCE = Mappers.getMapper(OrderDtoMapper.class);
+      OrderItemResponseMapper.class, CustomerResponse.class, PaymentResponse.class,
+      ShipmentResponse.class })
+  public interface OrderResponseMapper {
+    OrderResponseMapper INSTANCE = Mappers.getMapper(OrderResponseMapper.class);
 
-    OrderDto toDto(Order entity);
+    OrderResponse toDto(Order entity);
 
-    List<OrderDto> toDtos(List<Order> entities);
+    List<OrderResponse> toDtos(List<Order> entities);
   }
 }

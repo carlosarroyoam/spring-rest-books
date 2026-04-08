@@ -1,7 +1,7 @@
 package com.carlosarroyoam.rest.books.author;
 
-import com.carlosarroyoam.rest.books.author.dto.CreateAuthorRequestDto;
-import com.carlosarroyoam.rest.books.author.dto.UpdateAuthorRequestDto;
+import com.carlosarroyoam.rest.books.author.dto.CreateAuthorRequest;
+import com.carlosarroyoam.rest.books.author.dto.UpdateAuthorRequest;
 import com.carlosarroyoam.rest.books.common.JsonUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -72,8 +72,8 @@ class AuthorControllerIT {
   }
 
   @Test
-  @DisplayName("Should return AuthorDto when find author by id with existing id")
-  void shouldReturnAuthorDtoWhenFindAuthorByIdWithExistingId() throws Exception {
+  @DisplayName("Should return AuthorResponse when find author by id with existing id")
+  void shouldReturnAuthorResponseWhenFindAuthorByIdWithExistingId() throws Exception {
     String expectedJson = JsonUtils.readJson("/authors/find-by-id.json");
 
     String responseJson = mockMvc.perform(get("/authors/{authorId}", 1L))
@@ -87,7 +87,7 @@ class AuthorControllerIT {
   }
 
   @Test
-  @DisplayName("Should throw AppExceptionDto when find author by id with non existing id")
+  @DisplayName("Should throw AppExceptionResponse when find author by id with non existing id")
   void shouldThrowWhenFindAuthorByIdWithNonExistingId() throws Exception {
     String expectedJson = JsonUtils.readJson("/authors/find-by-id_with_non_existing_id.json");
 
@@ -105,13 +105,11 @@ class AuthorControllerIT {
   @Test
   @DisplayName("Should return created when create an author with valid data")
   void shouldReturnCreatedWhenCreateAuthorWithValidData() throws Exception {
-    CreateAuthorRequestDto requestDto = CreateAuthorRequestDto.builder()
-        .name("Yuval Noah Harari")
-        .build();
+    CreateAuthorRequest request = CreateAuthorRequest.builder().name("Yuval Noah Harari").build();
 
     mockMvc
         .perform(post("/authors").contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(requestDto)))
+            .content(mapper.writeValueAsString(request)))
         .andExpect(status().isCreated())
         .andExpect(header().string("Location", "http://localhost/authors/3"));
   }
@@ -119,22 +117,22 @@ class AuthorControllerIT {
   @Test
   @DisplayName("Should return no content when update author with valid data")
   void shouldReturnNoContentWhenUpdateAuthorWithValidData() throws Exception {
-    UpdateAuthorRequestDto requestDto = UpdateAuthorRequestDto.builder().name("Yuval Noah").build();
+    UpdateAuthorRequest request = UpdateAuthorRequest.builder().name("Yuval Noah").build();
 
     mockMvc.perform(put("/authors/{authorId}", 1L).contentType(MediaType.APPLICATION_JSON)
-        .content(mapper.writeValueAsString(requestDto))).andExpect(status().isNoContent());
+        .content(mapper.writeValueAsString(request))).andExpect(status().isNoContent());
   }
 
   @Test
-  @DisplayName("Should throw AppExceptionDto when update author with non existing id")
+  @DisplayName("Should throw AppExceptionResponse when update author with non existing id")
   void shouldThrowWhenUpdateAuthorWithNonExistingId() throws Exception {
     String expectedJson = JsonUtils.readJson("/authors/update_with_non_existing_id.json");
 
-    UpdateAuthorRequestDto requestDto = UpdateAuthorRequestDto.builder().name("Yuval Noah").build();
+    UpdateAuthorRequest request = UpdateAuthorRequest.builder().name("Yuval Noah").build();
 
     String responseJson = mockMvc
         .perform(put("/authors/{authorId}", 1000L).contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(requestDto)))
+            .content(mapper.writeValueAsString(request)))
         .andExpect(status().isNotFound())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andReturn()
@@ -152,7 +150,7 @@ class AuthorControllerIT {
   }
 
   @Test
-  @DisplayName("Should throw AppExceptionDto when delete author with non existing id")
+  @DisplayName("Should throw AppExceptionResponse when delete author with non existing id")
   void shouldThrowWhenDeleteAuthorWithNonExistingId() throws Exception {
     String expectedJson = JsonUtils.readJson("/authors/delete_with_non_existing_id.json");
 
@@ -168,7 +166,7 @@ class AuthorControllerIT {
   }
 
   @Test
-  @DisplayName("Should return List<BookDto> when find books by author id with existing id")
+  @DisplayName("Should return List<BookResponse> when find books by author id with existing id")
   void shouldReturnListOfBooksWhenFindBooksByAuthorIdWithExistingId() throws Exception {
     String expectedJson = JsonUtils.readJson("/authors/find-books-by-author.json");
 

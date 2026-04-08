@@ -17,7 +17,7 @@ import org.mapstruct.factory.Mappers;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ShipmentDto {
+public class ShipmentResponse {
   private Long id;
   private String attentionName;
   private String address;
@@ -28,10 +28,10 @@ public class ShipmentDto {
   private LocalDateTime updatedAt;
 
   @Mapper(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, unmappedTargetPolicy = ReportingPolicy.IGNORE)
-  public interface ShipmentDtoMapper {
-    ShipmentDtoMapper INSTANCE = Mappers.getMapper(ShipmentDtoMapper.class);
+  public interface ShipmentResponseMapper {
+    ShipmentResponseMapper INSTANCE = Mappers.getMapper(ShipmentResponseMapper.class);
 
     @Mapping(source = "order.id", target = "orderId")
-    ShipmentDto toDto(Shipment entity);
+    ShipmentResponse toDto(Shipment entity);
   }
 }

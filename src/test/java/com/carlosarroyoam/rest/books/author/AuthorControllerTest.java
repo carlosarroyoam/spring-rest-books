@@ -1,12 +1,12 @@
 package com.carlosarroyoam.rest.books.author;
 
-import com.carlosarroyoam.rest.books.author.dto.AuthorDto;
-import com.carlosarroyoam.rest.books.author.dto.AuthorSpecsDto;
-import com.carlosarroyoam.rest.books.author.dto.CreateAuthorRequestDto;
-import com.carlosarroyoam.rest.books.author.dto.UpdateAuthorRequestDto;
-import com.carlosarroyoam.rest.books.book.dto.BookDto;
-import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
-import com.carlosarroyoam.rest.books.core.dto.PaginationDto;
+import com.carlosarroyoam.rest.books.author.dto.AuthorResponse;
+import com.carlosarroyoam.rest.books.author.dto.AuthorSpecs;
+import com.carlosarroyoam.rest.books.author.dto.CreateAuthorRequest;
+import com.carlosarroyoam.rest.books.author.dto.UpdateAuthorRequest;
+import com.carlosarroyoam.rest.books.book.dto.BookResponse;
+import com.carlosarroyoam.rest.books.core.dto.PagedResponse;
+import com.carlosarroyoam.rest.books.core.dto.PaginationResponse;
 import com.carlosarroyoam.rest.books.core.exception.GlobalExceptionHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
@@ -58,14 +58,15 @@ class AuthorControllerTest {
   }
 
   @Test
-  @DisplayName("Should return PagedResponseDto<AuthorDto> when find all authors")
+  @DisplayName("Should return PagedResponse<AuthorResponse> when find all authors")
   void shouldReturnPagedAuthorsWhenFindAllAuthors() throws Exception {
-    PagedResponseDto<AuthorDto> pagedResponse = PagedResponseDto.<AuthorDto>builder()
-        .items(List.of(AuthorDto.builder().build()))
-        .pagination(PaginationDto.builder().page(0).size(25).totalItems(1).totalPages(1).build())
+    PagedResponse<AuthorResponse> pagedResponse = PagedResponse.<AuthorResponse>builder()
+        .items(List.of(AuthorResponse.builder().build()))
+        .pagination(
+            PaginationResponse.builder().page(0).size(25).totalItems(1).totalPages(1).build())
         .build();
 
-    when(authorService.findAll(any(AuthorSpecsDto.class), any(Pageable.class)))
+    when(authorService.findAll(any(AuthorSpecs.class), any(Pageable.class)))
         .thenReturn(pagedResponse);
 
     mockMvc
@@ -82,9 +83,9 @@ class AuthorControllerTest {
   }
 
   @Test
-  @DisplayName("Should return AuthorDto when find author by id with existing id")
-  void shouldReturnAuthorDtoWhenFindAuthorById() throws Exception {
-    AuthorDto author = AuthorDto.builder().id(1L).name("Yuval Noah Harari").build();
+  @DisplayName("Should return AuthorResponse when find author by id with existing id")
+  void shouldReturnAuthorResponseWhenFindAuthorById() throws Exception {
+    AuthorResponse author = AuthorResponse.builder().id(1L).name("Yuval Noah Harari").build();
 
     when(authorService.findById(anyLong())).thenReturn(author);
 
@@ -97,16 +98,14 @@ class AuthorControllerTest {
   @Test
   @DisplayName("Should return created when create an author")
   void shouldReturnCreatedWhenCreateAuthor() throws Exception {
-    CreateAuthorRequestDto requestDto = CreateAuthorRequestDto.builder()
-        .name("Yuval Noah Harari")
-        .build();
+    CreateAuthorRequest request = CreateAuthorRequest.builder().name("Yuval Noah Harari").build();
 
-    AuthorDto author = AuthorDto.builder().id(1L).build();
+    AuthorResponse author = AuthorResponse.builder().id(1L).build();
 
-    when(authorService.create(any(CreateAuthorRequestDto.class))).thenReturn(author);
+    when(authorService.create(any(CreateAuthorRequest.class))).thenReturn(author);
 
     mockMvc
-        .perform(post("/authors").content(mapper.writeValueAsString(requestDto))
+        .perform(post("/authors").content(mapper.writeValueAsString(request))
             .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isCreated())
         .andExpect(header().string("location", "http://localhost/authors/1"));
@@ -115,11 +114,9 @@ class AuthorControllerTest {
   @Test
   @DisplayName("Should return no content when update author")
   void shouldReturnNoContentWhenUpdateAuthor() throws Exception {
-    UpdateAuthorRequestDto requestDto = UpdateAuthorRequestDto.builder()
-        .name("Yuval Noah Harari")
-        .build();
+    UpdateAuthorRequest request = UpdateAuthorRequest.builder().name("Yuval Noah Harari").build();
 
-    mockMvc.perform(put("/authors/{authorId}", 1L).content(mapper.writeValueAsString(requestDto))
+    mockMvc.perform(put("/authors/{authorId}", 1L).content(mapper.writeValueAsString(request))
         .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNoContent());
   }
 
@@ -133,7 +130,7 @@ class AuthorControllerTest {
   @Test
   @DisplayName("Should return books when find books by author id")
   void shouldReturnListOfBooksWhenFindBooksByAuthorId() throws Exception {
-    List<BookDto> books = List.of(BookDto.builder().id(1L).build());
+    List<BookResponse> books = List.of(BookResponse.builder().id(1L).build());
 
     when(authorService.findBooksByAuthorId(anyLong())).thenReturn(books);
 

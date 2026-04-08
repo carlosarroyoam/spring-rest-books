@@ -12,7 +12,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 @Data
 @Builder
-public class PaymentSpecsDto {
+public class PaymentSpecs {
   @DecimalMin(value = "0.0", message = "Min amount should be positive")
   private BigDecimal minAmount;
 

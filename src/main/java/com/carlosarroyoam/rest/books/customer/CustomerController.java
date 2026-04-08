@@ -1,10 +1,10 @@
 package com.carlosarroyoam.rest.books.customer;
 
-import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
-import com.carlosarroyoam.rest.books.customer.dto.CreateCustomerRequestDto;
-import com.carlosarroyoam.rest.books.customer.dto.CustomerDto;
-import com.carlosarroyoam.rest.books.customer.dto.CustomerSpecsDto;
-import com.carlosarroyoam.rest.books.customer.dto.UpdateCustomerRequestDto;
+import com.carlosarroyoam.rest.books.core.dto.PagedResponse;
+import com.carlosarroyoam.rest.books.customer.dto.CreateCustomerRequest;
+import com.carlosarroyoam.rest.books.customer.dto.CustomerResponse;
+import com.carlosarroyoam.rest.books.customer.dto.CustomerSpecs;
+import com.carlosarroyoam.rest.books.customer.dto.UpdateCustomerRequest;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -33,24 +33,24 @@ public class CustomerController {
 
   @GetMapping(produces = "application/json")
   @PreAuthorize("hasRole('App/Admin')")
-  public ResponseEntity<PagedResponseDto<CustomerDto>> findAll(
-      @Valid @ModelAttribute CustomerSpecsDto customerSpecs,
+  public ResponseEntity<PagedResponse<CustomerResponse>> findAll(
+      @Valid @ModelAttribute CustomerSpecs customerSpecs,
       @PageableDefault(page = 0, size = 25, sort = "id") Pageable pageable) {
-    PagedResponseDto<CustomerDto> customers = customerService.findAll(customerSpecs, pageable);
+    PagedResponse<CustomerResponse> customers = customerService.findAll(customerSpecs, pageable);
     return ResponseEntity.ok(customers);
   }
 
   @GetMapping(path = "/{customerId}", produces = "application/json")
   @PreAuthorize("hasRole('App/Admin')")
-  public ResponseEntity<CustomerDto> findById(@PathVariable Long customerId) {
-    CustomerDto customerById = customerService.findById(customerId);
+  public ResponseEntity<CustomerResponse> findById(@PathVariable Long customerId) {
+    CustomerResponse customerById = customerService.findById(customerId);
     return ResponseEntity.ok(customerById);
   }
 
   @PostMapping(consumes = "application/json")
-  public ResponseEntity<Void> create(@Valid @RequestBody CreateCustomerRequestDto requestDto,
+  public ResponseEntity<Void> create(@Valid @RequestBody CreateCustomerRequest request,
       UriComponentsBuilder builder) {
-    CustomerDto createdCustomer = customerService.create(requestDto);
+    CustomerResponse createdCustomer = customerService.create(request);
     UriComponents uriComponents = builder.path("/customers/{customerId}")
         .buildAndExpand(createdCustomer.getId());
     return ResponseEntity.created(uriComponents.toUri()).build();
@@ -58,8 +58,8 @@ public class CustomerController {
 
   @PutMapping(value = "/{customerId}", consumes = "application/json")
   public ResponseEntity<Void> update(@PathVariable Long customerId,
-      @Valid @RequestBody UpdateCustomerRequestDto requestDto) {
-    customerService.update(customerId, requestDto);
+      @Valid @RequestBody UpdateCustomerRequest request) {
+    customerService.update(customerId, request);
     return ResponseEntity.noContent().build();
   }
 

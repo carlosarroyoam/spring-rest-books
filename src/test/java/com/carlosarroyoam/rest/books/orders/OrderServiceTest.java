@@ -3,16 +3,16 @@ package com.carlosarroyoam.rest.books.orders;
 import com.carlosarroyoam.rest.books.book.BookRepository;
 import com.carlosarroyoam.rest.books.book.entity.Book;
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
-import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
+import com.carlosarroyoam.rest.books.core.dto.PagedResponse;
 import com.carlosarroyoam.rest.books.customer.CustomerRepository;
 import com.carlosarroyoam.rest.books.customer.entity.Customer;
 import com.carlosarroyoam.rest.books.order.OrderRepository;
 import com.carlosarroyoam.rest.books.order.OrderService;
-import com.carlosarroyoam.rest.books.order.dto.CreateOrderItemRequestDto;
-import com.carlosarroyoam.rest.books.order.dto.CreateOrderRequestDto;
-import com.carlosarroyoam.rest.books.order.dto.OrderDto;
-import com.carlosarroyoam.rest.books.order.dto.OrderSpecsDto;
-import com.carlosarroyoam.rest.books.order.dto.UpdateOrderRequestDto;
+import com.carlosarroyoam.rest.books.order.dto.CreateOrderItemRequest;
+import com.carlosarroyoam.rest.books.order.dto.CreateOrderRequest;
+import com.carlosarroyoam.rest.books.order.dto.OrderResponse;
+import com.carlosarroyoam.rest.books.order.dto.OrderSpecs;
+import com.carlosarroyoam.rest.books.order.dto.UpdateOrderRequest;
 import com.carlosarroyoam.rest.books.order.entity.Order;
 import com.carlosarroyoam.rest.books.order.entity.OrderItem;
 import com.carlosarroyoam.rest.books.order.entity.OrderStatus;
@@ -115,7 +115,7 @@ class OrderServiceTest {
   }
 
   @Test
-  @DisplayName("Should return PagedResponseDto<OrderDto> when find all orders")
+  @DisplayName("Should return PagedResponse<OrderResponse> when find all orders")
   void shouldReturnListOfOrders() {
     Pageable pageable = PageRequest.of(0, 25);
     List<Order> orders = List.of(order);
@@ -123,7 +123,7 @@ class OrderServiceTest {
     when(orderRepository.findAll(ArgumentMatchers.<Specification<Order>>any(), any(Pageable.class)))
         .thenReturn(new PageImpl<>(orders, pageable, orders.size()));
 
-    PagedResponseDto<OrderDto> response = orderService.findAll(OrderSpecsDto.builder().build(),
+    PagedResponse<OrderResponse> response = orderService.findAll(OrderSpecs.builder().build(),
         pageable);
 
     assertThat(response).isNotNull();
@@ -136,15 +136,15 @@ class OrderServiceTest {
   }
 
   @Test
-  @DisplayName("Should return OrderDto when find order by id with existing id")
+  @DisplayName("Should return OrderResponse when find order by id with existing id")
   void shouldReturnWhenFindOrderByIdWithExistingId() {
     when(orderRepository.findById(anyLong())).thenReturn(Optional.of(order));
 
-    OrderDto orderDto = orderService.findById(1L);
+    OrderResponse orderResponse = orderService.findById(1L);
 
-    assertThat(orderDto).isNotNull();
-    assertThat(orderDto.getId()).isEqualTo(1L);
-    assertThat(orderDto.getOrderNumber()).isEqualTo("ORD-12345678");
+    assertThat(orderResponse).isNotNull();
+    assertThat(orderResponse.getId()).isEqualTo(1L);
+    assertThat(orderResponse.getOrderNumber()).isEqualTo("ORD-12345678");
   }
 
   @Test
@@ -158,14 +158,14 @@ class OrderServiceTest {
   }
 
   @Test
-  @DisplayName("Should return OrderDto when create an order with valid data")
+  @DisplayName("Should return OrderResponse when create an order with valid data")
   void shouldReturnWhenCreateOrderWithValidData() {
-    CreateOrderRequestDto requestDto = CreateOrderRequestDto.builder()
+    CreateOrderRequest requestResponse = CreateOrderRequest.builder()
         .customerId(1L)
         .shippingAddress("123 Main Street, Springfield")
         .billingAddress("123 Main Street, Springfield")
         .notes("Leave at the door")
-        .items(List.of(CreateOrderItemRequestDto.builder().bookId(1L).quantity(2).build()))
+        .items(List.of(CreateOrderItemRequest.builder().bookId(1L).quantity(2).build()))
         .build();
 
     when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
@@ -177,32 +177,32 @@ class OrderServiceTest {
       return savedOrder;
     });
 
-    OrderDto orderDto = orderService.create(requestDto);
+    OrderResponse orderResponse = orderService.create(requestResponse);
 
-    assertThat(orderDto).isNotNull();
-    assertThat(orderDto.getId()).isEqualTo(1L);
-    assertThat(orderDto.getStatus()).isEqualTo(OrderStatus.PENDING);
-    assertThat(orderDto.getSubtotal()).isEqualByComparingTo("45.98");
-    assertThat(orderDto.getTaxAmount()).isEqualByComparingTo("7.36");
-    assertThat(orderDto.getShippingAmount()).isEqualByComparingTo("0.00");
-    assertThat(orderDto.getTotal()).isEqualByComparingTo("53.34");
-    assertThat(orderDto.getItems()).hasSize(1);
-    assertThat(orderDto.getItems().get(0).getUnitPrice()).isEqualByComparingTo("22.99");
+    assertThat(orderResponse).isNotNull();
+    assertThat(orderResponse.getId()).isEqualTo(1L);
+    assertThat(orderResponse.getStatus()).isEqualTo(OrderStatus.PENDING);
+    assertThat(orderResponse.getSubtotal()).isEqualByComparingTo("45.98");
+    assertThat(orderResponse.getTaxAmount()).isEqualByComparingTo("7.36");
+    assertThat(orderResponse.getShippingAmount()).isEqualByComparingTo("0.00");
+    assertThat(orderResponse.getTotal()).isEqualByComparingTo("53.34");
+    assertThat(orderResponse.getItems()).hasSize(1);
+    assertThat(orderResponse.getItems().get(0).getUnitPrice()).isEqualByComparingTo("22.99");
   }
 
   @Test
   @DisplayName("Should throw ResponseStatusException when create an order with non existing customer")
   void shouldThrowWhenCreateOrderWithNonExistingCustomer() {
-    CreateOrderRequestDto requestDto = CreateOrderRequestDto.builder()
+    CreateOrderRequest requestResponse = CreateOrderRequest.builder()
         .customerId(99L)
         .shippingAddress("123 Main Street, Springfield")
         .billingAddress("123 Main Street, Springfield")
-        .items(List.of(CreateOrderItemRequestDto.builder().bookId(1L).quantity(1).build()))
+        .items(List.of(CreateOrderItemRequest.builder().bookId(1L).quantity(1).build()))
         .build();
 
     when(customerRepository.findById(99L)).thenReturn(Optional.empty());
 
-    assertThatThrownBy(() -> orderService.create(requestDto))
+    assertThatThrownBy(() -> orderService.create(requestResponse))
         .isInstanceOf(ResponseStatusException.class)
         .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
         .hasMessageContaining(AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION);
@@ -211,17 +211,17 @@ class OrderServiceTest {
   @Test
   @DisplayName("Should throw ResponseStatusException when create an order with non existing book")
   void shouldThrowWhenCreateOrderWithNonExistingBook() {
-    CreateOrderRequestDto requestDto = CreateOrderRequestDto.builder()
+    CreateOrderRequest requestResponse = CreateOrderRequest.builder()
         .customerId(1L)
         .shippingAddress("123 Main Street, Springfield")
         .billingAddress("123 Main Street, Springfield")
-        .items(List.of(CreateOrderItemRequestDto.builder().bookId(99L).quantity(1).build()))
+        .items(List.of(CreateOrderItemRequest.builder().bookId(99L).quantity(1).build()))
         .build();
 
     when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
     when(bookRepository.findById(99L)).thenReturn(Optional.empty());
 
-    assertThatThrownBy(() -> orderService.create(requestDto))
+    assertThatThrownBy(() -> orderService.create(requestResponse))
         .isInstanceOf(ResponseStatusException.class)
         .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
         .hasMessageContaining(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
@@ -230,7 +230,7 @@ class OrderServiceTest {
   @Test
   @DisplayName("Should update order with valid data")
   void shouldUpdateOrderWithValidData() {
-    UpdateOrderRequestDto requestDto = UpdateOrderRequestDto.builder()
+    UpdateOrderRequest requestResponse = UpdateOrderRequest.builder()
         .shippingAddress("456 Updated Avenue, Springfield")
         .billingAddress("789 Billing Road, Springfield")
         .notes("Call when arriving")
@@ -238,7 +238,7 @@ class OrderServiceTest {
 
     when(orderRepository.findById(anyLong())).thenReturn(Optional.of(order));
 
-    orderService.update(1L, requestDto);
+    orderService.update(1L, requestResponse);
 
     verify(orderRepository).save(any(Order.class));
     assertThat(order.getShippingAddress()).isEqualTo("456 Updated Avenue, Springfield");
@@ -251,7 +251,7 @@ class OrderServiceTest {
   void shouldThrowWhenUpdateOrderWithNonExistingId() {
     when(orderRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-    assertThatThrownBy(() -> orderService.update(1L, UpdateOrderRequestDto.builder().build()))
+    assertThatThrownBy(() -> orderService.update(1L, UpdateOrderRequest.builder().build()))
         .isInstanceOf(ResponseStatusException.class)
         .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
         .hasMessageContaining(AppMessages.ORDER_NOT_FOUND_EXCEPTION);

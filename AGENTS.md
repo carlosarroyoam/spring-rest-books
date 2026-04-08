@@ -57,7 +57,7 @@ Use this file as the operating guide for agents making changes in this repo.
 - Reuse `AppMessages` constants for user-facing exception messages when applicable.
 - When adding list filters, extend the module `*Specification` rather than pushing query logic into controllers.
 - When adding request/response models, follow the existing Lombok + nested MapStruct style.
-- Keep pagination responses wrapped in `PagedResponseDto`.
+- Keep pagination responses wrapped in `PagedResponse`.
 - Respect Jackson snake_case output configured globally in `application.properties`.
 
 ## Security And Auth Notes

@@ -1,15 +1,15 @@
 package com.carlosarroyoam.rest.books.orders;
 
-import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
-import com.carlosarroyoam.rest.books.core.dto.PaginationDto;
+import com.carlosarroyoam.rest.books.core.dto.PagedResponse;
+import com.carlosarroyoam.rest.books.core.dto.PaginationResponse;
 import com.carlosarroyoam.rest.books.core.exception.GlobalExceptionHandler;
 import com.carlosarroyoam.rest.books.order.OrderController;
 import com.carlosarroyoam.rest.books.order.OrderService;
-import com.carlosarroyoam.rest.books.order.dto.CreateOrderItemRequestDto;
-import com.carlosarroyoam.rest.books.order.dto.CreateOrderRequestDto;
-import com.carlosarroyoam.rest.books.order.dto.OrderDto;
-import com.carlosarroyoam.rest.books.order.dto.OrderSpecsDto;
-import com.carlosarroyoam.rest.books.order.dto.UpdateOrderRequestDto;
+import com.carlosarroyoam.rest.books.order.dto.CreateOrderItemRequest;
+import com.carlosarroyoam.rest.books.order.dto.CreateOrderRequest;
+import com.carlosarroyoam.rest.books.order.dto.OrderResponse;
+import com.carlosarroyoam.rest.books.order.dto.OrderSpecs;
+import com.carlosarroyoam.rest.books.order.dto.UpdateOrderRequest;
 import com.carlosarroyoam.rest.books.order.entity.OrderStatus;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.math.BigDecimal;
@@ -62,14 +62,15 @@ class OrderControllerTest {
   }
 
   @Test
-  @DisplayName("Should return PagedResponseDto<OrderDto> when find all orders")
+  @DisplayName("Should return PagedResponse<OrderResponse> when find all orders")
   void shouldReturnPagedOrdersWhenFindAllOrders() throws Exception {
-    PagedResponseDto<OrderDto> pagedResponse = PagedResponseDto.<OrderDto>builder()
-        .items(List.of(OrderDto.builder().id(1L).status(OrderStatus.PENDING).build()))
-        .pagination(PaginationDto.builder().page(0).size(25).totalItems(1).totalPages(1).build())
+    PagedResponse<OrderResponse> pagedResponse = PagedResponse.<OrderResponse>builder()
+        .items(List.of(OrderResponse.builder().id(1L).status(OrderStatus.PENDING).build()))
+        .pagination(
+            PaginationResponse.builder().page(0).size(25).totalItems(1).totalPages(1).build())
         .build();
 
-    when(orderService.findAll(any(OrderSpecsDto.class), any(Pageable.class)))
+    when(orderService.findAll(any(OrderSpecs.class), any(Pageable.class)))
         .thenReturn(pagedResponse);
 
     mockMvc
@@ -84,9 +85,9 @@ class OrderControllerTest {
   }
 
   @Test
-  @DisplayName("Should return OrderDto when find order by id")
-  void shouldReturnOrderDtoWhenFindOrderById() throws Exception {
-    OrderDto order = OrderDto.builder()
+  @DisplayName("Should return OrderResponse when find order by id")
+  void shouldReturnOrderResponseWhenFindOrderById() throws Exception {
+    OrderResponse order = OrderResponse.builder()
         .id(1L)
         .orderNumber("ORD-12345678")
         .status(OrderStatus.PENDING)
@@ -106,19 +107,19 @@ class OrderControllerTest {
   @Test
   @DisplayName("Should return created when create an order")
   void shouldReturnCreatedWhenCreateOrder() throws Exception {
-    CreateOrderRequestDto requestDto = CreateOrderRequestDto.builder()
+    CreateOrderRequest requestResponse = CreateOrderRequest.builder()
         .customerId(1L)
         .shippingAddress("123 Main Street, Springfield")
         .billingAddress("123 Main Street, Springfield")
         .notes("Leave at the door")
-        .items(List.of(CreateOrderItemRequestDto.builder().bookId(1L).quantity(2).build()))
+        .items(List.of(CreateOrderItemRequest.builder().bookId(1L).quantity(2).build()))
         .build();
 
-    when(orderService.create(any(CreateOrderRequestDto.class)))
-        .thenReturn(OrderDto.builder().id(1L).build());
+    when(orderService.create(any(CreateOrderRequest.class)))
+        .thenReturn(OrderResponse.builder().id(1L).build());
 
     mockMvc
-        .perform(post("/orders").content(mapper.writeValueAsString(requestDto))
+        .perform(post("/orders").content(mapper.writeValueAsString(requestResponse))
             .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isCreated())
         .andExpect(header().string("location", "http://localhost/orders/1"));
@@ -127,13 +128,13 @@ class OrderControllerTest {
   @Test
   @DisplayName("Should return no content when update order")
   void shouldReturnNoContentWhenUpdateOrder() throws Exception {
-    UpdateOrderRequestDto requestDto = UpdateOrderRequestDto.builder()
+    UpdateOrderRequest requestResponse = UpdateOrderRequest.builder()
         .shippingAddress("456 Updated Avenue, Springfield")
         .billingAddress("789 Billing Road, Springfield")
         .notes("Call when arriving")
         .build();
 
-    mockMvc.perform(put("/orders/{orderId}", 1L).content(mapper.writeValueAsString(requestDto))
+    mockMvc.perform(put("/orders/{orderId}", 1L).content(mapper.writeValueAsString(requestResponse))
         .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNoContent());
   }
 

@@ -1,12 +1,12 @@
 package com.carlosarroyoam.rest.books.payment;
 
-import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
-import com.carlosarroyoam.rest.books.core.dto.PaginationDto;
+import com.carlosarroyoam.rest.books.core.dto.PagedResponse;
+import com.carlosarroyoam.rest.books.core.dto.PaginationResponse;
 import com.carlosarroyoam.rest.books.core.exception.GlobalExceptionHandler;
-import com.carlosarroyoam.rest.books.payment.dto.CreatePaymentRequestDto;
-import com.carlosarroyoam.rest.books.payment.dto.PaymentDto;
-import com.carlosarroyoam.rest.books.payment.dto.PaymentSpecsDto;
-import com.carlosarroyoam.rest.books.payment.dto.UpdatePaymentStatusRequestDto;
+import com.carlosarroyoam.rest.books.payment.dto.CreatePaymentRequest;
+import com.carlosarroyoam.rest.books.payment.dto.PaymentResponse;
+import com.carlosarroyoam.rest.books.payment.dto.PaymentSpecs;
+import com.carlosarroyoam.rest.books.payment.dto.UpdatePaymentStatusRequest;
 import com.carlosarroyoam.rest.books.payment.entity.PaymentMethod;
 import com.carlosarroyoam.rest.books.payment.entity.PaymentStatus;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -59,14 +59,15 @@ class PaymentControllerTest {
   }
 
   @Test
-  @DisplayName("Should return PagedResponseDto<PaymentDto> when find all payments")
+  @DisplayName("Should return PagedResponse<PaymentResponse> when find all payments")
   void shouldReturnPagedPaymentsWhenFindAllPayments() throws Exception {
-    PagedResponseDto<PaymentDto> pagedResponse = PagedResponseDto.<PaymentDto>builder()
-        .items(List.of(PaymentDto.builder().id(1L).status(PaymentStatus.COMPLETED).build()))
-        .pagination(PaginationDto.builder().page(0).size(25).totalItems(1).totalPages(1).build())
+    PagedResponse<PaymentResponse> pagedResponse = PagedResponse.<PaymentResponse>builder()
+        .items(List.of(PaymentResponse.builder().id(1L).status(PaymentStatus.COMPLETED).build()))
+        .pagination(
+            PaginationResponse.builder().page(0).size(25).totalItems(1).totalPages(1).build())
         .build();
 
-    when(paymentService.findAll(any(PaymentSpecsDto.class), any(Pageable.class)))
+    when(paymentService.findAll(any(PaymentSpecs.class), any(Pageable.class)))
         .thenReturn(pagedResponse);
 
     mockMvc
@@ -80,9 +81,9 @@ class PaymentControllerTest {
   }
 
   @Test
-  @DisplayName("Should return PaymentDto when find payment by id")
-  void shouldReturnPaymentDtoWhenFindPaymentById() throws Exception {
-    PaymentDto payment = PaymentDto.builder()
+  @DisplayName("Should return PaymentResponse when find payment by id")
+  void shouldReturnPaymentResponseWhenFindPaymentById() throws Exception {
+    PaymentResponse payment = PaymentResponse.builder()
         .id(1L)
         .amount(new BigDecimal("53.34"))
         .method(PaymentMethod.CREDIT_CARD)
@@ -104,16 +105,16 @@ class PaymentControllerTest {
   @Test
   @DisplayName("Should return created when create a payment")
   void shouldReturnCreatedWhenCreatePayment() throws Exception {
-    CreatePaymentRequestDto requestDto = CreatePaymentRequestDto.builder()
+    CreatePaymentRequest requestResponse = CreatePaymentRequest.builder()
         .orderId(1L)
         .method(PaymentMethod.CREDIT_CARD)
         .build();
 
-    when(paymentService.create(any(CreatePaymentRequestDto.class)))
-        .thenReturn(PaymentDto.builder().id(1L).build());
+    when(paymentService.create(any(CreatePaymentRequest.class)))
+        .thenReturn(PaymentResponse.builder().id(1L).build());
 
     mockMvc
-        .perform(post("/payments").content(mapper.writeValueAsString(requestDto))
+        .perform(post("/payments").content(mapper.writeValueAsString(requestResponse))
             .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isCreated())
         .andExpect(header().string("location", "http://localhost/payments/1"));
@@ -122,12 +123,12 @@ class PaymentControllerTest {
   @Test
   @DisplayName("Should return no content when update payment status")
   void shouldReturnNoContentWhenUpdatePaymentStatus() throws Exception {
-    UpdatePaymentStatusRequestDto requestDto = UpdatePaymentStatusRequestDto.builder()
+    UpdatePaymentStatusRequest requestResponse = UpdatePaymentStatusRequest.builder()
         .status(PaymentStatus.REFUNDED)
         .build();
 
     mockMvc.perform(
-        put("/payments/{paymentId}/status", 1L).content(mapper.writeValueAsString(requestDto))
+        put("/payments/{paymentId}/status", 1L).content(mapper.writeValueAsString(requestResponse))
             .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isNoContent());
   }

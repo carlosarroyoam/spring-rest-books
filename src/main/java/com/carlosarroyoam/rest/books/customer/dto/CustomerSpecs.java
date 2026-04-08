@@ -8,7 +8,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class CustomerSpecsDto {
+public class CustomerSpecs {
   @Size(min = 3, max = 128, message = "First name should be between 3 and 128")
   private String firstName;
 

@@ -3,18 +3,18 @@ package com.carlosarroyoam.rest.books.order;
 import com.carlosarroyoam.rest.books.book.BookRepository;
 import com.carlosarroyoam.rest.books.book.entity.Book;
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
-import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
-import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto.PagedResponseDtoMapper;
+import com.carlosarroyoam.rest.books.core.dto.PagedResponse;
+import com.carlosarroyoam.rest.books.core.dto.PagedResponse.PagedResponseMapper;
 import com.carlosarroyoam.rest.books.core.specification.SpecificationBuilder;
 import com.carlosarroyoam.rest.books.customer.CustomerRepository;
 import com.carlosarroyoam.rest.books.customer.entity.Customer;
 import com.carlosarroyoam.rest.books.customer.entity.Customer_;
-import com.carlosarroyoam.rest.books.order.dto.CreateOrderItemRequestDto;
-import com.carlosarroyoam.rest.books.order.dto.CreateOrderRequestDto;
-import com.carlosarroyoam.rest.books.order.dto.OrderDto;
-import com.carlosarroyoam.rest.books.order.dto.OrderDto.OrderDtoMapper;
-import com.carlosarroyoam.rest.books.order.dto.OrderSpecsDto;
-import com.carlosarroyoam.rest.books.order.dto.UpdateOrderRequestDto;
+import com.carlosarroyoam.rest.books.order.dto.CreateOrderItemRequest;
+import com.carlosarroyoam.rest.books.order.dto.CreateOrderRequest;
+import com.carlosarroyoam.rest.books.order.dto.OrderResponse;
+import com.carlosarroyoam.rest.books.order.dto.OrderResponse.OrderResponseMapper;
+import com.carlosarroyoam.rest.books.order.dto.OrderSpecs;
+import com.carlosarroyoam.rest.books.order.dto.UpdateOrderRequest;
 import com.carlosarroyoam.rest.books.order.entity.Order;
 import com.carlosarroyoam.rest.books.order.entity.OrderItem;
 import com.carlosarroyoam.rest.books.order.entity.OrderStatus;
@@ -52,7 +52,7 @@ public class OrderService {
   }
 
   @Transactional
-  public PagedResponseDto<OrderDto> findAll(OrderSpecsDto orderSpecs, Pageable pageable) {
+  public PagedResponse<OrderResponse> findAll(OrderSpecs orderSpecs, Pageable pageable) {
     Specification<Order> spec = SpecificationBuilder.<Order>builder()
         .likeIfPresent(root -> root.get(Order_.orderNumber), orderSpecs.getOrderNumber())
         .likeIfPresent(root -> root.get(Order_.shippingAddress), orderSpecs.getShippingAddress())
@@ -67,33 +67,33 @@ public class OrderService {
 
     Page<Order> orders = orderRepository.findAll(spec, pageable);
 
-    return PagedResponseDtoMapper.INSTANCE
-        .toPagedResponseDto(orders.map(OrderDtoMapper.INSTANCE::toDto));
+    return PagedResponseMapper.INSTANCE
+        .toPagedResponse(orders.map(OrderResponseMapper.INSTANCE::toDto));
   }
 
   @Transactional
-  public OrderDto findById(Long orderId) {
+  public OrderResponse findById(Long orderId) {
     Order orderById = findOrderEntityById(orderId);
-    return OrderDtoMapper.INSTANCE.toDto(orderById);
+    return OrderResponseMapper.INSTANCE.toDto(orderById);
   }
 
   @Transactional
-  public OrderDto create(CreateOrderRequestDto requestDto) {
-    Customer customerById = findCustomerEntityById(requestDto);
+  public OrderResponse create(CreateOrderRequest request) {
+    Customer customerById = findCustomerEntityById(request);
 
     LocalDateTime now = LocalDateTime.now();
     Order order = Order.builder()
         .orderNumber(generateOrderNumber())
-        .shippingAddress(requestDto.getShippingAddress())
-        .billingAddress(requestDto.getBillingAddress())
-        .notes(requestDto.getNotes())
+        .shippingAddress(request.getShippingAddress())
+        .billingAddress(request.getBillingAddress())
+        .notes(request.getNotes())
         .status(OrderStatus.PENDING)
         .customer(customerById)
         .createdAt(now)
         .updatedAt(now)
         .build();
 
-    List<OrderItem> items = buildOrderItems(requestDto.getItems(), now, order);
+    List<OrderItem> items = buildOrderItems(request.getItems(), now, order);
     BigDecimal subtotal = calculateSubtotal(items);
     BigDecimal taxAmount = calculateTaxAmount(subtotal);
     BigDecimal shippingAmount = calculateShippingAmount();
@@ -105,16 +105,16 @@ public class OrderService {
     order.setShippingAmount(shippingAmount);
     order.setTotal(total);
 
-    return OrderDtoMapper.INSTANCE.toDto(orderRepository.save(order));
+    return OrderResponseMapper.INSTANCE.toDto(orderRepository.save(order));
   }
 
   @Transactional
-  public void update(Long orderId, UpdateOrderRequestDto requestDto) {
+  public void update(Long orderId, UpdateOrderRequest request) {
     LocalDateTime now = LocalDateTime.now();
     Order orderById = findOrderEntityById(orderId);
-    orderById.setShippingAddress(requestDto.getShippingAddress());
-    orderById.setBillingAddress(requestDto.getBillingAddress());
-    orderById.setNotes(requestDto.getNotes());
+    orderById.setShippingAddress(request.getShippingAddress());
+    orderById.setBillingAddress(request.getBillingAddress());
+    orderById.setNotes(request.getNotes());
     orderById.setUpdatedAt(now);
     orderRepository.save(orderById);
   }
@@ -138,15 +138,15 @@ public class OrderService {
     });
   }
 
-  private Customer findCustomerEntityById(CreateOrderRequestDto requestDto) {
-    return customerRepository.findById(requestDto.getCustomerId()).orElseThrow(() -> {
+  private Customer findCustomerEntityById(CreateOrderRequest request) {
+    return customerRepository.findById(request.getCustomerId()).orElseThrow(() -> {
       log.warn(AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION);
       return new ResponseStatusException(HttpStatus.NOT_FOUND,
           AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION);
     });
   }
 
-  private List<OrderItem> buildOrderItems(List<CreateOrderItemRequestDto> requestItems,
+  private List<OrderItem> buildOrderItems(List<CreateOrderItemRequest> requestItems,
       LocalDateTime now, Order order) {
     return requestItems.stream().map(item -> {
       Book book = bookRepository.findById(item.getBookId()).orElseThrow(() -> {

@@ -1,7 +1,7 @@
 package com.carlosarroyoam.rest.books.cart;
 
-import com.carlosarroyoam.rest.books.cart.dto.CartDto;
-import com.carlosarroyoam.rest.books.cart.dto.UpdateCartItemRequestDto;
+import com.carlosarroyoam.rest.books.cart.dto.CartResponse;
+import com.carlosarroyoam.rest.books.cart.dto.UpdateCartItemRequest;
 import com.carlosarroyoam.rest.books.core.constant.CustomClaimNames;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -27,18 +27,18 @@ public class CartController {
 
   @GetMapping(produces = "application/json")
   @PreAuthorize("hasRole('App/Customer')")
-  public ResponseEntity<CartDto> findByUsername(@AuthenticationPrincipal Jwt jwt) {
+  public ResponseEntity<CartResponse> findByUsername(@AuthenticationPrincipal Jwt jwt) {
     Long customerId = jwt.getClaim(CustomClaimNames.CUSTOMER_ID);
-    CartDto cartByUsername = cartService.findByCustomerId(customerId);
+    CartResponse cartByUsername = cartService.findByCustomerId(customerId);
     return ResponseEntity.ok(cartByUsername);
   }
 
   @PutMapping(value = "/items", consumes = "application/json")
   @PreAuthorize("hasRole('App/Customer')")
-  public ResponseEntity<Void> updateCartItem(
-      @Valid @RequestBody UpdateCartItemRequestDto requestDto, @AuthenticationPrincipal Jwt jwt) {
+  public ResponseEntity<Void> updateCartItem(@Valid @RequestBody UpdateCartItemRequest request,
+      @AuthenticationPrincipal Jwt jwt) {
     Long customerId = jwt.getClaim(CustomClaimNames.CUSTOMER_ID);
-    cartService.updateCartItem(customerId, requestDto);
+    cartService.updateCartItem(customerId, request);
     return ResponseEntity.noContent().build();
   }
 

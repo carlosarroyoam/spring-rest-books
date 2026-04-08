@@ -1,11 +1,11 @@
 package com.carlosarroyoam.rest.books.customer;
 
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
-import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
-import com.carlosarroyoam.rest.books.customer.dto.CreateCustomerRequestDto;
-import com.carlosarroyoam.rest.books.customer.dto.CustomerDto;
-import com.carlosarroyoam.rest.books.customer.dto.CustomerSpecsDto;
-import com.carlosarroyoam.rest.books.customer.dto.UpdateCustomerRequestDto;
+import com.carlosarroyoam.rest.books.core.dto.PagedResponse;
+import com.carlosarroyoam.rest.books.customer.dto.CreateCustomerRequest;
+import com.carlosarroyoam.rest.books.customer.dto.CustomerResponse;
+import com.carlosarroyoam.rest.books.customer.dto.CustomerSpecs;
+import com.carlosarroyoam.rest.books.customer.dto.UpdateCustomerRequest;
 import com.carlosarroyoam.rest.books.customer.entity.Customer;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -62,7 +62,7 @@ class CustomerServiceTest {
   }
 
   @Test
-  @DisplayName("Should return PagedResponseDto<CustomerDto> when find all customers")
+  @DisplayName("Should return PagedResponse<CustomerResponse> when find all customers")
   void shouldReturnListOfCustomers() {
     Pageable pageable = PageRequest.of(0, 25);
     List<Customer> customers = List.of(customer);
@@ -70,8 +70,8 @@ class CustomerServiceTest {
     when(customerRepository.findAll(ArgumentMatchers.<Specification<Customer>>any(),
         any(Pageable.class))).thenReturn(new PageImpl<>(customers, pageable, customers.size()));
 
-    PagedResponseDto<CustomerDto> response = customerService
-        .findAll(CustomerSpecsDto.builder().build(), PageRequest.of(0, 25));
+    PagedResponse<CustomerResponse> response = customerService
+        .findAll(CustomerSpecs.builder().build(), PageRequest.of(0, 25));
 
     assertThat(response).isNotNull();
     assertThat(response.getItems()).isNotNull().hasSize(1);
@@ -83,14 +83,14 @@ class CustomerServiceTest {
   }
 
   @Test
-  @DisplayName("Should return CustomerDto when find customer by id with existing id")
+  @DisplayName("Should return CustomerResponse when find customer by id with existing id")
   void shouldReturnWhenFindCustomerByIdWithExistingId() {
     when(customerRepository.findById(anyLong())).thenReturn(Optional.of(customer));
 
-    CustomerDto customerDto = customerService.findById(1L);
+    CustomerResponse customerResponse = customerService.findById(1L);
 
-    assertThat(customerDto).isNotNull();
-    assertThat(customerDto.getId()).isEqualTo(1L);
+    assertThat(customerResponse).isNotNull();
+    assertThat(customerResponse.getId()).isEqualTo(1L);
   }
 
   @Test
@@ -105,9 +105,9 @@ class CustomerServiceTest {
   }
 
   @Test
-  @DisplayName("Should return CustomerDto when create a customer with valid data")
+  @DisplayName("Should return CustomerResponse when create a customer with valid data")
   void shouldReturnWhenCreateCustomerWithValidData() {
-    CreateCustomerRequestDto requestDto = CreateCustomerRequestDto.builder()
+    CreateCustomerRequest requestResponse = CreateCustomerRequest.builder()
         .firstName("Cathy Stefania")
         .lastName("Guido Rojas")
         .email("cguidor@mail.com")
@@ -123,21 +123,21 @@ class CustomerServiceTest {
     when(customerRepository.existsByEmail(anyString())).thenReturn(false);
     when(customerRepository.save(any(Customer.class))).thenReturn(savedCustomer);
 
-    CustomerDto customerDto = customerService.create(requestDto);
+    CustomerResponse customerResponse = customerService.create(requestResponse);
 
-    assertThat(customerDto).isNotNull();
-    assertThat(customerDto.getFirstName()).isEqualTo("Cathy Stefania");
-    assertThat(customerDto.getLastName()).isEqualTo("Guido Rojas");
+    assertThat(customerResponse).isNotNull();
+    assertThat(customerResponse.getFirstName()).isEqualTo("Cathy Stefania");
+    assertThat(customerResponse.getLastName()).isEqualTo("Guido Rojas");
   }
 
   @Test
   @DisplayName("Should throw ResponseStatusException when create a customer with existing username")
   void shouldThrowWhenCreateCustomerWithExistingUsername() {
-    CreateCustomerRequestDto requestDto = CreateCustomerRequestDto.builder().build();
+    CreateCustomerRequest requestResponse = CreateCustomerRequest.builder().build();
 
     when(customerRepository.existsByUsername(any())).thenReturn(true);
 
-    assertThatThrownBy(() -> customerService.create(requestDto))
+    assertThatThrownBy(() -> customerService.create(requestResponse))
         .isInstanceOf(ResponseStatusException.class)
         .hasMessageContaining(HttpStatus.BAD_REQUEST.toString())
         .hasMessageContaining(AppMessages.USERNAME_ALREADY_EXISTS_EXCEPTION);
@@ -146,11 +146,11 @@ class CustomerServiceTest {
   @Test
   @DisplayName("Should throw ResponseStatusException when create a customer with existing email")
   void shouldThrowWhenCreateCustomerWithExistingEmail() {
-    CreateCustomerRequestDto requestDto = CreateCustomerRequestDto.builder().build();
+    CreateCustomerRequest requestResponse = CreateCustomerRequest.builder().build();
 
     when(customerRepository.existsByEmail(any())).thenReturn(true);
 
-    assertThatThrownBy(() -> customerService.create(requestDto))
+    assertThatThrownBy(() -> customerService.create(requestResponse))
         .isInstanceOf(ResponseStatusException.class)
         .hasMessageContaining(HttpStatus.BAD_REQUEST.toString())
         .hasMessageContaining(AppMessages.EMAIL_ALREADY_EXISTS_EXCEPTION);
@@ -159,7 +159,7 @@ class CustomerServiceTest {
   @Test
   @DisplayName("Should update customer with valid data")
   void shouldUpdateCustomerWithValidData() {
-    UpdateCustomerRequestDto requestDto = UpdateCustomerRequestDto.builder()
+    UpdateCustomerRequest requestResponse = UpdateCustomerRequest.builder()
         .firstName("Carlos")
         .build();
 
@@ -168,7 +168,7 @@ class CustomerServiceTest {
     when(customerRepository.findById(any())).thenReturn(Optional.of(customer));
     when(customerRepository.save(any(Customer.class))).thenReturn(updatedCustomer);
 
-    customerService.update(1L, requestDto);
+    customerService.update(1L, requestResponse);
 
     verify(customerRepository).save(customer);
     assertThat(customer.getId()).isEqualTo(1L);
@@ -178,11 +178,11 @@ class CustomerServiceTest {
   @Test
   @DisplayName("Should throw ResponseStatusException when update customer with non existing id")
   void shouldThrowWhenUpdateCustomerWithInvalidData() {
-    UpdateCustomerRequestDto requestDto = UpdateCustomerRequestDto.builder().build();
+    UpdateCustomerRequest requestResponse = UpdateCustomerRequest.builder().build();
 
     when(customerRepository.findById(any())).thenReturn(Optional.empty());
 
-    assertThatThrownBy(() -> customerService.update(1L, requestDto))
+    assertThatThrownBy(() -> customerService.update(1L, requestResponse))
         .isInstanceOf(ResponseStatusException.class)
         .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
         .hasMessageContaining(AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION);

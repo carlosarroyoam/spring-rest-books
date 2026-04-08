@@ -1,11 +1,11 @@
 package com.carlosarroyoam.rest.books.shipment;
 
-import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
-import com.carlosarroyoam.rest.books.core.dto.PaginationDto;
+import com.carlosarroyoam.rest.books.core.dto.PagedResponse;
+import com.carlosarroyoam.rest.books.core.dto.PaginationResponse;
 import com.carlosarroyoam.rest.books.core.exception.GlobalExceptionHandler;
-import com.carlosarroyoam.rest.books.shipment.dto.ShipmentDto;
-import com.carlosarroyoam.rest.books.shipment.dto.ShipmentSpecsDto;
-import com.carlosarroyoam.rest.books.shipment.dto.UpdateShipmentStatusRequestDto;
+import com.carlosarroyoam.rest.books.shipment.dto.ShipmentResponse;
+import com.carlosarroyoam.rest.books.shipment.dto.ShipmentSpecs;
+import com.carlosarroyoam.rest.books.shipment.dto.UpdateShipmentStatusRequest;
 import com.carlosarroyoam.rest.books.shipment.entity.ShipmentStatus;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
@@ -54,14 +54,15 @@ class ShipmentControllerTest {
   }
 
   @Test
-  @DisplayName("Should return PagedResponseDto<ShipmentDto> when find all shipments")
+  @DisplayName("Should return PagedResponse<ShipmentResponse> when find all shipments")
   void shouldReturnPagedShipmentsWhenFindAllShipments() throws Exception {
-    PagedResponseDto<ShipmentDto> pagedResponse = PagedResponseDto.<ShipmentDto>builder()
-        .items(List.of(ShipmentDto.builder().id(1L).status(ShipmentStatus.PENDING).build()))
-        .pagination(PaginationDto.builder().page(0).size(25).totalItems(1).totalPages(1).build())
+    PagedResponse<ShipmentResponse> pagedResponse = PagedResponse.<ShipmentResponse>builder()
+        .items(List.of(ShipmentResponse.builder().id(1L).status(ShipmentStatus.PENDING).build()))
+        .pagination(
+            PaginationResponse.builder().page(0).size(25).totalItems(1).totalPages(1).build())
         .build();
 
-    when(shipmentService.findAll(any(ShipmentSpecsDto.class), any(Pageable.class)))
+    when(shipmentService.findAll(any(ShipmentSpecs.class), any(Pageable.class)))
         .thenReturn(pagedResponse);
 
     mockMvc
@@ -75,9 +76,9 @@ class ShipmentControllerTest {
   }
 
   @Test
-  @DisplayName("Should return ShipmentDto when find shipment by id")
-  void shouldReturnShipmentDtoWhenFindShipmentById() throws Exception {
-    ShipmentDto shipment = ShipmentDto.builder()
+  @DisplayName("Should return ShipmentResponse when find shipment by id")
+  void shouldReturnShipmentResponseWhenFindShipmentById() throws Exception {
+    ShipmentResponse shipment = ShipmentResponse.builder()
         .id(1L)
         .attentionName("Carlos Arroyo")
         .address("123 Main Street, Springfield")
@@ -98,13 +99,12 @@ class ShipmentControllerTest {
   @Test
   @DisplayName("Should return no content when update shipment status")
   void shouldReturnNoContentWhenUpdateShipmentStatus() throws Exception {
-    UpdateShipmentStatusRequestDto requestDto = UpdateShipmentStatusRequestDto.builder()
+    UpdateShipmentStatusRequest requestResponse = UpdateShipmentStatusRequest.builder()
         .status(ShipmentStatus.SHIPPED)
         .build();
 
-    mockMvc.perform(
-        put("/shipments/{shipmentId}/status", 1L).content(mapper.writeValueAsString(requestDto))
-            .contentType(MediaType.APPLICATION_JSON))
-        .andExpect(status().isNoContent());
+    mockMvc.perform(put("/shipments/{shipmentId}/status", 1L)
+        .content(mapper.writeValueAsString(requestResponse))
+        .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNoContent());
   }
 }

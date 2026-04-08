@@ -1,12 +1,12 @@
 package com.carlosarroyoam.rest.books.customer;
 
-import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
-import com.carlosarroyoam.rest.books.core.dto.PaginationDto;
+import com.carlosarroyoam.rest.books.core.dto.PagedResponse;
+import com.carlosarroyoam.rest.books.core.dto.PaginationResponse;
 import com.carlosarroyoam.rest.books.core.exception.GlobalExceptionHandler;
-import com.carlosarroyoam.rest.books.customer.dto.CreateCustomerRequestDto;
-import com.carlosarroyoam.rest.books.customer.dto.CustomerDto;
-import com.carlosarroyoam.rest.books.customer.dto.CustomerSpecsDto;
-import com.carlosarroyoam.rest.books.customer.dto.UpdateCustomerRequestDto;
+import com.carlosarroyoam.rest.books.customer.dto.CreateCustomerRequest;
+import com.carlosarroyoam.rest.books.customer.dto.CustomerResponse;
+import com.carlosarroyoam.rest.books.customer.dto.CustomerSpecs;
+import com.carlosarroyoam.rest.books.customer.dto.UpdateCustomerRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,14 +57,15 @@ class CustomerControllerTest {
   }
 
   @Test
-  @DisplayName("Should return PagedResponseDto<CustomerDto> when find all customers")
+  @DisplayName("Should return PagedResponse<CustomerResponse> when find all customers")
   void shouldReturnPagedCustomersWhenFindAllCustomers() throws Exception {
-    PagedResponseDto<CustomerDto> pagedResponse = PagedResponseDto.<CustomerDto>builder()
-        .items(List.of(CustomerDto.builder().id(1L).build()))
-        .pagination(PaginationDto.builder().page(0).size(25).totalItems(1).totalPages(1).build())
+    PagedResponse<CustomerResponse> pagedResponse = PagedResponse.<CustomerResponse>builder()
+        .items(List.of(CustomerResponse.builder().id(1L).build()))
+        .pagination(
+            PaginationResponse.builder().page(0).size(25).totalItems(1).totalPages(1).build())
         .build();
 
-    when(customerService.findAll(any(CustomerSpecsDto.class), any(Pageable.class)))
+    when(customerService.findAll(any(CustomerSpecs.class), any(Pageable.class)))
         .thenReturn(pagedResponse);
 
     mockMvc
@@ -85,9 +86,9 @@ class CustomerControllerTest {
   }
 
   @Test
-  @DisplayName("Should return CustomerDto when find customer by id")
-  void shouldReturnCustomerDtoWhenFindCustomerById() throws Exception {
-    CustomerDto customer = CustomerDto.builder().id(1L).build();
+  @DisplayName("Should return CustomerResponse when find customer by id")
+  void shouldReturnCustomerResponseWhenFindCustomerById() throws Exception {
+    CustomerResponse customer = CustomerResponse.builder().id(1L).build();
 
     when(customerService.findById(anyLong())).thenReturn(customer);
 
@@ -100,7 +101,7 @@ class CustomerControllerTest {
   @Test
   @DisplayName("Should return created when create a customer")
   void shouldReturnCreatedWhenCreateCustomer() throws Exception {
-    CreateCustomerRequestDto requestDto = CreateCustomerRequestDto.builder()
+    CreateCustomerRequest requestResponse = CreateCustomerRequest.builder()
         .firstName("Carlos Alberto")
         .lastName("Arroyo Martínez")
         .password("secret123#")
@@ -108,12 +109,12 @@ class CustomerControllerTest {
         .username("carroyom")
         .build();
 
-    CustomerDto customer = CustomerDto.builder().id(1L).build();
+    CustomerResponse customer = CustomerResponse.builder().id(1L).build();
 
-    when(customerService.create(any(CreateCustomerRequestDto.class))).thenReturn(customer);
+    when(customerService.create(any(CreateCustomerRequest.class))).thenReturn(customer);
 
     mockMvc
-        .perform(post("/customers").content(mapper.writeValueAsString(requestDto))
+        .perform(post("/customers").content(mapper.writeValueAsString(requestResponse))
             .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isCreated())
         .andExpect(header().string("location", "http://localhost/customers/1"));
@@ -122,13 +123,13 @@ class CustomerControllerTest {
   @Test
   @DisplayName("Should return no content when update customer")
   void shouldReturnNoContentUpdateCustomer() throws Exception {
-    UpdateCustomerRequestDto requestDto = UpdateCustomerRequestDto.builder()
+    UpdateCustomerRequest requestResponse = UpdateCustomerRequest.builder()
         .firstName("Carlos Alberto")
         .lastName("Arroyo Martínez")
         .build();
 
-    mockMvc
-        .perform(put("/customers/{customerId}", 1L).content(mapper.writeValueAsString(requestDto))
+    mockMvc.perform(
+        put("/customers/{customerId}", 1L).content(mapper.writeValueAsString(requestResponse))
             .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isNoContent());
   }

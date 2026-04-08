@@ -10,7 +10,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class BookSpecsDto {
+public class BookSpecs {
   @Size(min = 10, max = 17, message = "Isbn should be between 10 and 17")
   private String isbn;
 

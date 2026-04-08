@@ -1,6 +1,6 @@
 package com.carlosarroyoam.rest.books.cart;
 
-import com.carlosarroyoam.rest.books.cart.dto.UpdateCartItemRequestDto;
+import com.carlosarroyoam.rest.books.cart.dto.UpdateCartItemRequest;
 import com.carlosarroyoam.rest.books.common.JsonUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
@@ -55,8 +55,8 @@ class CartControllerIT {
   }
 
   @Test
-  @DisplayName("Should return CartDto when find cart by customer id")
-  void shouldReturnCartDtoWhenFindCartByCustomerId() throws Exception {
+  @DisplayName("Should return CartResponse when find cart by customer id")
+  void shouldReturnCartResponseWhenFindCartByCustomerId() throws Exception {
     String expectedJson = JsonUtils.readJson("/carts/find-by-customer-id.json");
 
     String responseJson = mockMvc.perform(get("/carts"))
@@ -72,28 +72,28 @@ class CartControllerIT {
   @Test
   @DisplayName("Should return no content when update cart item with valid data")
   void shouldReturnNoContentWhenUpdateCartItemWithValidData() throws Exception {
-    UpdateCartItemRequestDto requestDto = UpdateCartItemRequestDto.builder()
+    UpdateCartItemRequest requestResponse = UpdateCartItemRequest.builder()
         .quantity(1)
         .bookId(1L)
         .build();
 
-    mockMvc.perform(put("/carts/items").content(mapper.writeValueAsString(requestDto))
+    mockMvc.perform(put("/carts/items").content(mapper.writeValueAsString(requestResponse))
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON)).andExpect(status().isNoContent());
   }
 
   @Test
-  @DisplayName("Should throw AppExceptionDto when update cart item with non existing book id")
+  @DisplayName("Should throw AppExceptionResponse when update cart item with non existing book id")
   void shouldThrowWhenUpdateCartItemWithNonExistingBookId() throws Exception {
     String expectedJson = JsonUtils.readJson("/carts/update_with_non_existing_book_id.json");
 
-    UpdateCartItemRequestDto requestDto = UpdateCartItemRequestDto.builder()
+    UpdateCartItemRequest requestResponse = UpdateCartItemRequest.builder()
         .quantity(1)
         .bookId(1000L)
         .build();
 
     String responseJson = mockMvc
-        .perform(put("/carts/items").content(mapper.writeValueAsString(requestDto))
+        .perform(put("/carts/items").content(mapper.writeValueAsString(requestResponse))
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNotFound())
@@ -114,7 +114,7 @@ class CartControllerIT {
   }
 
   @Test
-  @DisplayName("Should throw AppExceptionDto when delete cart item with non existing cart item id")
+  @DisplayName("Should throw AppExceptionResponse when delete cart item with non existing cart item id")
   void shouldThrowWhenDeleteCartItemWithNonExistingCartItemId() throws Exception {
     String expectedJson = JsonUtils.readJson("/carts/delete_with_non_existing_cart_item_id.json");
 

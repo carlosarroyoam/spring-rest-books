@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class AuthorSpecsDto {
+public class AuthorSpecs {
   @Size(max = 128, message = "Name should be max 128")
   private String name;
 

@@ -1,12 +1,12 @@
 package com.carlosarroyoam.rest.books.book;
 
-import com.carlosarroyoam.rest.books.author.dto.AuthorDto;
-import com.carlosarroyoam.rest.books.book.dto.BookDto;
-import com.carlosarroyoam.rest.books.book.dto.BookSpecsDto;
-import com.carlosarroyoam.rest.books.book.dto.CreateBookRequestDto;
-import com.carlosarroyoam.rest.books.book.dto.UpdateBookRequestDto;
-import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
-import com.carlosarroyoam.rest.books.core.dto.PaginationDto;
+import com.carlosarroyoam.rest.books.author.dto.AuthorResponse;
+import com.carlosarroyoam.rest.books.book.dto.BookResponse;
+import com.carlosarroyoam.rest.books.book.dto.BookSpecs;
+import com.carlosarroyoam.rest.books.book.dto.CreateBookRequest;
+import com.carlosarroyoam.rest.books.book.dto.UpdateBookRequest;
+import com.carlosarroyoam.rest.books.core.dto.PagedResponse;
+import com.carlosarroyoam.rest.books.core.dto.PaginationResponse;
 import com.carlosarroyoam.rest.books.core.exception.GlobalExceptionHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.math.BigDecimal;
@@ -60,15 +60,15 @@ class BookControllerTest {
   }
 
   @Test
-  @DisplayName("Should return PagedResponseDto<BookDto> when find all books")
+  @DisplayName("Should return PagedResponse<BookResponse> when find all books")
   void shouldReturnPagedBooksWhenFindAllBooks() throws Exception {
-    PagedResponseDto<BookDto> pagedResponse = PagedResponseDto.<BookDto>builder()
-        .items(List.of(BookDto.builder().id(1L).build()))
-        .pagination(PaginationDto.builder().page(0).size(25).totalItems(1).totalPages(1).build())
+    PagedResponse<BookResponse> pagedResponse = PagedResponse.<BookResponse>builder()
+        .items(List.of(BookResponse.builder().id(1L).build()))
+        .pagination(
+            PaginationResponse.builder().page(0).size(25).totalItems(1).totalPages(1).build())
         .build();
 
-    when(bookService.findAll(any(BookSpecsDto.class), any(Pageable.class)))
-        .thenReturn(pagedResponse);
+    when(bookService.findAll(any(BookSpecs.class), any(Pageable.class))).thenReturn(pagedResponse);
 
     mockMvc
         .perform(get("/books").queryParam("page", "0")
@@ -84,9 +84,9 @@ class BookControllerTest {
   }
 
   @Test
-  @DisplayName("Should return BookDto when find book by id")
-  void shouldReturnBookDtoWhenFindBookById() throws Exception {
-    BookDto book = BookDto.builder().id(1L).title("Sapiens").build();
+  @DisplayName("Should return BookResponse when find book by id")
+  void shouldReturnBookResponseWhenFindBookById() throws Exception {
+    BookResponse book = BookResponse.builder().id(1L).title("Sapiens").build();
 
     when(bookService.findById(anyLong())).thenReturn(book);
 
@@ -100,7 +100,7 @@ class BookControllerTest {
   @Test
   @DisplayName("Should return created when create a book")
   void shouldReturnCreatedWhenCreateBook() throws Exception {
-    CreateBookRequestDto requestDto = CreateBookRequestDto.builder()
+    CreateBookRequest requestResponse = CreateBookRequest.builder()
         .isbn("978-9-7389-4434-3")
         .title("Sapiens: A Brief History of Humankind")
         .coverUrl("https://images.isbndb.com/covers/60/97/9780062316097.jpg")
@@ -109,12 +109,12 @@ class BookControllerTest {
         .isAvailableOnline(Boolean.TRUE)
         .build();
 
-    BookDto book = BookDto.builder().id(1L).build();
+    BookResponse book = BookResponse.builder().id(1L).build();
 
-    when(bookService.create(any(CreateBookRequestDto.class))).thenReturn(book);
+    when(bookService.create(any(CreateBookRequest.class))).thenReturn(book);
 
     mockMvc
-        .perform(post("/books").content(mapper.writeValueAsString(requestDto))
+        .perform(post("/books").content(mapper.writeValueAsString(requestResponse))
             .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isCreated())
         .andExpect(header().string("location", "http://localhost/books/1"));
@@ -123,7 +123,7 @@ class BookControllerTest {
   @Test
   @DisplayName("Should return no content when update book")
   void shouldReturnNoContentWhenUpdateBook() throws Exception {
-    UpdateBookRequestDto requestDto = UpdateBookRequestDto.builder()
+    UpdateBookRequest requestResponse = UpdateBookRequest.builder()
         .isbn("978-9-7389-4434-3")
         .title("Sapiens: A Brief History of Humankind")
         .coverUrl("https://images.isbndb.com/covers/60/97/9780062316097.jpg")
@@ -132,7 +132,7 @@ class BookControllerTest {
         .isAvailableOnline(Boolean.TRUE)
         .build();
 
-    mockMvc.perform(put("/books/{bookId}", 1L).content(mapper.writeValueAsString(requestDto))
+    mockMvc.perform(put("/books/{bookId}", 1L).content(mapper.writeValueAsString(requestResponse))
         .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNoContent());
   }
 
@@ -146,7 +146,7 @@ class BookControllerTest {
   @Test
   @DisplayName("Should return authors when find authors by book id")
   void shouldReturnListOfAuthorsWhenFindAuthorsByBookId() throws Exception {
-    List<AuthorDto> authors = List.of(AuthorDto.builder().id(1L).build());
+    List<AuthorResponse> authors = List.of(AuthorResponse.builder().id(1L).build());
 
     when(bookService.findAuthorsByBookId(anyLong())).thenReturn(authors);
 

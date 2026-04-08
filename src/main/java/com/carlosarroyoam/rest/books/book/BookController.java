@@ -1,11 +1,11 @@
 package com.carlosarroyoam.rest.books.book;
 
-import com.carlosarroyoam.rest.books.author.dto.AuthorDto;
-import com.carlosarroyoam.rest.books.book.dto.BookDto;
-import com.carlosarroyoam.rest.books.book.dto.BookSpecsDto;
-import com.carlosarroyoam.rest.books.book.dto.CreateBookRequestDto;
-import com.carlosarroyoam.rest.books.book.dto.UpdateBookRequestDto;
-import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
+import com.carlosarroyoam.rest.books.author.dto.AuthorResponse;
+import com.carlosarroyoam.rest.books.book.dto.BookResponse;
+import com.carlosarroyoam.rest.books.book.dto.BookSpecs;
+import com.carlosarroyoam.rest.books.book.dto.CreateBookRequest;
+import com.carlosarroyoam.rest.books.book.dto.UpdateBookRequest;
+import com.carlosarroyoam.rest.books.core.dto.PagedResponse;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.data.domain.Pageable;
@@ -34,24 +34,24 @@ public class BookController {
   }
 
   @GetMapping(produces = "application/json")
-  public ResponseEntity<PagedResponseDto<BookDto>> findAll(
-      @Valid @ModelAttribute BookSpecsDto bookSpecs,
+  public ResponseEntity<PagedResponse<BookResponse>> findAll(
+      @Valid @ModelAttribute BookSpecs bookSpecs,
       @PageableDefault(page = 0, size = 25, sort = "id") Pageable pageable) {
-    PagedResponseDto<BookDto> books = bookService.findAll(bookSpecs, pageable);
+    PagedResponse<BookResponse> books = bookService.findAll(bookSpecs, pageable);
     return ResponseEntity.ok(books);
   }
 
   @GetMapping(value = "/{bookId}", produces = "application/json")
-  public ResponseEntity<BookDto> findById(@PathVariable Long bookId) {
-    BookDto bookById = bookService.findById(bookId);
+  public ResponseEntity<BookResponse> findById(@PathVariable Long bookId) {
+    BookResponse bookById = bookService.findById(bookId);
     return ResponseEntity.ok(bookById);
   }
 
   @PostMapping(consumes = "application/json")
   @PreAuthorize("hasRole('App/Admin')")
-  public ResponseEntity<Void> create(@Valid @RequestBody CreateBookRequestDto requestDto,
+  public ResponseEntity<Void> create(@Valid @RequestBody CreateBookRequest request,
       UriComponentsBuilder builder) {
-    BookDto createdBook = bookService.create(requestDto);
+    BookResponse createdBook = bookService.create(request);
     UriComponents uriComponents = builder.path("/books/{bookId}")
         .buildAndExpand(createdBook.getId());
     return ResponseEntity.created(uriComponents.toUri()).build();
@@ -60,8 +60,8 @@ public class BookController {
   @PutMapping(value = "/{bookId}", consumes = "application/json")
   @PreAuthorize("hasRole('App/Admin')")
   public ResponseEntity<Void> update(@PathVariable Long bookId,
-      @Valid @RequestBody UpdateBookRequestDto requestDto) {
-    bookService.update(bookId, requestDto);
+      @Valid @RequestBody UpdateBookRequest request) {
+    bookService.update(bookId, request);
     return ResponseEntity.noContent().build();
   }
 
@@ -73,8 +73,8 @@ public class BookController {
   }
 
   @GetMapping(path = "/{bookId}/authors", produces = "application/json")
-  public ResponseEntity<List<AuthorDto>> findBookAuthors(@PathVariable Long bookId) {
-    List<AuthorDto> authors = bookService.findAuthorsByBookId(bookId);
+  public ResponseEntity<List<AuthorResponse>> findBookAuthors(@PathVariable Long bookId) {
+    List<AuthorResponse> authors = bookService.findAuthorsByBookId(bookId);
     return ResponseEntity.ok(authors);
   }
 }

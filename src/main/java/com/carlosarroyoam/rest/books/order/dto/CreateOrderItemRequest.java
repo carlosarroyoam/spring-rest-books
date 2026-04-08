@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CreateOrderItemRequestDto {
+public class CreateOrderItemRequest {
   @NotNull(message = "Book id should not be null")
   private Long bookId;
 

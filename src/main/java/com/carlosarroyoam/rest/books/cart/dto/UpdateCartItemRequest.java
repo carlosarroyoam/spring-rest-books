@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UpdateCartItemRequestDto {
+public class UpdateCartItemRequest {
   @NotNull(message = "BookId should not be null")
   private Long bookId;
 

@@ -1,7 +1,7 @@
 package com.carlosarroyoam.rest.books.book.dto;
 
-import com.carlosarroyoam.rest.books.author.dto.AuthorDto;
-import com.carlosarroyoam.rest.books.author.dto.AuthorDto.AuthorDtoMapper;
+import com.carlosarroyoam.rest.books.author.dto.AuthorResponse;
+import com.carlosarroyoam.rest.books.author.dto.AuthorResponse.AuthorResponseMapper;
 import com.carlosarroyoam.rest.books.book.entity.Book;
 import com.carlosarroyoam.rest.books.book.entity.BookStatus;
 import java.math.BigDecimal;
@@ -21,7 +21,7 @@ import org.mapstruct.factory.Mappers;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class BookDto {
+public class BookResponse {
   private Long id;
   private String isbn;
   private String title;
@@ -29,19 +29,19 @@ public class BookDto {
   private BigDecimal price;
   private Boolean isAvailableOnline;
   private BookStatus status;
-  private List<AuthorDto> authors;
+  private List<AuthorResponse> authors;
   private LocalDate publishedAt;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
   private LocalDateTime deletedAt;
 
   @Mapper(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = {
-      AuthorDtoMapper.class })
-  public interface BookDtoMapper {
-    BookDtoMapper INSTANCE = Mappers.getMapper(BookDtoMapper.class);
+      AuthorResponseMapper.class })
+  public interface BookResponseMapper {
+    BookResponseMapper INSTANCE = Mappers.getMapper(BookResponseMapper.class);
 
-    BookDto toDto(Book entity);
+    BookResponse toDto(Book entity);
 
-    List<BookDto> toDtos(List<Book> entities);
+    List<BookResponse> toDtos(List<Book> entities);
   }
 }
