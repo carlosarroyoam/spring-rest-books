@@ -22,7 +22,7 @@ info:
 
 servers:
   - url: http://localhost:8081
-    description: Localhost server url
+    description: Local development server
 
 security:
   - BearerAuth: []
@@ -72,13 +72,13 @@ paths:
         - name: minPrice
           in: query
           required: false
-          description: Minimum price amount.
+          description: Minimum price.
           schema:
             type: number
         - name: maxPrice
           in: query
           required: false
-          description: Maximum price amount.
+          description: Maximum price.
           schema:
             type: number
         - name: isAvailableOnline
@@ -117,11 +117,10 @@ paths:
         "403":
           $ref: "#/components/responses/Forbidden"
         "422":
-          $ref: "#/components/responses/UnprocesableEntity"
+          $ref: "#/components/responses/UnprocessableEntity"
         "500":
           $ref: "#/components/responses/InternalServerError"
-      security:
-        - BearerAuth: []
+      security: []
 
     post:
       tags:
@@ -144,7 +143,7 @@ paths:
         "403":
           $ref: "#/components/responses/Forbidden"
         "422":
-          $ref: "#/components/responses/UnprocesableEntity"
+          $ref: "#/components/responses/UnprocessableEntity"
         "500":
           $ref: "#/components/responses/InternalServerError"
       security:
@@ -154,7 +153,7 @@ paths:
     get:
       tags:
         - Books
-      summary: Gets a book by its id
+      summary: Gets a book by ID
       operationId: findBookById
       parameters:
         - name: bookId
@@ -181,13 +180,12 @@ paths:
           $ref: "#/components/responses/NotFound"
         "500":
           $ref: "#/components/responses/InternalServerError"
-      security:
-        - BearerAuth: []
+      security: []
 
     put:
       tags:
         - Books
-      summary: Updates a book by its id
+      summary: Updates a book by ID
       operationId: updateBook
       parameters:
         - name: bookId
@@ -213,7 +211,7 @@ paths:
         "403":
           $ref: "#/components/responses/Forbidden"
         "422":
-          $ref: "#/components/responses/UnprocesableEntity"
+          $ref: "#/components/responses/UnprocessableEntity"
         "404":
           $ref: "#/components/responses/NotFound"
         "500":
@@ -224,7 +222,7 @@ paths:
     delete:
       tags:
         - Books
-      summary: Deletes a book by its id
+      summary: Deletes a book by ID
       operationId: deleteBook
       parameters:
         - name: bookId
@@ -252,7 +250,7 @@ paths:
     get:
       tags:
         - Books
-      summary: Lists all authors by bookId
+      summary: Lists authors for the specified book
       operationId: findBookAuthors
       parameters:
         - name: bookId
@@ -279,8 +277,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/InternalServerError"
-      security:
-        - BearerAuth: []
+      security: []
 
   /authors:
     get:
@@ -323,11 +320,10 @@ paths:
         "403":
           $ref: "#/components/responses/Forbidden"
         "422":
-          $ref: "#/components/responses/UnprocesableEntity"
+          $ref: "#/components/responses/UnprocessableEntity"
         "500":
           $ref: "#/components/responses/InternalServerError"
-      security:
-        - BearerAuth: []
+      security: []
 
     post:
       tags:
@@ -350,7 +346,7 @@ paths:
         "403":
           $ref: "#/components/responses/Forbidden"
         "422":
-          $ref: "#/components/responses/UnprocesableEntity"
+          $ref: "#/components/responses/UnprocessableEntity"
         "404":
           $ref: "#/components/responses/NotFound"
         "500":
@@ -362,7 +358,7 @@ paths:
     get:
       tags:
         - Authors
-      summary: Gets an author by its id
+      summary: Gets an author by ID
       operationId: findAuthorById
       parameters:
         - name: authorId
@@ -389,13 +385,12 @@ paths:
           $ref: "#/components/responses/NotFound"
         "500":
           $ref: "#/components/responses/InternalServerError"
-      security:
-        - BearerAuth: []
+      security: []
 
     put:
       tags:
         - Authors
-      summary: Updates an author by its id
+      summary: Updates an author by ID
       operationId: updateAuthor
       parameters:
         - name: authorId
@@ -421,7 +416,7 @@ paths:
         "403":
           $ref: "#/components/responses/Forbidden"
         "422":
-          $ref: "#/components/responses/UnprocesableEntity"
+          $ref: "#/components/responses/UnprocessableEntity"
         "404":
           $ref: "#/components/responses/NotFound"
         "500":
@@ -432,7 +427,7 @@ paths:
     delete:
       tags:
         - Authors
-      summary: Deletes an author by its id
+      summary: Deletes an author by ID
       operationId: deleteAuthor
       parameters:
         - name: authorId
@@ -460,7 +455,7 @@ paths:
     get:
       tags:
         - Authors
-      summary: Lists all books by authorId
+      summary: Lists books for the specified author
       operationId: findAuthorBooks
       parameters:
         - name: authorId
@@ -487,8 +482,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/InternalServerError"
-      security:
-        - BearerAuth: []
+      security: []
 
   /customers:
     get:
@@ -545,7 +539,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PagedAuthorsResponse"
+                $ref: "#/components/schemas/PagedCustomersResponse"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -553,7 +547,7 @@ paths:
         "403":
           $ref: "#/components/responses/Forbidden"
         "422":
-          $ref: "#/components/responses/UnprocesableEntity"
+          $ref: "#/components/responses/UnprocessableEntity"
         "500":
           $ref: "#/components/responses/InternalServerError"
       security:
@@ -580,7 +574,7 @@ paths:
         "403":
           $ref: "#/components/responses/Forbidden"
         "422":
-          $ref: "#/components/responses/UnprocesableEntity"
+          $ref: "#/components/responses/UnprocessableEntity"
         "500":
           $ref: "#/components/responses/InternalServerError"
       security:
@@ -590,7 +584,7 @@ paths:
     get:
       tags:
         - Customers
-      summary: Gets a customer by its id
+      summary: Gets a customer by ID
       operationId: findCustomerById
       parameters:
         - name: customerId
@@ -623,7 +617,7 @@ paths:
     put:
       tags:
         - Customers
-      summary: Updates a customer by its id
+      summary: Updates a customer by ID
       operationId: updateCustomer
       parameters:
         - name: customerId
@@ -649,7 +643,7 @@ paths:
         "403":
           $ref: "#/components/responses/Forbidden"
         "422":
-          $ref: "#/components/responses/UnprocesableEntity"
+          $ref: "#/components/responses/UnprocessableEntity"
         "404":
           $ref: "#/components/responses/NotFound"
         "500":
@@ -660,7 +654,7 @@ paths:
     delete:
       tags:
         - Customers
-      summary: Deletes a customer by its id
+      summary: Deletes a customer by ID
       operationId: deleteCustomer
       parameters:
         - name: customerId
@@ -690,7 +684,7 @@ paths:
     get:
       tags:
         - Carts
-      summary: Gets the customer cart
+      summary: Gets the authenticated customer's cart
       operationId: findCart
       responses:
         "200":
@@ -734,7 +728,7 @@ paths:
         "403":
           $ref: "#/components/responses/Forbidden"
         "422":
-          $ref: "#/components/responses/UnprocesableEntity"
+          $ref: "#/components/responses/UnprocessableEntity"
         "404":
           $ref: "#/components/responses/NotFound"
         "500":
@@ -849,7 +843,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PagedCustomersResponse"
+                $ref: "#/components/schemas/PagedOrdersResponse"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -857,7 +851,7 @@ paths:
         "403":
           $ref: "#/components/responses/Forbidden"
         "422":
-          $ref: "#/components/responses/UnprocesableEntity"
+          $ref: "#/components/responses/UnprocessableEntity"
         "500":
           $ref: "#/components/responses/InternalServerError"
       security:
@@ -884,7 +878,7 @@ paths:
         "403":
           $ref: "#/components/responses/Forbidden"
         "422":
-          $ref: "#/components/responses/UnprocesableEntity"
+          $ref: "#/components/responses/UnprocessableEntity"
         "500":
           $ref: "#/components/responses/InternalServerError"
       security:
@@ -894,7 +888,7 @@ paths:
     get:
       tags:
         - Orders
-      summary: Gets an order by its id
+      summary: Gets an order by ID
       operationId: findOrderById
       parameters:
         - name: orderId
@@ -927,7 +921,7 @@ paths:
     put:
       tags:
         - Orders
-      summary: Updates an order by its id
+      summary: Updates an order by ID
       operationId: updateOrder
       parameters:
         - name: orderId
@@ -953,7 +947,7 @@ paths:
         "403":
           $ref: "#/components/responses/Forbidden"
         "422":
-          $ref: "#/components/responses/UnprocesableEntity"
+          $ref: "#/components/responses/UnprocessableEntity"
         "404":
           $ref: "#/components/responses/NotFound"
         "500":
@@ -964,7 +958,7 @@ paths:
     delete:
       tags:
         - Orders
-      summary: Deletes an order by its id
+      summary: Deletes an order by ID
       operationId: deleteOrder
       parameters:
         - name: orderId
@@ -1078,7 +1072,7 @@ paths:
         "403":
           $ref: "#/components/responses/Forbidden"
         "422":
-          $ref: "#/components/responses/UnprocesableEntity"
+          $ref: "#/components/responses/UnprocessableEntity"
         "500":
           $ref: "#/components/responses/InternalServerError"
       security:
@@ -1113,7 +1107,7 @@ paths:
     get:
       tags:
         - Payments
-      summary: Gets a payment by its id
+      summary: Gets a payment by ID
       operationId: findPaymentById
       parameters:
         - name: paymentId
@@ -1146,7 +1140,7 @@ paths:
     put:
       tags:
         - Payments
-      summary: Updates the status of a payment by its id
+      summary: Updates the status of a payment by ID
       operationId: updatePaymentStatus
       parameters:
         - name: paymentId
@@ -1172,7 +1166,7 @@ paths:
         "403":
           $ref: "#/components/responses/Forbidden"
         "422":
-          $ref: "#/components/responses/UnprocesableEntity"
+          $ref: "#/components/responses/UnprocessableEntity"
         "404":
           $ref: "#/components/responses/NotFound"
         "500":
@@ -1258,7 +1252,7 @@ paths:
         "403":
           $ref: "#/components/responses/Forbidden"
         "422":
-          $ref: "#/components/responses/UnprocesableEntity"
+          $ref: "#/components/responses/UnprocessableEntity"
         "500":
           $ref: "#/components/responses/InternalServerError"
       security:
@@ -1268,7 +1262,7 @@ paths:
     get:
       tags:
         - Shipments
-      summary: Gets an shipment by its id
+      summary: Gets an shipment by ID
       operationId: findShipmentById
       parameters:
         - name: shipmentId
@@ -1301,7 +1295,7 @@ paths:
     put:
       tags:
         - Shipments
-      summary: Updates the status of a shipment by its id
+      summary: Updates the status of a shipment by ID
       operationId: updateShipmentStatus
       parameters:
         - name: shipmentId
@@ -1327,7 +1321,7 @@ paths:
         "403":
           $ref: "#/components/responses/Forbidden"
         "422":
-          $ref: "#/components/responses/UnprocesableEntity"
+          $ref: "#/components/responses/UnprocessableEntity"
         "404":
           $ref: "#/components/responses/NotFound"
         "500":
@@ -1762,6 +1756,10 @@ components:
           type: string
           format: date-time
           description: Timestamp of the last update.
+        deleted_at:
+          type: string
+          format: date-time
+          description: Timestamp when the book record was soft-deleted.
 
     AuthorResponse:
       type: object
@@ -1789,6 +1787,10 @@ components:
           type: string
           format: date-time
           description: Timestamp of the last update.
+        deleted_at:
+          type: string
+          format: date-time
+          description: Timestamp when the author record was soft-deleted.
 
     CustomerResponse:
       type: object
@@ -1826,6 +1828,54 @@ components:
           type: string
           format: date-time
           description: Timestamp of the last update.
+        deleted_at:
+          type: string
+          format: date-time
+          description: Timestamp when the customer record was soft-deleted.
+
+    CartResponse:
+      type: object
+      description: Representation of a customer's shopping cart containing selected books before checkout.
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Unique identifier of the shopping cart.
+        items:
+          type: array
+          description: List of items currently in the cart.
+          items:
+            $ref: "#/components/schemas/CartItemResponse"
+        customer:
+          $ref: "#/components/schemas/CustomerResponse"
+        created_at:
+          type: string
+          format: date-time
+          description: Timestamp when the cart was created.
+        updated_at:
+          type: string
+          format: date-time
+          description: Timestamp when the cart was last updated.
+
+    CartItemResponse:
+      type: object
+      description: Representation of a book item inside a shopping cart.
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Unique identifier of the cart item.
+        quantity:
+          type: integer
+          format: int32
+          minimum: 1
+          description: Quantity of the selected book in the cart.
+        book:
+          $ref: "#/components/schemas/BookResponse"
+        added_at:
+          type: string
+          format: date-time
+          description: Timestamp when the item was added to the cart.
 
     OrderResponse:
       type: object
@@ -1910,7 +1960,7 @@ components:
           type: number
           description: Total price for the item calculated as quantity multiplied by unit price.
         book_id:
-          type: number
+          type: integer
           format: int64
           description: Identifier of the book included in the order.
         book:
@@ -1923,60 +1973,6 @@ components:
           type: string
           format: date-time
           description: Timestamp when the order item was last updated.
-
-    CartResponse:
-      type: object
-      description: Representation of a customer's shopping cart containing selected books before checkout.
-      properties:
-        id:
-          type: integer
-          format: int64
-          description: Unique identifier of the shopping cart.
-        items:
-          type: array
-          description: List of items currently in the cart.
-          items:
-            $ref: "#/components/schemas/CartItemResponse"
-        customer:
-          $ref: "#/components/schemas/CustomerResponse"
-        total_items:
-          type: integer
-          description: Total number of items in the cart.
-        total_price:
-          type: number
-          description: Total price of all items in the cart.
-        created_at:
-          type: string
-          format: date-time
-          description: Timestamp when the cart was created.
-        updated_at:
-          type: string
-          format: date-time
-          description: Timestamp when the cart was last updated.
-
-    CartItemResponse:
-      type: object
-      description: Representation of a book item inside a shopping cart.
-      properties:
-        id:
-          type: integer
-          format: int64
-          description: Unique identifier of the cart item.
-        quantity:
-          type: integer
-          format: int32
-          minimum: 1
-          description: Quantity of the selected book in the cart.
-        book_id:
-          type: number
-          format: int64
-          description: Identifier of the book added to the cart.
-        book:
-          $ref: "#/components/schemas/BookResponse"
-        added_at:
-          type: string
-          format: date-time
-          description: Timestamp when the item was added to the cart.
 
     PaymentResponse:
       type: object
@@ -2011,9 +2007,17 @@ components:
           type: string
           description: External transaction identifier returned by the payment provider.
         order_id:
-          type: number
+          type: integer
           format: int64
           description: Identifier of the order associated with this payment.
+        created_at:
+          type: string
+          format: date-time
+          description: Timestamp when the payment was created.
+        updated_at:
+          type: string
+          format: date-time
+          description: Timestamp when the payment was last updated.
 
     ShipmentResponse:
       type: object
@@ -2045,6 +2049,14 @@ components:
           type: integer
           format: int64
           description: Identifier of the order associated with this shipment.
+        created_at:
+          type: string
+          format: date-time
+          description: Timestamp when the shipment was created.
+        updated_at:
+          type: string
+          format: date-time
+          description: Timestamp when the shipment was last updated.
 
     PaginationResponse:
       type: object
@@ -2149,7 +2161,7 @@ components:
           schema:
             $ref: "#/components/schemas/AppExceptionResponse"
 
-    UnprocesableEntity:
+    UnprocessableEntity:
       description: Unprocessable entity
       content:
         application/json:
