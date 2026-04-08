@@ -105,7 +105,7 @@ class PaymentControllerTest {
   @Test
   @DisplayName("Should return created when create a payment")
   void shouldReturnCreatedWhenCreatePayment() throws Exception {
-    CreatePaymentRequest requestResponse = CreatePaymentRequest.builder()
+    CreatePaymentRequest request = CreatePaymentRequest.builder()
         .orderId(1L)
         .method(PaymentMethod.CREDIT_CARD)
         .build();
@@ -114,7 +114,7 @@ class PaymentControllerTest {
         .thenReturn(PaymentResponse.builder().id(1L).build());
 
     mockMvc
-        .perform(post("/payments").content(mapper.writeValueAsString(requestResponse))
+        .perform(post("/payments").content(mapper.writeValueAsString(request))
             .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isCreated())
         .andExpect(header().string("location", "http://localhost/payments/1"));
@@ -123,12 +123,12 @@ class PaymentControllerTest {
   @Test
   @DisplayName("Should return no content when update payment status")
   void shouldReturnNoContentWhenUpdatePaymentStatus() throws Exception {
-    UpdatePaymentStatusRequest requestResponse = UpdatePaymentStatusRequest.builder()
+    UpdatePaymentStatusRequest request = UpdatePaymentStatusRequest.builder()
         .status(PaymentStatus.REFUNDED)
         .build();
 
-    mockMvc.perform(
-        put("/payments/{paymentId}/status", 1L).content(mapper.writeValueAsString(requestResponse))
+    mockMvc
+        .perform(put("/payments/{paymentId}/status", 1L).content(mapper.writeValueAsString(request))
             .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isNoContent());
   }

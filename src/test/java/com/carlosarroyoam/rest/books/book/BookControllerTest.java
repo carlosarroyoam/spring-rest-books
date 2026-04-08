@@ -100,7 +100,7 @@ class BookControllerTest {
   @Test
   @DisplayName("Should return created when create a book")
   void shouldReturnCreatedWhenCreateBook() throws Exception {
-    CreateBookRequest requestResponse = CreateBookRequest.builder()
+    CreateBookRequest request = CreateBookRequest.builder()
         .isbn("978-9-7389-4434-3")
         .title("Sapiens: A Brief History of Humankind")
         .coverUrl("https://images.isbndb.com/covers/60/97/9780062316097.jpg")
@@ -114,7 +114,7 @@ class BookControllerTest {
     when(bookService.create(any(CreateBookRequest.class))).thenReturn(book);
 
     mockMvc
-        .perform(post("/books").content(mapper.writeValueAsString(requestResponse))
+        .perform(post("/books").content(mapper.writeValueAsString(request))
             .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isCreated())
         .andExpect(header().string("location", "http://localhost/books/1"));
@@ -123,7 +123,7 @@ class BookControllerTest {
   @Test
   @DisplayName("Should return no content when update book")
   void shouldReturnNoContentWhenUpdateBook() throws Exception {
-    UpdateBookRequest requestResponse = UpdateBookRequest.builder()
+    UpdateBookRequest request = UpdateBookRequest.builder()
         .isbn("978-9-7389-4434-3")
         .title("Sapiens: A Brief History of Humankind")
         .coverUrl("https://images.isbndb.com/covers/60/97/9780062316097.jpg")
@@ -132,7 +132,7 @@ class BookControllerTest {
         .isAvailableOnline(Boolean.TRUE)
         .build();
 
-    mockMvc.perform(put("/books/{bookId}", 1L).content(mapper.writeValueAsString(requestResponse))
+    mockMvc.perform(put("/books/{bookId}", 1L).content(mapper.writeValueAsString(request))
         .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNoContent());
   }
 

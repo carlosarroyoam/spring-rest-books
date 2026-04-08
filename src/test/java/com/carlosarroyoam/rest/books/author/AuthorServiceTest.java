@@ -117,13 +117,13 @@ class AuthorServiceTest {
   @Test
   @DisplayName("Should return AuthorResponse when create an author with valid data")
   void shouldReturnWhenCreateAuthorWithValidData() {
-    CreateAuthorRequest requestResponse = CreateAuthorRequest.builder().name("Itzik Yahav").build();
+    CreateAuthorRequest request = CreateAuthorRequest.builder().name("Itzik Yahav").build();
 
     Author savedAuthor = Author.builder().id(2L).name("Itzik Yahav").build();
 
     when(authorRepository.save(any(Author.class))).thenReturn(savedAuthor);
 
-    AuthorResponse authorResponse = authorService.create(requestResponse);
+    AuthorResponse authorResponse = authorService.create(request);
 
     assertThat(authorResponse).isNotNull();
     assertThat(authorResponse.getId()).isEqualTo(2L);
@@ -133,14 +133,14 @@ class AuthorServiceTest {
   @Test
   @DisplayName("Should update author with valid data")
   void shouldUpdateAuthorWithValidData() {
-    UpdateAuthorRequest requestResponse = UpdateAuthorRequest.builder().name("Yuval").build();
+    UpdateAuthorRequest request = UpdateAuthorRequest.builder().name("Yuval").build();
 
     Author updatedAuthor = Author.builder().id(2L).name("Yuval").build();
 
     when(authorRepository.findById(anyLong())).thenReturn(Optional.of(author));
     when(authorRepository.save(any(Author.class))).thenReturn(updatedAuthor);
 
-    authorService.update(1L, requestResponse);
+    authorService.update(1L, request);
 
     verify(authorRepository).findById(1L);
     verify(authorRepository).save(any(Author.class));
@@ -151,11 +151,11 @@ class AuthorServiceTest {
   @Test
   @DisplayName("Should throw ResponseStatusException when update author with non existing id")
   void shouldUpdateAuthorWithNonExistingId() {
-    UpdateAuthorRequest requestResponse = UpdateAuthorRequest.builder().build();
+    UpdateAuthorRequest request = UpdateAuthorRequest.builder().build();
 
     when(authorRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-    assertThatThrownBy(() -> authorService.update(1L, requestResponse))
+    assertThatThrownBy(() -> authorService.update(1L, request))
         .isInstanceOf(ResponseStatusException.class)
         .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
         .hasMessageContaining(AppMessages.AUTHOR_NOT_FOUND_EXCEPTION);

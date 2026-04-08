@@ -99,12 +99,13 @@ class ShipmentControllerTest {
   @Test
   @DisplayName("Should return no content when update shipment status")
   void shouldReturnNoContentWhenUpdateShipmentStatus() throws Exception {
-    UpdateShipmentStatusRequest requestResponse = UpdateShipmentStatusRequest.builder()
+    UpdateShipmentStatusRequest request = UpdateShipmentStatusRequest.builder()
         .status(ShipmentStatus.SHIPPED)
         .build();
 
-    mockMvc.perform(put("/shipments/{shipmentId}/status", 1L)
-        .content(mapper.writeValueAsString(requestResponse))
-        .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNoContent());
+    mockMvc.perform(
+        put("/shipments/{shipmentId}/status", 1L).content(mapper.writeValueAsString(request))
+            .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isNoContent());
   }
 }

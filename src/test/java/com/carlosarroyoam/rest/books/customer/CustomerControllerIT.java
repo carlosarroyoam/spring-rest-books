@@ -108,7 +108,7 @@ class CustomerControllerIT {
   @Test
   @DisplayName("Should return created when create a customer with valid data")
   void shouldReturnCreatedWhenCreateCustomerWithValidData() throws Exception {
-    CreateCustomerRequest requestResponse = CreateCustomerRequest.builder()
+    CreateCustomerRequest request = CreateCustomerRequest.builder()
         .firstName("Carlos Alberto")
         .lastName("Arroyo Martínez")
         .password("secret123#")
@@ -118,7 +118,7 @@ class CustomerControllerIT {
 
     mockMvc
         .perform(post("/customers").contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(requestResponse)))
+            .content(mapper.writeValueAsString(request)))
         .andExpect(status().isCreated())
         .andExpect(header().string("Location", "http://localhost/customers/3"));
   }
@@ -128,7 +128,7 @@ class CustomerControllerIT {
   void shouldThrowWhenCreateCustomerWithExistingUsername() throws Exception {
     String expectedJson = JsonUtils.readJson("/customers/create_with_existing_username.json");
 
-    CreateCustomerRequest requestResponse = CreateCustomerRequest.builder()
+    CreateCustomerRequest request = CreateCustomerRequest.builder()
         .firstName("Carlos Alberto")
         .lastName("Arroyo Martínez")
         .password("secret123#")
@@ -138,7 +138,7 @@ class CustomerControllerIT {
 
     String responseJson = mockMvc
         .perform(post("/customers").contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(requestResponse)))
+            .content(mapper.writeValueAsString(request)))
         .andExpect(status().isBadRequest())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andReturn()
@@ -154,7 +154,7 @@ class CustomerControllerIT {
   void shouldThrowWhenCreateCustomerWithExistingEmail() throws Exception {
     String expectedJson = JsonUtils.readJson("/customers/create_with_existing_email.json");
 
-    CreateCustomerRequest requestResponse = CreateCustomerRequest.builder()
+    CreateCustomerRequest request = CreateCustomerRequest.builder()
         .firstName("Carlos Alberto")
         .lastName("Arroyo Martínez")
         .password("secret123#")
@@ -164,7 +164,7 @@ class CustomerControllerIT {
 
     String responseJson = mockMvc
         .perform(post("/customers").contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(requestResponse)))
+            .content(mapper.writeValueAsString(request)))
         .andExpect(status().isBadRequest())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andReturn()
@@ -178,13 +178,13 @@ class CustomerControllerIT {
   @Test
   @DisplayName("Should return no content update customer with valid data")
   void shouldReturnNoContentWhenUpdateCustomerWithValidData() throws Exception {
-    UpdateCustomerRequest requestResponse = UpdateCustomerRequest.builder()
+    UpdateCustomerRequest request = UpdateCustomerRequest.builder()
         .firstName("Carlos Alberto")
         .lastName("Arroyo Martínez")
         .build();
 
     mockMvc.perform(put("/customers/{customerId}", 1L).contentType(MediaType.APPLICATION_JSON)
-        .content(mapper.writeValueAsString(requestResponse))).andExpect(status().isNoContent());
+        .content(mapper.writeValueAsString(request))).andExpect(status().isNoContent());
   }
 
   @Test
@@ -192,14 +192,14 @@ class CustomerControllerIT {
   void shouldThrowWhenUpdateCustomerWithNonExistingId() throws Exception {
     String expectedJson = JsonUtils.readJson("/customers/update_with_non_existing_id.json");
 
-    UpdateCustomerRequest requestResponse = UpdateCustomerRequest.builder()
+    UpdateCustomerRequest request = UpdateCustomerRequest.builder()
         .firstName("Carlos Alberto")
         .lastName("Arroyo Martínez")
         .build();
 
     String responseJson = mockMvc
         .perform(put("/customers/{customerId}", 1000L).contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(requestResponse)))
+            .content(mapper.writeValueAsString(request)))
         .andExpect(status().isNotFound())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andReturn()

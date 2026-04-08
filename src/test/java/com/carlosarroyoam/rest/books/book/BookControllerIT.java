@@ -106,7 +106,7 @@ class BookControllerIT {
   @Test
   @DisplayName("Should return when create a book with valid data")
   void shouldReturnCreatedWhenCreateBookWithValidData() throws Exception {
-    CreateBookRequest requestResponse = CreateBookRequest.builder()
+    CreateBookRequest request = CreateBookRequest.builder()
         .isbn("978-1-7873-3067-2")
         .title("21 Lessons for the 21st Century")
         .coverUrl("https://images.isbndb.com/covers/9835763482824.jpg")
@@ -117,7 +117,7 @@ class BookControllerIT {
 
     mockMvc
         .perform(post("/books").contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(requestResponse)))
+            .content(mapper.writeValueAsString(request)))
         .andExpect(status().isCreated())
         .andExpect(header().string("Location", "http://localhost/books/3"));
   }
@@ -127,7 +127,7 @@ class BookControllerIT {
   void shouldThrowWhenCreateBookWithExistingIsbn() throws Exception {
     String expectedJson = JsonUtils.readJson("/books/create_with_existing_isbn.json");
 
-    CreateBookRequest requestResponse = CreateBookRequest.builder()
+    CreateBookRequest request = CreateBookRequest.builder()
         .isbn("978-9-7389-4434-3")
         .title("Sapiens: A Brief History of Humankind")
         .coverUrl("https://images.isbndb.com/covers/60/97/9780062316097.jpg")
@@ -138,7 +138,7 @@ class BookControllerIT {
 
     String responseJson = mockMvc
         .perform(post("/books").contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(requestResponse)))
+            .content(mapper.writeValueAsString(request)))
         .andExpect(status().isBadRequest())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andReturn()
@@ -152,7 +152,7 @@ class BookControllerIT {
   @Test
   @DisplayName("Should return no content when update book with valid data")
   void shouldReturnNoContentWhenUpdateBookWithValidData() throws Exception {
-    UpdateBookRequest requestResponse = UpdateBookRequest.builder()
+    UpdateBookRequest request = UpdateBookRequest.builder()
         .isbn("978-9-7389-4434-3")
         .title("Sapiens: A Brief History of Humankind")
         .coverUrl("https://images.isbndb.com/covers/60/97/9780062316097.jpg")
@@ -162,7 +162,7 @@ class BookControllerIT {
         .build();
 
     mockMvc.perform(put("/books/{bookId}", 1L).contentType(MediaType.APPLICATION_JSON)
-        .content(mapper.writeValueAsString(requestResponse))).andExpect(status().isNoContent());
+        .content(mapper.writeValueAsString(request))).andExpect(status().isNoContent());
   }
 
   @Test
@@ -170,7 +170,7 @@ class BookControllerIT {
   void shouldThrowWhenUpdateBookWithNonExistingId() throws Exception {
     String expectedJson = JsonUtils.readJson("/books/update_with_non_existing_id.json");
 
-    UpdateBookRequest requestResponse = UpdateBookRequest.builder()
+    UpdateBookRequest request = UpdateBookRequest.builder()
         .isbn("978-9-7389-4434-3")
         .title("Sapiens: A Brief History of Humankind")
         .coverUrl("https://images.isbndb.com/covers/60/97/9780062316097.jpg")
@@ -181,7 +181,7 @@ class BookControllerIT {
 
     String responseJson = mockMvc
         .perform(put("/books/{bookId}", 1000L).contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(requestResponse)))
+            .content(mapper.writeValueAsString(request)))
         .andExpect(status().isNotFound())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andReturn()

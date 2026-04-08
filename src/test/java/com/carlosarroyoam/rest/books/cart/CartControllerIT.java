@@ -72,12 +72,9 @@ class CartControllerIT {
   @Test
   @DisplayName("Should return no content when update cart item with valid data")
   void shouldReturnNoContentWhenUpdateCartItemWithValidData() throws Exception {
-    UpdateCartItemRequest requestResponse = UpdateCartItemRequest.builder()
-        .quantity(1)
-        .bookId(1L)
-        .build();
+    UpdateCartItemRequest request = UpdateCartItemRequest.builder().quantity(1).bookId(1L).build();
 
-    mockMvc.perform(put("/carts/items").content(mapper.writeValueAsString(requestResponse))
+    mockMvc.perform(put("/carts/items").content(mapper.writeValueAsString(request))
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON)).andExpect(status().isNoContent());
   }
@@ -87,13 +84,13 @@ class CartControllerIT {
   void shouldThrowWhenUpdateCartItemWithNonExistingBookId() throws Exception {
     String expectedJson = JsonUtils.readJson("/carts/update_with_non_existing_book_id.json");
 
-    UpdateCartItemRequest requestResponse = UpdateCartItemRequest.builder()
+    UpdateCartItemRequest request = UpdateCartItemRequest.builder()
         .quantity(1)
         .bookId(1000L)
         .build();
 
     String responseJson = mockMvc
-        .perform(put("/carts/items").content(mapper.writeValueAsString(requestResponse))
+        .perform(put("/carts/items").content(mapper.writeValueAsString(request))
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNotFound())

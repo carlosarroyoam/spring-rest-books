@@ -124,7 +124,7 @@ class PaymentServiceTest {
   @Test
   @DisplayName("Should return PaymentResponse when create payment with valid data and create shipment if missing")
   void shouldReturnWhenCreatePaymentWithValidData() {
-    CreatePaymentRequest requestResponse = CreatePaymentRequest.builder()
+    CreatePaymentRequest request = CreatePaymentRequest.builder()
         .orderId(1L)
         .method(PaymentMethod.CREDIT_CARD)
         .build();
@@ -138,7 +138,7 @@ class PaymentServiceTest {
     });
     when(shipmentRepository.findByOrderId(1L)).thenReturn(Optional.empty());
 
-    PaymentResponse paymentResponse = paymentService.create(requestResponse);
+    PaymentResponse paymentResponse = paymentService.create(request);
 
     assertThat(paymentResponse).isNotNull();
     assertThat(paymentResponse.getId()).isEqualTo(1L);
@@ -152,14 +152,14 @@ class PaymentServiceTest {
   @Test
   @DisplayName("Should update payment status and sync order status")
   void shouldUpdatePaymentStatusAndSyncOrderStatus() {
-    UpdatePaymentStatusRequest requestResponse = UpdatePaymentStatusRequest.builder()
+    UpdatePaymentStatusRequest request = UpdatePaymentStatusRequest.builder()
         .status(PaymentStatus.REFUNDED)
         .build();
 
     when(paymentRepository.findById(1L)).thenReturn(Optional.of(payment));
     when(orderRepository.findById(1L)).thenReturn(Optional.of(order));
 
-    paymentService.updateStatus(1L, requestResponse);
+    paymentService.updateStatus(1L, request);
 
     verify(paymentRepository).save(any(Payment.class));
     verify(orderRepository).save(any(Order.class));
@@ -170,7 +170,7 @@ class PaymentServiceTest {
   @Test
   @DisplayName("Should not create shipment when one already exists for order")
   void shouldNotCreateShipmentWhenOneAlreadyExists() {
-    CreatePaymentRequest requestResponse = CreatePaymentRequest.builder()
+    CreatePaymentRequest request = CreatePaymentRequest.builder()
         .orderId(1L)
         .method(PaymentMethod.CREDIT_CARD)
         .build();
@@ -184,7 +184,7 @@ class PaymentServiceTest {
         .status(ShipmentStatus.PENDING)
         .build()));
 
-    paymentService.create(requestResponse);
+    paymentService.create(request);
 
     verify(shipmentRepository).findByOrderId(1L);
   }
@@ -192,14 +192,14 @@ class PaymentServiceTest {
   @Test
   @DisplayName("Should throw ResponseStatusException when create payment with non existing order")
   void shouldThrowWhenCreatePaymentWithNonExistingOrder() {
-    CreatePaymentRequest requestResponse = CreatePaymentRequest.builder()
+    CreatePaymentRequest request = CreatePaymentRequest.builder()
         .orderId(99L)
         .method(PaymentMethod.CREDIT_CARD)
         .build();
 
     when(orderRepository.findById(99L)).thenReturn(Optional.empty());
 
-    assertThatThrownBy(() -> paymentService.create(requestResponse))
+    assertThatThrownBy(() -> paymentService.create(request))
         .isInstanceOf(ResponseStatusException.class)
         .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
         .hasMessageContaining(AppMessages.ORDER_NOT_FOUND_EXCEPTION);
@@ -208,7 +208,7 @@ class PaymentServiceTest {
   @Test
   @DisplayName("Should throw ResponseStatusException when create payment for order already paid")
   void shouldThrowWhenCreatePaymentForOrderAlreadyPaid() {
-    CreatePaymentRequest requestResponse = CreatePaymentRequest.builder()
+    CreatePaymentRequest request = CreatePaymentRequest.builder()
         .orderId(1L)
         .method(PaymentMethod.CREDIT_CARD)
         .build();
@@ -216,7 +216,7 @@ class PaymentServiceTest {
     when(orderRepository.findById(1L)).thenReturn(Optional.of(order));
     when(paymentRepository.existsByOrderId(1L)).thenReturn(true);
 
-    assertThatThrownBy(() -> paymentService.create(requestResponse))
+    assertThatThrownBy(() -> paymentService.create(request))
         .isInstanceOf(ResponseStatusException.class)
         .hasMessageContaining(HttpStatus.BAD_REQUEST.toString())
         .hasMessageContaining(AppMessages.PAYMENT_ALREADY_EXISTS_EXCEPTION);

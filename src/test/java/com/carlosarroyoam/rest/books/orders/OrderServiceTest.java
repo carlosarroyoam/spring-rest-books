@@ -160,7 +160,7 @@ class OrderServiceTest {
   @Test
   @DisplayName("Should return OrderResponse when create an order with valid data")
   void shouldReturnWhenCreateOrderWithValidData() {
-    CreateOrderRequest requestResponse = CreateOrderRequest.builder()
+    CreateOrderRequest request = CreateOrderRequest.builder()
         .customerId(1L)
         .shippingAddress("123 Main Street, Springfield")
         .billingAddress("123 Main Street, Springfield")
@@ -177,7 +177,7 @@ class OrderServiceTest {
       return savedOrder;
     });
 
-    OrderResponse orderResponse = orderService.create(requestResponse);
+    OrderResponse orderResponse = orderService.create(request);
 
     assertThat(orderResponse).isNotNull();
     assertThat(orderResponse.getId()).isEqualTo(1L);
@@ -193,7 +193,7 @@ class OrderServiceTest {
   @Test
   @DisplayName("Should throw ResponseStatusException when create an order with non existing customer")
   void shouldThrowWhenCreateOrderWithNonExistingCustomer() {
-    CreateOrderRequest requestResponse = CreateOrderRequest.builder()
+    CreateOrderRequest request = CreateOrderRequest.builder()
         .customerId(99L)
         .shippingAddress("123 Main Street, Springfield")
         .billingAddress("123 Main Street, Springfield")
@@ -202,7 +202,7 @@ class OrderServiceTest {
 
     when(customerRepository.findById(99L)).thenReturn(Optional.empty());
 
-    assertThatThrownBy(() -> orderService.create(requestResponse))
+    assertThatThrownBy(() -> orderService.create(request))
         .isInstanceOf(ResponseStatusException.class)
         .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
         .hasMessageContaining(AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION);
@@ -211,7 +211,7 @@ class OrderServiceTest {
   @Test
   @DisplayName("Should throw ResponseStatusException when create an order with non existing book")
   void shouldThrowWhenCreateOrderWithNonExistingBook() {
-    CreateOrderRequest requestResponse = CreateOrderRequest.builder()
+    CreateOrderRequest request = CreateOrderRequest.builder()
         .customerId(1L)
         .shippingAddress("123 Main Street, Springfield")
         .billingAddress("123 Main Street, Springfield")
@@ -221,7 +221,7 @@ class OrderServiceTest {
     when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
     when(bookRepository.findById(99L)).thenReturn(Optional.empty());
 
-    assertThatThrownBy(() -> orderService.create(requestResponse))
+    assertThatThrownBy(() -> orderService.create(request))
         .isInstanceOf(ResponseStatusException.class)
         .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
         .hasMessageContaining(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
@@ -230,7 +230,7 @@ class OrderServiceTest {
   @Test
   @DisplayName("Should update order with valid data")
   void shouldUpdateOrderWithValidData() {
-    UpdateOrderRequest requestResponse = UpdateOrderRequest.builder()
+    UpdateOrderRequest request = UpdateOrderRequest.builder()
         .shippingAddress("456 Updated Avenue, Springfield")
         .billingAddress("789 Billing Road, Springfield")
         .notes("Call when arriving")
@@ -238,7 +238,7 @@ class OrderServiceTest {
 
     when(orderRepository.findById(anyLong())).thenReturn(Optional.of(order));
 
-    orderService.update(1L, requestResponse);
+    orderService.update(1L, request);
 
     verify(orderRepository).save(any(Order.class));
     assertThat(order.getShippingAddress()).isEqualTo("456 Updated Avenue, Springfield");

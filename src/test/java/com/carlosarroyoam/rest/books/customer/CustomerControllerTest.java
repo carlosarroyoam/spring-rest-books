@@ -101,7 +101,7 @@ class CustomerControllerTest {
   @Test
   @DisplayName("Should return created when create a customer")
   void shouldReturnCreatedWhenCreateCustomer() throws Exception {
-    CreateCustomerRequest requestResponse = CreateCustomerRequest.builder()
+    CreateCustomerRequest request = CreateCustomerRequest.builder()
         .firstName("Carlos Alberto")
         .lastName("Arroyo Martínez")
         .password("secret123#")
@@ -114,7 +114,7 @@ class CustomerControllerTest {
     when(customerService.create(any(CreateCustomerRequest.class))).thenReturn(customer);
 
     mockMvc
-        .perform(post("/customers").content(mapper.writeValueAsString(requestResponse))
+        .perform(post("/customers").content(mapper.writeValueAsString(request))
             .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isCreated())
         .andExpect(header().string("location", "http://localhost/customers/1"));
@@ -123,15 +123,13 @@ class CustomerControllerTest {
   @Test
   @DisplayName("Should return no content when update customer")
   void shouldReturnNoContentUpdateCustomer() throws Exception {
-    UpdateCustomerRequest requestResponse = UpdateCustomerRequest.builder()
+    UpdateCustomerRequest request = UpdateCustomerRequest.builder()
         .firstName("Carlos Alberto")
         .lastName("Arroyo Martínez")
         .build();
 
-    mockMvc.perform(
-        put("/customers/{customerId}", 1L).content(mapper.writeValueAsString(requestResponse))
-            .contentType(MediaType.APPLICATION_JSON))
-        .andExpect(status().isNoContent());
+    mockMvc.perform(put("/customers/{customerId}", 1L).content(mapper.writeValueAsString(request))
+        .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNoContent());
   }
 
   @Test

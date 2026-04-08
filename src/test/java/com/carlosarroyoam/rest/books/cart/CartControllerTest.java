@@ -63,12 +63,9 @@ class CartControllerTest {
   @Test
   @DisplayName("Should return no content when update cart item")
   void shouldReturnNoContentWhenUpdateCartItem() throws Exception {
-    UpdateCartItemRequest requestResponse = UpdateCartItemRequest.builder()
-        .quantity(1)
-        .bookId(1L)
-        .build();
+    UpdateCartItemRequest request = UpdateCartItemRequest.builder().quantity(1).bookId(1L).build();
 
-    mockMvc.perform(put("/carts/items").content(mapper.writeValueAsString(requestResponse))
+    mockMvc.perform(put("/carts/items").content(mapper.writeValueAsString(request))
         .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNoContent());
   }
 

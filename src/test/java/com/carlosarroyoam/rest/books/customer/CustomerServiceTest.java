@@ -107,7 +107,7 @@ class CustomerServiceTest {
   @Test
   @DisplayName("Should return CustomerResponse when create a customer with valid data")
   void shouldReturnWhenCreateCustomerWithValidData() {
-    CreateCustomerRequest requestResponse = CreateCustomerRequest.builder()
+    CreateCustomerRequest request = CreateCustomerRequest.builder()
         .firstName("Cathy Stefania")
         .lastName("Guido Rojas")
         .email("cguidor@mail.com")
@@ -123,7 +123,7 @@ class CustomerServiceTest {
     when(customerRepository.existsByEmail(anyString())).thenReturn(false);
     when(customerRepository.save(any(Customer.class))).thenReturn(savedCustomer);
 
-    CustomerResponse customerResponse = customerService.create(requestResponse);
+    CustomerResponse customerResponse = customerService.create(request);
 
     assertThat(customerResponse).isNotNull();
     assertThat(customerResponse.getFirstName()).isEqualTo("Cathy Stefania");
@@ -133,11 +133,11 @@ class CustomerServiceTest {
   @Test
   @DisplayName("Should throw ResponseStatusException when create a customer with existing username")
   void shouldThrowWhenCreateCustomerWithExistingUsername() {
-    CreateCustomerRequest requestResponse = CreateCustomerRequest.builder().build();
+    CreateCustomerRequest request = CreateCustomerRequest.builder().build();
 
     when(customerRepository.existsByUsername(any())).thenReturn(true);
 
-    assertThatThrownBy(() -> customerService.create(requestResponse))
+    assertThatThrownBy(() -> customerService.create(request))
         .isInstanceOf(ResponseStatusException.class)
         .hasMessageContaining(HttpStatus.BAD_REQUEST.toString())
         .hasMessageContaining(AppMessages.USERNAME_ALREADY_EXISTS_EXCEPTION);
@@ -146,11 +146,11 @@ class CustomerServiceTest {
   @Test
   @DisplayName("Should throw ResponseStatusException when create a customer with existing email")
   void shouldThrowWhenCreateCustomerWithExistingEmail() {
-    CreateCustomerRequest requestResponse = CreateCustomerRequest.builder().build();
+    CreateCustomerRequest request = CreateCustomerRequest.builder().build();
 
     when(customerRepository.existsByEmail(any())).thenReturn(true);
 
-    assertThatThrownBy(() -> customerService.create(requestResponse))
+    assertThatThrownBy(() -> customerService.create(request))
         .isInstanceOf(ResponseStatusException.class)
         .hasMessageContaining(HttpStatus.BAD_REQUEST.toString())
         .hasMessageContaining(AppMessages.EMAIL_ALREADY_EXISTS_EXCEPTION);
@@ -159,16 +159,14 @@ class CustomerServiceTest {
   @Test
   @DisplayName("Should update customer with valid data")
   void shouldUpdateCustomerWithValidData() {
-    UpdateCustomerRequest requestResponse = UpdateCustomerRequest.builder()
-        .firstName("Carlos")
-        .build();
+    UpdateCustomerRequest request = UpdateCustomerRequest.builder().firstName("Carlos").build();
 
     Customer updatedCustomer = Customer.builder().firstName("Carlos").build();
 
     when(customerRepository.findById(any())).thenReturn(Optional.of(customer));
     when(customerRepository.save(any(Customer.class))).thenReturn(updatedCustomer);
 
-    customerService.update(1L, requestResponse);
+    customerService.update(1L, request);
 
     verify(customerRepository).save(customer);
     assertThat(customer.getId()).isEqualTo(1L);
@@ -178,11 +176,11 @@ class CustomerServiceTest {
   @Test
   @DisplayName("Should throw ResponseStatusException when update customer with non existing id")
   void shouldThrowWhenUpdateCustomerWithInvalidData() {
-    UpdateCustomerRequest requestResponse = UpdateCustomerRequest.builder().build();
+    UpdateCustomerRequest request = UpdateCustomerRequest.builder().build();
 
     when(customerRepository.findById(any())).thenReturn(Optional.empty());
 
-    assertThatThrownBy(() -> customerService.update(1L, requestResponse))
+    assertThatThrownBy(() -> customerService.update(1L, request))
         .isInstanceOf(ResponseStatusException.class)
         .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
         .hasMessageContaining(AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION);

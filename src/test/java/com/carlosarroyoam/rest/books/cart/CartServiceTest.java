@@ -90,16 +90,13 @@ class CartServiceTest {
   @Test
   @DisplayName("Should update cart item with valid data")
   void shouldUpdateCartItemWhitValidData() {
-    UpdateCartItemRequest requestResponse = UpdateCartItemRequest.builder()
-        .quantity(1)
-        .bookId(1L)
-        .build();
+    UpdateCartItemRequest request = UpdateCartItemRequest.builder().quantity(1).bookId(1L).build();
 
     when(cartRepository.findByCustomerId(anyLong())).thenReturn(Optional.of(cart));
     when(bookRepository.findById(anyLong())).thenReturn(Optional.of(book));
     when(cartItemRepository.save(any(CartItem.class))).thenReturn(cartItem);
 
-    cartService.updateCartItem(1L, requestResponse);
+    cartService.updateCartItem(1L, request);
 
     verify(cartItemRepository).save(any(CartItem.class));
   }
@@ -107,10 +104,7 @@ class CartServiceTest {
   @Test
   @DisplayName("Should update cart item with non existing cart item")
   void shouldUpdateCartItemWhitNonExistingCartItem() {
-    UpdateCartItemRequest requestResponse = UpdateCartItemRequest.builder()
-        .quantity(1)
-        .bookId(1L)
-        .build();
+    UpdateCartItemRequest request = UpdateCartItemRequest.builder().quantity(1).bookId(1L).build();
 
     Cart cartWithoutItems = Cart.builder().id(1L).build();
 
@@ -118,7 +112,7 @@ class CartServiceTest {
     when(bookRepository.findById(anyLong())).thenReturn(Optional.of(book));
     when(cartItemRepository.save(any(CartItem.class))).thenReturn(cartItem);
 
-    cartService.updateCartItem(1L, requestResponse);
+    cartService.updateCartItem(1L, request);
 
     verify(cartItemRepository).save(any(CartItem.class));
   }
@@ -126,11 +120,11 @@ class CartServiceTest {
   @Test
   @DisplayName("Should throw ResponseStatusException when update cart item with non existing cart id")
   void shouldThrowWhenUpdateCartItemWhitNonExistingCartId() {
-    UpdateCartItemRequest requestResponse = UpdateCartItemRequest.builder().build();
+    UpdateCartItemRequest request = UpdateCartItemRequest.builder().build();
 
     when(cartRepository.findByCustomerId(anyLong())).thenReturn(Optional.empty());
 
-    assertThatThrownBy(() -> cartService.updateCartItem(1L, requestResponse))
+    assertThatThrownBy(() -> cartService.updateCartItem(1L, request))
         .isInstanceOf(ResponseStatusException.class)
         .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
         .hasMessageContaining(AppMessages.CART_NOT_FOUND_EXCEPTION);
@@ -139,12 +133,12 @@ class CartServiceTest {
   @Test
   @DisplayName("Should throw ResponseStatusException when update cart item with non existing book id")
   void shouldThrowWhenUpdateCartItemWhitNonExistingBookId() {
-    UpdateCartItemRequest requestResponse = UpdateCartItemRequest.builder().bookId(1L).build();
+    UpdateCartItemRequest request = UpdateCartItemRequest.builder().bookId(1L).build();
 
     when(cartRepository.findByCustomerId(anyLong())).thenReturn(Optional.of(cart));
     when(bookRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-    assertThatThrownBy(() -> cartService.updateCartItem(1L, requestResponse))
+    assertThatThrownBy(() -> cartService.updateCartItem(1L, request))
         .isInstanceOf(ResponseStatusException.class)
         .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
         .hasMessageContaining(AppMessages.BOOK_NOT_FOUND_EXCEPTION);

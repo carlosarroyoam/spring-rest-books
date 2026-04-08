@@ -107,7 +107,7 @@ class OrderControllerTest {
   @Test
   @DisplayName("Should return created when create an order")
   void shouldReturnCreatedWhenCreateOrder() throws Exception {
-    CreateOrderRequest requestResponse = CreateOrderRequest.builder()
+    CreateOrderRequest request = CreateOrderRequest.builder()
         .customerId(1L)
         .shippingAddress("123 Main Street, Springfield")
         .billingAddress("123 Main Street, Springfield")
@@ -119,7 +119,7 @@ class OrderControllerTest {
         .thenReturn(OrderResponse.builder().id(1L).build());
 
     mockMvc
-        .perform(post("/orders").content(mapper.writeValueAsString(requestResponse))
+        .perform(post("/orders").content(mapper.writeValueAsString(request))
             .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isCreated())
         .andExpect(header().string("location", "http://localhost/orders/1"));
@@ -128,13 +128,13 @@ class OrderControllerTest {
   @Test
   @DisplayName("Should return no content when update order")
   void shouldReturnNoContentWhenUpdateOrder() throws Exception {
-    UpdateOrderRequest requestResponse = UpdateOrderRequest.builder()
+    UpdateOrderRequest request = UpdateOrderRequest.builder()
         .shippingAddress("456 Updated Avenue, Springfield")
         .billingAddress("789 Billing Road, Springfield")
         .notes("Call when arriving")
         .build();
 
-    mockMvc.perform(put("/orders/{orderId}", 1L).content(mapper.writeValueAsString(requestResponse))
+    mockMvc.perform(put("/orders/{orderId}", 1L).content(mapper.writeValueAsString(request))
         .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNoContent());
   }
 

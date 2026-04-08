@@ -118,7 +118,7 @@ class BookServiceTest {
   @Test
   @DisplayName("Should return BookResponse when create a book with valid data")
   void shouldReturnWhenCreateBookWithValidData() {
-    CreateBookRequest requestResponse = CreateBookRequest.builder()
+    CreateBookRequest request = CreateBookRequest.builder()
         .isbn("978-9-7389-4434-3")
         .title("Sapiens: A Brief History of Humankind")
         .build();
@@ -132,7 +132,7 @@ class BookServiceTest {
     when(bookRepository.existsByIsbn(anyString())).thenReturn(false);
     when(bookRepository.save(any(Book.class))).thenReturn(savedBook);
 
-    BookResponse bookResponse = bookService.create(requestResponse);
+    BookResponse bookResponse = bookService.create(request);
 
     assertThat(bookResponse).isNotNull();
     assertThat(bookResponse.getIsbn()).isEqualTo("978-9-7389-4434-3");
@@ -142,13 +142,11 @@ class BookServiceTest {
   @Test
   @DisplayName("Should thow ResponseStatusException when create a book with existing ISBN")
   void shouldThrowWhenCreateBookWithExistingIsbn() {
-    CreateBookRequest requestResponse = CreateBookRequest.builder()
-        .isbn("978-1-3035-0529-4")
-        .build();
+    CreateBookRequest request = CreateBookRequest.builder().isbn("978-1-3035-0529-4").build();
 
     when(bookRepository.existsByIsbn(anyString())).thenReturn(true);
 
-    assertThatThrownBy(() -> bookService.create(requestResponse))
+    assertThatThrownBy(() -> bookService.create(request))
         .isInstanceOf(ResponseStatusException.class)
         .hasMessageContaining(HttpStatus.BAD_REQUEST.toString())
         .hasMessageContaining(AppMessages.ISBN_ALREADY_EXISTS_EXCEPTION);
@@ -157,7 +155,7 @@ class BookServiceTest {
   @Test
   @DisplayName("Should update book with valid data")
   void shouldUpdateBookWithValidData() {
-    UpdateBookRequest requestResponse = UpdateBookRequest.builder()
+    UpdateBookRequest request = UpdateBookRequest.builder()
         .isbn("978-1-3035-0293-1")
         .title("Homo Deus")
         .build();
@@ -167,7 +165,7 @@ class BookServiceTest {
     when(bookRepository.findById(anyLong())).thenReturn(Optional.of(book));
     when(bookRepository.save(any(Book.class))).thenReturn(updatedBook);
 
-    bookService.update(1L, requestResponse);
+    bookService.update(1L, request);
 
     verify(bookRepository).findById(1L);
     verify(bookRepository).save(any(Book.class));
@@ -179,11 +177,11 @@ class BookServiceTest {
   @Test
   @DisplayName("Should throw ResponseStatusException when update book with non existing id")
   void shouldThrowWhenUpdateBookWithInvalidData() {
-    UpdateBookRequest requestResponse = UpdateBookRequest.builder().build();
+    UpdateBookRequest request = UpdateBookRequest.builder().build();
 
     when(bookRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-    assertThatThrownBy(() -> bookService.update(1L, requestResponse))
+    assertThatThrownBy(() -> bookService.update(1L, request))
         .isInstanceOf(ResponseStatusException.class)
         .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
         .hasMessageContaining(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
