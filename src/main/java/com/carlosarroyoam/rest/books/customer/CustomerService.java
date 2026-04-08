@@ -10,6 +10,7 @@ import com.carlosarroyoam.rest.books.customer.dto.CustomerDto.CustomerDtoMapper;
 import com.carlosarroyoam.rest.books.customer.dto.CustomerSpecsDto;
 import com.carlosarroyoam.rest.books.customer.dto.UpdateCustomerRequestDto;
 import com.carlosarroyoam.rest.books.customer.entity.Customer;
+import com.carlosarroyoam.rest.books.customer.entity.CustomerStatus;
 import com.carlosarroyoam.rest.books.customer.entity.Customer_;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -73,6 +74,7 @@ public class CustomerService {
         .lastName(requestDto.getLastName())
         .email(requestDto.getEmail())
         .username(requestDto.getUsername())
+        .status(CustomerStatus.ACTIVE)
         .createdAt(now)
         .updatedAt(now)
         .build();
@@ -98,6 +100,7 @@ public class CustomerService {
   public void deleteById(Long customerId) {
     LocalDateTime now = LocalDateTime.now();
     Customer customerById = findCustomerEntityById(customerId);
+    customerById.setStatus(CustomerStatus.DELETED);
     customerById.setUpdatedAt(now);
     customerById.setDeletedAt(now);
     customerRepository.save(customerById);

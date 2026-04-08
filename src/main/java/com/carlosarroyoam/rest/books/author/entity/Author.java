@@ -3,6 +3,7 @@ package com.carlosarroyoam.rest.books.author.entity;
 import com.carlosarroyoam.rest.books.book.entity.Book;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -31,10 +32,9 @@ public class Author {
   @Column(name = "name", length = 128, nullable = false)
   private String name;
 
-  @Enumerated
+  @Enumerated(EnumType.STRING)
   @Column(name = "status", length = 32, nullable = false)
-  @Builder.Default
-  private AuthorStatus status = AuthorStatus.ACTIVE;
+  private AuthorStatus status;
 
   @Builder.Default
   @ManyToMany(mappedBy = "authors")

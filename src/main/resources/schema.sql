@@ -1,7 +1,7 @@
 CREATE TABLE authors (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(128) NOT NULL,
-    status VARCHAR(32) NOT NULL,
+    status VARCHAR(32) NOT NULL DEFAULT 'ACTIVE',
     created_at TIMESTAMP NOT NULL,
     updated_at TIMESTAMP NOT NULL,
     deleted_at TIMESTAMP
@@ -15,7 +15,7 @@ CREATE TABLE books (
     price DECIMAL(10, 2) NOT NULL,
     is_available_online BOOLEAN NOT NULL,
     published_at DATE NOT NULL,
-    status VARCHAR(32) NOT NULL,
+    status VARCHAR(32) NOT NULL DEFAULT 'ACTIVE',
     created_at TIMESTAMP NOT NULL,
     updated_at TIMESTAMP NOT NULL,
     deleted_at TIMESTAMP
@@ -35,7 +35,7 @@ CREATE TABLE customers (
     last_name VARCHAR(128) NOT NULL,
     email VARCHAR(128) NOT NULL UNIQUE,
     username VARCHAR(128) NOT NULL UNIQUE,
-    status VARCHAR(32) NOT NULL,
+    status VARCHAR(32) NOT NULL DEFAULT 'ACTIVE',
     created_at TIMESTAMP NOT NULL,
     updated_at TIMESTAMP NOT NULL,
     deleted_at TIMESTAMP
@@ -69,7 +69,7 @@ CREATE TABLE orders (
     notes VARCHAR(1000),
     shipping_address VARCHAR(512) NOT NULL,
     billing_address VARCHAR(512) NOT NULL,
-    status VARCHAR(32) NOT NULL,
+    status VARCHAR(32) NOT NULL DEFAULT 'PENDING',
     customer_id BIGINT NOT NULL,
     created_at TIMESTAMP NOT NULL,
     updated_at TIMESTAMP NOT NULL,
@@ -93,7 +93,7 @@ CREATE TABLE payments (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     amount DECIMAL(10, 2) NOT NULL,
     method VARCHAR(32) NOT NULL,
-    status VARCHAR(32) NOT NULL,
+    status VARCHAR(32) NOT NULL DEFAULT 'PENDING',
     transaction_id VARCHAR(128),
     order_id BIGINT NOT NULL UNIQUE,
     created_at TIMESTAMP NOT NULL,
@@ -106,7 +106,7 @@ CREATE TABLE shipments (
     attention_name VARCHAR(128),
     address VARCHAR(512) NOT NULL,
     phone VARCHAR(32),
-    status VARCHAR(32) NOT NULL,
+    status VARCHAR(32) NOT NULL DEFAULT 'PENDING',
     order_id BIGINT NOT NULL UNIQUE,
     created_at TIMESTAMP NOT NULL,
     updated_at TIMESTAMP NOT NULL,

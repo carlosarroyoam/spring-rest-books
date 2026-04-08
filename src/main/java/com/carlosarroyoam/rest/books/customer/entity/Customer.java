@@ -2,6 +2,7 @@ package com.carlosarroyoam.rest.books.customer.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -36,10 +37,9 @@ public class Customer {
   @Column(name = "username", length = 128, nullable = false, unique = true)
   private String username;
 
-  @Enumerated
+  @Enumerated(EnumType.STRING)
   @Column(name = "status", length = 32, nullable = false)
-  @Builder.Default
-  private CustomerStatus status = CustomerStatus.ACTIVE;
+  private CustomerStatus status;
 
   @Column(name = "created_at", nullable = false)
   private LocalDateTime createdAt;

@@ -6,6 +6,7 @@ import com.carlosarroyoam.rest.books.author.dto.AuthorSpecsDto;
 import com.carlosarroyoam.rest.books.author.dto.CreateAuthorRequestDto;
 import com.carlosarroyoam.rest.books.author.dto.UpdateAuthorRequestDto;
 import com.carlosarroyoam.rest.books.author.entity.Author;
+import com.carlosarroyoam.rest.books.author.entity.AuthorStatus;
 import com.carlosarroyoam.rest.books.author.entity.Author_;
 import com.carlosarroyoam.rest.books.book.dto.BookDto;
 import com.carlosarroyoam.rest.books.book.dto.BookDto.BookDtoMapper;
@@ -56,6 +57,7 @@ public class AuthorService {
     LocalDateTime now = LocalDateTime.now();
     Author author = Author.builder()
         .name(requestDto.getName())
+        .status(AuthorStatus.ACTIVE)
         .createdAt(now)
         .updatedAt(now)
         .build();
@@ -76,6 +78,7 @@ public class AuthorService {
   public void deleteById(Long authorId) {
     LocalDateTime now = LocalDateTime.now();
     Author authorById = findAuthorEntityById(authorId);
+    authorById.setStatus(AuthorStatus.DELETED);
     authorById.setUpdatedAt(now);
     authorById.setDeletedAt(now);
     authorRepository.save(authorById);

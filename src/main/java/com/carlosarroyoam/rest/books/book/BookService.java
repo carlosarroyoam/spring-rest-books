@@ -9,6 +9,7 @@ import com.carlosarroyoam.rest.books.book.dto.BookSpecsDto;
 import com.carlosarroyoam.rest.books.book.dto.CreateBookRequestDto;
 import com.carlosarroyoam.rest.books.book.dto.UpdateBookRequestDto;
 import com.carlosarroyoam.rest.books.book.entity.Book;
+import com.carlosarroyoam.rest.books.book.entity.BookStatus;
 import com.carlosarroyoam.rest.books.book.entity.Book_;
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
 import com.carlosarroyoam.rest.books.core.dto.PagedResponseDto;
@@ -75,6 +76,7 @@ public class BookService {
         .coverUrl(requestDto.getCoverUrl())
         .price(requestDto.getPrice())
         .isAvailableOnline(requestDto.getIsAvailableOnline())
+        .status(BookStatus.ACTIVE)
         .publishedAt(requestDto.getPublishedAt())
         .createdAt(now)
         .updatedAt(now)
@@ -101,6 +103,7 @@ public class BookService {
   public void deleteById(Long bookId) {
     LocalDateTime now = LocalDateTime.now();
     Book bookById = findBookEntityById(bookId);
+    bookById.setStatus(BookStatus.DELETED);
     bookById.setUpdatedAt(now);
     bookById.setDeletedAt(now);
     bookRepository.save(bookById);
