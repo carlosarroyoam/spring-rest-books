@@ -3,6 +3,7 @@ package com.carlosarroyoam.rest.books.book.entity;
 import com.carlosarroyoam.rest.books.author.entity.Author;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -45,6 +46,11 @@ public class Book {
 
   @Column(name = "is_available_online", nullable = false)
   private Boolean isAvailableOnline;
+
+  @Enumerated
+  @Column(name = "status", length = 32, nullable = false)
+  @Builder.Default
+  private BookStatus status = BookStatus.ACTIVE;
 
   @Builder.Default
   @ManyToMany

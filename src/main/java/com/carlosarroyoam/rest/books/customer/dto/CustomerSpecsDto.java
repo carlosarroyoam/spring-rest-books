@@ -1,5 +1,6 @@
 package com.carlosarroyoam.rest.books.customer.dto;
 
+import com.carlosarroyoam.rest.books.customer.entity.CustomerStatus;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
@@ -20,4 +21,6 @@ public class CustomerSpecsDto {
 
   @Size(max = 128, message = "Username should be max 128")
   private String username;
+
+  private CustomerStatus status;
 }

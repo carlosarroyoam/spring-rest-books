@@ -1,6 +1,7 @@
 package com.carlosarroyoam.rest.books.customer.dto;
 
 import com.carlosarroyoam.rest.books.customer.entity.Customer;
+import com.carlosarroyoam.rest.books.customer.entity.CustomerStatus;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -22,6 +23,7 @@ public class CustomerDto {
   private String lastName;
   private String email;
   private String username;
+  private CustomerStatus status;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
   private LocalDateTime deletedAt;

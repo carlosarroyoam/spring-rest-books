@@ -1,5 +1,6 @@
 package com.carlosarroyoam.rest.books.book.dto;
 
+import com.carlosarroyoam.rest.books.book.entity.BookStatus;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
@@ -23,5 +24,6 @@ public class BookSpecsDto {
   private BigDecimal maxPrice;
 
   private Boolean isAvailableOnline;
+  private BookStatus status;
   private List<Long> authorIds;
 }

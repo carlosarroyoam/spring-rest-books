@@ -3,6 +3,7 @@ package com.carlosarroyoam.rest.books.book.dto;
 import com.carlosarroyoam.rest.books.author.dto.AuthorDto;
 import com.carlosarroyoam.rest.books.author.dto.AuthorDto.AuthorDtoMapper;
 import com.carlosarroyoam.rest.books.book.entity.Book;
+import com.carlosarroyoam.rest.books.book.entity.BookStatus;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -27,8 +28,9 @@ public class BookDto {
   private String coverUrl;
   private BigDecimal price;
   private Boolean isAvailableOnline;
-  private LocalDate publishedAt;
+  private BookStatus status;
   private List<AuthorDto> authors;
+  private LocalDate publishedAt;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
   private LocalDateTime deletedAt;

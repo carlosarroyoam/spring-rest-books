@@ -37,6 +37,7 @@ public class AuthorService {
   public PagedResponseDto<AuthorDto> findAll(AuthorSpecsDto authorSpecs, Pageable pageable) {
     Specification<Author> spec = SpecificationBuilder.<Author>builder()
         .likeIfPresent(root -> root.get(Author_.name), authorSpecs.getName())
+        .equalsIfPresent(root -> root.get(Author_.status), authorSpecs.getStatus())
         .build();
 
     Page<Author> authors = authorRepository.findAll(spec, pageable);

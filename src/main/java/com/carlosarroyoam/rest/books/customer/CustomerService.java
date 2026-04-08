@@ -39,6 +39,7 @@ public class CustomerService {
         .likeIfPresent(root -> root.get(Customer_.lastName), customerSpecs.getLastName())
         .likeIfPresent(root -> root.get(Customer_.email), customerSpecs.getEmail())
         .likeIfPresent(root -> root.get(Customer_.username), customerSpecs.getUsername())
+        .equalsIfPresent(root -> root.get(Customer_.status), customerSpecs.getStatus())
         .build();
 
     Page<Customer> customers = customerRepository.findAll(spec, pageable);

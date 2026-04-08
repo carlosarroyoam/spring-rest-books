@@ -1,6 +1,7 @@
 package com.carlosarroyoam.rest.books.author.dto;
 
 import com.carlosarroyoam.rest.books.author.entity.Author;
+import com.carlosarroyoam.rest.books.author.entity.AuthorStatus;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -19,6 +20,7 @@ import org.mapstruct.factory.Mappers;
 public class AuthorDto {
   private Long id;
   private String name;
+  private AuthorStatus status;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
   private LocalDateTime deletedAt;

@@ -1,6 +1,7 @@
 CREATE TABLE authors (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(128) NOT NULL,
+    status VARCHAR(32) NOT NULL,
     created_at TIMESTAMP NOT NULL,
     updated_at TIMESTAMP NOT NULL,
     deleted_at TIMESTAMP
@@ -14,6 +15,7 @@ CREATE TABLE books (
     price DECIMAL(10, 2) NOT NULL,
     is_available_online BOOLEAN NOT NULL,
     published_at DATE NOT NULL,
+    status VARCHAR(32) NOT NULL,
     created_at TIMESTAMP NOT NULL,
     updated_at TIMESTAMP NOT NULL,
     deleted_at TIMESTAMP
@@ -33,6 +35,7 @@ CREATE TABLE customers (
     last_name VARCHAR(128) NOT NULL,
     email VARCHAR(128) NOT NULL UNIQUE,
     username VARCHAR(128) NOT NULL UNIQUE,
+    status VARCHAR(32) NOT NULL,
     created_at TIMESTAMP NOT NULL,
     updated_at TIMESTAMP NOT NULL,
     deleted_at TIMESTAMP
