@@ -1,4 +1,4 @@
-openapi: 3.0.3
+openapi: 3.1.0
 info:
   title: Spring REST Books API
   description: |
@@ -680,6 +680,70 @@ paths:
       security:
         - BearerAuth: []
 
+  /customers/{customerId}/suspend:
+    post:
+      tags:
+        - Customers
+      summary:  Suspends a customer by ID
+      operationId: suspendCustomerById
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          description: Unique identifier of the customer
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "204":
+          $ref: "#/components/responses/NoContent"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+      security:
+        - BearerAuth: []
+
+  /customers/{customerId}/activate:
+    post:
+      tags:
+        - Customers
+      summary: Activates a suspended customer by ID
+      operationId: activateCustomerById
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          description: Unique identifier of the customer
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "204":
+          $ref: "#/components/responses/NoContent"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+      security:
+        - BearerAuth: []
+
   /carts:
     get:
       tags:
@@ -955,16 +1019,17 @@ paths:
       security:
         - BearerAuth: []
 
-    delete:
+  /orders/{orderId}/cancel:
+    post:
       tags:
         - Orders
-      summary: Deletes an order by ID
-      operationId: deleteOrder
+      summary: Cancels an order by ID
+      operationId: cancelOrderById
       parameters:
         - name: orderId
           in: path
           required: true
-          description: ID of the order to delete
+          description: ID of the order to cancel
           schema:
             type: integer
             format: int64
@@ -977,6 +1042,8 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
         "404":
           $ref: "#/components/responses/NotFound"
         "500":
@@ -2069,19 +2136,15 @@ components:
       properties:
         page:
           type: integer
-          example: 0
           description: Current page index (0-based).
         size:
           type: integer
-          example: 25
           description: Number of items returned per page.
         total_items:
           type: integer
-          example: 1
           description: Total number of available items.
         total_pages:
           type: integer
-          example: 1
           description: Total number of pages available.
 
     AppExceptionResponse:
