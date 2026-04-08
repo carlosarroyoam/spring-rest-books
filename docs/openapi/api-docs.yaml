@@ -93,6 +93,16 @@ paths:
           required: false
           schema:
             type: string
+        - name: status
+          in: query
+          description: Book status filter.
+          required: false
+          schema:
+            type: string
+            enum:
+              - ACTIVE
+              - INACTIVE
+              - DELETED
       responses:
         "200":
           description: OK
@@ -285,6 +295,16 @@ paths:
           schema:
             type: string
             maxLength: 128
+        - name: status
+          in: query
+          required: false
+          description: Author status filter.
+          schema:
+            type: string
+            enum:
+              - ACTIVE
+              - INACTIVE
+              - DELETED
       responses:
         "200":
           description: OK
@@ -500,6 +520,17 @@ paths:
           schema:
             type: string
             maxLength: 128
+        - name: status
+          in: query
+          required: false
+          description: Customer status filter.
+          schema:
+            type: string
+            enum:
+              - PENDING
+              - ACTIVE
+              - SUSPENDED
+              - DELETED
       responses:
         "200":
           description: OK
@@ -1706,6 +1737,13 @@ components:
           type: string
           format: date
           description: Date when the book was published.
+        status:
+          type: string
+          description: Current status of the book.
+          enum:
+            - ACTIVE
+            - INACTIVE
+            - DELETED
         created_at:
           type: string
           format: date-time
@@ -1726,6 +1764,13 @@ components:
         name:
           type: string
           description: Full name of the author.
+        status:
+          type: string
+          description: Current status of the author.
+          enum:
+            - ACTIVE
+            - INACTIVE
+            - DELETED
         created_at:
           type: string
           format: date-time
@@ -1755,6 +1800,14 @@ components:
         username:
           type: string
           description: Username used for authentication or identification.
+        status:
+          type: string
+          description: Current status of the customer.
+          enum:
+            - PENDING
+            - ACTIVE
+            - SUSPENDED
+            - DELETED
         created_at:
           type: string
           format: date-time

@@ -64,16 +64,24 @@
                 {
                   "key": "maxPrice",
                   "value": "100",
+                  "type": "text",
                   "disabled": true
                 },
                 {
                   "key": "isAvailableOnline",
                   "value": "false",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "status",
+                  "value": "ACTIVE",
                   "disabled": true
                 },
                 {
                   "key": "authorIds",
                   "value": "1,2",
+                  "type": "text",
                   "disabled": true
                 },
                 {
@@ -185,7 +193,8 @@
                   ""
                 ],
                 "type": "text/javascript",
-                "packages": {}
+                "packages": {},
+                "requests": {}
               }
             }
           ],
@@ -194,7 +203,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"isbn\": \"978-3-16-148410-0\",\r\n    \"title\": \"Special Operations in the Age of Chivalry\",\r\n    \"cover_url\": \"https://images.isbndb.com/covers/39/36/9781784703936.jpg\",\r\n    \"price\": 20.99,\r\n    \"published_at\": \"2021-12-01\",\r\n    \"is_available_online\": false\r\n}",
+              "raw": "{\r\n    \"isbn\": \"978-3-16-148410-0\",\r\n    \"title\": \"Special Operations in the Age of Chivalry\",\r\n    \"cover_url\": \"https://images.isbndb.com/covers/39/36/9781784703936.jpg\",\r\n    \"price\": 20.99,\r\n    \"is_available_online\": false,\r\n    \"published_at\": \"2021-12-01\"\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -225,7 +234,8 @@
                   "})"
                 ],
                 "type": "text/javascript",
-                "packages": {}
+                "packages": {},
+                "requests": {}
               }
             }
           ],
@@ -234,7 +244,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"isbn\": \"978-3-16-148410-0\",\r\n    \"title\": \"Special Operations in the Age of Chivalry\",\r\n    \"cover_url\": \"https://images.isbndb.com/covers/39/36/9781784703936.jpg\",\r\n    \"price\": 20.99,\r\n    \"published_at\": \"2021-12-01\",\r\n    \"is_available_online\": false\r\n}",
+              "raw": "{\r\n    \"isbn\": \"978-3-16-148410-0\",\r\n    \"title\": \"Special Operations in the Age of Chivalry\",\r\n    \"cover_url\": \"https://images.isbndb.com/covers/39/36/9781784703936.jpg\",\r\n    \"price\": 20.99,\r\n    \"is_available_online\": false,\r\n    \"published_at\": \"2021-12-01\"\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -349,6 +359,11 @@
                   "key": "name",
                   "value": "Yuval Noah Harari",
                   "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "status",
+                  "value": "ACTIVE",
                   "disabled": true
                 },
                 {
@@ -609,7 +624,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/customers?page=0&size=25&sort=id,asc",
+              "raw": "{{baseUrl}}/customers?status=ACTIVE&page=0&size=25&sort=id,asc",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -638,7 +653,12 @@
                 {
                   "key": "username",
                   "value": "carroyom",
+                  "type": "text",
                   "disabled": true
+                },
+                {
+                  "key": "status",
+                  "value": "ACTIVE"
                 },
                 {
                   "key": "page",
@@ -1075,7 +1095,9 @@
                   "});\r",
                   ""
                 ],
-                "type": "text/javascript"
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
@@ -1084,7 +1106,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"customer_id\": 1,\r\n    \"shipping_address\": \"123 Main Street, Springfield\",\r\n    \"billing_address\": \"123 Main Street, Springfield\",\r\n    \"notes\": \"Leave at the door\",\r\n    \"items\": [\r\n        {\r\n            \"book_id\": 1,\r\n            \"quantity\": 2\r\n        }\r\n    ]\r\n}",
+              "raw": "{\r\n    \"shipping_address\": \"123 Main Street, Springfield\",\r\n    \"billing_address\": \"123 Main Street, Springfield\",\r\n    \"notes\": \"Leave at the door\",\r\n    \"items\": [\r\n        {\r\n            \"book_id\": 1,\r\n            \"quantity\": 2\r\n        }\r\n    ],\r\n    \"customer_id\": 1\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
