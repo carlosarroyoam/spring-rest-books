@@ -57,14 +57,14 @@ paths:
         - name: isbn
           in: query
           required: false
-          description: Book's ISBN.
+          description: Book's ISBN
           schema:
             type: string
             minLength: 10
             maxLength: 17
         - name: title
           in: query
-          description: Book's title.
+          description: Book's title
           required: false
           schema:
             type: string
@@ -72,30 +72,30 @@ paths:
         - name: minPrice
           in: query
           required: false
-          description: Minimum price.
+          description: Minimum price
           schema:
             type: number
         - name: maxPrice
           in: query
           required: false
-          description: Maximum price.
+          description: Maximum price
           schema:
             type: number
         - name: isAvailableOnline
           in: query
-          description: Whether the book can be purchased online.
+          description: Whether the book can be purchased online
           required: false
           schema:
             type: boolean
         - name: authorIds
           in: query
-          description: Comma separated author ids.
+          description: Comma separated author ids
           required: false
           schema:
             type: string
         - name: status
           in: query
-          description: Book status filter.
+          description: Book status filter
           required: false
           schema:
             type: string
@@ -292,14 +292,14 @@ paths:
         - name: name
           in: query
           required: false
-          description: Full name of the author.
+          description: Full name of the author
           schema:
             type: string
             maxLength: 128
         - name: status
           in: query
           required: false
-          description: Author status filter.
+          description: Author status filter
           schema:
             type: string
             enum:
@@ -497,35 +497,35 @@ paths:
         - name: firstName
           in: query
           required: false
-          description: Customer's first name.
+          description: Customer's first name
           schema:
             type: string
             maxLength: 128
         - name: lastName
           in: query
           required: false
-          description: Customer's last name.
+          description: Customer's last name
           schema:
             type: string
             maxLength: 128
         - name: email
           in: query
           required: false
-          description: Customer's email address.
+          description: Customer's email address
           schema:
             type: string
             maxLength: 128
         - name: username
           in: query
           required: false
-          description: Customer's username.
+          description: Customer's username
           schema:
             type: string
             maxLength: 128
         - name: status
           in: query
           required: false
-          description: Customer status filter.
+          description: Customer status filter
           schema:
             type: string
             enum:
@@ -843,33 +843,33 @@ paths:
         - name: orderNumber
           in: query
           required: false
-          description: Unique order number.
+          description: Unique order number
           schema:
             type: string
             maxLength: 32
         - name: minTotal
           in: query
           required: false
-          description: Minimum total amount.
+          description: Minimum total amount
           schema:
             type: number
         - name: maxTotal
           in: query
           required: false
-          description: Maximum total amount.
+          description: Maximum total amount
           schema:
             type: number
         - name: shippingAddress
           in: query
           required: false
-          description: Shipping address (partial match).
+          description: Shipping address (partial match)
           schema:
             type: string
             maxLength: 512
         - name: status
           in: query
           required: false
-          description: Order status filter.
+          description: Order status filter
           schema:
             type: string
             enum:
@@ -883,21 +883,21 @@ paths:
         - name: startDate
           in: query
           required: false
-          description: Start date for date range filter in the ISO format YYYY-MM-DD.
+          description: Start date for date range filter in the ISO format YYYY-MM-DD
           schema:
             type: string
             format: date
         - name: endDate
           in: query
           required: false
-          description: End date for date range filter in the ISO format YYYY-MM-DD.
+          description: End date for date range filter in the ISO format YYYY-MM-DD
           schema:
             type: string
             format: date
         - name: customerId
           in: query
           required: false
-          description: Customer identifier.
+          description: Customer identifier
           schema:
             type: integer
             format: int64
@@ -1064,7 +1064,7 @@ paths:
         - name: method
           in: query
           required: false
-          description: Payment method filter.
+          description: Payment method filter
           schema:
             type: string
             enum:
@@ -1076,7 +1076,7 @@ paths:
         - name: status
           in: query
           required: false
-          description: Payment status filter.
+          description: Payment status filter
           schema:
             type: string
             enum:
@@ -1088,40 +1088,40 @@ paths:
         - name: min_amount
           in: query
           required: false
-          description: Minimum payment amount.
+          description: Minimum payment amount
           schema:
             type: number
         - name: max_amount
           in: query
           required: false
-          description: Maximum payment amount.
+          description: Maximum payment amount
           schema:
             type: number
         - name: startDate
           in: query
           required: false
-          description: Start date for date range filter in the ISO format YYYY-MM-DD.
+          description: Start date for date range filter in the ISO format YYYY-MM-DD
           schema:
             type: string
             format: date
         - name: endDate
           in: query
           required: false
-          description: End date for date range filter in the ISO format YYYY-MM-DD.
+          description: End date for date range filter in the ISO format YYYY-MM-DD
           schema:
             type: string
             format: date
         - name: transaction_id
           in: query
           required: false
-          description: Transaction ID (partial match).
+          description: Transaction ID (partial match)
           schema:
             type: string
             maxLength: 128
         - name: order_id
           in: query
           required: false
-          description: Order identifier.
+          description: Order identifier
           schema:
             type: integer
             format: int64
@@ -1254,28 +1254,28 @@ paths:
         - name: attention_name
           in: query
           required: false
-          description: Attention name (partial match).
+          description: Attention name (partial match)
           schema:
             type: string
             maxLength: 128
         - name: address
           in: query
           required: false
-          description: Shipping address (partial match).
+          description: Shipping address (partial match)
           schema:
             type: string
             maxLength: 512
         - name: phone
           in: query
           required: false
-          description: Phone number (partial match).
+          description: Phone number (partial match)
           schema:
             type: string
             maxLength: 32
         - name: status
           in: query
           required: false
-          description: Shipment status filter.
+          description: Shipment status filter
           schema:
             type: string
             enum:
@@ -1287,21 +1287,21 @@ paths:
         - name: startDate
           in: query
           required: false
-          description: Start date for date range filter in the ISO format YYYY-MM-DD.
+          description: Start date for date range filter in the ISO format YYYY-MM-DD
           schema:
             type: string
             format: date
         - name: endDate
           in: query
           required: false
-          description: End date for date range filter in the ISO format YYYY-MM-DD.
+          description: End date for date range filter in the ISO format YYYY-MM-DD
           schema:
             type: string
             format: date
         - name: order_id
           in: query
           required: false
-          description: Order identifier.
+          description: Order identifier
           schema:
             type: integer
             format: int64
@@ -1400,14 +1400,14 @@ components:
   schemas:
     PagedBooksResponse:
       type: object
-      description: Paginated response containing a list of books and pagination metadata.
+      description: Paginated response containing a list of books and pagination metadata
       required:
         - items
         - pagination
       properties:
         items:
           type: array
-          description: List of books for the current page.
+          description: List of books for the current page
           items:
             $ref: "#/components/schemas/BookResponse"
         pagination:
@@ -1415,7 +1415,7 @@ components:
 
     CreateBookRequest:
       type: object
-      description: Request payload used to create a new book.
+      description: Request payload used to create a new book
       required:
         - cover_url
         - is_available_online
@@ -1426,33 +1426,33 @@ components:
       properties:
         isbn:
           type: string
-          description: International Standard Book Number identifying the book.
+          description: International Standard Book Number identifying the book
           minLength: 10
           maxLength: 17
         title:
           type: string
-          description: Title of the book.
+          description: Title of the book
           minLength: 3
           maxLength: 128
         cover_url:
           type: string
-          description: URL pointing to the book cover image.
+          description: URL pointing to the book cover image
           minLength: 3
           maxLength: 512
         price:
           type: number
-          description: Retail price of the book.
+          description: Retail price of the book
         is_available_online:
           type: boolean
-          description: Indicates whether the book can be purchased online.
+          description: Indicates whether the book can be purchased online
         published_at:
           type: string
           format: date
-          description: Publication date of the book.
+          description: Publication date of the book
 
     UpdateBookRequest:
       type: object
-      description: Request payload used to update an existing book.
+      description: Request payload used to update an existing book
       required:
         - cover_url
         - is_available_online
@@ -1463,40 +1463,40 @@ components:
       properties:
         isbn:
           type: string
-          description: Updated ISBN of the book.
+          description: Updated ISBN of the book
           minLength: 10
           maxLength: 17
         title:
           type: string
-          description: Updated title of the book.
+          description: Updated title of the book
           minLength: 3
           maxLength: 128
         cover_url:
           type: string
-          description: Updated URL for the book cover image.
+          description: Updated URL for the book cover image
           minLength: 3
           maxLength: 512
         price:
           type: number
-          description: Updated retail price.
+          description: Updated retail price
         is_available_online:
           type: boolean
-          description: Indicates whether the book is available for online purchase.
+          description: Indicates whether the book is available for online purchase
         published_at:
           type: string
           format: date
-          description: Updated publication date.
+          description: Updated publication date
 
     PagedAuthorsResponse:
       type: object
-      description: Paginated response containing authors.
+      description: Paginated response containing authors
       required:
         - items
         - pagination
       properties:
         items:
           type: array
-          description: List of authors in the current page.
+          description: List of authors in the current page
           items:
             $ref: "#/components/schemas/AuthorResponse"
         pagination:
@@ -1504,38 +1504,38 @@ components:
 
     CreateAuthorRequest:
       type: object
-      description: Request payload used to create a new author.
+      description: Request payload used to create a new author
       required:
         - name
       properties:
         name:
           type: string
-          description: Full name of the author.
+          description: Full name of the author
           minLength: 3
           maxLength: 128
 
     UpdateAuthorRequest:
       type: object
-      description: Request payload used to update an existing author.
+      description: Request payload used to update an existing author
       required:
         - name
       properties:
         name:
           type: string
-          description: Updated author name.
+          description: Updated author name
           minLength: 3
           maxLength: 128
 
     PagedCustomersResponse:
       type: object
-      description: Paginated response containing customers.
+      description: Paginated response containing customers
       required:
         - items
         - pagination
       properties:
         items:
           type: array
-          description: List of customers for the current page.
+          description: List of customers for the current page
           items:
             $ref: "#/components/schemas/CustomerResponse"
         pagination:
@@ -1543,7 +1543,7 @@ components:
 
     CreateCustomerRequest:
       type: object
-      description: Request payload used to register a new customer.
+      description: Request payload used to register a new customer
       required:
         - first_name
         - last_name
@@ -1552,69 +1552,69 @@ components:
       properties:
         first_name:
           type: string
-          description: Customer's first name.
+          description: Customer's first name
           minLength: 3
           maxLength: 128
         last_name:
           type: string
-          description: Customer's last name.
+          description: Customer's last name
           minLength: 3
           maxLength: 128
         email:
           type: string
-          description: Customer email address.
+          description: Customer email address
           minLength: 3
           maxLength: 128
         username:
           type: string
-          description: Unique username used by the customer.
+          description: Unique username used by the customer
           minLength: 3
           maxLength: 128
 
     UpdateCustomerRequest:
       type: object
-      description: Request payload used to update customer information.
+      description: Request payload used to update customer information
       required:
         - first_name
         - last_name
       properties:
         first_name:
           type: string
-          description: Updated first name.
+          description: Updated first name
           minLength: 3
           maxLength: 128
         last_name:
           type: string
-          description: Updated last name.
+          description: Updated last name
           minLength: 3
           maxLength: 128
 
     UpdateCartItemRequest:
       type: object
-      description: Request payload used to update the quantity of an item in the cart.
+      description: Request payload used to update the quantity of an item in the cart
       required:
         - book_id
       properties:
         book_id:
           type: integer
           format: int64
-          description: Identifier of the book in the cart.
+          description: Identifier of the book in the cart
         quantity:
           type: integer
           format: int32
           minimum: 1
-          description: Updated quantity.
+          description: Updated quantity
 
     PagedOrdersResponse:
       type: object
-      description: Paginated response containing orders.
+      description: Paginated response containing orders
       required:
         - items
         - pagination
       properties:
         items:
           type: array
-          description: Orders included in the current page.
+          description: Orders included in the current page
           items:
             $ref: "#/components/schemas/OrderResponse"
         pagination:
@@ -1622,7 +1622,7 @@ components:
 
     CreateOrderRequest:
       type: object
-      description: Request payload used to create a new order.
+      description: Request payload used to create a new order
       required:
         - customer_id
         - shipping_address
@@ -1632,53 +1632,53 @@ components:
         customer_id:
           type: integer
           format: int64
-          description: Identifier of the customer placing the order.
+          description: Identifier of the customer placing the order
         shipping_address:
           type: string
-          description: Shipping address where the order will be delivered.
+          description: Shipping address where the order will be delivered
           minLength: 10
           maxLength: 512
         billing_address:
           type: string
-          description: Billing address associated with the order.
+          description: Billing address associated with the order
           minLength: 10
           maxLength: 512
         notes:
           type: string
-          description: Optional notes related to the order.
+          description: Optional notes related to the order
           maxLength: 1000
         items:
           type: array
-          description: List of items included in the order.
+          description: List of items included in the order
           minItems: 1
           items:
             $ref: "#/components/schemas/CreateOrderItemRequest"
 
     UpdateOrderRequest:
       type: object
-      description: Request payload used to update shipping or billing information of an order.
+      description: Request payload used to update shipping or billing information of an order
       required:
         - shipping_address
         - billing_address
       properties:
         shipping_address:
           type: string
-          description: Updated shipping address.
+          description: Updated shipping address
           minLength: 10
           maxLength: 512
         billing_address:
           type: string
-          description: Updated billing address.
+          description: Updated billing address
           minLength: 10
           maxLength: 512
         notes:
           type: string
-          description: Updated order notes.
+          description: Updated order notes
           maxLength: 1000
 
     CreateOrderItemRequest:
       type: object
-      description: Request payload representing an item within an order.
+      description: Request payload representing an item within an order
       required:
         - book_id
         - quantity
@@ -1686,23 +1686,23 @@ components:
         book_id:
           type: integer
           format: int64
-          description: Identifier of the book being purchased.
+          description: Identifier of the book being purchased
         quantity:
           type: integer
           format: int32
           minimum: 1
-          description: Quantity of the selected book.
+          description: Quantity of the selected book
 
     PagedPaymentsResponse:
       type: object
-      description: Paginated response containing payments.
+      description: Paginated response containing payments
       required:
         - items
         - pagination
       properties:
         items:
           type: array
-          description: Payments included in the current page.
+          description: Payments included in the current page
           items:
             $ref: "#/components/schemas/PaymentResponse"
         pagination:
@@ -1710,7 +1710,7 @@ components:
 
     CreatePaymentRequest:
       type: object
-      description: Request payload used to create a payment for an order.
+      description: Request payload used to create a payment for an order
       required:
         - order_id
         - method
@@ -1718,10 +1718,10 @@ components:
         order_id:
           type: integer
           format: int64
-          description: Identifier of the order being paid.
+          description: Identifier of the order being paid
         method:
           type: string
-          description: Payment method used to complete the transaction.
+          description: Payment method used to complete the transaction
           enum:
             - CREDIT_CARD
             - DEBIT_CARD
@@ -1731,13 +1731,13 @@ components:
 
     UpdatePaymentStatusRequest:
       type: object
-      description: Request payload used to update the processing status of a payment.
+      description: Request payload used to update the processing status of a payment
       required:
         - status
       properties:
         status:
           type: string
-          description: Updated payment processing status.
+          description: Updated payment processing status
           enum:
             - PENDING
             - COMPLETED
@@ -1747,14 +1747,14 @@ components:
 
     PagedShipmentsResponse:
       type: object
-      description: Paginated response containing shipment records.
+      description: Paginated response containing shipment records
       required:
         - items
         - pagination
       properties:
         items:
           type: array
-          description: Shipments included in the current page.
+          description: Shipments included in the current page
           items:
             $ref: "#/components/schemas/ShipmentResponse"
         pagination:
@@ -1762,13 +1762,13 @@ components:
 
     UpdateShipmentStatusRequest:
       type: object
-      description: Request payload used to update the delivery status of a shipment.
+      description: Request payload used to update the delivery status of a shipment
       required:
         - status
       properties:
         status:
           type: string
-          description: Updated shipment status.
+          description: Updated shipment status
           enum:
             - PENDING
             - SHIPPED
@@ -1778,39 +1778,39 @@ components:
 
     BookResponse:
       type: object
-      description: Representation of a book in the catalog.
+      description: Representation of a book in the catalog
       properties:
         id:
           type: integer
           format: int64
-          description: Unique identifier of the book.
+          description: Unique identifier of the book
         isbn:
           type: string
-          description: ISBN code identifying the book.
+          description: ISBN code identifying the book
         title:
           type: string
-          description: Title of the book.
+          description: Title of the book
         cover_url:
           type: string
-          description: URL of the book cover image.
+          description: URL of the book cover image
         authors:
           type: array
-          description: List of authors associated with the book.
+          description: List of authors associated with the book
           items:
             $ref: "#/components/schemas/AuthorResponse"
         price:
           type: number
-          description: Price of the book.
+          description: Price of the book
         is_available_online:
           type: boolean
-          description: Indicates whether the book can be purchased online.
+          description: Indicates whether the book can be purchased online
         published_at:
           type: string
           format: date
-          description: Date when the book was published.
+          description: Date when the book was published
         status:
           type: string
-          description: Current status of the book.
+          description: Current status of the book
           enum:
             - ACTIVE
             - INACTIVE
@@ -1818,30 +1818,30 @@ components:
         created_at:
           type: string
           format: date-time
-          description: Timestamp when the book record was created.
+          description: Timestamp when the book record was created
         updated_at:
           type: string
           format: date-time
-          description: Timestamp of the last update.
+          description: Timestamp of the last update
         deleted_at:
           type: string
           format: date-time
-          description: Timestamp when the book record was soft-deleted.
+          description: Timestamp when the book record was soft-deleted
 
     AuthorResponse:
       type: object
-      description: Representation of an author.
+      description: Representation of an author
       properties:
         id:
           type: integer
           format: int64
-          description: Unique identifier of the author.
+          description: Unique identifier of the author
         name:
           type: string
-          description: Full name of the author.
+          description: Full name of the author
         status:
           type: string
-          description: Current status of the author.
+          description: Current status of the author
           enum:
             - ACTIVE
             - INACTIVE
@@ -1849,39 +1849,39 @@ components:
         created_at:
           type: string
           format: date-time
-          description: Timestamp when the author record was created.
+          description: Timestamp when the author record was created
         updated_at:
           type: string
           format: date-time
-          description: Timestamp of the last update.
+          description: Timestamp of the last update
         deleted_at:
           type: string
           format: date-time
-          description: Timestamp when the author record was soft-deleted.
+          description: Timestamp when the author record was soft-deleted
 
     CustomerResponse:
       type: object
-      description: Representation of a customer registered in the system.
+      description: Representation of a customer registered in the system
       properties:
         id:
           type: integer
           format: int64
-          description: Unique identifier of the customer.
+          description: Unique identifier of the customer
         first_name:
           type: string
-          description: Customer's first name.
+          description: Customer's first name
         last_name:
           type: string
-          description: Customer's last name.
+          description: Customer's last name
         email:
           type: string
-          description: Customer's email address.
+          description: Customer's email address
         username:
           type: string
-          description: Username used for authentication or identification.
+          description: Username used for authentication or identification
         status:
           type: string
-          description: Current status of the customer.
+          description: Current status of the customer
           enum:
             - PENDING
             - ACTIVE
@@ -1890,27 +1890,27 @@ components:
         created_at:
           type: string
           format: date-time
-          description: Timestamp when the customer was created.
+          description: Timestamp when the customer was created
         updated_at:
           type: string
           format: date-time
-          description: Timestamp of the last update.
+          description: Timestamp of the last update
         deleted_at:
           type: string
           format: date-time
-          description: Timestamp when the customer record was soft-deleted.
+          description: Timestamp when the customer record was soft-deleted
 
     CartResponse:
       type: object
-      description: Representation of a customer's shopping cart containing selected books before checkout.
+      description: Representation of a customer's shopping cart containing selected books before checkout
       properties:
         id:
           type: integer
           format: int64
-          description: Unique identifier of the shopping cart.
+          description: Unique identifier of the shopping cart
         items:
           type: array
-          description: List of items currently in the cart.
+          description: List of items currently in the cart
           items:
             $ref: "#/components/schemas/CartItemResponse"
         customer:
@@ -1918,46 +1918,46 @@ components:
         created_at:
           type: string
           format: date-time
-          description: Timestamp when the cart was created.
+          description: Timestamp when the cart was created
         updated_at:
           type: string
           format: date-time
-          description: Timestamp when the cart was last updated.
+          description: Timestamp when the cart was last updated
 
     CartItemResponse:
       type: object
-      description: Representation of a book item inside a shopping cart.
+      description: Representation of a book item inside a shopping cart
       properties:
         id:
           type: integer
           format: int64
-          description: Unique identifier of the cart item.
+          description: Unique identifier of the cart item
         quantity:
           type: integer
           format: int32
           minimum: 1
-          description: Quantity of the selected book in the cart.
+          description: Quantity of the selected book in the cart
         book:
           $ref: "#/components/schemas/BookResponse"
         added_at:
           type: string
           format: date-time
-          description: Timestamp when the item was added to the cart.
+          description: Timestamp when the item was added to the cart
 
     OrderResponse:
       type: object
-      description: Representation of a customer order including its items, payment, shipment information, and calculated totals.
+      description: Representation of a customer order including its items, payment, shipment information, and calculated totals
       properties:
         id:
           type: integer
           format: int64
-          description: Unique identifier of the order.
+          description: Unique identifier of the order
         order_number:
           type: string
-          description: Human-readable unique order number.
+          description: Human-readable unique order number
         status:
           type: string
-          description: Current status of the order lifecycle.
+          description: Current status of the order lifecycle
           enum:
             - PENDING
             - CONFIRMED
@@ -1968,21 +1968,21 @@ components:
             - REFUNDED
         items:
           type: array
-          description: List of items included in the order.
+          description: List of items included in the order
           items:
             $ref: "#/components/schemas/OrderItemResponse"
         subtotal:
           type: number
-          description: Sum of all order item prices before taxes and shipping.
+          description: Sum of all order item prices before taxes and shipping
         tax_amount:
           type: number
-          description: Total tax amount applied to the order.
+          description: Total tax amount applied to the order
         shipping_amount:
           type: number
-          description: Shipping cost applied to the order.
+          description: Shipping cost applied to the order
         total:
           type: number
-          description: Final total amount of the order including taxes and shipping.
+          description: Final total amount of the order including taxes and shipping
         customer:
           $ref: "#/components/schemas/CustomerResponse"
         payment:
@@ -1991,70 +1991,70 @@ components:
           $ref: "#/components/schemas/ShipmentResponse"
         notes:
           type: string
-          description: Optional notes associated with the order.
+          description: Optional notes associated with the order
         shipping_address:
           type: string
-          description: Shipping address for the order delivery.
+          description: Shipping address for the order delivery
         billing_address:
           type: string
-          description: Billing address associated with the order.
+          description: Billing address associated with the order
         created_at:
           type: string
           format: date-time
-          description: Timestamp when the order was created.
+          description: Timestamp when the order was created
         updated_at:
           type: string
           format: date-time
-          description: Timestamp when the order was last updated.
+          description: Timestamp when the order was last updated
 
     OrderItemResponse:
       type: object
-      description: Representation of a single item within an order.
+      description: Representation of a single item within an order
       properties:
         id:
           type: integer
           format: int64
-          description: Unique identifier of the order item.
+          description: Unique identifier of the order item
         quantity:
           type: integer
           format: int32
           minimum: 1
-          description: Number of units purchased for the associated book.
+          description: Number of units purchased for the associated book
         unit_price:
           type: number
-          description: Price of a single unit of the book at the time of purchase.
+          description: Price of a single unit of the book at the time of purchase
         total_price:
           type: number
-          description: Total price for the item calculated as quantity multiplied by unit price.
+          description: Total price for the item calculated as quantity multiplied by unit price
         book_id:
           type: integer
           format: int64
-          description: Identifier of the book included in the order.
+          description: Identifier of the book included in the order
         book:
           $ref: "#/components/schemas/BookResponse"
         created_at:
           type: string
           format: date-time
-          description: Timestamp when the order item was created.
+          description: Timestamp when the order item was created
         updated_at:
           type: string
           format: date-time
-          description: Timestamp when the order item was last updated.
+          description: Timestamp when the order item was last updated
 
     PaymentResponse:
       type: object
-      description: Representation of a payment associated with an order.
+      description: Representation of a payment associated with an order
       properties:
         id:
           type: integer
           format: int64
-          description: Unique identifier of the payment.
+          description: Unique identifier of the payment
         amount:
           type: number
-          description: Total amount paid in the transaction.
+          description: Total amount paid in the transaction
         method:
           type: string
-          description: Payment method used to complete the transaction.
+          description: Payment method used to complete the transaction
           enum:
             - CREDIT_CARD
             - DEBIT_CARD
@@ -2063,7 +2063,7 @@ components:
             - CASH_ON_DELIVERY
         status:
           type: string
-          description: Current payment processing status.
+          description: Current payment processing status
           enum:
             - PENDING
             - COMPLETED
@@ -2072,40 +2072,40 @@ components:
             - REFUNDED
         transaction_id:
           type: string
-          description: External transaction identifier returned by the payment provider.
+          description: External transaction identifier returned by the payment provider
         order_id:
           type: integer
           format: int64
-          description: Identifier of the order associated with this payment.
+          description: Identifier of the order associated with this payment
         created_at:
           type: string
           format: date-time
-          description: Timestamp when the payment was created.
+          description: Timestamp when the payment was created
         updated_at:
           type: string
           format: date-time
-          description: Timestamp when the payment was last updated.
+          description: Timestamp when the payment was last updated
 
     ShipmentResponse:
       type: object
-      description: Representation of shipment information for an order delivery.
+      description: Representation of shipment information for an order delivery
       properties:
         id:
           type: integer
           format: int64
-          description: Unique identifier of the shipment.
+          description: Unique identifier of the shipment
         attention_name:
           type: string
-          description: Name of the person who will receive the shipment.
+          description: Name of the person who will receive the shipment
         address:
           type: string
-          description: Delivery address where the order will be shipped.
+          description: Delivery address where the order will be shipped
         phone:
           type: string
-          description: Contact phone number for the shipment recipient.
+          description: Contact phone number for the shipment recipient
         status:
           type: string
-          description: Current shipment status.
+          description: Current shipment status
           enum:
             - PENDING
             - SHIPPED
@@ -2115,19 +2115,19 @@ components:
         order_id:
           type: integer
           format: int64
-          description: Identifier of the order associated with this shipment.
+          description: Identifier of the order associated with this shipment
         created_at:
           type: string
           format: date-time
-          description: Timestamp when the shipment was created.
+          description: Timestamp when the shipment was created
         updated_at:
           type: string
           format: date-time
-          description: Timestamp when the shipment was last updated.
+          description: Timestamp when the shipment was last updated
 
     PaginationResponse:
       type: object
-      description: Metadata describing pagination information for a paginated response.
+      description: Metadata describing pagination information for a paginated response
       required:
         - page
         - size
@@ -2136,49 +2136,49 @@ components:
       properties:
         page:
           type: integer
-          description: Current page index (0-based).
+          description: Current page index (0-based)
         size:
           type: integer
-          description: Number of items returned per page.
+          description: Number of items returned per page
         total_items:
           type: integer
-          description: Total number of available items.
+          description: Total number of available items
         total_pages:
           type: integer
-          description: Total number of pages available.
+          description: Total number of pages available
 
     AppExceptionResponse:
       type: object
-      description: Standard error response returned when an application exception occurs.
+      description: Standard error response returned when an application exception occurs
       properties:
         message:
           type: string
-          description: Human-readable error message.
+          description: Human-readable error message
         error:
           type: string
-          description: Short error identifier or error type.
+          description: Short error identifier or error type
         status:
           type: integer
-          description: HTTP status code associated with the error.
+          description: HTTP status code associated with the error
         details:
           type: object
-          description: Additional validation or error details.
+          description: Additional validation or error details
           additionalProperties:
             type: string
         path:
           type: string
-          description: API endpoint path where the error occurred.
+          description: API endpoint path where the error occurred
         timestamp:
           type: string
           format: date-time
-          description: Timestamp when the error was generated.
+          description: Timestamp when the error was generated
 
   parameters:
     PageParam:
       name: page
       in: query
       required: false
-      description: Page index (0-based).
+      description: Page index (0-based)
       schema:
         type: integer
         format: int32
@@ -2188,7 +2188,7 @@ components:
       name: size
       in: query
       required: false
-      description: Number of items per page.
+      description: Number of items per page
       schema:
         type: integer
         format: int32
@@ -2198,7 +2198,7 @@ components:
       name: sort
       in: query
       required: false
-      description: Sorting criteria in the format field,asc or field,desc.
+      description: Sorting criteria in the format field,asc or field,desc
       schema:
         type: string
         default: id,asc
