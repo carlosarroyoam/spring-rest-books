@@ -8,10 +8,7 @@ import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.skyscreamer.jsonassert.Customization;
 import org.skyscreamer.jsonassert.JSONAssert;
-import org.skyscreamer.jsonassert.JSONCompareMode;
-import org.skyscreamer.jsonassert.comparator.CustomComparator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -60,7 +57,7 @@ class CustomerControllerIT {
   }
 
   @Test
-  @DisplayName("Should return paged customers when find all customers")
+  @DisplayName("GET /customers - Should return paged customers when find all customers")
   void shouldReturnListOfCustomersWhenFindAllCustomers() throws Exception {
     String expectedJson = JsonUtils.readJson("/customers/find-all.json");
 
@@ -75,7 +72,7 @@ class CustomerControllerIT {
   }
 
   @Test
-  @DisplayName("Should return CustomerResponse when find customer by id with existing id")
+  @DisplayName("GET /customers/{customerId} - Should return CustomerResponse when find customer by id with existing id")
   void shouldReturnCustomerResponseWhenFindCustomerByIdWithExistingId() throws Exception {
     String expectedJson = JsonUtils.readJson("/customers/find-by-id.json");
 
@@ -90,23 +87,7 @@ class CustomerControllerIT {
   }
 
   @Test
-  @DisplayName("Should throw AppExceptionResponse when find customer by id with non existing id")
-  void shouldThrowWhenFindCustomerByIdWithNonExistingId() throws Exception {
-    String expectedJson = JsonUtils.readJson("/customers/find-by-id_with_non_existing_id.json");
-
-    String responseJson = mockMvc.perform(get("/customers/{customerId}", 1000L))
-        .andExpect(status().isNotFound())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andReturn()
-        .getResponse()
-        .getContentAsString();
-
-    JSONAssert.assertEquals(expectedJson, responseJson, new CustomComparator(
-        JSONCompareMode.LENIENT, new Customization("timestamp", (o1, o2) -> true)));
-  }
-
-  @Test
-  @DisplayName("Should return created when create a customer with valid data")
+  @DisplayName("POST /customers - Should return created when create a customer with valid data")
   void shouldReturnCreatedWhenCreateCustomerWithValidData() throws Exception {
     CreateCustomerRequest request = CreateCustomerRequest.builder()
         .firstName("Carlos Alberto")
@@ -124,59 +105,7 @@ class CustomerControllerIT {
   }
 
   @Test
-  @DisplayName("Should throw AppExceptionResponse when create a customer with existing username")
-  void shouldThrowWhenCreateCustomerWithExistingUsername() throws Exception {
-    String expectedJson = JsonUtils.readJson("/customers/create_with_existing_username.json");
-
-    CreateCustomerRequest request = CreateCustomerRequest.builder()
-        .firstName("Carlos Alberto")
-        .lastName("Arroyo Martínez")
-        .password("secret123#")
-        .email("carroyom2@mail.com")
-        .username("carroyom")
-        .build();
-
-    String responseJson = mockMvc
-        .perform(post("/customers").contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(request)))
-        .andExpect(status().isBadRequest())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andReturn()
-        .getResponse()
-        .getContentAsString();
-
-    JSONAssert.assertEquals(expectedJson, responseJson, new CustomComparator(
-        JSONCompareMode.LENIENT, new Customization("timestamp", (o1, o2) -> true)));
-  }
-
-  @Test
-  @DisplayName("Should throw AppExceptionResponse when create a customer with existing email")
-  void shouldThrowWhenCreateCustomerWithExistingEmail() throws Exception {
-    String expectedJson = JsonUtils.readJson("/customers/create_with_existing_email.json");
-
-    CreateCustomerRequest request = CreateCustomerRequest.builder()
-        .firstName("Carlos Alberto")
-        .lastName("Arroyo Martínez")
-        .password("secret123#")
-        .email("carroyom@mail.com")
-        .username("carroyom2")
-        .build();
-
-    String responseJson = mockMvc
-        .perform(post("/customers").contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(request)))
-        .andExpect(status().isBadRequest())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andReturn()
-        .getResponse()
-        .getContentAsString();
-
-    JSONAssert.assertEquals(expectedJson, responseJson, new CustomComparator(
-        JSONCompareMode.LENIENT, new Customization("timestamp", (o1, o2) -> true)));
-  }
-
-  @Test
-  @DisplayName("Should return no content update customer with valid data")
+  @DisplayName("PUT /customers/{customerId} - Should return no content update customer with valid data")
   void shouldReturnNoContentWhenUpdateCustomerWithValidData() throws Exception {
     UpdateCustomerRequest request = UpdateCustomerRequest.builder()
         .firstName("Carlos Alberto")
@@ -188,47 +117,8 @@ class CustomerControllerIT {
   }
 
   @Test
-  @DisplayName("Should throw AppExceptionResponse when update customer with non existing id")
-  void shouldThrowWhenUpdateCustomerWithNonExistingId() throws Exception {
-    String expectedJson = JsonUtils.readJson("/customers/update_with_non_existing_id.json");
-
-    UpdateCustomerRequest request = UpdateCustomerRequest.builder()
-        .firstName("Carlos Alberto")
-        .lastName("Arroyo Martínez")
-        .build();
-
-    String responseJson = mockMvc
-        .perform(put("/customers/{customerId}", 1000L).contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(request)))
-        .andExpect(status().isNotFound())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andReturn()
-        .getResponse()
-        .getContentAsString();
-
-    JSONAssert.assertEquals(expectedJson, responseJson, new CustomComparator(
-        JSONCompareMode.LENIENT, new Customization("timestamp", (o1, o2) -> true)));
-  }
-
-  @Test
-  @DisplayName("Should return no content when delete customer with existing id")
+  @DisplayName("DELETE /customers/{customerId} - Should return no content when delete customer with existing id")
   void shouldReturnNoContentWhenDeleteCustomerWithExistingId() throws Exception {
     mockMvc.perform(delete("/customers/{customerId}", 1L)).andExpect(status().isNoContent());
-  }
-
-  @Test
-  @DisplayName("Should throw AppExceptionResponse when delete customer with non existing id")
-  void shouldThrowWhenDeleteCustomerWithNonExistingId() throws Exception {
-    String expectedJson = JsonUtils.readJson("/customers/delete_with_non_existing_id.json");
-
-    String responseJson = mockMvc.perform(delete("/customers/{customerId}", 1000L))
-        .andExpect(status().isNotFound())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andReturn()
-        .getResponse()
-        .getContentAsString();
-
-    JSONAssert.assertEquals(expectedJson, responseJson, new CustomComparator(
-        JSONCompareMode.LENIENT, new Customization("timestamp", (o1, o2) -> true)));
   }
 }

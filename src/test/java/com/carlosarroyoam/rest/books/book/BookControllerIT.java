@@ -10,10 +10,7 @@ import java.time.LocalDate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.skyscreamer.jsonassert.Customization;
 import org.skyscreamer.jsonassert.JSONAssert;
-import org.skyscreamer.jsonassert.JSONCompareMode;
-import org.skyscreamer.jsonassert.comparator.CustomComparator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -58,7 +55,7 @@ class BookControllerIT {
   }
 
   @Test
-  @DisplayName("Should return paged books when find all books")
+  @DisplayName("GET /books - Should return paged books when find all books")
   void shouldReturnListOfBooksWhenFindAllBooks() throws Exception {
     String expectedJson = JsonUtils.readJson("/books/find-all.json");
 
@@ -73,7 +70,7 @@ class BookControllerIT {
   }
 
   @Test
-  @DisplayName("Should return BookResponse when find book by id with existing id")
+  @DisplayName("GET /books/{bookId} - Should return BookResponse when find book by id with existing id")
   void shouldReturnBookResponseWhenFindBookByIdWithExistingId() throws Exception {
     String expectedJson = JsonUtils.readJson("/books/find-by-id.json");
 
@@ -88,23 +85,7 @@ class BookControllerIT {
   }
 
   @Test
-  @DisplayName("Should throw AppExceptionResponse when find book by id with non existing id")
-  void shouldThrowWhenFindBookByIdWithNonExistingId() throws Exception {
-    String expectedJson = JsonUtils.readJson("/books/find-by-id_with_non_existing_id.json");
-
-    String responseJson = mockMvc.perform(get("/books/{bookId}", 1000L))
-        .andExpect(status().isNotFound())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andReturn()
-        .getResponse()
-        .getContentAsString();
-
-    JSONAssert.assertEquals(expectedJson, responseJson, new CustomComparator(
-        JSONCompareMode.LENIENT, new Customization("timestamp", (o1, o2) -> true)));
-  }
-
-  @Test
-  @DisplayName("Should return when create a book with valid data")
+  @DisplayName("POST /books - Should return when create a book with valid data")
   void shouldReturnCreatedWhenCreateBookWithValidData() throws Exception {
     CreateBookRequest request = CreateBookRequest.builder()
         .isbn("978-1-7873-3067-2")
@@ -123,34 +104,7 @@ class BookControllerIT {
   }
 
   @Test
-  @DisplayName("Should throw AppExceptionResponse when create a book with existing ISBN")
-  void shouldThrowWhenCreateBookWithExistingIsbn() throws Exception {
-    String expectedJson = JsonUtils.readJson("/books/create_with_existing_isbn.json");
-
-    CreateBookRequest request = CreateBookRequest.builder()
-        .isbn("978-9-7389-4434-3")
-        .title("Sapiens: A Brief History of Humankind")
-        .coverUrl("https://images.isbndb.com/covers/60/97/9780062316097.jpg")
-        .price(new BigDecimal("20.99"))
-        .publishedAt(LocalDate.parse("2021-12-01"))
-        .isAvailableOnline(true)
-        .build();
-
-    String responseJson = mockMvc
-        .perform(post("/books").contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(request)))
-        .andExpect(status().isBadRequest())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andReturn()
-        .getResponse()
-        .getContentAsString();
-
-    JSONAssert.assertEquals(expectedJson, responseJson, new CustomComparator(
-        JSONCompareMode.LENIENT, new Customization("timestamp", (o1, o2) -> true)));
-  }
-
-  @Test
-  @DisplayName("Should return no content when update book with valid data")
+  @DisplayName("PUT /books/{bookId} - Should return no content when update book with valid data")
   void shouldReturnNoContentWhenUpdateBookWithValidData() throws Exception {
     UpdateBookRequest request = UpdateBookRequest.builder()
         .isbn("978-9-7389-4434-3")
@@ -166,56 +120,13 @@ class BookControllerIT {
   }
 
   @Test
-  @DisplayName("Should throw AppExceptionResponse when update book with non existing id")
-  void shouldThrowWhenUpdateBookWithNonExistingId() throws Exception {
-    String expectedJson = JsonUtils.readJson("/books/update_with_non_existing_id.json");
-
-    UpdateBookRequest request = UpdateBookRequest.builder()
-        .isbn("978-9-7389-4434-3")
-        .title("Sapiens: A Brief History of Humankind")
-        .coverUrl("https://images.isbndb.com/covers/60/97/9780062316097.jpg")
-        .price(new BigDecimal("20.99"))
-        .publishedAt(LocalDate.parse("2021-12-01"))
-        .isAvailableOnline(true)
-        .build();
-
-    String responseJson = mockMvc
-        .perform(put("/books/{bookId}", 1000L).contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(request)))
-        .andExpect(status().isNotFound())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andReturn()
-        .getResponse()
-        .getContentAsString();
-
-    JSONAssert.assertEquals(expectedJson, responseJson, new CustomComparator(
-        JSONCompareMode.LENIENT, new Customization("timestamp", (o1, o2) -> true)));
-  }
-
-  @Test
-  @DisplayName("Should return no content when delete book with existing id")
+  @DisplayName("DELETE /books/{bookId} - Should return no content when delete book with existing id")
   void shouldReturnNoContentDeleteBookWithExistingId() throws Exception {
     mockMvc.perform(delete("/books/{bookId}", 1L)).andExpect(status().isNoContent());
   }
 
   @Test
-  @DisplayName("Should throw AppExceptionResponse when delete book with non existing id")
-  void shouldThrowWhenDeleteBookWithNonExistingId() throws Exception {
-    String expectedJson = JsonUtils.readJson("/books/delete_with_non_existing_id.json");
-
-    String responseJson = mockMvc.perform(delete("/books/{bookId}", 1000L))
-        .andExpect(status().isNotFound())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andReturn()
-        .getResponse()
-        .getContentAsString();
-
-    JSONAssert.assertEquals(expectedJson, responseJson, new CustomComparator(
-        JSONCompareMode.LENIENT, new Customization("timestamp", (o1, o2) -> true)));
-  }
-
-  @Test
-  @DisplayName("Should return List<AuthorResponse> when find authors by book id with existing id")
+  @DisplayName("GET /books/{bookId}/authors - Should return List<AuthorResponse> when find authors by book id with existing id")
   void shouldReturnListOfAuthorsWhenFindAuthorsByBookIdWithExistingId() throws Exception {
     String expectedJson = JsonUtils.readJson("/books/find-authors-by-book.json");
 

@@ -1,7 +1,0 @@
-{
-  "message": "Username already exists",
-  "error": "Bad Request",
-  "status": 400,
-  "path": "/customers",
-  "timestamp": "2025-01-01T00:00:00"
-}

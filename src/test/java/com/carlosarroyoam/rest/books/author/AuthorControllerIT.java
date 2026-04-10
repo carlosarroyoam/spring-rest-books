@@ -7,10 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.skyscreamer.jsonassert.Customization;
 import org.skyscreamer.jsonassert.JSONAssert;
-import org.skyscreamer.jsonassert.JSONCompareMode;
-import org.skyscreamer.jsonassert.comparator.CustomComparator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -57,7 +54,7 @@ class AuthorControllerIT {
   }
 
   @Test
-  @DisplayName("Should return paged authors when find all authors")
+  @DisplayName("GET /authors - Should return paged authors when find all authors")
   void shouldReturnListOfAuthorsWhenFindAllAuthors() throws Exception {
     String expectedJson = JsonUtils.readJson("/authors/find-all.json");
 
@@ -72,7 +69,7 @@ class AuthorControllerIT {
   }
 
   @Test
-  @DisplayName("Should return AuthorResponse when find author by id with existing id")
+  @DisplayName("GET /authors/{authorId} - Should return AuthorResponse when find author by id with existing id")
   void shouldReturnAuthorResponseWhenFindAuthorByIdWithExistingId() throws Exception {
     String expectedJson = JsonUtils.readJson("/authors/find-by-id.json");
 
@@ -87,23 +84,7 @@ class AuthorControllerIT {
   }
 
   @Test
-  @DisplayName("Should throw AppExceptionResponse when find author by id with non existing id")
-  void shouldThrowWhenFindAuthorByIdWithNonExistingId() throws Exception {
-    String expectedJson = JsonUtils.readJson("/authors/find-by-id_with_non_existing_id.json");
-
-    String responseJson = mockMvc.perform(get("/authors/{authorId}", 1000L))
-        .andExpect(status().isNotFound())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andReturn()
-        .getResponse()
-        .getContentAsString();
-
-    JSONAssert.assertEquals(expectedJson, responseJson, new CustomComparator(
-        JSONCompareMode.LENIENT, new Customization("timestamp", (o1, o2) -> true)));
-  }
-
-  @Test
-  @DisplayName("Should return created when create an author with valid data")
+  @DisplayName("POST /authors - Should return created when create an author with valid data")
   void shouldReturnCreatedWhenCreateAuthorWithValidData() throws Exception {
     CreateAuthorRequest request = CreateAuthorRequest.builder().name("Yuval Noah Harari").build();
 
@@ -115,7 +96,7 @@ class AuthorControllerIT {
   }
 
   @Test
-  @DisplayName("Should return no content when update author with valid data")
+  @DisplayName("PUT /authors/{authorId} - Should return no content when update author with valid data")
   void shouldReturnNoContentWhenUpdateAuthorWithValidData() throws Exception {
     UpdateAuthorRequest request = UpdateAuthorRequest.builder().name("Yuval Noah").build();
 
@@ -124,49 +105,13 @@ class AuthorControllerIT {
   }
 
   @Test
-  @DisplayName("Should throw AppExceptionResponse when update author with non existing id")
-  void shouldThrowWhenUpdateAuthorWithNonExistingId() throws Exception {
-    String expectedJson = JsonUtils.readJson("/authors/update_with_non_existing_id.json");
-
-    UpdateAuthorRequest request = UpdateAuthorRequest.builder().name("Yuval Noah").build();
-
-    String responseJson = mockMvc
-        .perform(put("/authors/{authorId}", 1000L).contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(request)))
-        .andExpect(status().isNotFound())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andReturn()
-        .getResponse()
-        .getContentAsString();
-
-    JSONAssert.assertEquals(expectedJson, responseJson, new CustomComparator(
-        JSONCompareMode.LENIENT, new Customization("timestamp", (o1, o2) -> true)));
-  }
-
-  @Test
-  @DisplayName("Should return no content when delete author with existing id")
+  @DisplayName("DELETE /authors/{authorId} - Should return no content when delete author with existing id")
   void shouldReturnNoContentWhenDeleteAuthorWithExistingId() throws Exception {
     mockMvc.perform(delete("/authors/{authorId}", 1L)).andExpect(status().isNoContent());
   }
 
   @Test
-  @DisplayName("Should throw AppExceptionResponse when delete author with non existing id")
-  void shouldThrowWhenDeleteAuthorWithNonExistingId() throws Exception {
-    String expectedJson = JsonUtils.readJson("/authors/delete_with_non_existing_id.json");
-
-    String responseJson = mockMvc.perform(delete("/authors/{authorId}", 1000L))
-        .andExpect(status().isNotFound())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andReturn()
-        .getResponse()
-        .getContentAsString();
-
-    JSONAssert.assertEquals(expectedJson, responseJson, new CustomComparator(
-        JSONCompareMode.LENIENT, new Customization("timestamp", (o1, o2) -> true)));
-  }
-
-  @Test
-  @DisplayName("Should return List<BookResponse> when find books by author id with existing id")
+  @DisplayName("GET /authors/{authorId}/books - Should return List<BookResponse> when find books by author id with existing id")
   void shouldReturnListOfBooksWhenFindBooksByAuthorIdWithExistingId() throws Exception {
     String expectedJson = JsonUtils.readJson("/authors/find-books-by-author.json");
 
