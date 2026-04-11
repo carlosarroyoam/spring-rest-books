@@ -1,4 +1,4 @@
-package com.carlosarroyoam.rest.books.orders;
+package com.carlosarroyoam.rest.books.order;
 
 import com.carlosarroyoam.rest.books.book.BookRepository;
 import com.carlosarroyoam.rest.books.book.entity.Book;
@@ -6,8 +6,6 @@ import com.carlosarroyoam.rest.books.core.constant.AppMessages;
 import com.carlosarroyoam.rest.books.core.dto.PagedResponse;
 import com.carlosarroyoam.rest.books.customer.CustomerRepository;
 import com.carlosarroyoam.rest.books.customer.entity.Customer;
-import com.carlosarroyoam.rest.books.order.OrderRepository;
-import com.carlosarroyoam.rest.books.order.OrderService;
 import com.carlosarroyoam.rest.books.order.dto.CreateOrderItemRequest;
 import com.carlosarroyoam.rest.books.order.dto.CreateOrderRequest;
 import com.carlosarroyoam.rest.books.order.dto.OrderResponse;

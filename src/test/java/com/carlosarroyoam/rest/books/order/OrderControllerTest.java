@@ -1,10 +1,8 @@
-package com.carlosarroyoam.rest.books.orders;
+package com.carlosarroyoam.rest.books.order;
 
 import com.carlosarroyoam.rest.books.core.dto.PagedResponse;
 import com.carlosarroyoam.rest.books.core.dto.PaginationResponse;
 import com.carlosarroyoam.rest.books.core.exception.GlobalExceptionHandler;
-import com.carlosarroyoam.rest.books.order.OrderController;
-import com.carlosarroyoam.rest.books.order.OrderService;
 import com.carlosarroyoam.rest.books.order.dto.CreateOrderItemRequest;
 import com.carlosarroyoam.rest.books.order.dto.CreateOrderRequest;
 import com.carlosarroyoam.rest.books.order.dto.OrderResponse;

@@ -1,0 +1,74 @@
+{
+  "id": 1,
+  "order_number": "ORD-20250001",
+  "notes": "Leave at the front desk",
+  "shipping_address": "123 Main Street, Springfield",
+  "billing_address": "123 Main Street, Springfield",
+  "subtotal": 45.98,
+  "tax_amount": 7.36,
+  "shipping_amount": 0.00,
+  "total": 53.34,
+  "status": "SHIPPED",
+  "items": [
+    {
+      "id": 1,
+      "quantity": 2,
+      "unit_price": 22.99,
+      "total_price": 45.98,
+      "book": {
+        "id": 1,
+        "isbn": "978-1-3035-0529-4",
+        "title": "Homo Deus: A Brief History of Tomorrow",
+        "cover_url": "https://images.isbndb.com/covers/39/36/9781784703936.jpg",
+        "price": 22.99,
+        "is_available_online": false,
+        "published_at": "2017-01-01",
+        "status": "ACTIVE",
+        "authors": [
+          {
+            "id": 1,
+            "name": "Yuval Noah Harari"
+          },
+          {
+            "id": 2,
+            "name": "Itzik Yahav"
+          }
+        ],
+        "created_at": "2025-01-01T00:00:00",
+        "updated_at": "2025-01-01T00:00:00"
+      },
+      "created_at": "2025-01-02T10:00:00",
+      "updated_at": "2025-01-02T10:00:00"
+    }
+  ],
+  "customer": {
+    "id": 1,
+    "first_name": "Carlos Alberto",
+    "last_name": "Arroyo Martínez",
+    "email": "carroyom@mail.com",
+    "username": "carroyom",
+    "status": "ACTIVE",
+    "created_at": "2025-01-01T00:00:00",
+    "updated_at": "2025-01-01T00:00:00"
+  },
+  "payment": {
+    "id": 1,
+    "amount": 53.34,
+    "method": "CREDIT_CARD",
+    "status": "COMPLETED",
+    "transaction_id": "PAY-SEED-000001",
+    "created_at": "2025-01-02T10:00:00",
+    "updated_at": "2025-01-02T10:00:00"
+  },
+  "shipment": {
+    "id": 1,
+    "attention_name": "Carlos Alberto Arroyo Martínez",
+    "address": "123 Main Street, Springfield",
+    "phone": "5501011234",
+    "status": "SHIPPED",
+    "created_at": "2025-01-04T11:15:00",
+    "updated_at": "2025-01-04T11:15:00"
+  },
+  "created_at": "2025-01-02T10:00:00",
+  "updated_at": "2025-01-03T09:30:00"
+}
