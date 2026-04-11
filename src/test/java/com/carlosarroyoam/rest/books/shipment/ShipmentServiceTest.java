@@ -62,8 +62,8 @@ class ShipmentServiceTest {
   }
 
   @Test
-  @DisplayName("Should return PagedResponse<ShipmentResponse> when find all shipments")
-  void shouldReturnListOfShipments() {
+  @DisplayName("Given shipments exist, when find all, then returns paged shipments")
+  void givenShipmentsExist_whenFindAll_thenReturnsPagedShipments() {
     Pageable pageable = PageRequest.of(0, 25);
     ShipmentSpecs shipmentSpecs = ShipmentSpecs.builder().build();
     List<Shipment> shipments = List.of(shipment);
@@ -79,8 +79,8 @@ class ShipmentServiceTest {
   }
 
   @Test
-  @DisplayName("Should return ShipmentResponse when find shipment by id with existing id")
-  void shouldReturnWhenFindShipmentByIdWithExistingId() {
+  @DisplayName("Given shipment exists, when find by id, then returns shipment")
+  void givenShipmentExists_whenFindById_thenReturnsShipment() {
     when(shipmentRepository.findById(anyLong())).thenReturn(Optional.of(shipment));
 
     ShipmentResponse shipmentDto = shipmentService.findById(1L);
@@ -90,8 +90,8 @@ class ShipmentServiceTest {
   }
 
   @Test
-  @DisplayName("Should update shipment status and sync order status")
-  void shouldUpdateShipmentStatusAndSyncOrderStatus() {
+  @DisplayName("Given shipment exists, when update status, then syncs order status")
+  void givenShipmentExists_whenUpdateStatus_thenSyncsOrderStatus() {
     UpdateShipmentStatusRequest requestDto = UpdateShipmentStatusRequest.builder()
         .status(ShipmentStatus.DELIVERED)
         .build();
@@ -108,8 +108,8 @@ class ShipmentServiceTest {
   }
 
   @Test
-  @DisplayName("Should throw ResponseStatusException when find shipment by id with non existing id")
-  void shouldThrowWhenFindShipmentByIdWithNonExistingId() {
+  @DisplayName("Given shipment does not exist, when find by id, then throws not found")
+  void givenShipmentDoesNotExist_whenFindById_thenThrowsNotFound() {
     when(shipmentRepository.findById(anyLong())).thenReturn(Optional.empty());
 
     assertThatThrownBy(() -> shipmentService.findById(1L))

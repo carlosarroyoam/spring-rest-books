@@ -83,8 +83,8 @@ class PaymentServiceTest {
   }
 
   @Test
-  @DisplayName("Should return PagedResponse<PaymentResponse> when find all payments")
-  void shouldReturnListOfPayments() {
+  @DisplayName("Given payments exist, when find all, then returns paged payments")
+  void givenPaymentsExist_whenFindAll_thenReturnsPagedPayments() {
     Pageable pageable = PageRequest.of(0, 25);
     PaymentSpecs paymentSpecs = PaymentSpecs.builder().build();
     List<Payment> payments = List.of(payment);
@@ -100,8 +100,8 @@ class PaymentServiceTest {
   }
 
   @Test
-  @DisplayName("Should return PaymentResponse when find payment by id with existing id")
-  void shouldReturnWhenFindPaymentByIdWithExistingId() {
+  @DisplayName("Given payment exists, when find by id, then returns payment")
+  void givenPaymentExists_whenFindById_thenReturnsPayment() {
     when(paymentRepository.findById(anyLong())).thenReturn(Optional.of(payment));
 
     PaymentResponse paymentResponse = paymentService.findById(1L);
@@ -111,8 +111,8 @@ class PaymentServiceTest {
   }
 
   @Test
-  @DisplayName("Should throw ResponseStatusException when find payment by id with non existing id")
-  void shouldThrowWhenFindPaymentByIdWithNonExistingId() {
+  @DisplayName("Given payment does not exist, when find by id, then throws not found")
+  void givenPaymentDoesNotExist_whenFindById_thenThrowsNotFound() {
     when(paymentRepository.findById(anyLong())).thenReturn(Optional.empty());
 
     assertThatThrownBy(() -> paymentService.findById(1L))
@@ -122,8 +122,8 @@ class PaymentServiceTest {
   }
 
   @Test
-  @DisplayName("Should return PaymentResponse when create payment with valid data and create shipment if missing")
-  void shouldReturnWhenCreatePaymentWithValidData() {
+  @DisplayName("Given valid data, when create payment, then returns payment and creates shipment")
+  void givenValidData_whenCreatePayment_thenReturnsPaymentAndCreatesShipment() {
     CreatePaymentRequest request = CreatePaymentRequest.builder()
         .orderId(1L)
         .method(PaymentMethod.CREDIT_CARD)
@@ -150,8 +150,8 @@ class PaymentServiceTest {
   }
 
   @Test
-  @DisplayName("Should update payment status and sync order status")
-  void shouldUpdatePaymentStatusAndSyncOrderStatus() {
+  @DisplayName("Given payment exists, when update status, then syncs order status")
+  void givenPaymentExists_whenUpdateStatus_thenSyncsOrderStatus() {
     UpdatePaymentStatusRequest request = UpdatePaymentStatusRequest.builder()
         .status(PaymentStatus.REFUNDED)
         .build();
@@ -168,8 +168,8 @@ class PaymentServiceTest {
   }
 
   @Test
-  @DisplayName("Should not create shipment when one already exists for order")
-  void shouldNotCreateShipmentWhenOneAlreadyExists() {
+  @DisplayName("Given shipment exists, when create payment, then does not create duplicate shipment")
+  void givenShipmentExists_whenCreatePayment_thenDoesNotCreateDuplicateShipment() {
     CreatePaymentRequest request = CreatePaymentRequest.builder()
         .orderId(1L)
         .method(PaymentMethod.CREDIT_CARD)
@@ -190,8 +190,8 @@ class PaymentServiceTest {
   }
 
   @Test
-  @DisplayName("Should throw ResponseStatusException when create payment with non existing order")
-  void shouldThrowWhenCreatePaymentWithNonExistingOrder() {
+  @DisplayName("Given order does not exist, when create payment, then throws not found")
+  void givenOrderDoesNotExist_whenCreatePayment_thenThrowsNotFound() {
     CreatePaymentRequest request = CreatePaymentRequest.builder()
         .orderId(99L)
         .method(PaymentMethod.CREDIT_CARD)
@@ -206,8 +206,8 @@ class PaymentServiceTest {
   }
 
   @Test
-  @DisplayName("Should throw ResponseStatusException when create payment for order already paid")
-  void shouldThrowWhenCreatePaymentForOrderAlreadyPaid() {
+  @DisplayName("Given order already paid, when create payment, then throws bad request")
+  void givenOrderAlreadyPaid_whenCreatePayment_thenThrowsBadRequest() {
     CreatePaymentRequest request = CreatePaymentRequest.builder()
         .orderId(1L)
         .method(PaymentMethod.CREDIT_CARD)

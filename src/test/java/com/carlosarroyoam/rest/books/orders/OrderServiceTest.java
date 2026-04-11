@@ -136,7 +136,7 @@ class OrderServiceTest {
   }
 
   @Test
-  @DisplayName("Should return OrderResponse when find order by id with existing id")
+  @DisplayName("Given order exists, when find by id, then returns order")
   void givenOrderExists_whenFindById_thenReturnsOrder() {
     when(orderRepository.findById(anyLong())).thenReturn(Optional.of(order));
 
@@ -148,7 +148,7 @@ class OrderServiceTest {
   }
 
   @Test
-  @DisplayName("Should throw ResponseStatusException when find an order by id with non existing id")
+  @DisplayName("Given order does not exist, when find by id, then throws not found exception")
   void givenOrderDoesNotExist_whenFindById_thenThrowsNotFoundException() {
     when(orderRepository.findById(anyLong())).thenReturn(Optional.empty());
 
@@ -158,7 +158,7 @@ class OrderServiceTest {
   }
 
   @Test
-  @DisplayName("Should return OrderResponse when create an order with valid data")
+  @DisplayName("Given valid order data, when create, then returns created order")
   void givenValidOrderData_whenCreate_thenReturnsCreatedOrder() {
     CreateOrderRequest request = CreateOrderRequest.builder()
         .customerId(1L)
@@ -191,7 +191,7 @@ class OrderServiceTest {
   }
 
   @Test
-  @DisplayName("Should throw ResponseStatusException when create an order with non existing customer")
+  @DisplayName("Given customer does not exist, when create, then throws not found exception")
   void givenCustomerDoesNotExist_whenCreate_thenThrowsNotFoundException() {
     CreateOrderRequest request = CreateOrderRequest.builder()
         .customerId(99L)
@@ -209,8 +209,8 @@ class OrderServiceTest {
   }
 
   @Test
-  @DisplayName("Should throw ResponseStatusException when create an order with non existing book")
-  void shouldThrowWhenCreateOrderWithNonExistingBook() {
+  @DisplayName("Given book does not exist, when create, then throws not found exception")
+  void givenBookDoesNotExist_whenCreate_thenThrowsNotFoundException() {
     CreateOrderRequest request = CreateOrderRequest.builder()
         .customerId(1L)
         .shippingAddress("123 Main Street, Springfield")
@@ -228,8 +228,8 @@ class OrderServiceTest {
   }
 
   @Test
-  @DisplayName("Should update order with valid data")
-  void shouldUpdateOrderWithValidData() {
+  @DisplayName("Given order exists, when update with valid data, then updates order")
+  void givenOrderExists_whenUpdateWithValidData_thenUpdatesOrder() {
     UpdateOrderRequest request = UpdateOrderRequest.builder()
         .shippingAddress("456 Updated Avenue, Springfield")
         .billingAddress("789 Billing Road, Springfield")
@@ -247,8 +247,8 @@ class OrderServiceTest {
   }
 
   @Test
-  @DisplayName("Should throw ResponseStatusException when update order with non existing id")
-  void shouldThrowWhenUpdateOrderWithNonExistingId() {
+  @DisplayName("Given order does not exist, when update, then throws not found exception")
+  void givenOrderDoesNotExist_whenUpdate_thenThrowsNotFoundException() {
     when(orderRepository.findById(anyLong())).thenReturn(Optional.empty());
 
     assertThatThrownBy(() -> orderService.update(1L, UpdateOrderRequest.builder().build()))
@@ -258,8 +258,8 @@ class OrderServiceTest {
   }
 
   @Test
-  @DisplayName("Should delete order with existing id")
-  void shouldDeleteOrderWithExistingId() {
+  @DisplayName("Given order exists, when delete, then deletes order")
+  void givenOrderExists_whenDelete_thenDeletesOrder() {
     when(orderRepository.existsById(anyLong())).thenReturn(true);
 
     orderService.deleteById(1L);
@@ -268,8 +268,8 @@ class OrderServiceTest {
   }
 
   @Test
-  @DisplayName("Should throw ResponseStatusException when delete order with non existing id")
-  void shouldThrowWhenDeleteOrderWithNonExistingId() {
+  @DisplayName("Given order does not exist, when delete, then throws not found exception")
+  void givenOrderDoesNotExist_whenDelete_thenThrowsNotFoundException() {
     when(orderRepository.existsById(anyLong())).thenReturn(false);
 
     assertThatThrownBy(() -> orderService.deleteById(1L))

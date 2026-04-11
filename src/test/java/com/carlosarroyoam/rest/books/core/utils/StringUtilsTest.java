@@ -8,32 +8,32 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class StringUtilsTest {
   @Test
-  @DisplayName("Should return List<String> when comma separated to list with values")
-  void shouldReturnEmtyListWhenCommaSeparatedToListWithValues() {
+  @DisplayName("Given comma-separated values, when convert to list, then returns list with values")
+  void givenCommaSeparatedValues_whenConvertToList_thenReturnsListWithValues() {
     List<String> result = StringUtils.commaSeparatedToList("value1, value2, value3");
 
     assertThat(result).isNotNull().isNotEmpty().hasSize(3);
   }
 
   @Test
-  @DisplayName("Should return List<String> when comma separated to list with unquoted values")
-  void shouldReturnEmtyListWhenCommaSeparatedToListWithUnquotedValues() {
+  @DisplayName("Given unquoted values, when convert to list, then returns list with values")
+  void givenUnquotedValues_whenConvertToList_thenReturnsListWithValues() {
     List<String> result = StringUtils.commaSeparatedToList("\"value1\", \"value2\", \"value3\"");
 
     assertThat(result).isNotNull().isNotEmpty().hasSize(3);
   }
 
   @Test
-  @DisplayName("Should return empty List<String> when comma separated to list with emtpy string")
-  void shouldReturnEmtyListWhenCommaSeparatedToListWithEmptyString() {
+  @DisplayName("Given empty string, when convert to list, then returns empty list")
+  void givenEmptyString_whenConvertToList_thenReturnsEmptyList() {
     List<String> result = StringUtils.commaSeparatedToList("");
 
     assertThat(result).isNotNull().isEmpty();
   }
 
   @Test
-  @DisplayName("Should return empty List<String> when comma separated to list with nulls")
-  void shouldReturnEmtyListWhenCommaSeparatedToListWithNulls() {
+  @DisplayName("Given null input, when convert to list, then returns empty list")
+  void givenNullInput_whenConvertToList_thenReturnsEmptyList() {
     List<String> result = StringUtils.commaSeparatedToList(null);
 
     assertThat(result).isNotNull().isEmpty();

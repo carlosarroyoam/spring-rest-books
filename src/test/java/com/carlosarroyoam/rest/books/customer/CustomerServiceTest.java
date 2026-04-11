@@ -198,7 +198,7 @@ class CustomerServiceTest {
   }
 
   @Test
-  @DisplayName("Should throw ResponseStatusException when deactivate customer with non existing id")
+  @DisplayName("Given customer does not exist, when deactivate, then throws not found exception")
   void givenCustomerDoesNotExist_whenDeactivate_thenThrowsNotFoundException() {
     when(customerRepository.findById(any())).thenReturn(Optional.empty());
 
