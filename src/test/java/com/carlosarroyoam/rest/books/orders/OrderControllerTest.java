@@ -62,8 +62,8 @@ class OrderControllerTest {
   }
 
   @Test
-  @DisplayName("Should return PagedResponse<OrderResponse> when find all orders")
-  void shouldReturnPagedOrdersWhenFindAllOrders() throws Exception {
+  @DisplayName("GET /orders - Given orders exist, when find all, then returns paged orders")
+  void givenOrdersExist_whenFindAllOrders_thenReturnsPagedOrders() throws Exception {
     PagedResponse<OrderResponse> pagedResponse = PagedResponse.<OrderResponse>builder()
         .items(List.of(OrderResponse.builder().id(1L).status(OrderStatus.PENDING).build()))
         .pagination(
@@ -85,8 +85,8 @@ class OrderControllerTest {
   }
 
   @Test
-  @DisplayName("Should return OrderResponse when find order by id")
-  void shouldReturnOrderResponseWhenFindOrderById() throws Exception {
+  @DisplayName("GET /orders/{id} - Given order exists, when find by id, then returns order")
+  void givenOrderExists_whenFindOrderById_thenReturnsOrder() throws Exception {
     OrderResponse order = OrderResponse.builder()
         .id(1L)
         .orderNumber("ORD-12345678")
@@ -105,8 +105,8 @@ class OrderControllerTest {
   }
 
   @Test
-  @DisplayName("Should return created when create an order")
-  void shouldReturnCreatedWhenCreateOrder() throws Exception {
+  @DisplayName("POST /orders - Given valid order data, when create, then returns created")
+  void givenValidOrderData_whenCreateOrder_thenReturnsCreated() throws Exception {
     CreateOrderRequest request = CreateOrderRequest.builder()
         .customerId(1L)
         .shippingAddress("123 Main Street, Springfield")
@@ -126,8 +126,8 @@ class OrderControllerTest {
   }
 
   @Test
-  @DisplayName("Should return no content when update order")
-  void shouldReturnNoContentWhenUpdateOrder() throws Exception {
+  @DisplayName("PUT /orders/{id} - Given valid order data, when update, then returns no content")
+  void givenValidOrderData_whenUpdateOrder_thenReturnsNoContent() throws Exception {
     UpdateOrderRequest request = UpdateOrderRequest.builder()
         .shippingAddress("456 Updated Avenue, Springfield")
         .billingAddress("789 Billing Road, Springfield")
@@ -139,8 +139,8 @@ class OrderControllerTest {
   }
 
   @Test
-  @DisplayName("Should return no content when delete order")
-  void shouldReturnNoContentWhenDeleteOrder() throws Exception {
+  @DisplayName("DELETE /orders/{id} - Given order exists, when delete, then returns no content")
+  void givenOrderExists_whenDeleteOrder_thenReturnsNoContent() throws Exception {
     mockMvc.perform(delete("/orders/{orderId}", 1L).accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNoContent());
   }

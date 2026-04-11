@@ -55,8 +55,8 @@ class BookControllerIT {
   }
 
   @Test
-  @DisplayName("GET /books - Should return paged books when find all books")
-  void shouldReturnListOfBooksWhenFindAllBooks() throws Exception {
+  @DisplayName("GET /books - Given books exist, when find all, then returns paged books")
+  void givenBooksExist_whenFindAllBooks_thenReturnsPagedBooks() throws Exception {
     String expectedJson = JsonUtils.readJson("/books/find-all.json");
 
     String responseJson = mockMvc.perform(get("/books").param("page", "0").param("size", "25"))
@@ -70,8 +70,8 @@ class BookControllerIT {
   }
 
   @Test
-  @DisplayName("GET /books/{bookId} - Should return BookResponse when find book by id with existing id")
-  void shouldReturnBookResponseWhenFindBookByIdWithExistingId() throws Exception {
+  @DisplayName("GET /books/{id} - Given book exists, when find by id, then returns book")
+  void givenBookExists_whenFindBookById_thenReturnsBook() throws Exception {
     String expectedJson = JsonUtils.readJson("/books/find-by-id.json");
 
     String responseJson = mockMvc.perform(get("/books/{bookId}", 1L))
@@ -85,8 +85,8 @@ class BookControllerIT {
   }
 
   @Test
-  @DisplayName("POST /books - Should return when create a book with valid data")
-  void shouldReturnCreatedWhenCreateBookWithValidData() throws Exception {
+  @DisplayName("POST /books - Given valid book data, when create, then returns created")
+  void givenValidBookData_whenCreateBook_thenReturnsCreated() throws Exception {
     CreateBookRequest request = CreateBookRequest.builder()
         .isbn("978-1-7873-3067-2")
         .title("21 Lessons for the 21st Century")
@@ -104,8 +104,8 @@ class BookControllerIT {
   }
 
   @Test
-  @DisplayName("PUT /books/{bookId} - Should return no content when update book with valid data")
-  void shouldReturnNoContentWhenUpdateBookWithValidData() throws Exception {
+  @DisplayName("PUT /books/{id} - Given valid book data, when update, then returns no content")
+  void givenValidBookData_whenUpdateBook_thenReturnsNoContent() throws Exception {
     UpdateBookRequest request = UpdateBookRequest.builder()
         .isbn("978-9-7389-4434-3")
         .title("Sapiens: A Brief History of Humankind")
@@ -120,14 +120,14 @@ class BookControllerIT {
   }
 
   @Test
-  @DisplayName("DELETE /books/{bookId} - Should return no content when delete book with existing id")
-  void shouldReturnNoContentDeleteBookWithExistingId() throws Exception {
+  @DisplayName("DELETE /books/{id} - Given book exists, when delete, then returns no content")
+  void givenBookExists_whenDeleteBook_thenReturnsNoContent() throws Exception {
     mockMvc.perform(delete("/books/{bookId}", 1L)).andExpect(status().isNoContent());
   }
 
   @Test
-  @DisplayName("GET /books/{bookId}/authors - Should return List<AuthorResponse> when find authors by book id with existing id")
-  void shouldReturnListOfAuthorsWhenFindAuthorsByBookIdWithExistingId() throws Exception {
+  @DisplayName("GET /books/{id}/authors - Given book exists, when find authors, then returns authors")
+  void givenBookExists_whenFindAuthorsByBookId_thenReturnsAuthors() throws Exception {
     String expectedJson = JsonUtils.readJson("/books/find-authors-by-book.json");
 
     String responseJson = mockMvc.perform(get("/books/{bookId}/authors", 1L))

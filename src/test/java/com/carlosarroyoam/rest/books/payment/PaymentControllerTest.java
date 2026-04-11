@@ -59,8 +59,8 @@ class PaymentControllerTest {
   }
 
   @Test
-  @DisplayName("Should return PagedResponse<PaymentResponse> when find all payments")
-  void shouldReturnPagedPaymentsWhenFindAllPayments() throws Exception {
+  @DisplayName("GET /payments - Given payments exist, when find all, then returns paged payments")
+  void givenPaymentsExist_whenFindAllPayments_thenReturnsPagedPayments() throws Exception {
     PagedResponse<PaymentResponse> pagedResponse = PagedResponse.<PaymentResponse>builder()
         .items(List.of(PaymentResponse.builder().id(1L).status(PaymentStatus.COMPLETED).build()))
         .pagination(
@@ -81,8 +81,8 @@ class PaymentControllerTest {
   }
 
   @Test
-  @DisplayName("Should return PaymentResponse when find payment by id")
-  void shouldReturnPaymentResponseWhenFindPaymentById() throws Exception {
+  @DisplayName("GET /payments/{id} - Given payment exists, when find by id, then returns payment")
+  void givenPaymentExists_whenFindPaymentById_thenReturnsPayment() throws Exception {
     PaymentResponse payment = PaymentResponse.builder()
         .id(1L)
         .amount(new BigDecimal("53.34"))
@@ -103,8 +103,8 @@ class PaymentControllerTest {
   }
 
   @Test
-  @DisplayName("Should return created when create a payment")
-  void shouldReturnCreatedWhenCreatePayment() throws Exception {
+  @DisplayName("POST /payments - Given valid payment data, when create, then returns created")
+  void givenValidPaymentData_whenCreatePayment_thenReturnsCreated() throws Exception {
     CreatePaymentRequest request = CreatePaymentRequest.builder()
         .orderId(1L)
         .method(PaymentMethod.CREDIT_CARD)
@@ -121,8 +121,8 @@ class PaymentControllerTest {
   }
 
   @Test
-  @DisplayName("Should return no content when update payment status")
-  void shouldReturnNoContentWhenUpdatePaymentStatus() throws Exception {
+  @DisplayName("PUT /payments/{id}/status - Given valid status, when update, then returns no content")
+  void givenValidStatus_whenUpdatePaymentStatus_thenReturnsNoContent() throws Exception {
     UpdatePaymentStatusRequest request = UpdatePaymentStatusRequest.builder()
         .status(PaymentStatus.REFUNDED)
         .build();

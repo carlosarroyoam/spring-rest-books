@@ -57,8 +57,8 @@ class CustomerControllerIT {
   }
 
   @Test
-  @DisplayName("GET /customers - Should return paged customers when find all customers")
-  void shouldReturnListOfCustomersWhenFindAllCustomers() throws Exception {
+  @DisplayName("GET /customers - Given customers exist, when find all, then returns paged customers")
+  void givenCustomersExist_whenFindAllCustomers_thenReturnsPagedCustomers() throws Exception {
     String expectedJson = JsonUtils.readJson("/customers/find-all.json");
 
     String responseJson = mockMvc.perform(get("/customers").param("page", "0").param("size", "25"))
@@ -72,8 +72,8 @@ class CustomerControllerIT {
   }
 
   @Test
-  @DisplayName("GET /customers/{customerId} - Should return CustomerResponse when find customer by id with existing id")
-  void shouldReturnCustomerResponseWhenFindCustomerByIdWithExistingId() throws Exception {
+  @DisplayName("GET /customers/{id} - Given customer exists, when find by id, then returns customer")
+  void givenCustomerExists_whenFindCustomerById_thenReturnsCustomer() throws Exception {
     String expectedJson = JsonUtils.readJson("/customers/find-by-id.json");
 
     String responseJson = mockMvc.perform(get("/customers/{customerId}", 1L))
@@ -87,8 +87,8 @@ class CustomerControllerIT {
   }
 
   @Test
-  @DisplayName("POST /customers - Should return created when create a customer with valid data")
-  void shouldReturnCreatedWhenCreateCustomerWithValidData() throws Exception {
+  @DisplayName("POST /customers - Given valid customer data, when create, then returns created")
+  void givenValidCustomerData_whenCreateCustomer_thenReturnsCreated() throws Exception {
     CreateCustomerRequest request = CreateCustomerRequest.builder()
         .firstName("Carlos Alberto")
         .lastName("Arroyo Martínez")
@@ -105,8 +105,8 @@ class CustomerControllerIT {
   }
 
   @Test
-  @DisplayName("PUT /customers/{customerId} - Should return no content update customer with valid data")
-  void shouldReturnNoContentWhenUpdateCustomerWithValidData() throws Exception {
+  @DisplayName("PUT /customers/{id} - Given valid customer data, when update, then returns no content")
+  void givenValidCustomerData_whenUpdateCustomer_thenReturnsNoContent() throws Exception {
     UpdateCustomerRequest request = UpdateCustomerRequest.builder()
         .firstName("Carlos Alberto")
         .lastName("Arroyo Martínez")
@@ -117,8 +117,8 @@ class CustomerControllerIT {
   }
 
   @Test
-  @DisplayName("DELETE /customers/{customerId} - Should return no content when delete customer with existing id")
-  void shouldReturnNoContentWhenDeleteCustomerWithExistingId() throws Exception {
+  @DisplayName("DELETE /customers/{id} - Given customer exists, when delete, then returns no content")
+  void givenCustomerExists_whenDeleteCustomer_thenReturnsNoContent() throws Exception {
     mockMvc.perform(delete("/customers/{customerId}", 1L)).andExpect(status().isNoContent());
   }
 }

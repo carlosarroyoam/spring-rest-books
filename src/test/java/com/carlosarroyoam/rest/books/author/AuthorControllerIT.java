@@ -54,8 +54,8 @@ class AuthorControllerIT {
   }
 
   @Test
-  @DisplayName("GET /authors - Should return paged authors when find all authors")
-  void shouldReturnListOfAuthorsWhenFindAllAuthors() throws Exception {
+  @DisplayName("GET /authors - Given authors exist, when find all, then returns paged authors")
+  void givenAuthorsExist_whenFindAllAuthors_thenReturnsPagedAuthors() throws Exception {
     String expectedJson = JsonUtils.readJson("/authors/find-all.json");
 
     String responseJson = mockMvc.perform(get("/authors").param("page", "0").param("size", "25"))
@@ -69,8 +69,8 @@ class AuthorControllerIT {
   }
 
   @Test
-  @DisplayName("GET /authors/{authorId} - Should return AuthorResponse when find author by id with existing id")
-  void shouldReturnAuthorResponseWhenFindAuthorByIdWithExistingId() throws Exception {
+  @DisplayName("GET /authors/{id} - Given author exists, when find by id, then returns author")
+  void givenAuthorExists_whenFindAuthorById_thenReturnsAuthor() throws Exception {
     String expectedJson = JsonUtils.readJson("/authors/find-by-id.json");
 
     String responseJson = mockMvc.perform(get("/authors/{authorId}", 1L))
@@ -84,8 +84,8 @@ class AuthorControllerIT {
   }
 
   @Test
-  @DisplayName("POST /authors - Should return created when create an author with valid data")
-  void shouldReturnCreatedWhenCreateAuthorWithValidData() throws Exception {
+  @DisplayName("POST /authors - Given valid author data, when create, then returns created")
+  void givenValidAuthorData_whenCreateAuthor_thenReturnsCreated() throws Exception {
     CreateAuthorRequest request = CreateAuthorRequest.builder().name("Yuval Noah Harari").build();
 
     mockMvc
@@ -96,8 +96,8 @@ class AuthorControllerIT {
   }
 
   @Test
-  @DisplayName("PUT /authors/{authorId} - Should return no content when update author with valid data")
-  void shouldReturnNoContentWhenUpdateAuthorWithValidData() throws Exception {
+  @DisplayName("PUT /authors/{id} - Given valid author data, when update, then returns no content")
+  void givenValidAuthorData_whenUpdateAuthor_thenReturnsNoContent() throws Exception {
     UpdateAuthorRequest request = UpdateAuthorRequest.builder().name("Yuval Noah").build();
 
     mockMvc.perform(put("/authors/{authorId}", 1L).contentType(MediaType.APPLICATION_JSON)
@@ -105,14 +105,14 @@ class AuthorControllerIT {
   }
 
   @Test
-  @DisplayName("DELETE /authors/{authorId} - Should return no content when delete author with existing id")
-  void shouldReturnNoContentWhenDeleteAuthorWithExistingId() throws Exception {
+  @DisplayName("DELETE /authors/{id} - Given author exists, when delete, then returns no content")
+  void givenAuthorExists_whenDeleteAuthor_thenReturnsNoContent() throws Exception {
     mockMvc.perform(delete("/authors/{authorId}", 1L)).andExpect(status().isNoContent());
   }
 
   @Test
-  @DisplayName("GET /authors/{authorId}/books - Should return List<BookResponse> when find books by author id with existing id")
-  void shouldReturnListOfBooksWhenFindBooksByAuthorIdWithExistingId() throws Exception {
+  @DisplayName("GET /authors/{id}/books - Given author exists, when find books, then returns books")
+  void givenAuthorExists_whenFindBooksByAuthorId_thenReturnsBooks() throws Exception {
     String expectedJson = JsonUtils.readJson("/authors/find-books-by-author.json");
 
     String responseJson = mockMvc.perform(get("/authors/{authorId}/books", 1L))

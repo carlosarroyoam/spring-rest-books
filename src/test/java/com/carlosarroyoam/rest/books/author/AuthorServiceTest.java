@@ -73,8 +73,8 @@ class AuthorServiceTest {
   }
 
   @Test
-  @DisplayName("Should return PagedResponse<AuthorResponse> when find all authors")
-  void shouldReturnListOfAuthors() {
+  @DisplayName("Given authors exist, when find all, then returns paged authors")
+  void givenAuthorsExist_whenFindAll_thenReturnsPagedAuthors() {
     Pageable pageable = PageRequest.of(0, 25);
     List<Author> authors = List.of(author);
 
@@ -94,8 +94,8 @@ class AuthorServiceTest {
   }
 
   @Test
-  @DisplayName("Should return AuthorResponse when find author by id with existing id")
-  void shouldReturnWhenFindAuthorByIdWithExistingId() {
+  @DisplayName("Given author exists, when find by id, then returns author")
+  void givenAuthorExists_whenFindById_thenReturnsAuthor() {
     when(authorRepository.findById(anyLong())).thenReturn(Optional.of(author));
 
     AuthorResponse authorResponse = authorService.findById(1L);
@@ -105,8 +105,8 @@ class AuthorServiceTest {
   }
 
   @Test
-  @DisplayName("Should throw ResponseStatusException when find an author by id with non existing id")
-  void shouldThrowWhenFindAuthorByIdWithNonExistingId() {
+  @DisplayName("Given author does not exist, when find by id, then throws not found exception")
+  void givenAuthorDoesNotExist_whenFindById_thenThrowsNotFoundException() {
     when(authorRepository.findById(anyLong())).thenReturn(Optional.empty());
 
     assertThatThrownBy(() -> authorService.findById(1L)).isInstanceOf(ResponseStatusException.class)
@@ -115,8 +115,8 @@ class AuthorServiceTest {
   }
 
   @Test
-  @DisplayName("Should return AuthorResponse when create an author with valid data")
-  void shouldReturnWhenCreateAuthorWithValidData() {
+  @DisplayName("Given valid author data, when create, then returns created author")
+  void givenValidAuthorData_whenCreate_thenReturnsCreatedAuthor() {
     CreateAuthorRequest request = CreateAuthorRequest.builder().name("Itzik Yahav").build();
 
     Author savedAuthor = Author.builder().id(2L).name("Itzik Yahav").build();
@@ -131,8 +131,8 @@ class AuthorServiceTest {
   }
 
   @Test
-  @DisplayName("Should update author with valid data")
-  void shouldUpdateAuthorWithValidData() {
+  @DisplayName("Given author exists, when update with valid data, then updates author")
+  void givenAuthorExists_whenUpdateWithValidData_thenUpdatesAuthor() {
     UpdateAuthorRequest request = UpdateAuthorRequest.builder().name("Yuval").build();
 
     Author updatedAuthor = Author.builder().id(2L).name("Yuval").build();
@@ -149,8 +149,8 @@ class AuthorServiceTest {
   }
 
   @Test
-  @DisplayName("Should throw ResponseStatusException when update author with non existing id")
-  void shouldUpdateAuthorWithNonExistingId() {
+  @DisplayName("Given author does not exist, when update, then throws not found exception")
+  void givenAuthorDoesNotExist_whenUpdate_thenThrowsNotFoundException() {
     UpdateAuthorRequest request = UpdateAuthorRequest.builder().build();
 
     when(authorRepository.findById(anyLong())).thenReturn(Optional.empty());
@@ -162,8 +162,8 @@ class AuthorServiceTest {
   }
 
   @Test
-  @DisplayName("Should delete author with existing id")
-  void shouldDeleteAuthorWithExistingId() {
+  @DisplayName("Given author exists, when delete, then deletes author")
+  void givenAuthorExists_whenDelete_thenDeletesAuthor() {
     when(authorRepository.findById(anyLong())).thenReturn(Optional.of(author));
 
     authorService.deleteById(1L);
@@ -172,8 +172,8 @@ class AuthorServiceTest {
   }
 
   @Test
-  @DisplayName("Should throw ResponseStatusException when delete author with non existing id")
-  void shouldThrowWhenDeleteAuthorWithNonExistingId() {
+  @DisplayName("Given author does not exist, when delete, then throws not found exception")
+  void givenAuthorDoesNotExist_whenDelete_thenThrowsNotFoundException() {
     when(authorRepository.findById(anyLong())).thenReturn(Optional.empty());
 
     assertThatThrownBy(() -> authorService.deleteById(1L))
@@ -183,8 +183,8 @@ class AuthorServiceTest {
   }
 
   @Test
-  @DisplayName("Should return List<BookResponse> when find books by author id with existing id")
-  void shouldReturnWhenFindBooksByAuthorIdWithExistingId() {
+  @DisplayName("Given author exists, when find books by author id, then returns books")
+  void givenAuthorExists_whenFindBooksByAuthorId_thenReturnsBooks() {
     when(authorRepository.findById(anyLong())).thenReturn(Optional.of(author));
 
     List<BookResponse> books = authorService.findBooksByAuthorId(1L);
@@ -198,8 +198,8 @@ class AuthorServiceTest {
   }
 
   @Test
-  @DisplayName("Should throw ResponseStatusException when find books by author id with non existing id")
-  void shouldThrowWhenFindBooksByAuthorIdWithNonExistingId() {
+  @DisplayName("Given author does not exist, when find books by author id, then throws not found exception")
+  void givenAuthorDoesNotExist_whenFindBooksByAuthorId_thenThrowsNotFoundException() {
     when(authorRepository.findById(anyLong())).thenReturn(Optional.empty());
 
     assertThatThrownBy(() -> authorService.findBooksByAuthorId(1L))

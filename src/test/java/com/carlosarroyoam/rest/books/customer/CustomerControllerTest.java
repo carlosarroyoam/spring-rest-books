@@ -57,8 +57,8 @@ class CustomerControllerTest {
   }
 
   @Test
-  @DisplayName("Should return PagedResponse<CustomerResponse> when find all customers")
-  void shouldReturnPagedCustomersWhenFindAllCustomers() throws Exception {
+  @DisplayName("GET /customers - Given customers exist, when find all, then returns paged customers")
+  void givenCustomersExist_whenFindAllCustomers_thenReturnsPagedCustomers() throws Exception {
     PagedResponse<CustomerResponse> pagedResponse = PagedResponse.<CustomerResponse>builder()
         .items(List.of(CustomerResponse.builder().id(1L).build()))
         .pagination(
@@ -86,8 +86,8 @@ class CustomerControllerTest {
   }
 
   @Test
-  @DisplayName("Should return CustomerResponse when find customer by id")
-  void shouldReturnCustomerResponseWhenFindCustomerById() throws Exception {
+  @DisplayName("GET /customers/{id} - Given customer exists, when find by id, then returns customer")
+  void givenCustomerExists_whenFindCustomerById_thenReturnsCustomer() throws Exception {
     CustomerResponse customer = CustomerResponse.builder().id(1L).build();
 
     when(customerService.findById(anyLong())).thenReturn(customer);
@@ -99,8 +99,8 @@ class CustomerControllerTest {
   }
 
   @Test
-  @DisplayName("Should return created when create a customer")
-  void shouldReturnCreatedWhenCreateCustomer() throws Exception {
+  @DisplayName("POST /customers - Given valid customer data, when create, then returns created")
+  void givenValidCustomerData_whenCreateCustomer_thenReturnsCreated() throws Exception {
     CreateCustomerRequest request = CreateCustomerRequest.builder()
         .firstName("Carlos Alberto")
         .lastName("Arroyo Martínez")
@@ -121,8 +121,8 @@ class CustomerControllerTest {
   }
 
   @Test
-  @DisplayName("Should return no content when update customer")
-  void shouldReturnNoContentUpdateCustomer() throws Exception {
+  @DisplayName("PUT /customers/{id} - Given valid customer data, when update, then returns no content")
+  void givenValidCustomerData_whenUpdateCustomer_thenReturnsNoContent() throws Exception {
     UpdateCustomerRequest request = UpdateCustomerRequest.builder()
         .firstName("Carlos Alberto")
         .lastName("Arroyo Martínez")
@@ -133,8 +133,8 @@ class CustomerControllerTest {
   }
 
   @Test
-  @DisplayName("Should return no content when delete customer")
-  void shouldReturnNoContentWhenDeleteCustomer() throws Exception {
+  @DisplayName("DELETE /customers/{id} - Given customer exists, when delete, then returns no content")
+  void givenCustomerExists_whenDeleteCustomer_thenReturnsNoContent() throws Exception {
     mockMvc.perform(delete("/customers/{customerId}", 1L)).andExpect(status().isNoContent());
   }
 }

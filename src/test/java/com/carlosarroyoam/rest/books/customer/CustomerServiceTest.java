@@ -62,8 +62,8 @@ class CustomerServiceTest {
   }
 
   @Test
-  @DisplayName("Should return PagedResponse<CustomerResponse> when find all customers")
-  void shouldReturnListOfCustomers() {
+  @DisplayName("Given customers exist, when find all, then returns paged customers")
+  void givenCustomersExist_whenFindAll_thenReturnsPagedCustomers() {
     Pageable pageable = PageRequest.of(0, 25);
     List<Customer> customers = List.of(customer);
 
@@ -83,8 +83,8 @@ class CustomerServiceTest {
   }
 
   @Test
-  @DisplayName("Should return CustomerResponse when find customer by id with existing id")
-  void shouldReturnWhenFindCustomerByIdWithExistingId() {
+  @DisplayName("Given customer exists, when find by id, then returns customer")
+  void givenCustomerExists_whenFindById_thenReturnsCustomer() {
     when(customerRepository.findById(anyLong())).thenReturn(Optional.of(customer));
 
     CustomerResponse customerResponse = customerService.findById(1L);
@@ -94,8 +94,8 @@ class CustomerServiceTest {
   }
 
   @Test
-  @DisplayName("Should throw ResponseStatusException when find a customer by id with non existing id")
-  void shouldThrowWhenFindCustomerByIdWithNonExistingId() {
+  @DisplayName("Given customer does not exist, when find by id, then throws not found exception")
+  void givenCustomerDoesNotExist_whenFindById_thenThrowsNotFoundException() {
     when(customerRepository.findById(any())).thenReturn(Optional.empty());
 
     assertThatThrownBy(() -> customerService.findById(1L))
@@ -105,8 +105,8 @@ class CustomerServiceTest {
   }
 
   @Test
-  @DisplayName("Should return CustomerResponse when create a customer with valid data")
-  void shouldReturnWhenCreateCustomerWithValidData() {
+  @DisplayName("Given valid customer data, when create, then returns created customer")
+  void givenValidCustomerData_whenCreate_thenReturnsCreatedCustomer() {
     CreateCustomerRequest request = CreateCustomerRequest.builder()
         .firstName("Cathy Stefania")
         .lastName("Guido Rojas")
@@ -131,8 +131,8 @@ class CustomerServiceTest {
   }
 
   @Test
-  @DisplayName("Should throw ResponseStatusException when create a customer with existing username")
-  void shouldThrowWhenCreateCustomerWithExistingUsername() {
+  @DisplayName("Given customer with existing username, when create, then throws bad request exception")
+  void givenCustomerWithExistingUsername_whenCreate_thenThrowsBadRequestException() {
     CreateCustomerRequest request = CreateCustomerRequest.builder().build();
 
     when(customerRepository.existsByUsername(any())).thenReturn(true);
@@ -144,8 +144,8 @@ class CustomerServiceTest {
   }
 
   @Test
-  @DisplayName("Should throw ResponseStatusException when create a customer with existing email")
-  void shouldThrowWhenCreateCustomerWithExistingEmail() {
+  @DisplayName("Given customer with existing email, when create, then throws bad request exception")
+  void givenCustomerWithExistingEmail_whenCreate_thenThrowsBadRequestException() {
     CreateCustomerRequest request = CreateCustomerRequest.builder().build();
 
     when(customerRepository.existsByEmail(any())).thenReturn(true);
@@ -157,8 +157,8 @@ class CustomerServiceTest {
   }
 
   @Test
-  @DisplayName("Should update customer with valid data")
-  void shouldUpdateCustomerWithValidData() {
+  @DisplayName("Given customer exists, when update with valid data, then updates customer")
+  void givenCustomerExists_whenUpdateWithValidData_thenUpdatesCustomer() {
     UpdateCustomerRequest request = UpdateCustomerRequest.builder().firstName("Carlos").build();
 
     Customer updatedCustomer = Customer.builder().firstName("Carlos").build();
@@ -174,8 +174,8 @@ class CustomerServiceTest {
   }
 
   @Test
-  @DisplayName("Should throw ResponseStatusException when update customer with non existing id")
-  void shouldThrowWhenUpdateCustomerWithInvalidData() {
+  @DisplayName("Given customer does not exist, when update, then throws not found exception")
+  void givenCustomerDoesNotExist_whenUpdate_thenThrowsNotFoundException() {
     UpdateCustomerRequest request = UpdateCustomerRequest.builder().build();
 
     when(customerRepository.findById(any())).thenReturn(Optional.empty());
@@ -187,8 +187,8 @@ class CustomerServiceTest {
   }
 
   @Test
-  @DisplayName("Should deactivate customer with existing id")
-  void shouldDeactivateCustomerWithExistingId() {
+  @DisplayName("Given customer exists, when deactivate, then deactivates customer")
+  void givenCustomerExists_whenDeactivate_thenDeactivatesCustomer() {
     when(customerRepository.findById(any())).thenReturn(Optional.of(customer));
     when(customerRepository.save(any(Customer.class))).thenReturn(customer);
 
@@ -199,7 +199,7 @@ class CustomerServiceTest {
 
   @Test
   @DisplayName("Should throw ResponseStatusException when deactivate customer with non existing id")
-  void shouldThrowWhenDeactivateCustomerWithNonExistingId() {
+  void givenCustomerDoesNotExist_whenDeactivate_thenThrowsNotFoundException() {
     when(customerRepository.findById(any())).thenReturn(Optional.empty());
 
     assertThatThrownBy(() -> customerService.deleteById(1L))

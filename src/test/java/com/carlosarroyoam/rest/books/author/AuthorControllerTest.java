@@ -58,8 +58,8 @@ class AuthorControllerTest {
   }
 
   @Test
-  @DisplayName("Should return PagedResponse<AuthorResponse> when find all authors")
-  void shouldReturnPagedAuthorsWhenFindAllAuthors() throws Exception {
+  @DisplayName("GET /authors - Given authors exist, when find all, then returns paged authors")
+  void givenAuthorsExist_whenFindAllAuthors_thenReturnsPagedAuthors() throws Exception {
     PagedResponse<AuthorResponse> pagedResponse = PagedResponse.<AuthorResponse>builder()
         .items(List.of(AuthorResponse.builder().build()))
         .pagination(
@@ -83,8 +83,8 @@ class AuthorControllerTest {
   }
 
   @Test
-  @DisplayName("Should return AuthorResponse when find author by id with existing id")
-  void shouldReturnAuthorResponseWhenFindAuthorById() throws Exception {
+  @DisplayName("GET /authors/{id} - Given author exists, when find by id, then returns author")
+  void givenAuthorExists_whenFindAuthorById_thenReturnsAuthor() throws Exception {
     AuthorResponse author = AuthorResponse.builder().id(1L).name("Yuval Noah Harari").build();
 
     when(authorService.findById(anyLong())).thenReturn(author);
@@ -96,8 +96,8 @@ class AuthorControllerTest {
   }
 
   @Test
-  @DisplayName("Should return created when create an author")
-  void shouldReturnCreatedWhenCreateAuthor() throws Exception {
+  @DisplayName("POST /authors - Given valid author data, when create, then returns created")
+  void givenValidAuthorData_whenCreateAuthor_thenReturnsCreated() throws Exception {
     CreateAuthorRequest request = CreateAuthorRequest.builder().name("Yuval Noah Harari").build();
 
     AuthorResponse author = AuthorResponse.builder().id(1L).build();
@@ -112,8 +112,8 @@ class AuthorControllerTest {
   }
 
   @Test
-  @DisplayName("Should return no content when update author")
-  void shouldReturnNoContentWhenUpdateAuthor() throws Exception {
+  @DisplayName("PUT /authors/{id} - Given valid author data, when update, then returns no content")
+  void givenValidAuthorData_whenUpdateAuthor_thenReturnsNoContent() throws Exception {
     UpdateAuthorRequest request = UpdateAuthorRequest.builder().name("Yuval Noah Harari").build();
 
     mockMvc.perform(put("/authors/{authorId}", 1L).content(mapper.writeValueAsString(request))
@@ -121,15 +121,15 @@ class AuthorControllerTest {
   }
 
   @Test
-  @DisplayName("Should return no content when delete author")
-  void shouldReturnNoContentWhenDeleteAuthor() throws Exception {
+  @DisplayName("DELETE /authors/{id} - Given author exists, when delete, then returns no content")
+  void givenAuthorExists_whenDeleteAuthor_thenReturnsNoContent() throws Exception {
     mockMvc.perform(delete("/authors/{authorId}", 1L).accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNoContent());
   }
 
   @Test
-  @DisplayName("Should return books when find books by author id")
-  void shouldReturnListOfBooksWhenFindBooksByAuthorId() throws Exception {
+  @DisplayName("GET /authors/{id}/books - Given author exists, when find books, then returns books")
+  void givenAuthorExists_whenFindBooksByAuthorId_thenReturnsBooks() throws Exception {
     List<BookResponse> books = List.of(BookResponse.builder().id(1L).build());
 
     when(authorService.findBooksByAuthorId(anyLong())).thenReturn(books);

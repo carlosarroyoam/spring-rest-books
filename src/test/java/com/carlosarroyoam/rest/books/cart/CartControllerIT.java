@@ -52,8 +52,8 @@ class CartControllerIT {
   }
 
   @Test
-  @DisplayName("GET /carts - Should return CartResponse when find cart by customer id")
-  void shouldReturnCartResponseWhenFindCartByCustomerId() throws Exception {
+  @DisplayName("GET /carts - Given cart exists, when find by customer id, then returns cart")
+  void givenCartExists_whenFindCartByCustomerId_thenReturnsCart() throws Exception {
     String expectedJson = JsonUtils.readJson("/carts/find-by-customer-id.json");
 
     String responseJson = mockMvc.perform(get("/carts"))
@@ -67,8 +67,8 @@ class CartControllerIT {
   }
 
   @Test
-  @DisplayName("PUT /carts/items - Should return no content when update cart item with valid data")
-  void shouldReturnNoContentWhenUpdateCartItemWithValidData() throws Exception {
+  @DisplayName("PUT /carts/items - Given valid cart item data, when update, then returns no content")
+  void givenValidCartItemData_whenUpdateCartItem_thenReturnsNoContent() throws Exception {
     UpdateCartItemRequest request = UpdateCartItemRequest.builder().quantity(1).bookId(1L).build();
 
     mockMvc.perform(put("/carts/items").content(mapper.writeValueAsString(request))
@@ -77,8 +77,8 @@ class CartControllerIT {
   }
 
   @Test
-  @DisplayName("DELETE /carts/items/{cartItemId} - Should return no content when delete cart item with existing id")
-  void shouldReturnNoContentWhenDeleteCartItemWithExistingId() throws Exception {
+  @DisplayName("DELETE /carts/items/{id} - Given cart item exists, when delete, then returns no content")
+  void givenCartItemExists_whenDeleteCartItem_thenReturnsNoContent() throws Exception {
     mockMvc.perform(delete("/carts/items/{cartItemId}", 1L).accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNoContent());
   }

@@ -115,8 +115,8 @@ class OrderServiceTest {
   }
 
   @Test
-  @DisplayName("Should return PagedResponse<OrderResponse> when find all orders")
-  void shouldReturnListOfOrders() {
+  @DisplayName("Given orders exist, when find all, then returns paged orders")
+  void givenOrdersExist_whenFindAll_thenReturnsPagedOrders() {
     Pageable pageable = PageRequest.of(0, 25);
     List<Order> orders = List.of(order);
 
@@ -137,7 +137,7 @@ class OrderServiceTest {
 
   @Test
   @DisplayName("Should return OrderResponse when find order by id with existing id")
-  void shouldReturnWhenFindOrderByIdWithExistingId() {
+  void givenOrderExists_whenFindById_thenReturnsOrder() {
     when(orderRepository.findById(anyLong())).thenReturn(Optional.of(order));
 
     OrderResponse orderResponse = orderService.findById(1L);
@@ -149,7 +149,7 @@ class OrderServiceTest {
 
   @Test
   @DisplayName("Should throw ResponseStatusException when find an order by id with non existing id")
-  void shouldThrowWhenFindOrderByIdWithNonExistingId() {
+  void givenOrderDoesNotExist_whenFindById_thenThrowsNotFoundException() {
     when(orderRepository.findById(anyLong())).thenReturn(Optional.empty());
 
     assertThatThrownBy(() -> orderService.findById(1L)).isInstanceOf(ResponseStatusException.class)
@@ -159,7 +159,7 @@ class OrderServiceTest {
 
   @Test
   @DisplayName("Should return OrderResponse when create an order with valid data")
-  void shouldReturnWhenCreateOrderWithValidData() {
+  void givenValidOrderData_whenCreate_thenReturnsCreatedOrder() {
     CreateOrderRequest request = CreateOrderRequest.builder()
         .customerId(1L)
         .shippingAddress("123 Main Street, Springfield")
@@ -192,7 +192,7 @@ class OrderServiceTest {
 
   @Test
   @DisplayName("Should throw ResponseStatusException when create an order with non existing customer")
-  void shouldThrowWhenCreateOrderWithNonExistingCustomer() {
+  void givenCustomerDoesNotExist_whenCreate_thenThrowsNotFoundException() {
     CreateOrderRequest request = CreateOrderRequest.builder()
         .customerId(99L)
         .shippingAddress("123 Main Street, Springfield")

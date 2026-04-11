@@ -74,8 +74,8 @@ class BookServiceTest {
   }
 
   @Test
-  @DisplayName("Should return PagedResponse<BookResponse> when find all books")
-  void shouldReturnListOfBooks() {
+  @DisplayName("Given books exist, when find all, then returns paged books")
+  void givenBooksExist_whenFindAll_thenReturnsPagedBooks() {
     Pageable pageable = PageRequest.of(0, 25);
     List<Book> books = List.of(book);
 
@@ -95,8 +95,8 @@ class BookServiceTest {
   }
 
   @Test
-  @DisplayName("Should return BookResponse when find book by id with existing id")
-  void shouldReturnWhenFindBookByIdWithExisitingId() {
+  @DisplayName("Given book exists, when find by id, then returns book")
+  void givenBookExists_whenFindById_thenReturnsBook() {
     when(bookRepository.findById(anyLong())).thenReturn(Optional.of(book));
 
     BookResponse bookResponse = bookService.findById(1L);
@@ -106,8 +106,8 @@ class BookServiceTest {
   }
 
   @Test
-  @DisplayName("Should throw ResponseStatusException when find a book by id with non existing id")
-  void shouldThrowWhenFindBookByIdWithNonExisitingId() {
+  @DisplayName("Given book does not exist, when find by id, then throws not found exception")
+  void givenBookDoesNotExist_whenFindById_thenThrowsNotFoundException() {
     when(bookRepository.findById(anyLong())).thenReturn(Optional.empty());
 
     assertThatThrownBy(() -> bookService.findById(1L)).isInstanceOf(ResponseStatusException.class)
@@ -116,8 +116,8 @@ class BookServiceTest {
   }
 
   @Test
-  @DisplayName("Should return BookResponse when create a book with valid data")
-  void shouldReturnWhenCreateBookWithValidData() {
+  @DisplayName("Given valid book data, when create, then returns created book")
+  void givenValidBookData_whenCreate_thenReturnsCreatedBook() {
     CreateBookRequest request = CreateBookRequest.builder()
         .isbn("978-9-7389-4434-3")
         .title("Sapiens: A Brief History of Humankind")
@@ -140,8 +140,8 @@ class BookServiceTest {
   }
 
   @Test
-  @DisplayName("Should thow ResponseStatusException when create a book with existing ISBN")
-  void shouldThrowWhenCreateBookWithExistingIsbn() {
+  @DisplayName("Given book with existing isbn, when create, then throws bad request exception")
+  void givenBookWithExistingIsbn_whenCreate_thenThrowsBadRequestException() {
     CreateBookRequest request = CreateBookRequest.builder().isbn("978-1-3035-0529-4").build();
 
     when(bookRepository.existsByIsbn(anyString())).thenReturn(true);
@@ -153,8 +153,8 @@ class BookServiceTest {
   }
 
   @Test
-  @DisplayName("Should update book with valid data")
-  void shouldUpdateBookWithValidData() {
+  @DisplayName("Given book exists, when update with valid data, then updates book")
+  void givenBookExists_whenUpdateWithValidData_thenUpdatesBook() {
     UpdateBookRequest request = UpdateBookRequest.builder()
         .isbn("978-1-3035-0293-1")
         .title("Homo Deus")
@@ -175,8 +175,8 @@ class BookServiceTest {
   }
 
   @Test
-  @DisplayName("Should throw ResponseStatusException when update book with non existing id")
-  void shouldThrowWhenUpdateBookWithInvalidData() {
+  @DisplayName("Given book does not exist, when update, then throws not found exception")
+  void givenBookDoesNotExist_whenUpdate_thenThrowsNotFoundException() {
     UpdateBookRequest request = UpdateBookRequest.builder().build();
 
     when(bookRepository.findById(anyLong())).thenReturn(Optional.empty());
@@ -188,8 +188,8 @@ class BookServiceTest {
   }
 
   @Test
-  @DisplayName("Should delete book with existing id")
-  void shouldDeleteBookWithExistingId() {
+  @DisplayName("Given book exists, when delete, then deletes book")
+  void givenBookExists_whenDelete_thenDeletesBook() {
     when(bookRepository.findById(anyLong())).thenReturn(Optional.of(book));
 
     bookService.deleteById(1L);
@@ -198,8 +198,8 @@ class BookServiceTest {
   }
 
   @Test
-  @DisplayName("Should throw ResponseStatusException when delete book with non existing id")
-  void shouldThrowWhenDeleteBookWithNonExistingId() {
+  @DisplayName("Given book does not exist, when delete, then throws not found exception")
+  void givenBookDoesNotExist_whenDelete_thenThrowsNotFoundException() {
     when(bookRepository.findById(anyLong())).thenReturn(Optional.empty());
 
     assertThatThrownBy(() -> bookService.deleteById(1L)).isInstanceOf(ResponseStatusException.class)
@@ -208,8 +208,8 @@ class BookServiceTest {
   }
 
   @Test
-  @DisplayName("Should return List<AuthorResponse> when find authors by book id with existing id")
-  void shouldReturnWhenFindAuthorsByBookIdWithExistingId() {
+  @DisplayName("Given book exists, when find authors by book id, then returns authors")
+  void givenBookExists_whenFindAuthorsByBookId_thenReturnsAuthors() {
     when(bookRepository.findById(anyLong())).thenReturn(Optional.of(book));
 
     List<AuthorResponse> authors = bookService.findAuthorsByBookId(1L);
@@ -221,8 +221,8 @@ class BookServiceTest {
   }
 
   @Test
-  @DisplayName("Should throw ResponseStatusException when find authors by book id with non existing id")
-  void shouldThrowWhenFindAuthorsByBookIdWithNonExistingId() {
+  @DisplayName("Given book does not exist, when find authors by book id, then throws not found exception")
+  void givenBookDoesNotExist_whenFindAuthorsByBookId_thenThrowsNotFoundException() {
     when(bookRepository.findById(anyLong())).thenReturn(Optional.empty());
 
     assertThatThrownBy(() -> bookService.findAuthorsByBookId(1L))

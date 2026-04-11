@@ -60,8 +60,8 @@ class BookControllerTest {
   }
 
   @Test
-  @DisplayName("Should return PagedResponse<BookResponse> when find all books")
-  void shouldReturnPagedBooksWhenFindAllBooks() throws Exception {
+  @DisplayName("GET /books - Given books exist, when find all, then returns paged books")
+  void givenBooksExist_whenFindAllBooks_thenReturnsPagedBooks() throws Exception {
     PagedResponse<BookResponse> pagedResponse = PagedResponse.<BookResponse>builder()
         .items(List.of(BookResponse.builder().id(1L).build()))
         .pagination(
@@ -84,8 +84,8 @@ class BookControllerTest {
   }
 
   @Test
-  @DisplayName("Should return BookResponse when find book by id")
-  void shouldReturnBookResponseWhenFindBookById() throws Exception {
+  @DisplayName("GET /books/{id} - Given book exists, when find by id, then returns book")
+  void givenBookExists_whenFindBookById_thenReturnsBook() throws Exception {
     BookResponse book = BookResponse.builder().id(1L).title("Sapiens").build();
 
     when(bookService.findById(anyLong())).thenReturn(book);
@@ -98,8 +98,8 @@ class BookControllerTest {
   }
 
   @Test
-  @DisplayName("Should return created when create a book")
-  void shouldReturnCreatedWhenCreateBook() throws Exception {
+  @DisplayName("POST /books - Given valid book data, when create, then returns created")
+  void givenValidBookData_whenCreateBook_thenReturnsCreated() throws Exception {
     CreateBookRequest request = CreateBookRequest.builder()
         .isbn("978-9-7389-4434-3")
         .title("Sapiens: A Brief History of Humankind")
@@ -121,8 +121,8 @@ class BookControllerTest {
   }
 
   @Test
-  @DisplayName("Should return no content when update book")
-  void shouldReturnNoContentWhenUpdateBook() throws Exception {
+  @DisplayName("PUT /books/{id} - Given valid book data, when update, then returns no content")
+  void givenValidBookData_whenUpdateBook_thenReturnsNoContent() throws Exception {
     UpdateBookRequest request = UpdateBookRequest.builder()
         .isbn("978-9-7389-4434-3")
         .title("Sapiens: A Brief History of Humankind")
@@ -137,15 +137,15 @@ class BookControllerTest {
   }
 
   @Test
-  @DisplayName("Should return no content when delete book")
-  void shouldReturnNoContentWhenDeleteBook() throws Exception {
+  @DisplayName("DELETE /books/{id} - Given book exists, when delete, then returns no content")
+  void givenBookExists_whenDeleteBook_thenReturnsNoContent() throws Exception {
     mockMvc.perform(delete("/books/{bookId}", 1L).accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNoContent());
   }
 
   @Test
-  @DisplayName("Should return authors when find authors by book id")
-  void shouldReturnListOfAuthorsWhenFindAuthorsByBookId() throws Exception {
+  @DisplayName("GET /books/{id}/authors - Given book exists, when find authors, then returns authors")
+  void givenBookExists_whenFindAuthorsByBookId_thenReturnsAuthors() throws Exception {
     List<AuthorResponse> authors = List.of(AuthorResponse.builder().id(1L).build());
 
     when(bookService.findAuthorsByBookId(anyLong())).thenReturn(authors);

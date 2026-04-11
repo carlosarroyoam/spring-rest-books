@@ -54,8 +54,8 @@ class ShipmentControllerTest {
   }
 
   @Test
-  @DisplayName("Should return PagedResponse<ShipmentResponse> when find all shipments")
-  void shouldReturnPagedShipmentsWhenFindAllShipments() throws Exception {
+  @DisplayName("GET /shipments - Given shipments exist, when find all, then returns paged shipments")
+  void givenShipmentsExist_whenFindAllShipments_thenReturnsPagedShipments() throws Exception {
     PagedResponse<ShipmentResponse> pagedResponse = PagedResponse.<ShipmentResponse>builder()
         .items(List.of(ShipmentResponse.builder().id(1L).status(ShipmentStatus.PENDING).build()))
         .pagination(
@@ -76,8 +76,8 @@ class ShipmentControllerTest {
   }
 
   @Test
-  @DisplayName("Should return ShipmentResponse when find shipment by id")
-  void shouldReturnShipmentResponseWhenFindShipmentById() throws Exception {
+  @DisplayName("GET /shipments/{id} - Given shipment exists, when find by id, then returns shipment")
+  void givenShipmentExists_whenFindShipmentById_thenReturnsShipment() throws Exception {
     ShipmentResponse shipment = ShipmentResponse.builder()
         .id(1L)
         .attentionName("Carlos Arroyo")
@@ -97,8 +97,8 @@ class ShipmentControllerTest {
   }
 
   @Test
-  @DisplayName("Should return no content when update shipment status")
-  void shouldReturnNoContentWhenUpdateShipmentStatus() throws Exception {
+  @DisplayName("PUT /shipments/{id}/status - Given valid status, when update, then returns no content")
+  void givenValidStatus_whenUpdateShipmentStatus_thenReturnsNoContent() throws Exception {
     UpdateShipmentStatusRequest request = UpdateShipmentStatusRequest.builder()
         .status(ShipmentStatus.SHIPPED)
         .build();
