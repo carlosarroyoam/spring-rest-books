@@ -254,25 +254,4 @@ class OrderServiceTest {
         .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
         .hasMessageContaining(AppMessages.ORDER_NOT_FOUND_EXCEPTION);
   }
-
-  @Test
-  @DisplayName("Given order exists, when delete, then deletes order")
-  void givenOrderExists_whenDelete_thenDeletesOrder() {
-    when(orderRepository.existsById(anyLong())).thenReturn(true);
-
-    orderService.deleteById(1L);
-
-    verify(orderRepository).deleteById(1L);
-  }
-
-  @Test
-  @DisplayName("Given order does not exist, when delete, then throws not found exception")
-  void givenOrderDoesNotExist_whenDelete_thenThrowsNotFoundException() {
-    when(orderRepository.existsById(anyLong())).thenReturn(false);
-
-    assertThatThrownBy(() -> orderService.deleteById(1L))
-        .isInstanceOf(ResponseStatusException.class)
-        .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
-        .hasMessageContaining(AppMessages.ORDER_NOT_FOUND_EXCEPTION);
-  }
 }

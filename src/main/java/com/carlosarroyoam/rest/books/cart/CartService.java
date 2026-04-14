@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
@@ -30,14 +31,16 @@ public class CartService {
     this.bookRepository = bookRepository;
   }
 
+  @Transactional(readOnly = true)
   public CartResponse findByCustomerId(Long customerId) {
-    Cart cartByCustomerId = findCartEntityByCustomerId(customerId);
+    Cart cartByCustomerId = findCartByCustomerIdOrFail(customerId);
     return CartResponseMapper.INSTANCE.toDto(cartByCustomerId);
   }
 
+  @Transactional
   public void updateCartItem(Long customerId, UpdateCartItemRequest request) {
-    Cart cartByCustomerId = findCartEntityByCustomerId(customerId);
-    Book bookById = findBookEntityById(request.getBookId());
+    Cart cartByCustomerId = findCartByCustomerIdOrFail(customerId);
+    Book bookById = findBookByIdOrFail(request.getBookId());
 
     Optional<CartItem> cartItemOptional = cartByCustomerId.getItems()
         .stream()
@@ -55,8 +58,9 @@ public class CartService {
     cartItemRepository.save(cartItem);
   }
 
+  @Transactional
   public void deleteCartItem(Long customerId, Long cartItemId) {
-    Cart cartByCustomerId = findCartEntityByCustomerId(customerId);
+    Cart cartByCustomerId = findCartByCustomerIdOrFail(customerId);
 
     CartItem cartItemOptional = cartByCustomerId.getItems()
         .stream()
@@ -71,7 +75,7 @@ public class CartService {
     cartItemRepository.deleteById(cartItemOptional.getId());
   }
 
-  private Cart findCartEntityByCustomerId(Long customerId) {
+  private Cart findCartByCustomerIdOrFail(Long customerId) {
     return cartRepository.findByCustomerId(customerId).orElseThrow(() -> {
       log.warn(AppMessages.CART_NOT_FOUND_EXCEPTION);
       return new ResponseStatusException(HttpStatus.NOT_FOUND,
@@ -79,7 +83,7 @@ public class CartService {
     });
   }
 
-  private Book findBookEntityById(Long bookId) {
+  private Book findBookByIdOrFail(Long bookId) {
     return bookRepository.findById(bookId).orElseThrow(() -> {
       log.warn(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
       return new ResponseStatusException(HttpStatus.NOT_FOUND,

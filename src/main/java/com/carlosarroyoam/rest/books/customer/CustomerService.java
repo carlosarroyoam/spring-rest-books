@@ -12,7 +12,6 @@ import com.carlosarroyoam.rest.books.customer.dto.UpdateCustomerRequest;
 import com.carlosarroyoam.rest.books.customer.entity.Customer;
 import com.carlosarroyoam.rest.books.customer.entity.CustomerStatus;
 import com.carlosarroyoam.rest.books.customer.entity.Customer_;
-import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
@@ -34,6 +34,7 @@ public class CustomerService {
     this.keycloakService = keycloakService;
   }
 
+  @Transactional(readOnly = true)
   public PagedResponse<CustomerResponse> findAll(CustomerSpecs customerSpecs, Pageable pageable) {
     Specification<Customer> spec = SpecificationBuilder.<Customer>builder()
         .likeIfPresent(root -> root.get(Customer_.firstName), customerSpecs.getFirstName())
@@ -49,20 +50,21 @@ public class CustomerService {
         .toPagedResponse(customers.map(CustomerResponseMapper.INSTANCE::toDto));
   }
 
+  @Transactional(readOnly = true)
   public CustomerResponse findById(Long customerId) {
-    Customer customerById = findCustomerEntityById(customerId);
+    Customer customerById = findCustomerByIdOrFail(customerId);
     return CustomerResponseMapper.INSTANCE.toDto(customerById);
   }
 
   @Transactional
   public CustomerResponse create(CreateCustomerRequest request) {
-    if (Boolean.TRUE.equals(customerRepository.existsByUsername(request.getUsername()))) {
+    if (customerRepository.existsByUsername(request.getUsername())) {
       log.warn(AppMessages.USERNAME_ALREADY_EXISTS_EXCEPTION);
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
           AppMessages.USERNAME_ALREADY_EXISTS_EXCEPTION);
     }
 
-    if (Boolean.TRUE.equals(customerRepository.existsByEmail(request.getEmail()))) {
+    if (customerRepository.existsByEmail(request.getEmail())) {
       log.warn(AppMessages.EMAIL_ALREADY_EXISTS_EXCEPTION);
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
           AppMessages.EMAIL_ALREADY_EXISTS_EXCEPTION);
@@ -89,7 +91,7 @@ public class CustomerService {
   @Transactional
   public void update(Long customerId, UpdateCustomerRequest request) {
     LocalDateTime now = LocalDateTime.now();
-    Customer customerById = findCustomerEntityById(customerId);
+    Customer customerById = findCustomerByIdOrFail(customerId);
     customerById.setFirstName(request.getFirstName());
     customerById.setLastName(request.getLastName());
     customerById.setUpdatedAt(now);
@@ -99,14 +101,14 @@ public class CustomerService {
   @Transactional
   public void deleteById(Long customerId) {
     LocalDateTime now = LocalDateTime.now();
-    Customer customerById = findCustomerEntityById(customerId);
+    Customer customerById = findCustomerByIdOrFail(customerId);
     customerById.setStatus(CustomerStatus.DELETED);
     customerById.setUpdatedAt(now);
     customerById.setDeletedAt(now);
     customerRepository.save(customerById);
   }
 
-  private Customer findCustomerEntityById(Long customerId) {
+  private Customer findCustomerByIdOrFail(Long customerId) {
     return customerRepository.findById(customerId).orElseThrow(() -> {
       log.warn(AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION);
       return new ResponseStatusException(HttpStatus.NOT_FOUND,

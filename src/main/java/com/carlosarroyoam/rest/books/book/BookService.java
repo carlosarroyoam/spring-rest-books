@@ -16,7 +16,6 @@ import com.carlosarroyoam.rest.books.core.dto.PagedResponse;
 import com.carlosarroyoam.rest.books.core.dto.PagedResponse.PagedResponseMapper;
 import com.carlosarroyoam.rest.books.core.specification.SpecificationBuilder;
 import jakarta.persistence.criteria.JoinType;
-import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.slf4j.Logger;
@@ -26,6 +25,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
@@ -37,6 +37,7 @@ public class BookService {
     this.bookRepository = bookRepository;
   }
 
+  @Transactional(readOnly = true)
   public PagedResponse<BookResponse> findAll(BookSpecs bookSpecs, Pageable pageable) {
     Specification<Book> spec = SpecificationBuilder.<Book>builder()
         .likeIfPresent(root -> root.get(Book_.isbn), bookSpecs.getIsbn())
@@ -56,14 +57,15 @@ public class BookService {
         .toPagedResponse(books.map(BookResponseMapper.INSTANCE::toDto));
   }
 
+  @Transactional(readOnly = true)
   public BookResponse findById(Long bookId) {
-    Book bookById = findBookEntityById(bookId);
+    Book bookById = findBookByIdOrFail(bookId);
     return BookResponseMapper.INSTANCE.toDto(bookById);
   }
 
   @Transactional
   public BookResponse create(CreateBookRequest request) {
-    if (Boolean.TRUE.equals(bookRepository.existsByIsbn(request.getIsbn()))) {
+    if (bookRepository.existsByIsbn(request.getIsbn())) {
       log.warn(AppMessages.ISBN_ALREADY_EXISTS_EXCEPTION);
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
           AppMessages.ISBN_ALREADY_EXISTS_EXCEPTION);
@@ -88,7 +90,7 @@ public class BookService {
   @Transactional
   public void update(Long bookId, UpdateBookRequest request) {
     LocalDateTime now = LocalDateTime.now();
-    Book bookById = findBookEntityById(bookId);
+    Book bookById = findBookByIdOrFail(bookId);
     bookById.setIsbn(request.getIsbn());
     bookById.setTitle(request.getTitle());
     bookById.setCoverUrl(request.getCoverUrl());
@@ -102,19 +104,20 @@ public class BookService {
   @Transactional
   public void deleteById(Long bookId) {
     LocalDateTime now = LocalDateTime.now();
-    Book bookById = findBookEntityById(bookId);
+    Book bookById = findBookByIdOrFail(bookId);
     bookById.setStatus(BookStatus.DELETED);
     bookById.setUpdatedAt(now);
     bookById.setDeletedAt(now);
     bookRepository.save(bookById);
   }
 
+  @Transactional(readOnly = true)
   public List<AuthorResponse> findAuthorsByBookId(Long bookId) {
-    Book bookById = findBookEntityById(bookId);
+    Book bookById = findBookByIdOrFail(bookId);
     return AuthorResponseMapper.INSTANCE.toDtos(bookById.getAuthors());
   }
 
-  private Book findBookEntityById(Long bookId) {
+  private Book findBookByIdOrFail(Long bookId) {
     return bookRepository.findById(bookId).orElseThrow(() -> {
       log.warn(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
       return new ResponseStatusException(HttpStatus.NOT_FOUND,

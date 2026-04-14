@@ -36,8 +36,7 @@ public class KeycloakService {
     List<UserRepresentation> existingUsersByEmail = usersResource.searchByEmail(request.getEmail(),
         true);
 
-    if (Boolean.FALSE.equals(existingUsersByUsername.isEmpty())
-        || Boolean.FALSE.equals(existingUsersByEmail.isEmpty())) {
+    if (!existingUsersByUsername.isEmpty() || !existingUsersByEmail.isEmpty()) {
       return;
     }
 

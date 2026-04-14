@@ -19,7 +19,6 @@ import com.carlosarroyoam.rest.books.order.entity.Order;
 import com.carlosarroyoam.rest.books.order.entity.OrderItem;
 import com.carlosarroyoam.rest.books.order.entity.OrderStatus;
 import com.carlosarroyoam.rest.books.order.entity.Order_;
-import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
@@ -32,6 +31,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
@@ -51,7 +51,7 @@ public class OrderService {
     this.bookRepository = bookRepository;
   }
 
-  @Transactional
+  @Transactional(readOnly = true)
   public PagedResponse<OrderResponse> findAll(OrderSpecs orderSpecs, Pageable pageable) {
     Specification<Order> spec = SpecificationBuilder.<Order>builder()
         .likeIfPresent(root -> root.get(Order_.orderNumber), orderSpecs.getOrderNumber())
@@ -71,15 +71,15 @@ public class OrderService {
         .toPagedResponse(orders.map(OrderResponseMapper.INSTANCE::toDto));
   }
 
-  @Transactional
+  @Transactional(readOnly = true)
   public OrderResponse findById(Long orderId) {
-    Order orderById = findOrderEntityById(orderId);
+    Order orderById = findOrderByIdOrFail(orderId);
     return OrderResponseMapper.INSTANCE.toDto(orderById);
   }
 
   @Transactional
   public OrderResponse create(CreateOrderRequest request) {
-    Customer customerById = findCustomerEntityById(request);
+    Customer customerById = findCustomerByIdOrFail(request);
 
     LocalDateTime now = LocalDateTime.now();
     Order order = Order.builder()
@@ -111,7 +111,7 @@ public class OrderService {
   @Transactional
   public void update(Long orderId, UpdateOrderRequest request) {
     LocalDateTime now = LocalDateTime.now();
-    Order orderById = findOrderEntityById(orderId);
+    Order orderById = findOrderByIdOrFail(orderId);
     orderById.setShippingAddress(request.getShippingAddress());
     orderById.setBillingAddress(request.getBillingAddress());
     orderById.setNotes(request.getNotes());
@@ -119,43 +119,12 @@ public class OrderService {
     orderRepository.save(orderById);
   }
 
-  @Transactional
-  public void deleteById(Long orderId) {
-    if (Boolean.FALSE.equals(orderRepository.existsById(orderId))) {
-      log.warn(AppMessages.ORDER_NOT_FOUND_EXCEPTION);
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-          AppMessages.ORDER_NOT_FOUND_EXCEPTION);
-    }
-
-    orderRepository.deleteById(orderId);
-  }
-
-  private Order findOrderEntityById(Long orderId) {
-    return orderRepository.findById(orderId).orElseThrow(() -> {
-      log.warn(AppMessages.ORDER_NOT_FOUND_EXCEPTION);
-      return new ResponseStatusException(HttpStatus.NOT_FOUND,
-          AppMessages.ORDER_NOT_FOUND_EXCEPTION);
-    });
-  }
-
-  private Customer findCustomerEntityById(CreateOrderRequest request) {
-    return customerRepository.findById(request.getCustomerId()).orElseThrow(() -> {
-      log.warn(AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION);
-      return new ResponseStatusException(HttpStatus.NOT_FOUND,
-          AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION);
-    });
-  }
-
   private List<OrderItem> buildOrderItems(List<CreateOrderItemRequest> requestItems,
       LocalDateTime now, Order order) {
     return requestItems.stream().map(item -> {
-      Book book = bookRepository.findById(item.getBookId()).orElseThrow(() -> {
-        log.warn(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
-        return new ResponseStatusException(HttpStatus.NOT_FOUND,
-            AppMessages.BOOK_NOT_FOUND_EXCEPTION);
-      });
+      Book bookById = findBookByIdOrFail(item.getBookId());
 
-      BigDecimal unitPrice = book.getPrice().setScale(2, RoundingMode.HALF_UP);
+      BigDecimal unitPrice = bookById.getPrice().setScale(2, RoundingMode.HALF_UP);
       BigDecimal totalPrice = unitPrice.multiply(BigDecimal.valueOf(item.getQuantity()))
           .setScale(2, RoundingMode.HALF_UP);
 
@@ -163,7 +132,7 @@ public class OrderService {
           .quantity(item.getQuantity())
           .unitPrice(unitPrice)
           .totalPrice(totalPrice)
-          .book(book)
+          .book(bookById)
           .order(order)
           .createdAt(now)
           .updatedAt(now)
@@ -193,5 +162,29 @@ public class OrderService {
 
   private String generateOrderNumber() {
     return "ORD-" + UUID.randomUUID().toString().replace("-", "").substring(0, 8).toUpperCase();
+  }
+
+  private Order findOrderByIdOrFail(Long orderId) {
+    return orderRepository.findById(orderId).orElseThrow(() -> {
+      log.warn(AppMessages.ORDER_NOT_FOUND_EXCEPTION);
+      return new ResponseStatusException(HttpStatus.NOT_FOUND,
+          AppMessages.ORDER_NOT_FOUND_EXCEPTION);
+    });
+  }
+
+  private Customer findCustomerByIdOrFail(CreateOrderRequest request) {
+    return customerRepository.findById(request.getCustomerId()).orElseThrow(() -> {
+      log.warn(AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION);
+      return new ResponseStatusException(HttpStatus.NOT_FOUND,
+          AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION);
+    });
+  }
+
+  private Book findBookByIdOrFail(Long bookId) {
+    return bookRepository.findById(bookId).orElseThrow(() -> {
+      log.warn(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
+      return new ResponseStatusException(HttpStatus.NOT_FOUND,
+          AppMessages.BOOK_NOT_FOUND_EXCEPTION);
+    });
   }
 }

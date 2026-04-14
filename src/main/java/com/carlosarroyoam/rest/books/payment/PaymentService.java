@@ -19,7 +19,6 @@ import com.carlosarroyoam.rest.books.payment.entity.Payment_;
 import com.carlosarroyoam.rest.books.shipment.ShipmentRepository;
 import com.carlosarroyoam.rest.books.shipment.entity.Shipment;
 import com.carlosarroyoam.rest.books.shipment.entity.ShipmentStatus;
-import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import org.slf4j.Logger;
@@ -29,6 +28,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
@@ -45,7 +45,7 @@ public class PaymentService {
     this.shipmentRepository = shipmentRepository;
   }
 
-  @Transactional
+  @Transactional(readOnly = true)
   public PagedResponse<PaymentResponse> findAll(PaymentSpecs paymentSpecs, Pageable pageable) {
     Specification<Payment> spec = SpecificationBuilder.<Payment>builder()
         .equalsIfPresent(root -> root.get(Payment_.method), paymentSpecs.getMethod())
@@ -65,17 +65,17 @@ public class PaymentService {
         .toPagedResponse(payments.map(PaymentResponseMapper.INSTANCE::toDto));
   }
 
-  @Transactional
+  @Transactional(readOnly = true)
   public PaymentResponse findById(Long paymentId) {
-    Payment paymentById = findPaymentEntityById(paymentId);
+    Payment paymentById = findPaymentByIdOrFail(paymentId);
     return PaymentResponseMapper.INSTANCE.toDto(paymentById);
   }
 
   @Transactional
   public PaymentResponse create(CreatePaymentRequest request) {
-    Order orderById = findOrderEntityById(request.getOrderId());
+    Order orderById = findOrderByIdOrFail(request.getOrderId());
 
-    if (Boolean.TRUE.equals(paymentRepository.existsByOrderId(orderById.getId()))) {
+    if (paymentRepository.existsByOrderId(orderById.getId())) {
       log.warn(AppMessages.PAYMENT_ALREADY_EXISTS_EXCEPTION);
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
           AppMessages.PAYMENT_ALREADY_EXISTS_EXCEPTION);
@@ -106,31 +106,15 @@ public class PaymentService {
   @Transactional
   public void updateStatus(Long paymentId, UpdatePaymentStatusRequest request) {
     LocalDateTime now = LocalDateTime.now();
-    Payment paymentById = findPaymentEntityById(paymentId);
+    Payment paymentById = findPaymentByIdOrFail(paymentId);
     paymentById.setStatus(request.getStatus());
     paymentById.setUpdatedAt(now);
     paymentRepository.save(paymentById);
 
-    Order orderById = findOrderEntityById(paymentById.getOrder().getId());
+    Order orderById = findOrderByIdOrFail(paymentById.getOrder().getId());
     orderById.setStatus(resolveOrderStatusFromPayment(request.getStatus(), orderById.getStatus()));
     orderById.setUpdatedAt(now);
     orderRepository.save(orderById);
-  }
-
-  private Payment findPaymentEntityById(Long paymentId) {
-    return paymentRepository.findById(paymentId).orElseThrow(() -> {
-      log.warn(AppMessages.PAYMENT_NOT_FOUND_EXCEPTION);
-      return new ResponseStatusException(HttpStatus.NOT_FOUND,
-          AppMessages.PAYMENT_NOT_FOUND_EXCEPTION);
-    });
-  }
-
-  private Order findOrderEntityById(Long orderId) {
-    return orderRepository.findById(orderId).orElseThrow(() -> {
-      log.warn(AppMessages.ORDER_NOT_FOUND_EXCEPTION);
-      return new ResponseStatusException(HttpStatus.NOT_FOUND,
-          AppMessages.ORDER_NOT_FOUND_EXCEPTION);
-    });
   }
 
   private OrderStatus resolveOrderStatusFromPayment(PaymentStatus paymentStatus,
@@ -166,5 +150,21 @@ public class PaymentService {
 
   private String generateTransactionId() {
     return "PAY-" + UUID.randomUUID().toString().replace("-", "").substring(0, 12).toUpperCase();
+  }
+
+  private Payment findPaymentByIdOrFail(Long paymentId) {
+    return paymentRepository.findById(paymentId).orElseThrow(() -> {
+      log.warn(AppMessages.PAYMENT_NOT_FOUND_EXCEPTION);
+      return new ResponseStatusException(HttpStatus.NOT_FOUND,
+          AppMessages.PAYMENT_NOT_FOUND_EXCEPTION);
+    });
+  }
+
+  private Order findOrderByIdOrFail(Long orderId) {
+    return orderRepository.findById(orderId).orElseThrow(() -> {
+      log.warn(AppMessages.ORDER_NOT_FOUND_EXCEPTION);
+      return new ResponseStatusException(HttpStatus.NOT_FOUND,
+          AppMessages.ORDER_NOT_FOUND_EXCEPTION);
+    });
   }
 }

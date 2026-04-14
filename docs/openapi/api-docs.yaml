@@ -684,7 +684,7 @@ paths:
     post:
       tags:
         - Customers
-      summary:  Suspends a customer by ID
+      summary: Suspends a customer by ID
       operationId: suspendCustomerById
       parameters:
         - name: customerId

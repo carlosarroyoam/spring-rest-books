@@ -15,7 +15,6 @@ import com.carlosarroyoam.rest.books.shipment.dto.UpdateShipmentStatusRequest;
 import com.carlosarroyoam.rest.books.shipment.entity.Shipment;
 import com.carlosarroyoam.rest.books.shipment.entity.ShipmentStatus;
 import com.carlosarroyoam.rest.books.shipment.entity.Shipment_;
-import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
@@ -37,7 +37,7 @@ public class ShipmentService {
     this.orderRepository = orderRepository;
   }
 
-  @Transactional
+  @Transactional(readOnly = true)
   public PagedResponse<ShipmentResponse> findAll(ShipmentSpecs shipmentSpecs, Pageable pageable) {
     Specification<Shipment> spec = SpecificationBuilder.<Shipment>builder()
         .likeIfPresent(root -> root.get(Shipment_.attentionName), shipmentSpecs.getAttentionName())
@@ -56,39 +56,31 @@ public class ShipmentService {
         .toPagedResponse(shipments.map(ShipmentResponseMapper.INSTANCE::toDto));
   }
 
-  @Transactional
+  @Transactional(readOnly = true)
   public ShipmentResponse findById(Long shipmentId) {
-    Shipment shipmentById = findShipmentEntityById(shipmentId);
+    Shipment shipmentById = findShipmentByIdOrFail(shipmentId);
     return ShipmentResponseMapper.INSTANCE.toDto(shipmentById);
   }
 
   @Transactional
   public void updateStatus(Long shipmentId, UpdateShipmentStatusRequest request) {
     LocalDateTime now = LocalDateTime.now();
-    Shipment shipmentById = findShipmentEntityById(shipmentId);
+    Shipment shipmentById = findShipmentByIdOrFail(shipmentId);
     shipmentById.setStatus(request.getStatus());
     shipmentById.setUpdatedAt(now);
     shipmentRepository.save(shipmentById);
 
-    Order orderById = findOrderEntityById(shipmentById.getOrder().getId());
+    Order orderById = findOrderByIdOrFail(shipmentById.getOrder().getId());
     orderById.setStatus(resolveOrderStatusFromShipment(request.getStatus(), orderById.getStatus()));
     orderById.setUpdatedAt(now);
     orderRepository.save(orderById);
   }
 
-  private Shipment findShipmentEntityById(Long shipmentId) {
+  private Shipment findShipmentByIdOrFail(Long shipmentId) {
     return shipmentRepository.findById(shipmentId).orElseThrow(() -> {
       log.warn(AppMessages.SHIPMENT_NOT_FOUND_EXCEPTION);
       return new ResponseStatusException(HttpStatus.NOT_FOUND,
           AppMessages.SHIPMENT_NOT_FOUND_EXCEPTION);
-    });
-  }
-
-  private Order findOrderEntityById(Long orderId) {
-    return orderRepository.findById(orderId).orElseThrow(() -> {
-      log.warn(AppMessages.ORDER_NOT_FOUND_EXCEPTION);
-      return new ResponseStatusException(HttpStatus.NOT_FOUND,
-          AppMessages.ORDER_NOT_FOUND_EXCEPTION);
     });
   }
 
@@ -100,5 +92,13 @@ public class ShipmentService {
     case CANCELLED, RETURNED -> OrderStatus.CANCELLED;
     case PENDING -> currentStatus == null ? OrderStatus.PENDING : currentStatus;
     };
+  }
+
+  private Order findOrderByIdOrFail(Long orderId) {
+    return orderRepository.findById(orderId).orElseThrow(() -> {
+      log.warn(AppMessages.ORDER_NOT_FOUND_EXCEPTION);
+      return new ResponseStatusException(HttpStatus.NOT_FOUND,
+          AppMessages.ORDER_NOT_FOUND_EXCEPTION);
+    });
   }
 }
