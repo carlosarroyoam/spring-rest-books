@@ -32,6 +32,9 @@ public class Author {
   @Column(name = "name", length = 128, nullable = false)
   private String name;
 
+  @Column(name = "bio", length = 1024, nullable = true)
+  private String bio;
+
   @Enumerated(EnumType.STRING)
   @Column(name = "status", length = 32, nullable = false)
   private AuthorStatus status;

@@ -1513,6 +1513,10 @@ components:
           description: Full name of the author
           minLength: 3
           maxLength: 128
+        bio:
+          type: string
+          description: Biography of the author
+          maxLength: 1024
 
     UpdateAuthorRequest:
       type: object
@@ -1525,6 +1529,10 @@ components:
           description: Updated author name
           minLength: 3
           maxLength: 128
+        bio:
+          type: string
+          description: Updated biography
+          maxLength: 1024
 
     PagedCustomersResponse:
       type: object
@@ -1839,6 +1847,9 @@ components:
         name:
           type: string
           description: Full name of the author
+        bio:
+          type: string
+          description: Biography of the author
         status:
           type: string
           description: Current status of the author

@@ -66,6 +66,8 @@ class AuthorServiceTest {
     author = Author.builder()
         .id(1L)
         .name("Yuval Noah Harari")
+        .bio(
+            "Israeli public intellectual, historian and professor in the Department of History at Hebrew University of Jerusalem.")
         .books(List.of(book))
         .createdAt(now)
         .updatedAt(now)
@@ -117,7 +119,10 @@ class AuthorServiceTest {
   @Test
   @DisplayName("Given valid author data, when create, then returns created author")
   void givenValidAuthorData_whenCreate_thenReturnsCreatedAuthor() {
-    CreateAuthorRequest request = CreateAuthorRequest.builder().name("Itzik Yahav").build();
+    CreateAuthorRequest request = CreateAuthorRequest.builder()
+        .name("Itzik Yahav")
+        .bio("Senior software engineer and author specializing in C# and .NET.")
+        .build();
 
     Author savedAuthor = Author.builder().id(2L).name("Itzik Yahav").build();
 
@@ -133,9 +138,16 @@ class AuthorServiceTest {
   @Test
   @DisplayName("Given author exists, when update with valid data, then updates author")
   void givenAuthorExists_whenUpdateWithValidData_thenUpdatesAuthor() {
-    UpdateAuthorRequest request = UpdateAuthorRequest.builder().name("Yuval").build();
+    UpdateAuthorRequest request = UpdateAuthorRequest.builder()
+        .name("Yuval Noah Harari")
+        .bio("Updated biography")
+        .build();
 
-    Author updatedAuthor = Author.builder().id(2L).name("Yuval").build();
+    Author updatedAuthor = Author.builder()
+        .id(1L)
+        .name("Yuval Noah Harari")
+        .bio("Updated biography")
+        .build();
 
     when(authorRepository.findById(anyLong())).thenReturn(Optional.of(author));
     when(authorRepository.save(any(Author.class))).thenReturn(updatedAuthor);
@@ -145,7 +157,8 @@ class AuthorServiceTest {
     verify(authorRepository).findById(1L);
     verify(authorRepository).save(any(Author.class));
     assertThat(author.getId()).isEqualTo(1L);
-    assertThat(author.getName()).isEqualTo("Yuval");
+    assertThat(author.getName()).isEqualTo("Yuval Noah Harari");
+    assertThat(author.getBio()).isEqualTo("Updated biography");
   }
 
   @Test

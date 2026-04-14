@@ -15,4 +15,7 @@ public class UpdateAuthorRequest {
   @NotBlank(message = "Name should not be blank")
   @Size(min = 3, max = 128, message = "Name should be between 3 and 128")
   private String name;
+
+  @Size(max = 1024, message = "Bio should not exceed 1024 characters")
+  private String bio;
 }

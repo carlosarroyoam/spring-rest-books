@@ -59,6 +59,7 @@ public class AuthorService {
     LocalDateTime now = LocalDateTime.now();
     Author author = Author.builder()
         .name(request.getName())
+        .bio(request.getBio())
         .status(AuthorStatus.ACTIVE)
         .createdAt(now)
         .updatedAt(now)
@@ -72,6 +73,7 @@ public class AuthorService {
     LocalDateTime now = LocalDateTime.now();
     Author authorById = findAuthorByIdOrFail(authorId);
     authorById.setName(request.getName());
+    authorById.setBio(request.getBio());
     authorById.setUpdatedAt(now);
     authorRepository.save(authorById);
   }
