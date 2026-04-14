@@ -82,9 +82,7 @@ public class CustomerService {
         .build();
 
     Customer createdCustomer = customerRepository.save(customer);
-
     keycloakService.createUser(request, createdCustomer.getId());
-
     return CustomerResponseMapper.INSTANCE.toDto(createdCustomer);
   }
 

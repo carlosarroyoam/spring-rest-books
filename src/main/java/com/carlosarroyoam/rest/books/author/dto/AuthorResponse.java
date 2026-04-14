@@ -20,6 +20,7 @@ import org.mapstruct.factory.Mappers;
 public class AuthorResponse {
   private Long id;
   private String name;
+  private String bio;
   private AuthorStatus status;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;

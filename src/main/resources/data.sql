@@ -1,5 +1,5 @@
-INSERT INTO authors(name, status, created_at, updated_at) VALUES ('Yuval Noah Harari', 'ACTIVE', '2025-01-01 00:00:00', '2025-01-01 00:00:00');
-INSERT INTO authors(name, status, created_at, updated_at) VALUES ('Itzik Yahav', 'ACTIVE', '2025-01-01 00:00:00', '2025-01-01 00:00:00');
+INSERT INTO authors(name, bio, status, created_at, updated_at) VALUES ('Yuval Noah Harari', 'Israeli public intellectual, historian and professor in the Department of History at Hebrew University of Jerusalem. Known for his books on the history of humankind.', 'ACTIVE', '2025-01-01 00:00:00', '2025-01-01 00:00:00');
+INSERT INTO authors(name, bio, status, created_at, updated_at) VALUES ('Itzik Yahav', 'Senior software engineer and author specializing in C# and .NET development with over 15 years of experience in enterprise software design.', 'ACTIVE', '2025-01-01 00:00:00', '2025-01-01 00:00:00');
 
 INSERT INTO books(isbn, title, cover_url, price, is_available_online, published_at, status, created_at, updated_at) VALUES ('978-1-3035-0529-4', 'Homo Deus: A Brief History of Tomorrow', 'https://images.isbndb.com/covers/39/36/9781784703936.jpg', 22.99, 0, '2017-01-01', 'ACTIVE', '2025-01-01 00:00:00', '2025-01-01 00:00:00');
 INSERT INTO books(isbn, title, cover_url, price, is_available_online, published_at, status, created_at, updated_at) VALUES ('978-9-7389-4434-3', 'Sapiens: A Brief History of Humankind', 'https://images.isbndb.com/covers/60/97/9780062316097.jpg', 20.79, 0, '2022-12-01', 'ACTIVE', '2025-01-01 00:00:00', '2025-01-01 00:00:00');
