@@ -8,8 +8,10 @@ import com.carlosarroyoam.rest.books.author.dto.UpdateAuthorRequest;
 import com.carlosarroyoam.rest.books.author.entity.Author;
 import com.carlosarroyoam.rest.books.author.entity.AuthorStatus;
 import com.carlosarroyoam.rest.books.author.entity.Author_;
+import com.carlosarroyoam.rest.books.book.BookRepository;
 import com.carlosarroyoam.rest.books.book.dto.BookResponse;
 import com.carlosarroyoam.rest.books.book.dto.BookResponse.BookResponseMapper;
+import com.carlosarroyoam.rest.books.book.entity.Book;
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
 import com.carlosarroyoam.rest.books.core.dto.PagedResponse;
 import com.carlosarroyoam.rest.books.core.dto.PagedResponse.PagedResponseMapper;
@@ -30,9 +32,11 @@ import org.springframework.web.server.ResponseStatusException;
 public class AuthorService {
   private static final Logger log = LoggerFactory.getLogger(AuthorService.class);
   private final AuthorRepository authorRepository;
+  private final BookRepository bookRepository;
 
-  public AuthorService(AuthorRepository authorRepository) {
+  public AuthorService(AuthorRepository authorRepository, BookRepository bookRepository) {
     this.authorRepository = authorRepository;
+    this.bookRepository = bookRepository;
   }
 
   @Transactional(readOnly = true)
@@ -90,8 +94,8 @@ public class AuthorService {
 
   @Transactional(readOnly = true)
   public List<BookResponse> findBooksByAuthorId(Long authorId) {
-    Author authorById = findAuthorByIdOrFail(authorId);
-    return BookResponseMapper.INSTANCE.toDtos(authorById.getBooks());
+    List<Book> booksByAuthorId = bookRepository.findByAuthorId(authorId);
+    return BookResponseMapper.INSTANCE.toDtos(booksByAuthorId);
   }
 
   private Author findAuthorByIdOrFail(Long authorId) {

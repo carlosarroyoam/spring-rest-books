@@ -1,7 +1,9 @@
 package com.carlosarroyoam.rest.books.book;
 
+import com.carlosarroyoam.rest.books.author.AuthorRepository;
 import com.carlosarroyoam.rest.books.author.dto.AuthorResponse;
 import com.carlosarroyoam.rest.books.author.dto.AuthorResponse.AuthorResponseMapper;
+import com.carlosarroyoam.rest.books.author.entity.Author;
 import com.carlosarroyoam.rest.books.author.entity.Author_;
 import com.carlosarroyoam.rest.books.book.dto.BookResponse;
 import com.carlosarroyoam.rest.books.book.dto.BookResponse.BookResponseMapper;
@@ -32,9 +34,11 @@ import org.springframework.web.server.ResponseStatusException;
 public class BookService {
   private static final Logger log = LoggerFactory.getLogger(BookService.class);
   private final BookRepository bookRepository;
+  private final AuthorRepository authorRepository;
 
-  public BookService(BookRepository bookRepository) {
+  public BookService(BookRepository bookRepository, AuthorRepository authorRepository) {
     this.bookRepository = bookRepository;
+    this.authorRepository = authorRepository;
   }
 
   @Transactional(readOnly = true)
@@ -113,8 +117,8 @@ public class BookService {
 
   @Transactional(readOnly = true)
   public List<AuthorResponse> findAuthorsByBookId(Long bookId) {
-    Book bookById = findBookByIdOrFail(bookId);
-    return AuthorResponseMapper.INSTANCE.toDtos(bookById.getAuthors());
+    List<Author> authorsByBookId = authorRepository.findByBookId(bookId);
+    return AuthorResponseMapper.INSTANCE.toDtos(authorsByBookId);
   }
 
   private Book findBookByIdOrFail(Long bookId) {

@@ -2,6 +2,8 @@
   {
     "id": 1,
     "name": "Yuval Noah Harari",
+    "bio": "Israeli public intellectual, historian and professor in the Department of History at Hebrew University of Jerusalem. Known for his books on the history of humankind.",
+    "status": "ACTIVE",
     "created_at": "2025-01-01T00:00:00",
     "updated_at": "2025-01-01T00:00:00",
     "deleted_at": null
@@ -9,6 +11,8 @@
   {
     "id": 2,
     "name": "Itzik Yahav",
+    "bio": "Senior software engineer and author specializing in C# and .NET development with over 15 years of experience in enterprise software design.",
+    "status": "ACTIVE",
     "created_at": "2025-01-01T00:00:00",
     "updated_at": "2025-01-01T00:00:00",
     "deleted_at": null
