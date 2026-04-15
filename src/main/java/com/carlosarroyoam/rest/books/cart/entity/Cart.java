@@ -3,6 +3,7 @@ package com.carlosarroyoam.rest.books.cart.entity;
 import com.carlosarroyoam.rest.books.customer.entity.Customer;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -30,10 +31,10 @@ public class Cart {
   private Long id;
 
   @Builder.Default
-  @OneToMany(mappedBy = "cart")
+  @OneToMany(mappedBy = "cart", fetch = FetchType.LAZY)
   private List<CartItem> items = new ArrayList<>();
 
-  @OneToOne
+  @OneToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "customer_id", referencedColumnName = "id", nullable = false)
   private Customer customer;
 

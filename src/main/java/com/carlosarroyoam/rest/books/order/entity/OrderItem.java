@@ -3,6 +3,7 @@ package com.carlosarroyoam.rest.books.order.entity;
 import com.carlosarroyoam.rest.books.book.entity.Book;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -36,11 +37,11 @@ public class OrderItem {
   @Column(name = "total_price", precision = 10, scale = 2, nullable = false)
   private BigDecimal totalPrice;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "book_id", referencedColumnName = "id", nullable = false)
   private Book book;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "order_id", referencedColumnName = "id", nullable = false)
   private Order order;
 

@@ -3,6 +3,7 @@ package com.carlosarroyoam.rest.books.cart.entity;
 import com.carlosarroyoam.rest.books.book.entity.Book;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -29,11 +30,11 @@ public class CartItem {
   @Column(name = "quantity", nullable = false)
   private Integer quantity;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "book_id", referencedColumnName = "id", nullable = false)
   private Book book;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "cart_id", referencedColumnName = "id", nullable = false)
   private Cart cart;
 

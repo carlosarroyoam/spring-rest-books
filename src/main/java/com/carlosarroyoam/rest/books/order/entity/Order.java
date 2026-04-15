@@ -8,6 +8,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -65,17 +66,17 @@ public class Order {
   private OrderStatus status;
 
   @Builder.Default
-  @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
   private List<OrderItem> items = new ArrayList<>();
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "customer_id", referencedColumnName = "id", nullable = false)
   private Customer customer;
 
-  @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
   private Payment payment;
 
-  @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
   private Shipment shipment;
 
   @Column(name = "created_at", nullable = false)
