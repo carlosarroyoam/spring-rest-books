@@ -2,7 +2,6 @@ package com.carlosarroyoam.rest.books.core.config;
 
 import com.carlosarroyoam.rest.books.core.config.security.AuthoritiesConverter;
 import com.carlosarroyoam.rest.books.core.property.CorsProps;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -77,7 +76,8 @@ class WebSecurityConfig {
     return claims -> {
       var realmAccess = Optional.ofNullable((Map<String, Object>) claims.get("realm_access"));
       var roles = realmAccess.flatMap(map -> Optional.ofNullable((List<String>) map.get("roles")));
-      return roles.stream().flatMap(Collection::stream)
+      return roles.stream()
+          .flatMap(Collection::stream)
           .map(role -> "ROLE_" + role)
           .map(SimpleGrantedAuthority::new)
           .map(GrantedAuthority.class::cast)

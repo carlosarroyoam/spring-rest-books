@@ -10,7 +10,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.security.authorization.AuthorizationDeniedException;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -63,9 +64,15 @@ public class GlobalExceptionHandler {
     return buildResponseEntity(HttpStatus.METHOD_NOT_ALLOWED, ex.getMessage(), request);
   }
 
-  @ExceptionHandler({ AuthorizationDeniedException.class })
-  public ResponseEntity<AppExceptionResponse> handleAuthorizationDenied(
-      AuthorizationDeniedException ex, WebRequest request) {
+  @ExceptionHandler({ AuthenticationException.class })
+  public ResponseEntity<AppExceptionResponse> handleAuthenticationException(
+      AuthenticationException ex, WebRequest request) {
+    return buildResponseEntity(HttpStatus.UNAUTHORIZED, ex.getMessage(), request);
+  }
+
+  @ExceptionHandler({ AccessDeniedException.class })
+  public ResponseEntity<AppExceptionResponse> handleAccessDeniedException(AccessDeniedException ex,
+      WebRequest request) {
     return buildResponseEntity(HttpStatus.FORBIDDEN, ex.getMessage(), request);
   }
 
