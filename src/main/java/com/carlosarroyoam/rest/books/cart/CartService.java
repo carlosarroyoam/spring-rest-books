@@ -63,17 +63,11 @@ public class CartService {
   public void deleteCartItem(Long customerId, Long cartItemId) {
     Cart cartByCustomerId = findCartByCustomerIdOrFail(customerId);
 
-    CartItem cartItemOptional = cartByCustomerId.getItems()
+    cartByCustomerId.getItems()
         .stream()
         .filter(item -> item.getId().equals(cartItemId))
         .findFirst()
-        .orElseThrow(() -> {
-          log.warn(AppMessages.CART_ITEM_NOT_FOUND_EXCEPTION);
-          return new ResponseStatusException(HttpStatus.NOT_FOUND,
-              AppMessages.CART_ITEM_NOT_FOUND_EXCEPTION);
-        });
-
-    cartItemRepository.deleteById(cartItemOptional.getId());
+        .ifPresent(cartItem -> cartItemRepository.deleteById(cartItem.getId()));
   }
 
   private Cart findCartByCustomerIdOrFail(Long customerId) {
