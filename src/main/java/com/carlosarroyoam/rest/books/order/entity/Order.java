@@ -73,10 +73,10 @@ public class Order {
   @JoinColumn(name = "customer_id", referencedColumnName = "id", nullable = false)
   private Customer customer;
 
-  @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+  @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
   private Payment payment;
 
-  @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+  @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
   private Shipment shipment;
 
   @Column(name = "created_at", nullable = false)

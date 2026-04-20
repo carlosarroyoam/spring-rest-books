@@ -33,7 +33,7 @@ public class Author {
   @Column(name = "name", length = 128, nullable = false)
   private String name;
 
-  @Column(name = "bio", length = 1024, nullable = true)
+  @Column(name = "bio", length = 1024)
   private String bio;
 
   @Enumerated(EnumType.STRING)
@@ -50,6 +50,6 @@ public class Author {
   @Column(name = "updated_at", nullable = false)
   private LocalDateTime updatedAt;
 
-  @Column(name = "deleted_at", nullable = true)
+  @Column(name = "deleted_at")
   private LocalDateTime deletedAt;
 }

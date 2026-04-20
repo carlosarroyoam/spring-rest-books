@@ -1,5 +1,5 @@
 package com.carlosarroyoam.rest.books.payment.entity;
 
 public enum PaymentMethod {
-  CREDIT_CARD, DEBIT_CARD, PAYPAL, BANK_TRANSFER, CASH_ON_DELIVERY
+  CASH_ON_DELIVERY, CREDIT_CARD, DEBIT_CARD, BANK_TRANSFER
 }

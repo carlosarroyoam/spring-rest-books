@@ -2,11 +2,11 @@ package com.carlosarroyoam.rest.books.core.config;
 
 import com.carlosarroyoam.rest.books.core.config.security.AuthoritiesConverter;
 import com.carlosarroyoam.rest.books.core.property.CorsProps;
-import com.carlosarroyoam.rest.books.core.utils.StringUtils;
+
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Stream;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
@@ -77,8 +77,7 @@ class WebSecurityConfig {
     return claims -> {
       var realmAccess = Optional.ofNullable((Map<String, Object>) claims.get("realm_access"));
       var roles = realmAccess.flatMap(map -> Optional.ofNullable((List<String>) map.get("roles")));
-      return roles.map(List::stream)
-          .orElse(Stream.empty())
+      return roles.stream().flatMap(Collection::stream)
           .map(role -> "ROLE_" + role)
           .map(SimpleGrantedAuthority::new)
           .map(GrantedAuthority.class::cast)
@@ -89,12 +88,9 @@ class WebSecurityConfig {
   @Bean
   CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
-    configuration
-        .setAllowedOrigins(StringUtils.commaSeparatedToList(corsProps.getAllowedOrigins()));
-    configuration
-        .setAllowedMethods(StringUtils.commaSeparatedToList(corsProps.getAllowedMethods()));
-    configuration
-        .setAllowedHeaders(StringUtils.commaSeparatedToList(corsProps.getAllowedHeaders()));
+    configuration.setAllowedOrigins(corsProps.getAllowedOrigins());
+    configuration.setAllowedMethods(corsProps.getAllowedMethods());
+    configuration.setAllowedHeaders(corsProps.getAllowedHeaders());
 
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     source.registerCorsConfiguration("/**", configuration);

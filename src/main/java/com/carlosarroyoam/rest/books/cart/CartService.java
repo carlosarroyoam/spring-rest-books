@@ -47,13 +47,12 @@ public class CartService {
         .filter(item -> item.getBook().getId().equals(request.getBookId()))
         .findFirst();
 
-    CartItem cartItem = cartItemOptional.isPresent() ? cartItemOptional.get()
-        : CartItem.builder()
+    CartItem cartItem = cartItemOptional.orElseGet(() -> CartItem.builder()
             .book(bookById)
             .quantity(request.getQuantity())
             .addedAt(LocalDateTime.now())
             .cart(cartByCustomerId)
-            .build();
+            .build());
 
     cartItemRepository.save(cartItem);
   }
