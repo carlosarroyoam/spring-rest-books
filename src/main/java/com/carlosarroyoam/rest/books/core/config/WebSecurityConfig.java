@@ -2,6 +2,9 @@ package com.carlosarroyoam.rest.books.core.config;
 
 import com.carlosarroyoam.rest.books.core.property.CorsProps;
 import com.carlosarroyoam.rest.books.core.security.AuthoritiesConverter;
+import com.carlosarroyoam.rest.books.core.security.CustomAccessDeniedHandler;
+import com.carlosarroyoam.rest.books.core.security.CustomAuthenticationEntryPoint;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -33,14 +36,18 @@ class WebSecurityConfig {
 
   @Bean
   SecurityFilterChain securityFilterChain(HttpSecurity http,
-      JwtAuthenticationConverter jwtAuthenticationConverter) throws Exception {
+      JwtAuthenticationConverter jwtAuthenticationConverter, ObjectMapper mapper) throws Exception {
     http.csrf(CsrfConfigurer::disable)
         .cors(Customizer.withDefaults())
         .headers(headers -> headers.frameOptions(FrameOptionsConfig::sameOrigin))
         .sessionManagement(
             sessions -> sessions.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .oauth2ResourceServer(oauth2 -> oauth2
-            .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter)));
+        .oauth2ResourceServer(
+            oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter)))
+        .exceptionHandling(ex -> {
+          ex.authenticationEntryPoint(new CustomAuthenticationEntryPoint(mapper));
+          ex.accessDeniedHandler(new CustomAccessDeniedHandler(mapper));
+        });
 
     http.authorizeHttpRequests(requests -> requests.requestMatchers(HttpMethod.GET, "/books/**")
         .permitAll()
