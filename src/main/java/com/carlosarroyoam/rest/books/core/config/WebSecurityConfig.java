@@ -1,16 +1,13 @@
 package com.carlosarroyoam.rest.books.core.config;
 
-import com.carlosarroyoam.rest.books.core.config.security.AuthoritiesConverter;
 import com.carlosarroyoam.rest.books.core.property.CorsProps;
+import com.carlosarroyoam.rest.books.core.security.AuthoritiesConverter;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -19,7 +16,6 @@ import org.springframework.security.config.annotation.web.configurers.HeadersCon
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
@@ -37,14 +33,14 @@ class WebSecurityConfig {
 
   @Bean
   SecurityFilterChain securityFilterChain(HttpSecurity http,
-      Converter<Jwt, AbstractAuthenticationToken> authenticationConverter) throws Exception {
+      JwtAuthenticationConverter jwtAuthenticationConverter) throws Exception {
     http.csrf(CsrfConfigurer::disable)
         .cors(Customizer.withDefaults())
         .headers(headers -> headers.frameOptions(FrameOptionsConfig::sameOrigin))
         .sessionManagement(
             sessions -> sessions.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .oauth2ResourceServer(
-            oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(authenticationConverter)));
+        .oauth2ResourceServer(oauth2 -> oauth2
+            .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter)));
 
     http.authorizeHttpRequests(requests -> requests.requestMatchers(HttpMethod.GET, "/books/**")
         .permitAll()
@@ -63,26 +59,37 @@ class WebSecurityConfig {
   }
 
   @Bean
-  JwtAuthenticationConverter authenticationConverter(AuthoritiesConverter authoritiesConverter) {
-    JwtAuthenticationConverter authenticationConverter = new JwtAuthenticationConverter();
-    authenticationConverter
-        .setJwtGrantedAuthoritiesConverter(jwt -> authoritiesConverter.convert(jwt.getClaims()));
-    return authenticationConverter;
-  }
-
-  @Bean
-  @SuppressWarnings("unchecked")
-  AuthoritiesConverter realmRolesAuthoritiesConverter() {
+  AuthoritiesConverter authoritiesConverter() {
     return claims -> {
-      var realmAccess = Optional.ofNullable((Map<String, Object>) claims.get("realm_access"));
-      var roles = realmAccess.flatMap(map -> Optional.ofNullable((List<String>) map.get("roles")));
+      Object rawRealmAccess = claims.get("realm_access");
+      if (!(rawRealmAccess instanceof Map<?, ?> realmAccess)) {
+        return List.of();
+      }
+
+      Object rawRoles = realmAccess.get("roles");
+      if (!(rawRoles instanceof Collection<?> roles)) {
+        return List.of();
+      }
+
       return roles.stream()
-          .flatMap(Collection::stream)
+          .filter(String.class::isInstance)
+          .map(String.class::cast)
+          .filter(role -> !role.startsWith("default-"))
+          .filter(role -> !role.equals("offline_access"))
+          .filter(role -> !role.equals("uma_authorization"))
           .map(role -> "ROLE_" + role)
           .map(SimpleGrantedAuthority::new)
           .map(GrantedAuthority.class::cast)
           .toList();
     };
+  }
+
+  @Bean
+  JwtAuthenticationConverter authenticationConverter(AuthoritiesConverter authoritiesConverter) {
+    JwtAuthenticationConverter authenticationConverter = new JwtAuthenticationConverter();
+    authenticationConverter
+        .setJwtGrantedAuthoritiesConverter(jwt -> authoritiesConverter.convert(jwt.getClaims()));
+    return authenticationConverter;
   }
 
   @Bean
