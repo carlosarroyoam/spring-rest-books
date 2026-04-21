@@ -105,6 +105,7 @@ class WebSecurityConfig {
     configuration.setAllowedOrigins(corsProps.getAllowedOrigins());
     configuration.setAllowedMethods(corsProps.getAllowedMethods());
     configuration.setAllowedHeaders(corsProps.getAllowedHeaders());
+    configuration.setAllowCredentials(corsProps.getAllowCredentials());
 
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     source.registerCorsConfiguration("/**", configuration);
