@@ -28,11 +28,11 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
       HttpServletRequest request, HttpServletResponse response, AccessDeniedException ex)
       throws IOException {
     HttpStatus status = HttpStatus.FORBIDDEN;
-    AppExceptionResponse appExceptionDto =
+    AppExceptionResponse appExceptionResponse =
         apiExceptionResponseFactory.build(status, ex.getMessage(), request);
 
     response.setStatus(status.value());
     response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-    mapper.writeValue(response.getOutputStream(), appExceptionDto);
+    mapper.writeValue(response.getOutputStream(), appExceptionResponse);
   }
 }

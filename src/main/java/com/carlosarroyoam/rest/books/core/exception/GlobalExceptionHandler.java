@@ -34,80 +34,80 @@ public class GlobalExceptionHandler {
   public ResponseEntity<AppExceptionResponse> handleResponseStatus(
       ResponseStatusException ex, HttpServletRequest request) {
     HttpStatus status = HttpStatus.valueOf(ex.getStatusCode().value());
-    AppExceptionResponse appExceptionDto =
+    AppExceptionResponse appExceptionResponse =
         apiExceptionResponseFactory.build(status, ex.getReason(), request);
 
-    return ResponseEntity.status(status).body(appExceptionDto);
+    return ResponseEntity.status(status).body(appExceptionResponse);
   }
 
   @ExceptionHandler({HttpMessageNotReadableException.class})
   public ResponseEntity<AppExceptionResponse> handleHttpMessageNotReadable(
       HttpMessageNotReadableException ex, HttpServletRequest request) {
     HttpStatus status = HttpStatus.BAD_REQUEST;
-    AppExceptionResponse appExceptionDto =
+    AppExceptionResponse appExceptionResponse =
         apiExceptionResponseFactory.build(status, ex.getMessage(), request);
 
-    return ResponseEntity.status(status).body(appExceptionDto);
+    return ResponseEntity.status(status).body(appExceptionResponse);
   }
 
   @ExceptionHandler({MethodArgumentTypeMismatchException.class})
   public ResponseEntity<AppExceptionResponse> handleMethodArgumentTypeMismatch(
       MethodArgumentTypeMismatchException ex, HttpServletRequest request) {
     HttpStatus status = HttpStatus.BAD_REQUEST;
-    AppExceptionResponse appExceptionDto =
+    AppExceptionResponse appExceptionResponse =
         apiExceptionResponseFactory.build(status, ex.getMessage(), request);
 
-    return ResponseEntity.status(status).body(appExceptionDto);
+    return ResponseEntity.status(status).body(appExceptionResponse);
   }
 
   @ExceptionHandler({NoHandlerFoundException.class})
   public ResponseEntity<AppExceptionResponse> handleNoHandlerFound(
       NoHandlerFoundException ex, HttpServletRequest request) {
     HttpStatus status = HttpStatus.NOT_FOUND;
-    AppExceptionResponse appExceptionDto =
+    AppExceptionResponse appExceptionResponse =
         apiExceptionResponseFactory.build(status, ex.getMessage(), request);
 
-    return ResponseEntity.status(status).body(appExceptionDto);
+    return ResponseEntity.status(status).body(appExceptionResponse);
   }
 
   @ExceptionHandler({NoResourceFoundException.class})
   public ResponseEntity<AppExceptionResponse> handleNoResourceFound(
       NoResourceFoundException ex, HttpServletRequest request) {
     HttpStatus status = HttpStatus.NOT_FOUND;
-    AppExceptionResponse appExceptionDto =
+    AppExceptionResponse appExceptionResponse =
         apiExceptionResponseFactory.build(status, ex.getMessage(), request);
 
-    return ResponseEntity.status(status).body(appExceptionDto);
+    return ResponseEntity.status(status).body(appExceptionResponse);
   }
 
   @ExceptionHandler({HttpRequestMethodNotSupportedException.class})
   public ResponseEntity<AppExceptionResponse> handleMethodNotSupported(
       HttpRequestMethodNotSupportedException ex, HttpServletRequest request) {
     HttpStatus status = HttpStatus.METHOD_NOT_ALLOWED;
-    AppExceptionResponse appExceptionDto =
+    AppExceptionResponse appExceptionResponse =
         apiExceptionResponseFactory.build(status, ex.getMessage(), request);
 
-    return ResponseEntity.status(status).body(appExceptionDto);
+    return ResponseEntity.status(status).body(appExceptionResponse);
   }
 
   @ExceptionHandler({AuthenticationException.class})
   public ResponseEntity<AppExceptionResponse> handleAuthenticationException(
       AuthenticationException ex, HttpServletRequest request) {
     HttpStatus status = HttpStatus.UNAUTHORIZED;
-    AppExceptionResponse appExceptionDto =
+    AppExceptionResponse appExceptionResponse =
         apiExceptionResponseFactory.build(status, ex.getMessage(), request);
 
-    return ResponseEntity.status(status).body(appExceptionDto);
+    return ResponseEntity.status(status).body(appExceptionResponse);
   }
 
   @ExceptionHandler({AccessDeniedException.class})
   public ResponseEntity<AppExceptionResponse> handleAccessDeniedException(
       AccessDeniedException ex, HttpServletRequest request) {
     HttpStatus status = HttpStatus.FORBIDDEN;
-    AppExceptionResponse appExceptionDto =
+    AppExceptionResponse appExceptionResponse =
         apiExceptionResponseFactory.build(status, ex.getMessage(), request);
 
-    return ResponseEntity.status(status).body(appExceptionDto);
+    return ResponseEntity.status(status).body(appExceptionResponse);
   }
 
   @ExceptionHandler({MethodArgumentNotValidException.class})
@@ -122,21 +122,21 @@ public class GlobalExceptionHandler {
                     FieldError::getDefaultMessage,
                     (existing, replacement) -> existing));
 
-    AppExceptionResponse appExceptionDto =
+    AppExceptionResponse appExceptionResponse =
         apiExceptionResponseFactory.build(status, "Invalid request data", request, details);
 
-    return ResponseEntity.status(status).body(appExceptionDto);
+    return ResponseEntity.status(status).body(appExceptionResponse);
   }
 
   @ExceptionHandler({Exception.class})
   public ResponseEntity<AppExceptionResponse> handleException(
       Exception ex, HttpServletRequest request) {
     HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-    AppExceptionResponse appExceptionDto =
+    AppExceptionResponse appExceptionResponse =
         apiExceptionResponseFactory.build(status, "Whoops! Something went wrong", request);
 
     log.error("Whoops! Something went wrong: ", ex);
 
-    return ResponseEntity.status(status).body(appExceptionDto);
+    return ResponseEntity.status(status).body(appExceptionResponse);
   }
 }

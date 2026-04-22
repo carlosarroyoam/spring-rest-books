@@ -28,11 +28,11 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
       HttpServletRequest request, HttpServletResponse response, AuthenticationException ex)
       throws IOException {
     HttpStatus status = HttpStatus.UNAUTHORIZED;
-    AppExceptionResponse appExceptionDto =
+    AppExceptionResponse appExceptionResponse =
         apiExceptionResponseFactory.build(status, ex.getMessage(), request);
 
     response.setStatus(status.value());
     response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-    mapper.writeValue(response.getOutputStream(), appExceptionDto);
+    mapper.writeValue(response.getOutputStream(), appExceptionResponse);
   }
 }
