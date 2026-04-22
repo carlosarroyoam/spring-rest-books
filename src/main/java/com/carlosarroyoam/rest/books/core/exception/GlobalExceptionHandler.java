@@ -1,8 +1,7 @@
 package com.carlosarroyoam.rest.books.core.exception;
 
 import com.carlosarroyoam.rest.books.core.exception.dto.AppExceptionResponse;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -17,7 +16,6 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.NoHandlerFoundException;
@@ -26,92 +24,117 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
   private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+  private final ApiExceptionResponseFactory apiExceptionResponseFactory;
+
+  public GlobalExceptionHandler(ApiExceptionResponseFactory apiExceptionResponseFactory) {
+    this.apiExceptionResponseFactory = apiExceptionResponseFactory;
+  }
 
   @ExceptionHandler({ ResponseStatusException.class })
   public ResponseEntity<AppExceptionResponse> handleResponseStatus(ResponseStatusException ex,
-      WebRequest request) {
-    return buildResponseEntity(HttpStatus.valueOf(ex.getStatusCode().value()), ex.getReason(),
+      HttpServletRequest request) {
+    HttpStatus status = HttpStatus.valueOf(ex.getStatusCode().value());
+    AppExceptionResponse appExceptionDto = apiExceptionResponseFactory.build(status, ex.getReason(),
         request);
-  }
-
-  @ExceptionHandler({ HttpMessageNotReadableException.class })
-  public ResponseEntity<AppExceptionResponse> handleHttpMessageNotReadable(
-      HttpMessageNotReadableException ex, WebRequest request) {
-    return buildResponseEntity(HttpStatus.BAD_REQUEST, ex.getMessage(), request);
-  }
-
-  @ExceptionHandler({ MethodArgumentTypeMismatchException.class })
-  public ResponseEntity<AppExceptionResponse> handleMethodArgumentTypeMismatch(
-      MethodArgumentTypeMismatchException ex, WebRequest request) {
-    return buildResponseEntity(HttpStatus.BAD_REQUEST, ex.getMessage(), request);
-  }
-
-  @ExceptionHandler({ NoHandlerFoundException.class })
-  public ResponseEntity<AppExceptionResponse> handleNoHandlerFound(NoHandlerFoundException ex,
-      WebRequest request) {
-    return buildResponseEntity(HttpStatus.NOT_FOUND, ex.getMessage(), request);
-  }
-
-  @ExceptionHandler({ NoResourceFoundException.class })
-  public ResponseEntity<AppExceptionResponse> handleNoResourceFound(NoResourceFoundException ex,
-      WebRequest request) {
-    return buildResponseEntity(HttpStatus.NOT_FOUND, ex.getMessage(), request);
-  }
-
-  @ExceptionHandler({ HttpRequestMethodNotSupportedException.class })
-  public ResponseEntity<AppExceptionResponse> handleMethodNotSupported(
-      HttpRequestMethodNotSupportedException ex, WebRequest request) {
-    return buildResponseEntity(HttpStatus.METHOD_NOT_ALLOWED, ex.getMessage(), request);
-  }
-
-  @ExceptionHandler({ AuthenticationException.class })
-  public ResponseEntity<AppExceptionResponse> handleAuthenticationException(
-      AuthenticationException ex, WebRequest request) {
-    return buildResponseEntity(HttpStatus.UNAUTHORIZED, ex.getMessage(), request);
-  }
-
-  @ExceptionHandler({ AccessDeniedException.class })
-  public ResponseEntity<AppExceptionResponse> handleAccessDeniedException(AccessDeniedException ex,
-      WebRequest request) {
-    return buildResponseEntity(HttpStatus.FORBIDDEN, ex.getMessage(), request);
-  }
-
-  @ExceptionHandler({ MethodArgumentNotValidException.class })
-  public ResponseEntity<AppExceptionResponse> handleMethodArgumentNotValid(
-      MethodArgumentNotValidException ex, WebRequest request) {
-    Map<String, String> details = ex.getBindingResult()
-        .getFieldErrors()
-        .stream()
-        .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage,
-            (first, second) -> second));
-
-    return buildResponseEntity(HttpStatus.UNPROCESSABLE_ENTITY, "Invalid request data", request,
-        details);
-  }
-
-  @ExceptionHandler({ Exception.class })
-  public ResponseEntity<AppExceptionResponse> handleException(Exception ex, WebRequest request) {
-    log.error("Unhandled exception:", ex);
-    return buildResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, "Whoops! Something went wrong",
-        request);
-  }
-
-  private ResponseEntity<AppExceptionResponse> buildResponseEntity(HttpStatus status,
-      String message, WebRequest request, Map<String, String> details) {
-    AppExceptionResponse appExceptionDto = AppExceptionResponse.builder()
-        .message(message)
-        .error(status.getReasonPhrase())
-        .status(status.value())
-        .path(request.getDescription(false).replace("uri=", ""))
-        .timestamp(ZonedDateTime.now(ZoneId.of("UTC")))
-        .details(details)
-        .build();
 
     return ResponseEntity.status(status).body(appExceptionDto);
   }
 
-  private ResponseEntity<AppExceptionResponse> buildResponseEntity(HttpStatus status,
-      String message, WebRequest request) {
-    return buildResponseEntity(status, message, request, null);
+  @ExceptionHandler({ HttpMessageNotReadableException.class })
+  public ResponseEntity<AppExceptionResponse> handleHttpMessageNotReadable(
+      HttpMessageNotReadableException ex, HttpServletRequest request) {
+    HttpStatus status = HttpStatus.BAD_REQUEST;
+    AppExceptionResponse appExceptionDto = apiExceptionResponseFactory.build(status,
+        ex.getMessage(), request);
+
+    return ResponseEntity.status(status).body(appExceptionDto);
+  }
+
+  @ExceptionHandler({ MethodArgumentTypeMismatchException.class })
+  public ResponseEntity<AppExceptionResponse> handleMethodArgumentTypeMismatch(
+      MethodArgumentTypeMismatchException ex, HttpServletRequest request) {
+    HttpStatus status = HttpStatus.BAD_REQUEST;
+    AppExceptionResponse appExceptionDto = apiExceptionResponseFactory.build(status,
+        ex.getMessage(), request);
+
+    return ResponseEntity.status(status).body(appExceptionDto);
+  }
+
+  @ExceptionHandler({ NoHandlerFoundException.class })
+  public ResponseEntity<AppExceptionResponse> handleNoHandlerFound(NoHandlerFoundException ex,
+      HttpServletRequest request) {
+    HttpStatus status = HttpStatus.NOT_FOUND;
+    AppExceptionResponse appExceptionDto = apiExceptionResponseFactory.build(status,
+        ex.getMessage(), request);
+
+    return ResponseEntity.status(status).body(appExceptionDto);
+  }
+
+  @ExceptionHandler({ NoResourceFoundException.class })
+  public ResponseEntity<AppExceptionResponse> handleNoResourceFound(NoResourceFoundException ex,
+      HttpServletRequest request) {
+    HttpStatus status = HttpStatus.NOT_FOUND;
+    AppExceptionResponse appExceptionDto = apiExceptionResponseFactory.build(status,
+        ex.getMessage(), request);
+
+    return ResponseEntity.status(status).body(appExceptionDto);
+  }
+
+  @ExceptionHandler({ HttpRequestMethodNotSupportedException.class })
+  public ResponseEntity<AppExceptionResponse> handleMethodNotSupported(
+      HttpRequestMethodNotSupportedException ex, HttpServletRequest request) {
+    HttpStatus status = HttpStatus.METHOD_NOT_ALLOWED;
+    AppExceptionResponse appExceptionDto = apiExceptionResponseFactory.build(status,
+        ex.getMessage(), request);
+
+    return ResponseEntity.status(status).body(appExceptionDto);
+  }
+
+  @ExceptionHandler({ AuthenticationException.class })
+  public ResponseEntity<AppExceptionResponse> handleAuthenticationException(
+      AuthenticationException ex, HttpServletRequest request) {
+    HttpStatus status = HttpStatus.UNAUTHORIZED;
+    AppExceptionResponse appExceptionDto = apiExceptionResponseFactory.build(status,
+        ex.getMessage(), request);
+
+    return ResponseEntity.status(status).body(appExceptionDto);
+  }
+
+  @ExceptionHandler({ AccessDeniedException.class })
+  public ResponseEntity<AppExceptionResponse> handleAccessDeniedException(AccessDeniedException ex,
+      HttpServletRequest request) {
+    HttpStatus status = HttpStatus.FORBIDDEN;
+    AppExceptionResponse appExceptionDto = apiExceptionResponseFactory.build(status,
+        ex.getMessage(), request);
+
+    return ResponseEntity.status(status).body(appExceptionDto);
+  }
+
+  @ExceptionHandler({ MethodArgumentNotValidException.class })
+  public ResponseEntity<AppExceptionResponse> handleMethodArgumentNotValid(
+      MethodArgumentNotValidException ex, HttpServletRequest request) {
+    HttpStatus status = HttpStatus.UNPROCESSABLE_ENTITY;
+    Map<String, String> details = ex.getBindingResult()
+        .getFieldErrors()
+        .stream()
+        .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage,
+            (existing, replacement) -> existing));
+
+    AppExceptionResponse appExceptionDto = apiExceptionResponseFactory.build(status,
+        "Invalid request data", request, details);
+
+    return ResponseEntity.status(status).body(appExceptionDto);
+  }
+
+  @ExceptionHandler({ Exception.class })
+  public ResponseEntity<AppExceptionResponse> handleException(Exception ex,
+      HttpServletRequest request) {
+    HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+    AppExceptionResponse appExceptionDto = apiExceptionResponseFactory.build(status,
+        "Whoops! Something went wrong", request);
+
+    log.error("Whoops! Something went wrong: ", ex);
+
+    return ResponseEntity.status(status).body(appExceptionDto);
   }
 }
