@@ -1,5 +1,12 @@
 package com.carlosarroyoam.rest.books.payment;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.carlosarroyoam.rest.books.common.JsonUtils;
 import com.carlosarroyoam.rest.books.payment.dto.CreatePaymentRequest;
 import com.carlosarroyoam.rest.books.payment.dto.UpdatePaymentStatusRequest;
@@ -23,34 +30,29 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 @Transactional
 class PaymentControllerIT {
-  @Autowired
-  private WebApplicationContext webApplicationContext;
+  @Autowired private WebApplicationContext webApplicationContext;
 
-  @Autowired
-  private ObjectMapper mapper;
+  @Autowired private ObjectMapper mapper;
 
-  @Autowired
-  private MockMvc mockMvc;
+  @Autowired private MockMvc mockMvc;
 
   @BeforeEach
   void setup() {
-    mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
-        .apply(SecurityMockMvcConfigurers.springSecurity())
-        .defaultRequest(get("/").with(jwt().jwt(jwt -> jwt.claim("preferred_username", "carroyom"))
-            .authorities(new SimpleGrantedAuthority("ROLE_App/Admin"))))
-        .build();
+    mockMvc =
+        MockMvcBuilders.webAppContextSetup(webApplicationContext)
+            .apply(SecurityMockMvcConfigurers.springSecurity())
+            .defaultRequest(
+                get("/")
+                    .with(
+                        jwt()
+                            .jwt(jwt -> jwt.claim("preferred_username", "carroyom"))
+                            .authorities(new SimpleGrantedAuthority("ROLE_App/Admin"))))
+            .build();
   }
 
   @Test
@@ -58,12 +60,14 @@ class PaymentControllerIT {
   void givenPaymentsExist_whenFindAllPayments_thenReturnsPagedPayments() throws Exception {
     String expectedJson = JsonUtils.readJson("/payments/find-all.json");
 
-    String responseJson = mockMvc.perform(get("/payments").param("page", "0").param("size", "25"))
-        .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andReturn()
-        .getResponse()
-        .getContentAsString();
+    String responseJson =
+        mockMvc
+            .perform(get("/payments").param("page", "0").param("size", "25"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
 
     JSONAssert.assertEquals(expectedJson, responseJson, false);
   }
@@ -73,36 +77,45 @@ class PaymentControllerIT {
   void givenPaymentExists_whenFindPaymentById_thenReturnsPayment() throws Exception {
     String expectedJson = JsonUtils.readJson("/payments/find-by-id.json");
 
-    String responseJson = mockMvc.perform(get("/payments/{paymentId}", 1L))
-        .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andReturn()
-        .getResponse()
-        .getContentAsString();
+    String responseJson =
+        mockMvc
+            .perform(get("/payments/{paymentId}", 1L))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
 
     JSONAssert.assertEquals(expectedJson, responseJson, false);
   }
 
   @Test
-  @DisplayName("POST /payments - Given order with existing payment, when create, then returns bad request")
+  @DisplayName(
+      "POST /payments - Given order with existing payment, when create, then returns bad request")
   void givenOrderWithExistingPayment_whenCreatePayment_thenReturnsBadRequest() throws Exception {
-    CreatePaymentRequest request = CreatePaymentRequest.builder()
-        .orderId(1L)
-        .method(PaymentMethod.CREDIT_CARD)
-        .build();
+    CreatePaymentRequest request =
+        CreatePaymentRequest.builder().orderId(1L).method(PaymentMethod.CREDIT_CARD).build();
 
-    mockMvc.perform(post("/payments").contentType(MediaType.APPLICATION_JSON)
-        .content(mapper.writeValueAsString(request))).andExpect(status().isBadRequest());
+    mockMvc
+        .perform(
+            post("/payments")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(request)))
+        .andExpect(status().isBadRequest());
   }
 
   @Test
-  @DisplayName("PUT /payments/{id}/status - Given valid status, when update, then returns no content")
+  @DisplayName(
+      "PUT /payments/{id}/status - Given valid status, when update, then returns no content")
   void givenValidStatus_whenUpdatePaymentStatus_thenReturnsNoContent() throws Exception {
-    UpdatePaymentStatusRequest request = UpdatePaymentStatusRequest.builder()
-        .status(PaymentStatus.COMPLETED)
-        .build();
+    UpdatePaymentStatusRequest request =
+        UpdatePaymentStatusRequest.builder().status(PaymentStatus.COMPLETED).build();
 
-    mockMvc.perform(put("/payments/{paymentId}/status", 1L).contentType(MediaType.APPLICATION_JSON)
-        .content(mapper.writeValueAsString(request))).andExpect(status().isNoContent());
+    mockMvc
+        .perform(
+            put("/payments/{paymentId}/status", 1L)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(request)))
+        .andExpect(status().isNoContent());
   }
 }

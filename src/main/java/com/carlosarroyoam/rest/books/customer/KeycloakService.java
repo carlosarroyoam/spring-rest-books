@@ -31,10 +31,10 @@ public class KeycloakService {
   public void createUser(CreateCustomerRequest request, Long customerId) {
     UsersResource usersResource = keycloak.realm(keycloakAdminProps.getRealm()).users();
 
-    List<UserRepresentation> existingUsersByUsername = usersResource
-        .searchByUsername(request.getUsername(), true);
-    List<UserRepresentation> existingUsersByEmail = usersResource.searchByEmail(request.getEmail(),
-        true);
+    List<UserRepresentation> existingUsersByUsername =
+        usersResource.searchByUsername(request.getUsername(), true);
+    List<UserRepresentation> existingUsersByEmail =
+        usersResource.searchByEmail(request.getEmail(), true);
 
     if (!existingUsersByUsername.isEmpty() || !existingUsersByEmail.isEmpty()) {
       return;
@@ -59,16 +59,18 @@ public class KeycloakService {
 
     try (Response response = usersResource.create(user)) {
       if (Status.CREATED.getStatusCode() != response.getStatus()) {
-        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-            AppMessages.USER_NOT_CREATED_EXCEPTION);
+        throw new ResponseStatusException(
+            HttpStatus.INTERNAL_SERVER_ERROR, AppMessages.USER_NOT_CREATED_EXCEPTION);
       }
 
       String keycloakUserId = response.getLocation().getPath().replaceAll(".*/([^/]+)$", "$1");
 
-      RoleRepresentation role = keycloak.realm(keycloakAdminProps.getRealm())
-          .roles()
-          .get("App/Customer")
-          .toRepresentation();
+      RoleRepresentation role =
+          keycloak
+              .realm(keycloakAdminProps.getRealm())
+              .roles()
+              .get("App/Customer")
+              .toRepresentation();
 
       usersResource.get(keycloakUserId).roles().realmLevel().add(Collections.singletonList(role));
     }

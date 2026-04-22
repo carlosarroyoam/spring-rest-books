@@ -48,17 +48,17 @@ public class CustomerController {
   }
 
   @PostMapping(consumes = "application/json")
-  public ResponseEntity<Void> create(@Valid @RequestBody CreateCustomerRequest request,
-      UriComponentsBuilder builder) {
+  public ResponseEntity<Void> create(
+      @Valid @RequestBody CreateCustomerRequest request, UriComponentsBuilder builder) {
     CustomerResponse createdCustomer = customerService.create(request);
-    UriComponents uriComponents = builder.path("/customers/{customerId}")
-        .buildAndExpand(createdCustomer.getId());
+    UriComponents uriComponents =
+        builder.path("/customers/{customerId}").buildAndExpand(createdCustomer.getId());
     return ResponseEntity.created(uriComponents.toUri()).build();
   }
 
   @PutMapping(value = "/{customerId}", consumes = "application/json")
-  public ResponseEntity<Void> update(@PathVariable Long customerId,
-      @Valid @RequestBody UpdateCustomerRequest request) {
+  public ResponseEntity<Void> update(
+      @PathVariable Long customerId, @Valid @RequestBody UpdateCustomerRequest request) {
     customerService.update(customerId, request);
     return ResponseEntity.noContent().build();
   }

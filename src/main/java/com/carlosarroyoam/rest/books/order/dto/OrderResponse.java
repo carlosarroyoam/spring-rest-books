@@ -40,9 +40,13 @@ public class OrderResponse {
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
 
-  @Mapper(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = {
-      OrderItemResponseMapper.class, CustomerResponse.class, PaymentResponse.class,
-      ShipmentResponse.class })
+  @Mapper(
+      nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
+      unmappedTargetPolicy = ReportingPolicy.IGNORE,
+      uses = {
+        OrderItemResponseMapper.class, CustomerResponse.class,
+        PaymentResponse.class, ShipmentResponse.class
+      })
   public interface OrderResponseMapper {
     OrderResponseMapper INSTANCE = Mappers.getMapper(OrderResponseMapper.class);
 

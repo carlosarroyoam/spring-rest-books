@@ -1,5 +1,12 @@
 package com.carlosarroyoam.rest.books.cart;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.carlosarroyoam.rest.books.cart.dto.UpdateCartItemRequest;
 import com.carlosarroyoam.rest.books.common.JsonUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,35 +27,32 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 @Transactional
 class CartControllerIT {
-  @Autowired
-  private WebApplicationContext webApplicationContext;
+  @Autowired private WebApplicationContext webApplicationContext;
 
-  @Autowired
-  private ObjectMapper mapper;
+  @Autowired private ObjectMapper mapper;
 
-  @Autowired
-  private MockMvc mockMvc;
+  @Autowired private MockMvc mockMvc;
 
   @BeforeEach
   void setup() {
-    mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
-        .apply(SecurityMockMvcConfigurers.springSecurity())
-        .defaultRequest(get("/").with(
-            jwt().jwt(jwt -> jwt.claim("preferred_username", "carroyom").claim("customer_id", 1L))
-                .authorities(new SimpleGrantedAuthority("ROLE_App/Customer"))))
-        .build();
+    mockMvc =
+        MockMvcBuilders.webAppContextSetup(webApplicationContext)
+            .apply(SecurityMockMvcConfigurers.springSecurity())
+            .defaultRequest(
+                get("/")
+                    .with(
+                        jwt()
+                            .jwt(
+                                jwt ->
+                                    jwt.claim("preferred_username", "carroyom")
+                                        .claim("customer_id", 1L))
+                            .authorities(new SimpleGrantedAuthority("ROLE_App/Customer"))))
+            .build();
   }
 
   @Test
@@ -56,30 +60,39 @@ class CartControllerIT {
   void givenCartExists_whenFindCartByCustomerId_thenReturnsCart() throws Exception {
     String expectedJson = JsonUtils.readJson("/carts/find-by-customer-id.json");
 
-    String responseJson = mockMvc.perform(get("/carts"))
-        .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andReturn()
-        .getResponse()
-        .getContentAsString();
+    String responseJson =
+        mockMvc
+            .perform(get("/carts"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
 
     JSONAssert.assertEquals(expectedJson, responseJson, false);
   }
 
   @Test
-  @DisplayName("PUT /carts/items - Given valid cart item data, when update, then returns no content")
+  @DisplayName(
+      "PUT /carts/items - Given valid cart item data, when update, then returns no content")
   void givenValidCartItemData_whenUpdateCartItem_thenReturnsNoContent() throws Exception {
     UpdateCartItemRequest request = UpdateCartItemRequest.builder().quantity(1).bookId(1L).build();
 
-    mockMvc.perform(put("/carts/items").content(mapper.writeValueAsString(request))
-        .contentType(MediaType.APPLICATION_JSON)
-        .accept(MediaType.APPLICATION_JSON)).andExpect(status().isNoContent());
+    mockMvc
+        .perform(
+            put("/carts/items")
+                .content(mapper.writeValueAsString(request))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isNoContent());
   }
 
   @Test
-  @DisplayName("DELETE /carts/items/{id} - Given cart item exists, when delete, then returns no content")
+  @DisplayName(
+      "DELETE /carts/items/{id} - Given cart item exists, when delete, then returns no content")
   void givenCartItemExists_whenDeleteCartItem_thenReturnsNoContent() throws Exception {
-    mockMvc.perform(delete("/carts/items/{cartItemId}", 1L).accept(MediaType.APPLICATION_JSON))
+    mockMvc
+        .perform(delete("/carts/items/{cartItemId}", 1L).accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNoContent());
   }
 }

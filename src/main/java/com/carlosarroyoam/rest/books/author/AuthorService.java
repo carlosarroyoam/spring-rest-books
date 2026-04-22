@@ -41,15 +41,16 @@ public class AuthorService {
 
   @Transactional(readOnly = true)
   public PagedResponse<AuthorResponse> findAll(AuthorSpecs authorSpecs, Pageable pageable) {
-    Specification<Author> spec = SpecificationBuilder.<Author>builder()
-        .likeIfPresent(root -> root.get(Author_.name), authorSpecs.getName())
-        .equalsIfPresent(root -> root.get(Author_.status), authorSpecs.getStatus())
-        .build();
+    Specification<Author> spec =
+        SpecificationBuilder.<Author>builder()
+            .likeIfPresent(root -> root.get(Author_.name), authorSpecs.getName())
+            .equalsIfPresent(root -> root.get(Author_.status), authorSpecs.getStatus())
+            .build();
 
     Page<Author> authors = authorRepository.findAll(spec, pageable);
 
-    return PagedResponseMapper.INSTANCE
-        .toPagedResponse(authors.map(AuthorResponseMapper.INSTANCE::toDto));
+    return PagedResponseMapper.INSTANCE.toPagedResponse(
+        authors.map(AuthorResponseMapper.INSTANCE::toDto));
   }
 
   @Transactional(readOnly = true)
@@ -61,13 +62,14 @@ public class AuthorService {
   @Transactional
   public AuthorResponse create(CreateAuthorRequest request) {
     LocalDateTime now = LocalDateTime.now();
-    Author author = Author.builder()
-        .name(request.getName())
-        .bio(request.getBio())
-        .status(AuthorStatus.ACTIVE)
-        .createdAt(now)
-        .updatedAt(now)
-        .build();
+    Author author =
+        Author.builder()
+            .name(request.getName())
+            .bio(request.getBio())
+            .status(AuthorStatus.ACTIVE)
+            .createdAt(now)
+            .updatedAt(now)
+            .build();
 
     return AuthorResponseMapper.INSTANCE.toDto(authorRepository.save(author));
   }
@@ -99,10 +101,13 @@ public class AuthorService {
   }
 
   private Author findAuthorByIdOrFail(Long authorId) {
-    return authorRepository.findById(authorId).orElseThrow(() -> {
-      log.warn(AppMessages.AUTHOR_NOT_FOUND_EXCEPTION);
-      return new ResponseStatusException(HttpStatus.NOT_FOUND,
-          AppMessages.AUTHOR_NOT_FOUND_EXCEPTION);
-    });
+    return authorRepository
+        .findById(authorId)
+        .orElseThrow(
+            () -> {
+              log.warn(AppMessages.AUTHOR_NOT_FOUND_EXCEPTION);
+              return new ResponseStatusException(
+                  HttpStatus.NOT_FOUND, AppMessages.AUTHOR_NOT_FOUND_EXCEPTION);
+            });
   }
 }

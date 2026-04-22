@@ -49,18 +49,18 @@ public class AuthorController {
 
   @PostMapping(consumes = "application/json")
   @PreAuthorize("hasRole('App/Admin')")
-  public ResponseEntity<Void> create(@Valid @RequestBody CreateAuthorRequest request,
-      UriComponentsBuilder builder) {
+  public ResponseEntity<Void> create(
+      @Valid @RequestBody CreateAuthorRequest request, UriComponentsBuilder builder) {
     AuthorResponse createdAuthor = authorService.create(request);
-    UriComponents uriComponents = builder.path("/authors/{authorId}")
-        .buildAndExpand(createdAuthor.getId());
+    UriComponents uriComponents =
+        builder.path("/authors/{authorId}").buildAndExpand(createdAuthor.getId());
     return ResponseEntity.created(uriComponents.toUri()).build();
   }
 
   @PutMapping(value = "/{authorId}", consumes = "application/json")
   @PreAuthorize("hasRole('App/Admin')")
-  public ResponseEntity<Void> update(@PathVariable Long authorId,
-      @Valid @RequestBody UpdateAuthorRequest request) {
+  public ResponseEntity<Void> update(
+      @PathVariable Long authorId, @Valid @RequestBody UpdateAuthorRequest request) {
     authorService.update(authorId, request);
     return ResponseEntity.noContent().build();
   }

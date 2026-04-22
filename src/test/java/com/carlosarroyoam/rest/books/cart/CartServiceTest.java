@@ -1,5 +1,12 @@
 package com.carlosarroyoam.rest.books.cart;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.carlosarroyoam.rest.books.book.BookRepository;
 import com.carlosarroyoam.rest.books.book.entity.Book;
 import com.carlosarroyoam.rest.books.cart.dto.CartResponse;
@@ -21,26 +28,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 @ExtendWith(MockitoExtension.class)
 class CartServiceTest {
-  @Mock
-  private CartRepository cartRepository;
+  @Mock private CartRepository cartRepository;
 
-  @Mock
-  private CartItemRepository cartItemRepository;
+  @Mock private CartItemRepository cartItemRepository;
 
-  @Mock
-  private BookRepository bookRepository;
+  @Mock private BookRepository bookRepository;
 
-  @InjectMocks
-  private CartService cartService;
+  @InjectMocks private CartService cartService;
 
   private Book book;
   private Cart cart;
@@ -54,13 +50,14 @@ class CartServiceTest {
 
     cartItem = CartItem.builder().id(1L).quantity(1).book(book).addedAt(now).build();
 
-    cart = Cart.builder()
-        .id(1L)
-        .items(List.of(cartItem))
-        .customer(Customer.builder().id(1L).build())
-        .createdAt(now)
-        .updatedAt(now)
-        .build();
+    cart =
+        Cart.builder()
+            .id(1L)
+            .items(List.of(cartItem))
+            .customer(Customer.builder().id(1L).build())
+            .createdAt(now)
+            .updatedAt(now)
+            .build();
   }
 
   @Test
@@ -166,7 +163,8 @@ class CartServiceTest {
   }
 
   @Test
-  @DisplayName("Given cart item does not exist, when delete cart item, then throws not found exception")
+  @DisplayName(
+      "Given cart item does not exist, when delete cart item, then throws not found exception")
   void givenCartItemDoesNotExist_whenDeleteCartItem_thenThrowsNotFoundException() {
     Cart cartWithoutItems = Cart.builder().id(1L).build();
 

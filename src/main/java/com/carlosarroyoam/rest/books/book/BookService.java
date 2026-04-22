@@ -43,22 +43,24 @@ public class BookService {
 
   @Transactional(readOnly = true)
   public PagedResponse<BookResponse> findAll(BookSpecs bookSpecs, Pageable pageable) {
-    Specification<Book> spec = SpecificationBuilder.<Book>builder()
-        .likeIfPresent(root -> root.get(Book_.isbn), bookSpecs.getIsbn())
-        .likeIfPresent(root -> root.get(Book_.title), bookSpecs.getTitle())
-        .betweenIfPresent(root -> root.get(Book_.price), bookSpecs.getMinPrice(),
-            bookSpecs.getMaxPrice())
-        .equalsIfPresent(root -> root.get(Book_.isAvailableOnline),
-            bookSpecs.getIsAvailableOnline())
-        .equalsIfPresent(root -> root.get(Book_.status), bookSpecs.getStatus())
-        .inIfPresent(root -> root.join(Book_.authors, JoinType.LEFT).get(Author_.id),
-            bookSpecs.getAuthorIds())
-        .build();
+    Specification<Book> spec =
+        SpecificationBuilder.<Book>builder()
+            .likeIfPresent(root -> root.get(Book_.isbn), bookSpecs.getIsbn())
+            .likeIfPresent(root -> root.get(Book_.title), bookSpecs.getTitle())
+            .betweenIfPresent(
+                root -> root.get(Book_.price), bookSpecs.getMinPrice(), bookSpecs.getMaxPrice())
+            .equalsIfPresent(
+                root -> root.get(Book_.isAvailableOnline), bookSpecs.getIsAvailableOnline())
+            .equalsIfPresent(root -> root.get(Book_.status), bookSpecs.getStatus())
+            .inIfPresent(
+                root -> root.join(Book_.authors, JoinType.LEFT).get(Author_.id),
+                bookSpecs.getAuthorIds())
+            .build();
 
     Page<Book> books = bookRepository.findAll(spec, pageable);
 
-    return PagedResponseMapper.INSTANCE
-        .toPagedResponse(books.map(BookResponseMapper.INSTANCE::toDto));
+    return PagedResponseMapper.INSTANCE.toPagedResponse(
+        books.map(BookResponseMapper.INSTANCE::toDto));
   }
 
   @Transactional(readOnly = true)
@@ -71,22 +73,23 @@ public class BookService {
   public BookResponse create(CreateBookRequest request) {
     if (bookRepository.existsByIsbn(request.getIsbn())) {
       log.warn(AppMessages.ISBN_ALREADY_EXISTS_EXCEPTION);
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-          AppMessages.ISBN_ALREADY_EXISTS_EXCEPTION);
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, AppMessages.ISBN_ALREADY_EXISTS_EXCEPTION);
     }
 
     LocalDateTime now = LocalDateTime.now();
-    Book book = Book.builder()
-        .isbn(request.getIsbn())
-        .title(request.getTitle())
-        .coverUrl(request.getCoverUrl())
-        .price(request.getPrice())
-        .isAvailableOnline(request.getIsAvailableOnline())
-        .status(BookStatus.ACTIVE)
-        .publishedAt(request.getPublishedAt())
-        .createdAt(now)
-        .updatedAt(now)
-        .build();
+    Book book =
+        Book.builder()
+            .isbn(request.getIsbn())
+            .title(request.getTitle())
+            .coverUrl(request.getCoverUrl())
+            .price(request.getPrice())
+            .isAvailableOnline(request.getIsAvailableOnline())
+            .status(BookStatus.ACTIVE)
+            .publishedAt(request.getPublishedAt())
+            .createdAt(now)
+            .updatedAt(now)
+            .build();
 
     return BookResponseMapper.INSTANCE.toDto(bookRepository.save(book));
   }
@@ -122,10 +125,13 @@ public class BookService {
   }
 
   private Book findBookByIdOrFail(Long bookId) {
-    return bookRepository.findById(bookId).orElseThrow(() -> {
-      log.warn(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
-      return new ResponseStatusException(HttpStatus.NOT_FOUND,
-          AppMessages.BOOK_NOT_FOUND_EXCEPTION);
-    });
+    return bookRepository
+        .findById(bookId)
+        .orElseThrow(
+            () -> {
+              log.warn(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
+              return new ResponseStatusException(
+                  HttpStatus.NOT_FOUND, AppMessages.BOOK_NOT_FOUND_EXCEPTION);
+            });
   }
 }

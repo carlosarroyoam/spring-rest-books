@@ -29,7 +29,9 @@ public class PaymentResponse {
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
 
-  @Mapper(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, unmappedTargetPolicy = ReportingPolicy.IGNORE)
+  @Mapper(
+      nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
+      unmappedTargetPolicy = ReportingPolicy.IGNORE)
   public interface PaymentResponseMapper {
     PaymentResponseMapper INSTANCE = Mappers.getMapper(PaymentResponseMapper.class);
 

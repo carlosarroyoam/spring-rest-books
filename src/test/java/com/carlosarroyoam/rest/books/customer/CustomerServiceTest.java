@@ -1,5 +1,13 @@
 package com.carlosarroyoam.rest.books.customer;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
 import com.carlosarroyoam.rest.books.core.dto.PagedResponse;
 import com.carlosarroyoam.rest.books.customer.dto.CreateCustomerRequest;
@@ -25,24 +33,13 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 @ExtendWith(MockitoExtension.class)
 class CustomerServiceTest {
-  @Mock
-  private CustomerRepository customerRepository;
+  @Mock private CustomerRepository customerRepository;
 
-  @Mock
-  private KeycloakService keycloakService;
+  @Mock private KeycloakService keycloakService;
 
-  @InjectMocks
-  private CustomerService customerService;
+  @InjectMocks private CustomerService customerService;
 
   private Customer customer;
 
@@ -50,15 +47,16 @@ class CustomerServiceTest {
   void setUp() {
     LocalDateTime now = LocalDateTime.now();
 
-    customer = Customer.builder()
-        .id(1L)
-        .firstName("Carlos Alberto")
-        .lastName("Arroyo Martínez")
-        .email("carroyom@mail.com")
-        .username("carroyom")
-        .createdAt(now)
-        .updatedAt(now)
-        .build();
+    customer =
+        Customer.builder()
+            .id(1L)
+            .firstName("Carlos Alberto")
+            .lastName("Arroyo Martínez")
+            .email("carroyom@mail.com")
+            .username("carroyom")
+            .createdAt(now)
+            .updatedAt(now)
+            .build();
   }
 
   @Test
@@ -67,11 +65,12 @@ class CustomerServiceTest {
     Pageable pageable = PageRequest.of(0, 25);
     List<Customer> customers = List.of(customer);
 
-    when(customerRepository.findAll(ArgumentMatchers.<Specification<Customer>>any(),
-        any(Pageable.class))).thenReturn(new PageImpl<>(customers, pageable, customers.size()));
+    when(customerRepository.findAll(
+            ArgumentMatchers.<Specification<Customer>>any(), any(Pageable.class)))
+        .thenReturn(new PageImpl<>(customers, pageable, customers.size()));
 
-    PagedResponse<CustomerResponse> response = customerService
-        .findAll(CustomerSpecs.builder().build(), PageRequest.of(0, 25));
+    PagedResponse<CustomerResponse> response =
+        customerService.findAll(CustomerSpecs.builder().build(), PageRequest.of(0, 25));
 
     assertThat(response).isNotNull();
     assertThat(response.getItems()).isNotNull().hasSize(1);
@@ -107,17 +106,16 @@ class CustomerServiceTest {
   @Test
   @DisplayName("Given valid customer data, when create, then returns created customer")
   void givenValidCustomerData_whenCreate_thenReturnsCreatedCustomer() {
-    CreateCustomerRequest request = CreateCustomerRequest.builder()
-        .firstName("Cathy Stefania")
-        .lastName("Guido Rojas")
-        .email("cguidor@mail.com")
-        .username("cguidor")
-        .build();
+    CreateCustomerRequest request =
+        CreateCustomerRequest.builder()
+            .firstName("Cathy Stefania")
+            .lastName("Guido Rojas")
+            .email("cguidor@mail.com")
+            .username("cguidor")
+            .build();
 
-    Customer savedCustomer = Customer.builder()
-        .firstName("Cathy Stefania")
-        .lastName("Guido Rojas")
-        .build();
+    Customer savedCustomer =
+        Customer.builder().firstName("Cathy Stefania").lastName("Guido Rojas").build();
 
     when(customerRepository.existsByUsername(anyString())).thenReturn(false);
     when(customerRepository.existsByEmail(anyString())).thenReturn(false);
@@ -131,7 +129,8 @@ class CustomerServiceTest {
   }
 
   @Test
-  @DisplayName("Given customer with existing username, when create, then throws bad request exception")
+  @DisplayName(
+      "Given customer with existing username, when create, then throws bad request exception")
   void givenCustomerWithExistingUsername_whenCreate_thenThrowsBadRequestException() {
     CreateCustomerRequest request = CreateCustomerRequest.builder().build();
 

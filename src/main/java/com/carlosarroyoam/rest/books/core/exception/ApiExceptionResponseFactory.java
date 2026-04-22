@@ -14,8 +14,8 @@ public class ApiExceptionResponseFactory {
     return build(status, message, request, null);
   }
 
-  public AppExceptionResponse build(HttpStatus status, String message, HttpServletRequest request,
-      Map<String, String> details) {
+  public AppExceptionResponse build(
+      HttpStatus status, String message, HttpServletRequest request, Map<String, String> details) {
     return AppExceptionResponse.builder()
         .message(message)
         .error(status.getReasonPhrase())

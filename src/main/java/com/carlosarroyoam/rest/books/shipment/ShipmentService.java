@@ -39,21 +39,25 @@ public class ShipmentService {
 
   @Transactional(readOnly = true)
   public PagedResponse<ShipmentResponse> findAll(ShipmentSpecs shipmentSpecs, Pageable pageable) {
-    Specification<Shipment> spec = SpecificationBuilder.<Shipment>builder()
-        .likeIfPresent(root -> root.get(Shipment_.attentionName), shipmentSpecs.getAttentionName())
-        .likeIfPresent(root -> root.get(Shipment_.address), shipmentSpecs.getAddress())
-        .likeIfPresent(root -> root.get(Shipment_.phone), shipmentSpecs.getPhone())
-        .equalsIfPresent(root -> root.get(Shipment_.status), shipmentSpecs.getStatus())
-        .betweenDatesIfPresent(root -> root.get(Shipment_.createdAt), shipmentSpecs.getStartDate(),
-            shipmentSpecs.getEndDate())
-        .equalsIfPresent(root -> root.join(Shipment_.order).get(Order_.id),
-            shipmentSpecs.getOrderId())
-        .build();
+    Specification<Shipment> spec =
+        SpecificationBuilder.<Shipment>builder()
+            .likeIfPresent(
+                root -> root.get(Shipment_.attentionName), shipmentSpecs.getAttentionName())
+            .likeIfPresent(root -> root.get(Shipment_.address), shipmentSpecs.getAddress())
+            .likeIfPresent(root -> root.get(Shipment_.phone), shipmentSpecs.getPhone())
+            .equalsIfPresent(root -> root.get(Shipment_.status), shipmentSpecs.getStatus())
+            .betweenDatesIfPresent(
+                root -> root.get(Shipment_.createdAt),
+                shipmentSpecs.getStartDate(),
+                shipmentSpecs.getEndDate())
+            .equalsIfPresent(
+                root -> root.join(Shipment_.order).get(Order_.id), shipmentSpecs.getOrderId())
+            .build();
 
     Page<Shipment> shipments = shipmentRepository.findAll(spec, pageable);
 
-    return PagedResponseMapper.INSTANCE
-        .toPagedResponse(shipments.map(ShipmentResponseMapper.INSTANCE::toDto));
+    return PagedResponseMapper.INSTANCE.toPagedResponse(
+        shipments.map(ShipmentResponseMapper.INSTANCE::toDto));
   }
 
   @Transactional(readOnly = true)
@@ -77,28 +81,34 @@ public class ShipmentService {
   }
 
   private Shipment findShipmentByIdOrFail(Long shipmentId) {
-    return shipmentRepository.findById(shipmentId).orElseThrow(() -> {
-      log.warn(AppMessages.SHIPMENT_NOT_FOUND_EXCEPTION);
-      return new ResponseStatusException(HttpStatus.NOT_FOUND,
-          AppMessages.SHIPMENT_NOT_FOUND_EXCEPTION);
-    });
+    return shipmentRepository
+        .findById(shipmentId)
+        .orElseThrow(
+            () -> {
+              log.warn(AppMessages.SHIPMENT_NOT_FOUND_EXCEPTION);
+              return new ResponseStatusException(
+                  HttpStatus.NOT_FOUND, AppMessages.SHIPMENT_NOT_FOUND_EXCEPTION);
+            });
   }
 
-  private OrderStatus resolveOrderStatusFromShipment(ShipmentStatus shipmentStatus,
-      OrderStatus currentStatus) {
+  private OrderStatus resolveOrderStatusFromShipment(
+      ShipmentStatus shipmentStatus, OrderStatus currentStatus) {
     return switch (shipmentStatus) {
-    case SHIPPED -> OrderStatus.SHIPPED;
-    case DELIVERED -> OrderStatus.DELIVERED;
-    case CANCELLED, RETURNED -> OrderStatus.CANCELLED;
-    case PENDING -> currentStatus == null ? OrderStatus.PENDING : currentStatus;
+      case SHIPPED -> OrderStatus.SHIPPED;
+      case DELIVERED -> OrderStatus.DELIVERED;
+      case CANCELLED, RETURNED -> OrderStatus.CANCELLED;
+      case PENDING -> currentStatus == null ? OrderStatus.PENDING : currentStatus;
     };
   }
 
   private Order findOrderByIdOrFail(Long orderId) {
-    return orderRepository.findById(orderId).orElseThrow(() -> {
-      log.warn(AppMessages.ORDER_NOT_FOUND_EXCEPTION);
-      return new ResponseStatusException(HttpStatus.NOT_FOUND,
-          AppMessages.ORDER_NOT_FOUND_EXCEPTION);
-    });
+    return orderRepository
+        .findById(orderId)
+        .orElseThrow(
+            () -> {
+              log.warn(AppMessages.ORDER_NOT_FOUND_EXCEPTION);
+              return new ResponseStatusException(
+                  HttpStatus.NOT_FOUND, AppMessages.ORDER_NOT_FOUND_EXCEPTION);
+            });
   }
 }

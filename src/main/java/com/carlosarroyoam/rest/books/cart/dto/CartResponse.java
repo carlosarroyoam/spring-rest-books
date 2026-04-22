@@ -25,8 +25,10 @@ public class CartResponse {
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
 
-  @Mapper(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = {
-      CartItemResponseMapper.class })
+  @Mapper(
+      nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
+      unmappedTargetPolicy = ReportingPolicy.IGNORE,
+      uses = {CartItemResponseMapper.class})
   public interface CartResponseMapper {
     CartResponseMapper INSTANCE = Mappers.getMapper(CartResponseMapper.class);
 

@@ -1,5 +1,13 @@
 package com.carlosarroyoam.rest.books.book;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.carlosarroyoam.rest.books.author.dto.AuthorResponse;
 import com.carlosarroyoam.rest.books.author.entity.Author;
 import com.carlosarroyoam.rest.books.book.dto.BookResponse;
@@ -29,21 +37,11 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 @ExtendWith(MockitoExtension.class)
 class BookServiceTest {
-  @Mock
-  private BookRepository bookRepository;
+  @Mock private BookRepository bookRepository;
 
-  @InjectMocks
-  private BookService bookService;
+  @InjectMocks private BookService bookService;
 
   private Book book;
   private Author author;
@@ -52,25 +50,22 @@ class BookServiceTest {
   void setUp() {
     LocalDateTime now = LocalDateTime.now();
 
-    author = Author.builder()
-        .id(1L)
-        .name("Yuval Noah Harari")
-        .createdAt(now)
-        .updatedAt(now)
-        .build();
+    author =
+        Author.builder().id(1L).name("Yuval Noah Harari").createdAt(now).updatedAt(now).build();
 
-    book = Book.builder()
-        .id(1L)
-        .isbn("978-1-3035-0529-4")
-        .title("Homo Deus: A Brief History of Tomorrow")
-        .coverUrl("https://images.isbndb.com/covers/39/36/9781784703936.jpg")
-        .price(new BigDecimal("22.99"))
-        .isAvailableOnline(Boolean.FALSE)
-        .publishedAt(LocalDate.parse("2017-01-01"))
-        .authors(List.of(author))
-        .createdAt(now)
-        .updatedAt(now)
-        .build();
+    book =
+        Book.builder()
+            .id(1L)
+            .isbn("978-1-3035-0529-4")
+            .title("Homo Deus: A Brief History of Tomorrow")
+            .coverUrl("https://images.isbndb.com/covers/39/36/9781784703936.jpg")
+            .price(new BigDecimal("22.99"))
+            .isAvailableOnline(Boolean.FALSE)
+            .publishedAt(LocalDate.parse("2017-01-01"))
+            .authors(List.of(author))
+            .createdAt(now)
+            .updatedAt(now)
+            .build();
   }
 
   @Test
@@ -82,8 +77,8 @@ class BookServiceTest {
     when(bookRepository.findAll(ArgumentMatchers.<Specification<Book>>any(), any(Pageable.class)))
         .thenReturn(new PageImpl<>(books, pageable, books.size()));
 
-    PagedResponse<BookResponse> response = bookService.findAll(BookSpecs.builder().build(),
-        PageRequest.of(0, 25));
+    PagedResponse<BookResponse> response =
+        bookService.findAll(BookSpecs.builder().build(), PageRequest.of(0, 25));
 
     assertThat(response).isNotNull();
     assertThat(response.getItems()).isNotNull().hasSize(1);
@@ -110,7 +105,8 @@ class BookServiceTest {
   void givenBookDoesNotExist_whenFindById_thenThrowsNotFoundException() {
     when(bookRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-    assertThatThrownBy(() -> bookService.findById(1L)).isInstanceOf(ResponseStatusException.class)
+    assertThatThrownBy(() -> bookService.findById(1L))
+        .isInstanceOf(ResponseStatusException.class)
         .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
         .hasMessageContaining(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
   }
@@ -118,16 +114,18 @@ class BookServiceTest {
   @Test
   @DisplayName("Given valid book data, when create, then returns created book")
   void givenValidBookData_whenCreate_thenReturnsCreatedBook() {
-    CreateBookRequest request = CreateBookRequest.builder()
-        .isbn("978-9-7389-4434-3")
-        .title("Sapiens: A Brief History of Humankind")
-        .build();
+    CreateBookRequest request =
+        CreateBookRequest.builder()
+            .isbn("978-9-7389-4434-3")
+            .title("Sapiens: A Brief History of Humankind")
+            .build();
 
-    Book savedBook = Book.builder()
-        .id(2L)
-        .isbn("978-9-7389-4434-3")
-        .title("Sapiens: A Brief History of Humankind")
-        .build();
+    Book savedBook =
+        Book.builder()
+            .id(2L)
+            .isbn("978-9-7389-4434-3")
+            .title("Sapiens: A Brief History of Humankind")
+            .build();
 
     when(bookRepository.existsByIsbn(anyString())).thenReturn(false);
     when(bookRepository.save(any(Book.class))).thenReturn(savedBook);
@@ -155,10 +153,8 @@ class BookServiceTest {
   @Test
   @DisplayName("Given book exists, when update with valid data, then updates book")
   void givenBookExists_whenUpdateWithValidData_thenUpdatesBook() {
-    UpdateBookRequest request = UpdateBookRequest.builder()
-        .isbn("978-1-3035-0293-1")
-        .title("Homo Deus")
-        .build();
+    UpdateBookRequest request =
+        UpdateBookRequest.builder().isbn("978-1-3035-0293-1").title("Homo Deus").build();
 
     Book updatedBook = Book.builder().isbn("978-1-3035-0293-1").title("Homo Deus").build();
 
@@ -202,7 +198,8 @@ class BookServiceTest {
   void givenBookDoesNotExist_whenDelete_thenThrowsNotFoundException() {
     when(bookRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-    assertThatThrownBy(() -> bookService.deleteById(1L)).isInstanceOf(ResponseStatusException.class)
+    assertThatThrownBy(() -> bookService.deleteById(1L))
+        .isInstanceOf(ResponseStatusException.class)
         .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
         .hasMessageContaining(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
   }
@@ -214,14 +211,19 @@ class BookServiceTest {
 
     List<AuthorResponse> authors = bookService.findAuthorsByBookId(1L);
 
-    assertThat(authors).hasSize(1).first().satisfies(actualAuthor -> {
-      assertThat(actualAuthor.getId()).isEqualTo(1L);
-      assertThat(actualAuthor.getName()).isEqualTo("Yuval Noah Harari");
-    });
+    assertThat(authors)
+        .hasSize(1)
+        .first()
+        .satisfies(
+            actualAuthor -> {
+              assertThat(actualAuthor.getId()).isEqualTo(1L);
+              assertThat(actualAuthor.getName()).isEqualTo("Yuval Noah Harari");
+            });
   }
 
   @Test
-  @DisplayName("Given book does not exist, when find authors by book id, then throws not found exception")
+  @DisplayName(
+      "Given book does not exist, when find authors by book id, then throws not found exception")
   void givenBookDoesNotExist_whenFindAuthorsByBookId_thenThrowsNotFoundException() {
     when(bookRepository.findById(anyLong())).thenReturn(Optional.empty());
 

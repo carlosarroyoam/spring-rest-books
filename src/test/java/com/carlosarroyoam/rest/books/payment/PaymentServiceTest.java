@@ -1,5 +1,12 @@
 package com.carlosarroyoam.rest.books.payment;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
 import com.carlosarroyoam.rest.books.core.dto.PagedResponse;
 import com.carlosarroyoam.rest.books.order.OrderRepository;
@@ -34,26 +41,15 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 @ExtendWith(MockitoExtension.class)
 class PaymentServiceTest {
-  @Mock
-  private PaymentRepository paymentRepository;
+  @Mock private PaymentRepository paymentRepository;
 
-  @Mock
-  private OrderRepository orderRepository;
+  @Mock private OrderRepository orderRepository;
 
-  @Mock
-  private ShipmentRepository shipmentRepository;
+  @Mock private ShipmentRepository shipmentRepository;
 
-  @InjectMocks
-  private PaymentService paymentService;
+  @InjectMocks private PaymentService paymentService;
 
   private Payment payment;
   private Order order;
@@ -62,24 +58,26 @@ class PaymentServiceTest {
   void setUp() {
     LocalDateTime now = LocalDateTime.now();
 
-    order = Order.builder()
-        .id(1L)
-        .orderNumber("ORD-12345678")
-        .status(OrderStatus.PENDING)
-        .total(new BigDecimal("53.34"))
-        .shippingAddress("123 Main Street, Springfield")
-        .createdAt(now)
-        .updatedAt(now)
-        .build();
+    order =
+        Order.builder()
+            .id(1L)
+            .orderNumber("ORD-12345678")
+            .status(OrderStatus.PENDING)
+            .total(new BigDecimal("53.34"))
+            .shippingAddress("123 Main Street, Springfield")
+            .createdAt(now)
+            .updatedAt(now)
+            .build();
 
-    payment = Payment.builder()
-        .id(1L)
-        .amount(new BigDecimal("53.34"))
-        .method(PaymentMethod.CREDIT_CARD)
-        .status(PaymentStatus.COMPLETED)
-        .transactionId("PAY-ABC123")
-        .order(order)
-        .build();
+    payment =
+        Payment.builder()
+            .id(1L)
+            .amount(new BigDecimal("53.34"))
+            .method(PaymentMethod.CREDIT_CARD)
+            .status(PaymentStatus.COMPLETED)
+            .transactionId("PAY-ABC123")
+            .order(order)
+            .build();
   }
 
   @Test
@@ -89,8 +87,9 @@ class PaymentServiceTest {
     PaymentSpecs paymentSpecs = PaymentSpecs.builder().build();
     List<Payment> payments = List.of(payment);
 
-    when(paymentRepository.findAll(ArgumentMatchers.<Specification<Payment>>any(),
-        any(Pageable.class))).thenReturn(new PageImpl<>(payments, pageable, payments.size()));
+    when(paymentRepository.findAll(
+            ArgumentMatchers.<Specification<Payment>>any(), any(Pageable.class)))
+        .thenReturn(new PageImpl<>(payments, pageable, payments.size()));
 
     PagedResponse<PaymentResponse> response = paymentService.findAll(paymentSpecs, pageable);
 
@@ -124,18 +123,18 @@ class PaymentServiceTest {
   @Test
   @DisplayName("Given valid data, when create payment, then returns payment and creates shipment")
   void givenValidData_whenCreatePayment_thenReturnsPaymentAndCreatesShipment() {
-    CreatePaymentRequest request = CreatePaymentRequest.builder()
-        .orderId(1L)
-        .method(PaymentMethod.CREDIT_CARD)
-        .build();
+    CreatePaymentRequest request =
+        CreatePaymentRequest.builder().orderId(1L).method(PaymentMethod.CREDIT_CARD).build();
 
     when(orderRepository.findById(1L)).thenReturn(Optional.of(order));
     when(paymentRepository.existsByOrderId(1L)).thenReturn(false);
-    when(paymentRepository.save(any(Payment.class))).thenAnswer(invocation -> {
-      Payment savedPayment = invocation.getArgument(0);
-      savedPayment.setId(1L);
-      return savedPayment;
-    });
+    when(paymentRepository.save(any(Payment.class)))
+        .thenAnswer(
+            invocation -> {
+              Payment savedPayment = invocation.getArgument(0);
+              savedPayment.setId(1L);
+              return savedPayment;
+            });
     when(shipmentRepository.findByOrderId(1L)).thenReturn(Optional.empty());
 
     PaymentResponse paymentResponse = paymentService.create(request);
@@ -152,9 +151,8 @@ class PaymentServiceTest {
   @Test
   @DisplayName("Given payment exists, when update status, then syncs order status")
   void givenPaymentExists_whenUpdateStatus_thenSyncsOrderStatus() {
-    UpdatePaymentStatusRequest request = UpdatePaymentStatusRequest.builder()
-        .status(PaymentStatus.REFUNDED)
-        .build();
+    UpdatePaymentStatusRequest request =
+        UpdatePaymentStatusRequest.builder().status(PaymentStatus.REFUNDED).build();
 
     when(paymentRepository.findById(1L)).thenReturn(Optional.of(payment));
     when(orderRepository.findById(1L)).thenReturn(Optional.of(order));
@@ -168,21 +166,23 @@ class PaymentServiceTest {
   }
 
   @Test
-  @DisplayName("Given shipment exists, when create payment, then does not create duplicate shipment")
+  @DisplayName(
+      "Given shipment exists, when create payment, then does not create duplicate shipment")
   void givenShipmentExists_whenCreatePayment_thenDoesNotCreateDuplicateShipment() {
-    CreatePaymentRequest request = CreatePaymentRequest.builder()
-        .orderId(1L)
-        .method(PaymentMethod.CREDIT_CARD)
-        .build();
+    CreatePaymentRequest request =
+        CreatePaymentRequest.builder().orderId(1L).method(PaymentMethod.CREDIT_CARD).build();
 
     when(orderRepository.findById(1L)).thenReturn(Optional.of(order));
     when(paymentRepository.existsByOrderId(1L)).thenReturn(false);
     when(paymentRepository.save(any(Payment.class))).thenReturn(payment);
-    when(shipmentRepository.findByOrderId(1L)).thenReturn(Optional.of(Shipment.builder()
-        .id(1L)
-        .order(Order.builder().build())
-        .status(ShipmentStatus.PENDING)
-        .build()));
+    when(shipmentRepository.findByOrderId(1L))
+        .thenReturn(
+            Optional.of(
+                Shipment.builder()
+                    .id(1L)
+                    .order(Order.builder().build())
+                    .status(ShipmentStatus.PENDING)
+                    .build()));
 
     paymentService.create(request);
 
@@ -192,10 +192,8 @@ class PaymentServiceTest {
   @Test
   @DisplayName("Given order does not exist, when create payment, then throws not found")
   void givenOrderDoesNotExist_whenCreatePayment_thenThrowsNotFound() {
-    CreatePaymentRequest request = CreatePaymentRequest.builder()
-        .orderId(99L)
-        .method(PaymentMethod.CREDIT_CARD)
-        .build();
+    CreatePaymentRequest request =
+        CreatePaymentRequest.builder().orderId(99L).method(PaymentMethod.CREDIT_CARD).build();
 
     when(orderRepository.findById(99L)).thenReturn(Optional.empty());
 
@@ -208,10 +206,8 @@ class PaymentServiceTest {
   @Test
   @DisplayName("Given order already paid, when create payment, then throws bad request")
   void givenOrderAlreadyPaid_whenCreatePayment_thenThrowsBadRequest() {
-    CreatePaymentRequest request = CreatePaymentRequest.builder()
-        .orderId(1L)
-        .method(PaymentMethod.CREDIT_CARD)
-        .build();
+    CreatePaymentRequest request =
+        CreatePaymentRequest.builder().orderId(1L).method(PaymentMethod.CREDIT_CARD).build();
 
     when(orderRepository.findById(1L)).thenReturn(Optional.of(order));
     when(paymentRepository.existsByOrderId(1L)).thenReturn(true);

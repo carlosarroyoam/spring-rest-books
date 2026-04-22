@@ -18,8 +18,10 @@ public class JwtArgumentResolver implements HandlerMethodArgumentResolver {
   }
 
   @Override
-  public Object resolveArgument(MethodParameter parameter,
-      @Nullable ModelAndViewContainer mavContainer, NativeWebRequest webRequest,
+  public Object resolveArgument(
+      MethodParameter parameter,
+      @Nullable ModelAndViewContainer mavContainer,
+      NativeWebRequest webRequest,
       @Nullable WebDataBinderFactory binderFactory) {
     Instant issuedAt = Instant.now();
     Map<String, Object> headers = Map.of("alg", "none");

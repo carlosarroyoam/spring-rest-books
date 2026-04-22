@@ -35,8 +35,10 @@ public class BookResponse {
   private LocalDateTime updatedAt;
   private LocalDateTime deletedAt;
 
-  @Mapper(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = {
-      AuthorResponseMapper.class })
+  @Mapper(
+      nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
+      unmappedTargetPolicy = ReportingPolicy.IGNORE,
+      uses = {AuthorResponseMapper.class})
   public interface BookResponseMapper {
     BookResponseMapper INSTANCE = Mappers.getMapper(BookResponseMapper.class);
 

@@ -29,8 +29,10 @@ public class OrderItemResponse {
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
 
-  @Mapper(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = {
-      BookResponseMapper.class })
+  @Mapper(
+      nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
+      unmappedTargetPolicy = ReportingPolicy.IGNORE,
+      uses = {BookResponseMapper.class})
   public interface OrderItemResponseMapper {
     OrderItemResponseMapper INSTANCE = Mappers.getMapper(OrderItemResponseMapper.class);
 

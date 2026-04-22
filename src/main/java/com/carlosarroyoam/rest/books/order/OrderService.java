@@ -44,7 +44,9 @@ public class OrderService {
   private final CustomerRepository customerRepository;
   private final BookRepository bookRepository;
 
-  public OrderService(OrderRepository orderRepository, CustomerRepository customerRepository,
+  public OrderService(
+      OrderRepository orderRepository,
+      CustomerRepository customerRepository,
       BookRepository bookRepository) {
     this.orderRepository = orderRepository;
     this.customerRepository = customerRepository;
@@ -53,22 +55,26 @@ public class OrderService {
 
   @Transactional(readOnly = true)
   public PagedResponse<OrderResponse> findAll(OrderSpecs orderSpecs, Pageable pageable) {
-    Specification<Order> spec = SpecificationBuilder.<Order>builder()
-        .likeIfPresent(root -> root.get(Order_.orderNumber), orderSpecs.getOrderNumber())
-        .likeIfPresent(root -> root.get(Order_.shippingAddress), orderSpecs.getShippingAddress())
-        .betweenIfPresent(root -> root.get(Order_.total), orderSpecs.getMinTotal(),
-            orderSpecs.getMaxTotal())
-        .equalsIfPresent(root -> root.get(Order_.status), orderSpecs.getStatus())
-        .betweenDatesIfPresent(root -> root.get(Order_.createdAt), orderSpecs.getStartDate(),
-            orderSpecs.getEndDate())
-        .equalsIfPresent(root -> root.join(Order_.customer).get(Customer_.id),
-            orderSpecs.getCustomerId())
-        .build();
+    Specification<Order> spec =
+        SpecificationBuilder.<Order>builder()
+            .likeIfPresent(root -> root.get(Order_.orderNumber), orderSpecs.getOrderNumber())
+            .likeIfPresent(
+                root -> root.get(Order_.shippingAddress), orderSpecs.getShippingAddress())
+            .betweenIfPresent(
+                root -> root.get(Order_.total), orderSpecs.getMinTotal(), orderSpecs.getMaxTotal())
+            .equalsIfPresent(root -> root.get(Order_.status), orderSpecs.getStatus())
+            .betweenDatesIfPresent(
+                root -> root.get(Order_.createdAt),
+                orderSpecs.getStartDate(),
+                orderSpecs.getEndDate())
+            .equalsIfPresent(
+                root -> root.join(Order_.customer).get(Customer_.id), orderSpecs.getCustomerId())
+            .build();
 
     Page<Order> orders = orderRepository.findAll(spec, pageable);
 
-    return PagedResponseMapper.INSTANCE
-        .toPagedResponse(orders.map(OrderResponseMapper.INSTANCE::toDto));
+    return PagedResponseMapper.INSTANCE.toPagedResponse(
+        orders.map(OrderResponseMapper.INSTANCE::toDto));
   }
 
   @Transactional(readOnly = true)
@@ -82,16 +88,17 @@ public class OrderService {
     Customer customerById = findCustomerByIdOrFail(request);
 
     LocalDateTime now = LocalDateTime.now();
-    Order order = Order.builder()
-        .orderNumber(generateOrderNumber())
-        .shippingAddress(request.getShippingAddress())
-        .billingAddress(request.getBillingAddress())
-        .notes(request.getNotes())
-        .status(OrderStatus.PENDING)
-        .customer(customerById)
-        .createdAt(now)
-        .updatedAt(now)
-        .build();
+    Order order =
+        Order.builder()
+            .orderNumber(generateOrderNumber())
+            .shippingAddress(request.getShippingAddress())
+            .billingAddress(request.getBillingAddress())
+            .notes(request.getNotes())
+            .status(OrderStatus.PENDING)
+            .customer(customerById)
+            .createdAt(now)
+            .updatedAt(now)
+            .build();
 
     List<OrderItem> items = buildOrderItems(request.getItems(), now, order);
     BigDecimal subtotal = calculateSubtotal(items);
@@ -119,25 +126,30 @@ public class OrderService {
     orderRepository.save(orderById);
   }
 
-  private List<OrderItem> buildOrderItems(List<CreateOrderItemRequest> requestItems,
-      LocalDateTime now, Order order) {
-    return requestItems.stream().map(item -> {
-      Book bookById = findBookByIdOrFail(item.getBookId());
+  private List<OrderItem> buildOrderItems(
+      List<CreateOrderItemRequest> requestItems, LocalDateTime now, Order order) {
+    return requestItems.stream()
+        .map(
+            item -> {
+              Book bookById = findBookByIdOrFail(item.getBookId());
 
-      BigDecimal unitPrice = bookById.getPrice().setScale(2, RoundingMode.HALF_UP);
-      BigDecimal totalPrice = unitPrice.multiply(BigDecimal.valueOf(item.getQuantity()))
-          .setScale(2, RoundingMode.HALF_UP);
+              BigDecimal unitPrice = bookById.getPrice().setScale(2, RoundingMode.HALF_UP);
+              BigDecimal totalPrice =
+                  unitPrice
+                      .multiply(BigDecimal.valueOf(item.getQuantity()))
+                      .setScale(2, RoundingMode.HALF_UP);
 
-      return OrderItem.builder()
-          .quantity(item.getQuantity())
-          .unitPrice(unitPrice)
-          .totalPrice(totalPrice)
-          .book(bookById)
-          .order(order)
-          .createdAt(now)
-          .updatedAt(now)
-          .build();
-    }).toList();
+              return OrderItem.builder()
+                  .quantity(item.getQuantity())
+                  .unitPrice(unitPrice)
+                  .totalPrice(totalPrice)
+                  .book(bookById)
+                  .order(order)
+                  .createdAt(now)
+                  .updatedAt(now)
+                  .build();
+            })
+        .toList();
   }
 
   private BigDecimal calculateSubtotal(List<OrderItem> items) {
@@ -155,8 +167,8 @@ public class OrderService {
     return DEFAULT_SHIPPING_AMOUNT.setScale(2, RoundingMode.HALF_UP);
   }
 
-  private BigDecimal calculateTotal(BigDecimal subtotal, BigDecimal taxAmount,
-      BigDecimal shippingAmount) {
+  private BigDecimal calculateTotal(
+      BigDecimal subtotal, BigDecimal taxAmount, BigDecimal shippingAmount) {
     return subtotal.add(taxAmount).add(shippingAmount).setScale(2, RoundingMode.HALF_UP);
   }
 
@@ -165,26 +177,35 @@ public class OrderService {
   }
 
   private Order findOrderByIdOrFail(Long orderId) {
-    return orderRepository.findById(orderId).orElseThrow(() -> {
-      log.warn(AppMessages.ORDER_NOT_FOUND_EXCEPTION);
-      return new ResponseStatusException(HttpStatus.NOT_FOUND,
-          AppMessages.ORDER_NOT_FOUND_EXCEPTION);
-    });
+    return orderRepository
+        .findById(orderId)
+        .orElseThrow(
+            () -> {
+              log.warn(AppMessages.ORDER_NOT_FOUND_EXCEPTION);
+              return new ResponseStatusException(
+                  HttpStatus.NOT_FOUND, AppMessages.ORDER_NOT_FOUND_EXCEPTION);
+            });
   }
 
   private Customer findCustomerByIdOrFail(CreateOrderRequest request) {
-    return customerRepository.findById(request.getCustomerId()).orElseThrow(() -> {
-      log.warn(AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION);
-      return new ResponseStatusException(HttpStatus.NOT_FOUND,
-          AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION);
-    });
+    return customerRepository
+        .findById(request.getCustomerId())
+        .orElseThrow(
+            () -> {
+              log.warn(AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION);
+              return new ResponseStatusException(
+                  HttpStatus.NOT_FOUND, AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION);
+            });
   }
 
   private Book findBookByIdOrFail(Long bookId) {
-    return bookRepository.findById(bookId).orElseThrow(() -> {
-      log.warn(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
-      return new ResponseStatusException(HttpStatus.NOT_FOUND,
-          AppMessages.BOOK_NOT_FOUND_EXCEPTION);
-    });
+    return bookRepository
+        .findById(bookId)
+        .orElseThrow(
+            () -> {
+              log.warn(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
+              return new ResponseStatusException(
+                  HttpStatus.NOT_FOUND, AppMessages.BOOK_NOT_FOUND_EXCEPTION);
+            });
   }
 }

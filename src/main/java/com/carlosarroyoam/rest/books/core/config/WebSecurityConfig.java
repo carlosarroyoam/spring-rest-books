@@ -34,10 +34,12 @@ class WebSecurityConfig {
   }
 
   @Bean
-  SecurityFilterChain securityFilterChain(HttpSecurity http,
+  SecurityFilterChain securityFilterChain(
+      HttpSecurity http,
       JwtAuthenticationConverter jwtAuthenticationConverter,
       CustomAuthenticationEntryPoint authenticationEntryPoint,
-      CustomAccessDeniedHandler accessDeniedHandler) throws Exception {
+      CustomAccessDeniedHandler accessDeniedHandler)
+      throws Exception {
     http.csrf(CsrfConfigurer::disable)
         .cors(Customizer.withDefaults())
         .headers(headers -> headers.frameOptions(FrameOptionsConfig::sameOrigin))
@@ -45,23 +47,27 @@ class WebSecurityConfig {
             sessions -> sessions.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .oauth2ResourceServer(
             oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter)))
-        .exceptionHandling(ex -> {
-          ex.authenticationEntryPoint(authenticationEntryPoint);
-          ex.accessDeniedHandler(accessDeniedHandler);
-        });
+        .exceptionHandling(
+            ex -> {
+              ex.authenticationEntryPoint(authenticationEntryPoint);
+              ex.accessDeniedHandler(accessDeniedHandler);
+            });
 
-    http.authorizeHttpRequests(requests -> requests.requestMatchers(HttpMethod.GET, "/books/**")
-        .permitAll()
-        .requestMatchers(HttpMethod.GET, "/authors/**")
-        .permitAll()
-        .requestMatchers(HttpMethod.POST, "/customers")
-        .permitAll()
-        .requestMatchers("/h2-console/**")
-        .permitAll()
-        .requestMatchers("/actuator/**")
-        .permitAll()
-        .anyRequest()
-        .authenticated());
+    http.authorizeHttpRequests(
+        requests ->
+            requests
+                .requestMatchers(HttpMethod.GET, "/books/**")
+                .permitAll()
+                .requestMatchers(HttpMethod.GET, "/authors/**")
+                .permitAll()
+                .requestMatchers(HttpMethod.POST, "/customers")
+                .permitAll()
+                .requestMatchers("/h2-console/**")
+                .permitAll()
+                .requestMatchers("/actuator/**")
+                .permitAll()
+                .anyRequest()
+                .authenticated());
 
     return http.build();
   }
@@ -95,8 +101,8 @@ class WebSecurityConfig {
   @Bean
   JwtAuthenticationConverter authenticationConverter(AuthoritiesConverter authoritiesConverter) {
     JwtAuthenticationConverter authenticationConverter = new JwtAuthenticationConverter();
-    authenticationConverter
-        .setJwtGrantedAuthoritiesConverter(jwt -> authoritiesConverter.convert(jwt.getClaims()));
+    authenticationConverter.setJwtGrantedAuthoritiesConverter(
+        jwt -> authoritiesConverter.convert(jwt.getClaims()));
     return authenticationConverter;
   }
 

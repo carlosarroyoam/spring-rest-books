@@ -1,5 +1,12 @@
 package com.carlosarroyoam.rest.books.shipment;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
 import com.carlosarroyoam.rest.books.core.dto.PagedResponse;
 import com.carlosarroyoam.rest.books.order.OrderRepository;
@@ -27,23 +34,13 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 @ExtendWith(MockitoExtension.class)
 class ShipmentServiceTest {
-  @Mock
-  private ShipmentRepository shipmentRepository;
+  @Mock private ShipmentRepository shipmentRepository;
 
-  @Mock
-  private OrderRepository orderRepository;
+  @Mock private OrderRepository orderRepository;
 
-  @InjectMocks
-  private ShipmentService shipmentService;
+  @InjectMocks private ShipmentService shipmentService;
 
   private Shipment shipment;
   private Order order;
@@ -52,13 +49,14 @@ class ShipmentServiceTest {
   void setUp() {
     order = Order.builder().id(1L).status(OrderStatus.CONFIRMED).build();
 
-    shipment = Shipment.builder()
-        .id(1L)
-        .attentionName("Carlos Arroyo")
-        .address("123 Main Street, Springfield")
-        .status(ShipmentStatus.PENDING)
-        .order(order)
-        .build();
+    shipment =
+        Shipment.builder()
+            .id(1L)
+            .attentionName("Carlos Arroyo")
+            .address("123 Main Street, Springfield")
+            .status(ShipmentStatus.PENDING)
+            .order(order)
+            .build();
   }
 
   @Test
@@ -68,8 +66,9 @@ class ShipmentServiceTest {
     ShipmentSpecs shipmentSpecs = ShipmentSpecs.builder().build();
     List<Shipment> shipments = List.of(shipment);
 
-    when(shipmentRepository.findAll(ArgumentMatchers.<Specification<Shipment>>any(),
-        any(Pageable.class))).thenReturn(new PageImpl<>(shipments, pageable, shipments.size()));
+    when(shipmentRepository.findAll(
+            ArgumentMatchers.<Specification<Shipment>>any(), any(Pageable.class)))
+        .thenReturn(new PageImpl<>(shipments, pageable, shipments.size()));
 
     PagedResponse<ShipmentResponse> response = shipmentService.findAll(shipmentSpecs, pageable);
 
@@ -92,9 +91,8 @@ class ShipmentServiceTest {
   @Test
   @DisplayName("Given shipment exists, when update status, then syncs order status")
   void givenShipmentExists_whenUpdateStatus_thenSyncsOrderStatus() {
-    UpdateShipmentStatusRequest requestDto = UpdateShipmentStatusRequest.builder()
-        .status(ShipmentStatus.DELIVERED)
-        .build();
+    UpdateShipmentStatusRequest requestDto =
+        UpdateShipmentStatusRequest.builder().status(ShipmentStatus.DELIVERED).build();
 
     when(shipmentRepository.findById(anyLong())).thenReturn(Optional.of(shipment));
     when(orderRepository.findById(1L)).thenReturn(Optional.of(order));

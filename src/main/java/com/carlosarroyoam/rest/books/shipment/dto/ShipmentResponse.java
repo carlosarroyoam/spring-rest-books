@@ -27,7 +27,9 @@ public class ShipmentResponse {
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
 
-  @Mapper(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, unmappedTargetPolicy = ReportingPolicy.IGNORE)
+  @Mapper(
+      nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
+      unmappedTargetPolicy = ReportingPolicy.IGNORE)
   public interface ShipmentResponseMapper {
     ShipmentResponseMapper INSTANCE = Mappers.getMapper(ShipmentResponseMapper.class);
 

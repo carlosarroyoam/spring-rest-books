@@ -49,18 +49,18 @@ public class BookController {
 
   @PostMapping(consumes = "application/json")
   @PreAuthorize("hasRole('App/Admin')")
-  public ResponseEntity<Void> create(@Valid @RequestBody CreateBookRequest request,
-      UriComponentsBuilder builder) {
+  public ResponseEntity<Void> create(
+      @Valid @RequestBody CreateBookRequest request, UriComponentsBuilder builder) {
     BookResponse createdBook = bookService.create(request);
-    UriComponents uriComponents = builder.path("/books/{bookId}")
-        .buildAndExpand(createdBook.getId());
+    UriComponents uriComponents =
+        builder.path("/books/{bookId}").buildAndExpand(createdBook.getId());
     return ResponseEntity.created(uriComponents.toUri()).build();
   }
 
   @PutMapping(value = "/{bookId}", consumes = "application/json")
   @PreAuthorize("hasRole('App/Admin')")
-  public ResponseEntity<Void> update(@PathVariable Long bookId,
-      @Valid @RequestBody UpdateBookRequest request) {
+  public ResponseEntity<Void> update(
+      @PathVariable Long bookId, @Valid @RequestBody UpdateBookRequest request) {
     bookService.update(bookId, request);
     return ResponseEntity.noContent().build();
   }

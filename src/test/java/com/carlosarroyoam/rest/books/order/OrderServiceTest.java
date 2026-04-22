@@ -1,5 +1,12 @@
 package com.carlosarroyoam.rest.books.order;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.carlosarroyoam.rest.books.book.BookRepository;
 import com.carlosarroyoam.rest.books.book.entity.Book;
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
@@ -33,26 +40,15 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
-  @Mock
-  private OrderRepository orderRepository;
+  @Mock private OrderRepository orderRepository;
 
-  @Mock
-  private CustomerRepository customerRepository;
+  @Mock private CustomerRepository customerRepository;
 
-  @Mock
-  private BookRepository bookRepository;
+  @Mock private BookRepository bookRepository;
 
-  @InjectMocks
-  private OrderService orderService;
+  @InjectMocks private OrderService orderService;
 
   private Order order;
   private Customer customer;
@@ -62,54 +58,58 @@ class OrderServiceTest {
   void setUp() {
     LocalDateTime now = LocalDateTime.now();
 
-    customer = Customer.builder()
-        .id(1L)
-        .firstName("Carlos")
-        .lastName("Arroyo")
-        .email("carroyom@mail.com")
-        .username("carroyom")
-        .createdAt(now)
-        .updatedAt(now)
-        .build();
+    customer =
+        Customer.builder()
+            .id(1L)
+            .firstName("Carlos")
+            .lastName("Arroyo")
+            .email("carroyom@mail.com")
+            .username("carroyom")
+            .createdAt(now)
+            .updatedAt(now)
+            .build();
 
-    book = Book.builder()
-        .id(1L)
-        .isbn("978-1-3035-0529-4")
-        .title("Homo Deus")
-        .coverUrl("https://example.com/homo-deus.jpg")
-        .price(new BigDecimal("22.99"))
-        .isAvailableOnline(Boolean.TRUE)
-        .publishedAt(now.toLocalDate())
-        .createdAt(now)
-        .updatedAt(now)
-        .build();
+    book =
+        Book.builder()
+            .id(1L)
+            .isbn("978-1-3035-0529-4")
+            .title("Homo Deus")
+            .coverUrl("https://example.com/homo-deus.jpg")
+            .price(new BigDecimal("22.99"))
+            .isAvailableOnline(Boolean.TRUE)
+            .publishedAt(now.toLocalDate())
+            .createdAt(now)
+            .updatedAt(now)
+            .build();
 
-    OrderItem orderItem = OrderItem.builder()
-        .id(1L)
-        .quantity(2)
-        .unitPrice(new BigDecimal("22.99"))
-        .totalPrice(new BigDecimal("45.98"))
-        .book(book)
-        .createdAt(now)
-        .updatedAt(now)
-        .build();
+    OrderItem orderItem =
+        OrderItem.builder()
+            .id(1L)
+            .quantity(2)
+            .unitPrice(new BigDecimal("22.99"))
+            .totalPrice(new BigDecimal("45.98"))
+            .book(book)
+            .createdAt(now)
+            .updatedAt(now)
+            .build();
 
-    order = Order.builder()
-        .id(1L)
-        .orderNumber("ORD-12345678")
-        .status(OrderStatus.PENDING)
-        .items(List.of(orderItem))
-        .subtotal(new BigDecimal("45.98"))
-        .taxAmount(new BigDecimal("7.36"))
-        .shippingAmount(new BigDecimal("0.00"))
-        .total(new BigDecimal("53.34"))
-        .customer(customer)
-        .shippingAddress("123 Main Street, Springfield")
-        .billingAddress("123 Main Street, Springfield")
-        .notes("Leave at the door")
-        .createdAt(now)
-        .updatedAt(now)
-        .build();
+    order =
+        Order.builder()
+            .id(1L)
+            .orderNumber("ORD-12345678")
+            .status(OrderStatus.PENDING)
+            .items(List.of(orderItem))
+            .subtotal(new BigDecimal("45.98"))
+            .taxAmount(new BigDecimal("7.36"))
+            .shippingAmount(new BigDecimal("0.00"))
+            .total(new BigDecimal("53.34"))
+            .customer(customer)
+            .shippingAddress("123 Main Street, Springfield")
+            .billingAddress("123 Main Street, Springfield")
+            .notes("Leave at the door")
+            .createdAt(now)
+            .updatedAt(now)
+            .build();
   }
 
   @Test
@@ -121,8 +121,8 @@ class OrderServiceTest {
     when(orderRepository.findAll(ArgumentMatchers.<Specification<Order>>any(), any(Pageable.class)))
         .thenReturn(new PageImpl<>(orders, pageable, orders.size()));
 
-    PagedResponse<OrderResponse> response = orderService.findAll(OrderSpecs.builder().build(),
-        pageable);
+    PagedResponse<OrderResponse> response =
+        orderService.findAll(OrderSpecs.builder().build(), pageable);
 
     assertThat(response).isNotNull();
     assertThat(response.getItems()).hasSize(1);
@@ -150,7 +150,8 @@ class OrderServiceTest {
   void givenOrderDoesNotExist_whenFindById_thenThrowsNotFoundException() {
     when(orderRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-    assertThatThrownBy(() -> orderService.findById(1L)).isInstanceOf(ResponseStatusException.class)
+    assertThatThrownBy(() -> orderService.findById(1L))
+        .isInstanceOf(ResponseStatusException.class)
         .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
         .hasMessageContaining(AppMessages.ORDER_NOT_FOUND_EXCEPTION);
   }
@@ -158,22 +159,25 @@ class OrderServiceTest {
   @Test
   @DisplayName("Given valid order data, when create, then returns created order")
   void givenValidOrderData_whenCreate_thenReturnsCreatedOrder() {
-    CreateOrderRequest request = CreateOrderRequest.builder()
-        .customerId(1L)
-        .shippingAddress("123 Main Street, Springfield")
-        .billingAddress("123 Main Street, Springfield")
-        .notes("Leave at the door")
-        .items(List.of(CreateOrderItemRequest.builder().bookId(1L).quantity(2).build()))
-        .build();
+    CreateOrderRequest request =
+        CreateOrderRequest.builder()
+            .customerId(1L)
+            .shippingAddress("123 Main Street, Springfield")
+            .billingAddress("123 Main Street, Springfield")
+            .notes("Leave at the door")
+            .items(List.of(CreateOrderItemRequest.builder().bookId(1L).quantity(2).build()))
+            .build();
 
     when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
     when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
-    when(orderRepository.save(any(Order.class))).thenAnswer(invocation -> {
-      Order savedOrder = invocation.getArgument(0);
-      savedOrder.setId(1L);
-      savedOrder.getItems().forEach(item -> item.setId(1L));
-      return savedOrder;
-    });
+    when(orderRepository.save(any(Order.class)))
+        .thenAnswer(
+            invocation -> {
+              Order savedOrder = invocation.getArgument(0);
+              savedOrder.setId(1L);
+              savedOrder.getItems().forEach(item -> item.setId(1L));
+              return savedOrder;
+            });
 
     OrderResponse orderResponse = orderService.create(request);
 
@@ -191,12 +195,13 @@ class OrderServiceTest {
   @Test
   @DisplayName("Given customer does not exist, when create, then throws not found exception")
   void givenCustomerDoesNotExist_whenCreate_thenThrowsNotFoundException() {
-    CreateOrderRequest request = CreateOrderRequest.builder()
-        .customerId(99L)
-        .shippingAddress("123 Main Street, Springfield")
-        .billingAddress("123 Main Street, Springfield")
-        .items(List.of(CreateOrderItemRequest.builder().bookId(1L).quantity(1).build()))
-        .build();
+    CreateOrderRequest request =
+        CreateOrderRequest.builder()
+            .customerId(99L)
+            .shippingAddress("123 Main Street, Springfield")
+            .billingAddress("123 Main Street, Springfield")
+            .items(List.of(CreateOrderItemRequest.builder().bookId(1L).quantity(1).build()))
+            .build();
 
     when(customerRepository.findById(99L)).thenReturn(Optional.empty());
 
@@ -209,12 +214,13 @@ class OrderServiceTest {
   @Test
   @DisplayName("Given book does not exist, when create, then throws not found exception")
   void givenBookDoesNotExist_whenCreate_thenThrowsNotFoundException() {
-    CreateOrderRequest request = CreateOrderRequest.builder()
-        .customerId(1L)
-        .shippingAddress("123 Main Street, Springfield")
-        .billingAddress("123 Main Street, Springfield")
-        .items(List.of(CreateOrderItemRequest.builder().bookId(99L).quantity(1).build()))
-        .build();
+    CreateOrderRequest request =
+        CreateOrderRequest.builder()
+            .customerId(1L)
+            .shippingAddress("123 Main Street, Springfield")
+            .billingAddress("123 Main Street, Springfield")
+            .items(List.of(CreateOrderItemRequest.builder().bookId(99L).quantity(1).build()))
+            .build();
 
     when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
     when(bookRepository.findById(99L)).thenReturn(Optional.empty());
@@ -228,11 +234,12 @@ class OrderServiceTest {
   @Test
   @DisplayName("Given order exists, when update with valid data, then updates order")
   void givenOrderExists_whenUpdateWithValidData_thenUpdatesOrder() {
-    UpdateOrderRequest request = UpdateOrderRequest.builder()
-        .shippingAddress("456 Updated Avenue, Springfield")
-        .billingAddress("789 Billing Road, Springfield")
-        .notes("Call when arriving")
-        .build();
+    UpdateOrderRequest request =
+        UpdateOrderRequest.builder()
+            .shippingAddress("456 Updated Avenue, Springfield")
+            .billingAddress("789 Billing Road, Springfield")
+            .notes("Call when arriving")
+            .build();
 
     when(orderRepository.findById(anyLong())).thenReturn(Optional.of(order));
 

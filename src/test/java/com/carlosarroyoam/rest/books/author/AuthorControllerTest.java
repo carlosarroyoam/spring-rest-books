@@ -1,5 +1,17 @@
 package com.carlosarroyoam.rest.books.author;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.carlosarroyoam.rest.books.author.dto.AuthorResponse;
 import com.carlosarroyoam.rest.books.author.dto.AuthorSpecs;
 import com.carlosarroyoam.rest.books.author.dto.CreateAuthorRequest;
@@ -23,56 +35,46 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 @ExtendWith(MockitoExtension.class)
 class AuthorControllerTest {
   private ObjectMapper mapper;
   private MockMvc mockMvc;
 
-  @Mock
-  private AuthorService authorService;
+  @Mock private AuthorService authorService;
 
-  @InjectMocks
-  private AuthorController authorController;
+  @InjectMocks private AuthorController authorController;
 
   @BeforeEach
   void setup() {
     mapper = new ObjectMapper();
     mapper.findAndRegisterModules();
 
-    mockMvc = MockMvcBuilders.standaloneSetup(authorController)
-        .setControllerAdvice(GlobalExceptionHandler.class)
-        .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
-        .build();
+    mockMvc =
+        MockMvcBuilders.standaloneSetup(authorController)
+            .setControllerAdvice(GlobalExceptionHandler.class)
+            .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
+            .build();
   }
 
   @Test
   @DisplayName("GET /authors - Given authors exist, when find all, then returns paged authors")
   void givenAuthorsExist_whenFindAllAuthors_thenReturnsPagedAuthors() throws Exception {
-    PagedResponse<AuthorResponse> pagedResponse = PagedResponse.<AuthorResponse>builder()
-        .items(List.of(AuthorResponse.builder().build()))
-        .pagination(
-            PaginationResponse.builder().page(0).size(25).totalItems(1).totalPages(1).build())
-        .build();
+    PagedResponse<AuthorResponse> pagedResponse =
+        PagedResponse.<AuthorResponse>builder()
+            .items(List.of(AuthorResponse.builder().build()))
+            .pagination(
+                PaginationResponse.builder().page(0).size(25).totalItems(1).totalPages(1).build())
+            .build();
 
     when(authorService.findAll(any(AuthorSpecs.class), any(Pageable.class)))
         .thenReturn(pagedResponse);
 
     mockMvc
-        .perform(get("/authors").queryParam("page", "0")
-            .queryParam("size", "25")
-            .accept(MediaType.APPLICATION_JSON))
+        .perform(
+            get("/authors")
+                .queryParam("page", "0")
+                .queryParam("size", "25")
+                .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.items.length()").value(1))
@@ -89,7 +91,8 @@ class AuthorControllerTest {
 
     when(authorService.findById(anyLong())).thenReturn(author);
 
-    mockMvc.perform(get("/authors/{authorId}", 1L).accept(MediaType.APPLICATION_JSON))
+    mockMvc
+        .perform(get("/authors/{authorId}", 1L).accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.id").value(1));
@@ -105,8 +108,10 @@ class AuthorControllerTest {
     when(authorService.create(any(CreateAuthorRequest.class))).thenReturn(author);
 
     mockMvc
-        .perform(post("/authors").content(mapper.writeValueAsString(request))
-            .contentType(MediaType.APPLICATION_JSON))
+        .perform(
+            post("/authors")
+                .content(mapper.writeValueAsString(request))
+                .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isCreated())
         .andExpect(header().string("location", "http://localhost/authors/1"));
   }
@@ -116,14 +121,19 @@ class AuthorControllerTest {
   void givenValidAuthorData_whenUpdateAuthor_thenReturnsNoContent() throws Exception {
     UpdateAuthorRequest request = UpdateAuthorRequest.builder().name("Yuval Noah Harari").build();
 
-    mockMvc.perform(put("/authors/{authorId}", 1L).content(mapper.writeValueAsString(request))
-        .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNoContent());
+    mockMvc
+        .perform(
+            put("/authors/{authorId}", 1L)
+                .content(mapper.writeValueAsString(request))
+                .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isNoContent());
   }
 
   @Test
   @DisplayName("DELETE /authors/{id} - Given author exists, when delete, then returns no content")
   void givenAuthorExists_whenDeleteAuthor_thenReturnsNoContent() throws Exception {
-    mockMvc.perform(delete("/authors/{authorId}", 1L).accept(MediaType.APPLICATION_JSON))
+    mockMvc
+        .perform(delete("/authors/{authorId}", 1L).accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNoContent());
   }
 
@@ -134,7 +144,8 @@ class AuthorControllerTest {
 
     when(authorService.findBooksByAuthorId(anyLong())).thenReturn(books);
 
-    mockMvc.perform(get("/authors/{authorId}/books", 1L).accept(MediaType.APPLICATION_JSON))
+    mockMvc
+        .perform(get("/authors/{authorId}/books", 1L).accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.length()").value(1))

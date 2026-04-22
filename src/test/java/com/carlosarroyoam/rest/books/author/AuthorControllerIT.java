@@ -1,5 +1,14 @@
 package com.carlosarroyoam.rest.books.author;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.carlosarroyoam.rest.books.author.dto.CreateAuthorRequest;
 import com.carlosarroyoam.rest.books.author.dto.UpdateAuthorRequest;
 import com.carlosarroyoam.rest.books.common.JsonUtils;
@@ -21,36 +30,29 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 @Transactional
 class AuthorControllerIT {
-  @Autowired
-  private WebApplicationContext webApplicationContext;
+  @Autowired private WebApplicationContext webApplicationContext;
 
-  @Autowired
-  private ObjectMapper mapper;
+  @Autowired private ObjectMapper mapper;
 
-  @Autowired
-  private MockMvc mockMvc;
+  @Autowired private MockMvc mockMvc;
 
   @BeforeEach
   void setup() {
-    mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
-        .apply(SecurityMockMvcConfigurers.springSecurity())
-        .defaultRequest(get("/").with(jwt().jwt(jwt -> jwt.claim("preferred_username", "carroyom"))
-            .authorities(new SimpleGrantedAuthority("ROLE_App/Admin"))))
-        .build();
+    mockMvc =
+        MockMvcBuilders.webAppContextSetup(webApplicationContext)
+            .apply(SecurityMockMvcConfigurers.springSecurity())
+            .defaultRequest(
+                get("/")
+                    .with(
+                        jwt()
+                            .jwt(jwt -> jwt.claim("preferred_username", "carroyom"))
+                            .authorities(new SimpleGrantedAuthority("ROLE_App/Admin"))))
+            .build();
   }
 
   @Test
@@ -58,12 +60,14 @@ class AuthorControllerIT {
   void givenAuthorsExist_whenFindAllAuthors_thenReturnsPagedAuthors() throws Exception {
     String expectedJson = JsonUtils.readJson("/authors/find-all.json");
 
-    String responseJson = mockMvc.perform(get("/authors").param("page", "0").param("size", "25"))
-        .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andReturn()
-        .getResponse()
-        .getContentAsString();
+    String responseJson =
+        mockMvc
+            .perform(get("/authors").param("page", "0").param("size", "25"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
 
     JSONAssert.assertEquals(expectedJson, responseJson, false);
   }
@@ -73,12 +77,14 @@ class AuthorControllerIT {
   void givenAuthorExists_whenFindAuthorById_thenReturnsAuthor() throws Exception {
     String expectedJson = JsonUtils.readJson("/authors/find-by-id.json");
 
-    String responseJson = mockMvc.perform(get("/authors/{authorId}", 1L))
-        .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andReturn()
-        .getResponse()
-        .getContentAsString();
+    String responseJson =
+        mockMvc
+            .perform(get("/authors/{authorId}", 1L))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
 
     JSONAssert.assertEquals(expectedJson, responseJson, false);
   }
@@ -89,8 +95,10 @@ class AuthorControllerIT {
     CreateAuthorRequest request = CreateAuthorRequest.builder().name("Yuval Noah Harari").build();
 
     mockMvc
-        .perform(post("/authors").contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(request)))
+        .perform(
+            post("/authors")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(request)))
         .andExpect(status().isCreated())
         .andExpect(header().string("Location", "http://localhost/authors/3"));
   }
@@ -100,8 +108,12 @@ class AuthorControllerIT {
   void givenValidAuthorData_whenUpdateAuthor_thenReturnsNoContent() throws Exception {
     UpdateAuthorRequest request = UpdateAuthorRequest.builder().name("Yuval Noah").build();
 
-    mockMvc.perform(put("/authors/{authorId}", 1L).contentType(MediaType.APPLICATION_JSON)
-        .content(mapper.writeValueAsString(request))).andExpect(status().isNoContent());
+    mockMvc
+        .perform(
+            put("/authors/{authorId}", 1L)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(request)))
+        .andExpect(status().isNoContent());
   }
 
   @Test
@@ -115,12 +127,14 @@ class AuthorControllerIT {
   void givenAuthorExists_whenFindBooksByAuthorId_thenReturnsBooks() throws Exception {
     String expectedJson = JsonUtils.readJson("/authors/find-books-by-author.json");
 
-    String responseJson = mockMvc.perform(get("/authors/{authorId}/books", 1L))
-        .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andReturn()
-        .getResponse()
-        .getContentAsString();
+    String responseJson =
+        mockMvc
+            .perform(get("/authors/{authorId}/books", 1L))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
 
     JSONAssert.assertEquals(expectedJson, responseJson, false);
   }

@@ -44,8 +44,8 @@ public class ShipmentController {
 
   @PutMapping(value = "/{shipmentId}/status", consumes = "application/json")
   @PreAuthorize("hasRole('App/Admin')")
-  public ResponseEntity<Void> updateStatus(@PathVariable Long shipmentId,
-      @Valid @RequestBody UpdateShipmentStatusRequest request) {
+  public ResponseEntity<Void> updateStatus(
+      @PathVariable Long shipmentId, @Valid @RequestBody UpdateShipmentStatusRequest request) {
     shipmentService.updateStatus(shipmentId, request);
     return ResponseEntity.noContent().build();
   }

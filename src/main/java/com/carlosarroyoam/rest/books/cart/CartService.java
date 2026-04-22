@@ -24,7 +24,9 @@ public class CartService {
   private final CartItemRepository cartItemRepository;
   private final BookRepository bookRepository;
 
-  public CartService(CartRepository cartRepository, CartItemRepository cartItemRepository,
+  public CartService(
+      CartRepository cartRepository,
+      CartItemRepository cartItemRepository,
       BookRepository bookRepository) {
     this.cartRepository = cartRepository;
     this.cartItemRepository = cartItemRepository;
@@ -42,17 +44,20 @@ public class CartService {
     Cart cartByCustomerId = findCartByCustomerIdOrFail(customerId);
     Book bookById = findBookByIdOrFail(request.getBookId());
 
-    Optional<CartItem> cartItemOptional = cartByCustomerId.getItems()
-        .stream()
-        .filter(item -> item.getBook().getId().equals(request.getBookId()))
-        .findFirst();
+    Optional<CartItem> cartItemOptional =
+        cartByCustomerId.getItems().stream()
+            .filter(item -> item.getBook().getId().equals(request.getBookId()))
+            .findFirst();
 
-    CartItem cartItem = cartItemOptional.orElseGet(() -> CartItem.builder()
-        .book(bookById)
-        .quantity(request.getQuantity())
-        .addedAt(LocalDateTime.now())
-        .cart(cartByCustomerId)
-        .build());
+    CartItem cartItem =
+        cartItemOptional.orElseGet(
+            () ->
+                CartItem.builder()
+                    .book(bookById)
+                    .quantity(request.getQuantity())
+                    .addedAt(LocalDateTime.now())
+                    .cart(cartByCustomerId)
+                    .build());
 
     cartItem.setQuantity(request.getQuantity());
     cartItem.setAddedAt(LocalDateTime.now());
@@ -63,26 +68,31 @@ public class CartService {
   public void deleteCartItem(Long customerId, Long cartItemId) {
     Cart cartByCustomerId = findCartByCustomerIdOrFail(customerId);
 
-    cartByCustomerId.getItems()
-        .stream()
+    cartByCustomerId.getItems().stream()
         .filter(item -> item.getId().equals(cartItemId))
         .findFirst()
         .ifPresent(cartItem -> cartItemRepository.deleteById(cartItem.getId()));
   }
 
   private Cart findCartByCustomerIdOrFail(Long customerId) {
-    return cartRepository.findByCustomerId(customerId).orElseThrow(() -> {
-      log.warn(AppMessages.CART_NOT_FOUND_EXCEPTION);
-      return new ResponseStatusException(HttpStatus.NOT_FOUND,
-          AppMessages.CART_NOT_FOUND_EXCEPTION);
-    });
+    return cartRepository
+        .findByCustomerId(customerId)
+        .orElseThrow(
+            () -> {
+              log.warn(AppMessages.CART_NOT_FOUND_EXCEPTION);
+              return new ResponseStatusException(
+                  HttpStatus.NOT_FOUND, AppMessages.CART_NOT_FOUND_EXCEPTION);
+            });
   }
 
   private Book findBookByIdOrFail(Long bookId) {
-    return bookRepository.findById(bookId).orElseThrow(() -> {
-      log.warn(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
-      return new ResponseStatusException(HttpStatus.NOT_FOUND,
-          AppMessages.BOOK_NOT_FOUND_EXCEPTION);
-    });
+    return bookRepository
+        .findById(bookId)
+        .orElseThrow(
+            () -> {
+              log.warn(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
+              return new ResponseStatusException(
+                  HttpStatus.NOT_FOUND, AppMessages.BOOK_NOT_FOUND_EXCEPTION);
+            });
   }
 }

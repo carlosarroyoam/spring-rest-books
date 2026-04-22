@@ -38,7 +38,9 @@ public class PaymentService {
   private final OrderRepository orderRepository;
   private final ShipmentRepository shipmentRepository;
 
-  public PaymentService(PaymentRepository paymentRepository, OrderRepository orderRepository,
+  public PaymentService(
+      PaymentRepository paymentRepository,
+      OrderRepository orderRepository,
       ShipmentRepository shipmentRepository) {
     this.paymentRepository = paymentRepository;
     this.orderRepository = orderRepository;
@@ -47,22 +49,28 @@ public class PaymentService {
 
   @Transactional(readOnly = true)
   public PagedResponse<PaymentResponse> findAll(PaymentSpecs paymentSpecs, Pageable pageable) {
-    Specification<Payment> spec = SpecificationBuilder.<Payment>builder()
-        .equalsIfPresent(root -> root.get(Payment_.method), paymentSpecs.getMethod())
-        .betweenIfPresent(root -> root.get(Payment_.amount), paymentSpecs.getMinAmount(),
-            paymentSpecs.getMaxAmount())
-        .equalsIfPresent(root -> root.get(Payment_.status), paymentSpecs.getStatus())
-        .betweenDatesIfPresent(root -> root.get(Payment_.createdAt), paymentSpecs.getStartDate(),
-            paymentSpecs.getEndDate())
-        .likeIfPresent(root -> root.get(Payment_.transactionId), paymentSpecs.getTransactionId())
-        .equalsIfPresent(root -> root.join(Payment_.order).get(Order_.id),
-            paymentSpecs.getOrderId())
-        .build();
+    Specification<Payment> spec =
+        SpecificationBuilder.<Payment>builder()
+            .equalsIfPresent(root -> root.get(Payment_.method), paymentSpecs.getMethod())
+            .betweenIfPresent(
+                root -> root.get(Payment_.amount),
+                paymentSpecs.getMinAmount(),
+                paymentSpecs.getMaxAmount())
+            .equalsIfPresent(root -> root.get(Payment_.status), paymentSpecs.getStatus())
+            .betweenDatesIfPresent(
+                root -> root.get(Payment_.createdAt),
+                paymentSpecs.getStartDate(),
+                paymentSpecs.getEndDate())
+            .likeIfPresent(
+                root -> root.get(Payment_.transactionId), paymentSpecs.getTransactionId())
+            .equalsIfPresent(
+                root -> root.join(Payment_.order).get(Order_.id), paymentSpecs.getOrderId())
+            .build();
 
     Page<Payment> payments = paymentRepository.findAll(spec, pageable);
 
-    return PagedResponseMapper.INSTANCE
-        .toPagedResponse(payments.map(PaymentResponseMapper.INSTANCE::toDto));
+    return PagedResponseMapper.INSTANCE.toPagedResponse(
+        payments.map(PaymentResponseMapper.INSTANCE::toDto));
   }
 
   @Transactional(readOnly = true)
@@ -77,20 +85,21 @@ public class PaymentService {
 
     if (paymentRepository.existsByOrderId(orderById.getId())) {
       log.warn(AppMessages.PAYMENT_ALREADY_EXISTS_EXCEPTION);
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-          AppMessages.PAYMENT_ALREADY_EXISTS_EXCEPTION);
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, AppMessages.PAYMENT_ALREADY_EXISTS_EXCEPTION);
     }
 
     LocalDateTime now = LocalDateTime.now();
-    Payment payment = Payment.builder()
-        .amount(orderById.getTotal())
-        .method(request.getMethod())
-        .status(PaymentStatus.COMPLETED)
-        .transactionId(generateTransactionId())
-        .order(orderById)
-        .createdAt(now)
-        .updatedAt(now)
-        .build();
+    Payment payment =
+        Payment.builder()
+            .amount(orderById.getTotal())
+            .method(request.getMethod())
+            .status(PaymentStatus.COMPLETED)
+            .transactionId(generateTransactionId())
+            .order(orderById)
+            .createdAt(now)
+            .updatedAt(now)
+            .build();
 
     Payment savedPayment = paymentRepository.save(payment);
 
@@ -117,13 +126,13 @@ public class PaymentService {
     orderRepository.save(orderById);
   }
 
-  private OrderStatus resolveOrderStatusFromPayment(PaymentStatus paymentStatus,
-      OrderStatus currentStatus) {
+  private OrderStatus resolveOrderStatusFromPayment(
+      PaymentStatus paymentStatus, OrderStatus currentStatus) {
     return switch (paymentStatus) {
-    case COMPLETED -> OrderStatus.CONFIRMED;
-    case FAILED, CANCELLED -> OrderStatus.CANCELLED;
-    case REFUNDED -> OrderStatus.REFUNDED;
-    case PENDING -> currentStatus == null ? OrderStatus.PENDING : currentStatus;
+      case COMPLETED -> OrderStatus.CONFIRMED;
+      case FAILED, CANCELLED -> OrderStatus.CANCELLED;
+      case REFUNDED -> OrderStatus.REFUNDED;
+      case PENDING -> currentStatus == null ? OrderStatus.PENDING : currentStatus;
     };
   }
 
@@ -132,18 +141,21 @@ public class PaymentService {
       return;
     }
 
-    String attentionName = order.getCustomer() == null ? null
-        : order.getCustomer().getFirstName() + " " + order.getCustomer().getLastName();
+    String attentionName =
+        order.getCustomer() == null
+            ? null
+            : order.getCustomer().getFirstName() + " " + order.getCustomer().getLastName();
 
     LocalDateTime now = LocalDateTime.now();
-    Shipment shipment = Shipment.builder()
-        .attentionName(attentionName)
-        .address(order.getShippingAddress())
-        .status(ShipmentStatus.PENDING)
-        .order(order)
-        .createdAt(now)
-        .updatedAt(now)
-        .build();
+    Shipment shipment =
+        Shipment.builder()
+            .attentionName(attentionName)
+            .address(order.getShippingAddress())
+            .status(ShipmentStatus.PENDING)
+            .order(order)
+            .createdAt(now)
+            .updatedAt(now)
+            .build();
 
     shipmentRepository.save(shipment);
   }
@@ -153,18 +165,24 @@ public class PaymentService {
   }
 
   private Payment findPaymentByIdOrFail(Long paymentId) {
-    return paymentRepository.findById(paymentId).orElseThrow(() -> {
-      log.warn(AppMessages.PAYMENT_NOT_FOUND_EXCEPTION);
-      return new ResponseStatusException(HttpStatus.NOT_FOUND,
-          AppMessages.PAYMENT_NOT_FOUND_EXCEPTION);
-    });
+    return paymentRepository
+        .findById(paymentId)
+        .orElseThrow(
+            () -> {
+              log.warn(AppMessages.PAYMENT_NOT_FOUND_EXCEPTION);
+              return new ResponseStatusException(
+                  HttpStatus.NOT_FOUND, AppMessages.PAYMENT_NOT_FOUND_EXCEPTION);
+            });
   }
 
   private Order findOrderByIdOrFail(Long orderId) {
-    return orderRepository.findById(orderId).orElseThrow(() -> {
-      log.warn(AppMessages.ORDER_NOT_FOUND_EXCEPTION);
-      return new ResponseStatusException(HttpStatus.NOT_FOUND,
-          AppMessages.ORDER_NOT_FOUND_EXCEPTION);
-    });
+    return orderRepository
+        .findById(orderId)
+        .orElseThrow(
+            () -> {
+              log.warn(AppMessages.ORDER_NOT_FOUND_EXCEPTION);
+              return new ResponseStatusException(
+                  HttpStatus.NOT_FOUND, AppMessages.ORDER_NOT_FOUND_EXCEPTION);
+            });
   }
 }

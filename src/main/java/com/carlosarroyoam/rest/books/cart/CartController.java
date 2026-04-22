@@ -35,8 +35,8 @@ public class CartController {
 
   @PutMapping(value = "/items", consumes = "application/json")
   @PreAuthorize("hasRole('App/Customer')")
-  public ResponseEntity<Void> updateCartItem(@Valid @RequestBody UpdateCartItemRequest request,
-      @AuthenticationPrincipal Jwt jwt) {
+  public ResponseEntity<Void> updateCartItem(
+      @Valid @RequestBody UpdateCartItemRequest request, @AuthenticationPrincipal Jwt jwt) {
     Long customerId = jwt.getClaim(CustomClaimNames.CUSTOMER_ID);
     cartService.updateCartItem(customerId, request);
     return ResponseEntity.noContent().build();
@@ -44,8 +44,8 @@ public class CartController {
 
   @DeleteMapping(value = "/items/{cartItemId}")
   @PreAuthorize("hasRole('App/Customer')")
-  public ResponseEntity<Void> deleteCartItem(@PathVariable Long cartItemId,
-      @AuthenticationPrincipal Jwt jwt) {
+  public ResponseEntity<Void> deleteCartItem(
+      @PathVariable Long cartItemId, @AuthenticationPrincipal Jwt jwt) {
     Long customerId = jwt.getClaim(CustomClaimNames.CUSTOMER_ID);
     cartService.deleteCartItem(customerId, cartItemId);
     return ResponseEntity.noContent().build();

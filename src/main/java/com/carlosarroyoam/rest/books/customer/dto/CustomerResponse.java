@@ -28,7 +28,9 @@ public class CustomerResponse {
   private LocalDateTime updatedAt;
   private LocalDateTime deletedAt;
 
-  @Mapper(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, unmappedTargetPolicy = ReportingPolicy.IGNORE)
+  @Mapper(
+      nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
+      unmappedTargetPolicy = ReportingPolicy.IGNORE)
   public interface CustomerResponseMapper {
     CustomerResponseMapper INSTANCE = Mappers.getMapper(CustomerResponseMapper.class);
 

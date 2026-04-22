@@ -1,5 +1,17 @@
 package com.carlosarroyoam.rest.books.book;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.carlosarroyoam.rest.books.author.dto.AuthorResponse;
 import com.carlosarroyoam.rest.books.book.dto.BookResponse;
 import com.carlosarroyoam.rest.books.book.dto.BookSpecs;
@@ -25,55 +37,45 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 @ExtendWith(MockitoExtension.class)
 class BookControllerTest {
   private ObjectMapper mapper;
   private MockMvc mockMvc;
 
-  @Mock
-  private BookService bookService;
+  @Mock private BookService bookService;
 
-  @InjectMocks
-  private BookController bookController;
+  @InjectMocks private BookController bookController;
 
   @BeforeEach
   void setup() {
     mapper = new ObjectMapper();
     mapper.findAndRegisterModules();
 
-    mockMvc = MockMvcBuilders.standaloneSetup(bookController)
-        .setControllerAdvice(GlobalExceptionHandler.class)
-        .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
-        .build();
+    mockMvc =
+        MockMvcBuilders.standaloneSetup(bookController)
+            .setControllerAdvice(GlobalExceptionHandler.class)
+            .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
+            .build();
   }
 
   @Test
   @DisplayName("GET /books - Given books exist, when find all, then returns paged books")
   void givenBooksExist_whenFindAllBooks_thenReturnsPagedBooks() throws Exception {
-    PagedResponse<BookResponse> pagedResponse = PagedResponse.<BookResponse>builder()
-        .items(List.of(BookResponse.builder().id(1L).build()))
-        .pagination(
-            PaginationResponse.builder().page(0).size(25).totalItems(1).totalPages(1).build())
-        .build();
+    PagedResponse<BookResponse> pagedResponse =
+        PagedResponse.<BookResponse>builder()
+            .items(List.of(BookResponse.builder().id(1L).build()))
+            .pagination(
+                PaginationResponse.builder().page(0).size(25).totalItems(1).totalPages(1).build())
+            .build();
 
     when(bookService.findAll(any(BookSpecs.class), any(Pageable.class))).thenReturn(pagedResponse);
 
     mockMvc
-        .perform(get("/books").queryParam("page", "0")
-            .queryParam("size", "25")
-            .accept(MediaType.APPLICATION_JSON))
+        .perform(
+            get("/books")
+                .queryParam("page", "0")
+                .queryParam("size", "25")
+                .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.items.length()").value(1))
@@ -90,7 +92,8 @@ class BookControllerTest {
 
     when(bookService.findById(anyLong())).thenReturn(book);
 
-    mockMvc.perform(get("/books/{bookId}", 1L).accept(MediaType.APPLICATION_JSON))
+    mockMvc
+        .perform(get("/books/{bookId}", 1L).accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.id").value(1))
@@ -100,22 +103,25 @@ class BookControllerTest {
   @Test
   @DisplayName("POST /books - Given valid book data, when create, then returns created")
   void givenValidBookData_whenCreateBook_thenReturnsCreated() throws Exception {
-    CreateBookRequest request = CreateBookRequest.builder()
-        .isbn("978-9-7389-4434-3")
-        .title("Sapiens: A Brief History of Humankind")
-        .coverUrl("https://images.isbndb.com/covers/60/97/9780062316097.jpg")
-        .price(new BigDecimal("20.99"))
-        .publishedAt(LocalDate.parse("2021-12-01"))
-        .isAvailableOnline(Boolean.TRUE)
-        .build();
+    CreateBookRequest request =
+        CreateBookRequest.builder()
+            .isbn("978-9-7389-4434-3")
+            .title("Sapiens: A Brief History of Humankind")
+            .coverUrl("https://images.isbndb.com/covers/60/97/9780062316097.jpg")
+            .price(new BigDecimal("20.99"))
+            .publishedAt(LocalDate.parse("2021-12-01"))
+            .isAvailableOnline(Boolean.TRUE)
+            .build();
 
     BookResponse book = BookResponse.builder().id(1L).build();
 
     when(bookService.create(any(CreateBookRequest.class))).thenReturn(book);
 
     mockMvc
-        .perform(post("/books").content(mapper.writeValueAsString(request))
-            .contentType(MediaType.APPLICATION_JSON))
+        .perform(
+            post("/books")
+                .content(mapper.writeValueAsString(request))
+                .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isCreated())
         .andExpect(header().string("location", "http://localhost/books/1"));
   }
@@ -123,34 +129,42 @@ class BookControllerTest {
   @Test
   @DisplayName("PUT /books/{id} - Given valid book data, when update, then returns no content")
   void givenValidBookData_whenUpdateBook_thenReturnsNoContent() throws Exception {
-    UpdateBookRequest request = UpdateBookRequest.builder()
-        .isbn("978-9-7389-4434-3")
-        .title("Sapiens: A Brief History of Humankind")
-        .coverUrl("https://images.isbndb.com/covers/60/97/9780062316097.jpg")
-        .price(new BigDecimal("20.99"))
-        .publishedAt(LocalDate.parse("2021-12-01"))
-        .isAvailableOnline(Boolean.TRUE)
-        .build();
+    UpdateBookRequest request =
+        UpdateBookRequest.builder()
+            .isbn("978-9-7389-4434-3")
+            .title("Sapiens: A Brief History of Humankind")
+            .coverUrl("https://images.isbndb.com/covers/60/97/9780062316097.jpg")
+            .price(new BigDecimal("20.99"))
+            .publishedAt(LocalDate.parse("2021-12-01"))
+            .isAvailableOnline(Boolean.TRUE)
+            .build();
 
-    mockMvc.perform(put("/books/{bookId}", 1L).content(mapper.writeValueAsString(request))
-        .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNoContent());
+    mockMvc
+        .perform(
+            put("/books/{bookId}", 1L)
+                .content(mapper.writeValueAsString(request))
+                .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isNoContent());
   }
 
   @Test
   @DisplayName("DELETE /books/{id} - Given book exists, when delete, then returns no content")
   void givenBookExists_whenDeleteBook_thenReturnsNoContent() throws Exception {
-    mockMvc.perform(delete("/books/{bookId}", 1L).accept(MediaType.APPLICATION_JSON))
+    mockMvc
+        .perform(delete("/books/{bookId}", 1L).accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNoContent());
   }
 
   @Test
-  @DisplayName("GET /books/{id}/authors - Given book exists, when find authors, then returns authors")
+  @DisplayName(
+      "GET /books/{id}/authors - Given book exists, when find authors, then returns authors")
   void givenBookExists_whenFindAuthorsByBookId_thenReturnsAuthors() throws Exception {
     List<AuthorResponse> authors = List.of(AuthorResponse.builder().id(1L).build());
 
     when(bookService.findAuthorsByBookId(anyLong())).thenReturn(authors);
 
-    mockMvc.perform(get("/books/{bookId}/authors", 1L).accept(MediaType.APPLICATION_JSON))
+    mockMvc
+        .perform(get("/books/{bookId}/authors", 1L).accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.length()").value(1))

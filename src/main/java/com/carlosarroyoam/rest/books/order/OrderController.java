@@ -48,18 +48,18 @@ public class OrderController {
 
   @PostMapping(consumes = "application/json")
   @PreAuthorize("hasRole('App/Admin')")
-  public ResponseEntity<Void> create(@Valid @RequestBody CreateOrderRequest request,
-      UriComponentsBuilder builder) {
+  public ResponseEntity<Void> create(
+      @Valid @RequestBody CreateOrderRequest request, UriComponentsBuilder builder) {
     OrderResponse createdOrder = orderService.create(request);
-    UriComponents uriComponents = builder.path("/orders/{orderId}")
-        .buildAndExpand(createdOrder.getId());
+    UriComponents uriComponents =
+        builder.path("/orders/{orderId}").buildAndExpand(createdOrder.getId());
     return ResponseEntity.created(uriComponents.toUri()).build();
   }
 
   @PutMapping(value = "/{orderId}", consumes = "application/json")
   @PreAuthorize("hasRole('App/Admin')")
-  public ResponseEntity<Void> update(@PathVariable Long orderId,
-      @Valid @RequestBody UpdateOrderRequest request) {
+  public ResponseEntity<Void> update(
+      @PathVariable Long orderId, @Valid @RequestBody UpdateOrderRequest request) {
     orderService.update(orderId, request);
     return ResponseEntity.noContent().build();
   }

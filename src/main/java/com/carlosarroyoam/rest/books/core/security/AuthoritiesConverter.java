@@ -7,5 +7,4 @@ import org.springframework.security.core.GrantedAuthority;
 
 @FunctionalInterface
 public interface AuthoritiesConverter
-    extends Converter<Map<String, Object>, Collection<GrantedAuthority>> {
-}
+    extends Converter<Map<String, Object>, Collection<GrantedAuthority>> {}

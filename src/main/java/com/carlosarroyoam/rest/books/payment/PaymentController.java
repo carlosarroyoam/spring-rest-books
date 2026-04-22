@@ -48,18 +48,18 @@ public class PaymentController {
 
   @PostMapping(consumes = "application/json")
   @PreAuthorize("hasRole('App/Admin')")
-  public ResponseEntity<Void> create(@Valid @RequestBody CreatePaymentRequest request,
-      UriComponentsBuilder builder) {
+  public ResponseEntity<Void> create(
+      @Valid @RequestBody CreatePaymentRequest request, UriComponentsBuilder builder) {
     PaymentResponse createdPayment = paymentService.create(request);
-    UriComponents uriComponents = builder.path("/payments/{paymentId}")
-        .buildAndExpand(createdPayment.getId());
+    UriComponents uriComponents =
+        builder.path("/payments/{paymentId}").buildAndExpand(createdPayment.getId());
     return ResponseEntity.created(uriComponents.toUri()).build();
   }
 
   @PutMapping(value = "/{paymentId}/status", consumes = "application/json")
   @PreAuthorize("hasRole('App/Admin')")
-  public ResponseEntity<Void> updateStatus(@PathVariable Long paymentId,
-      @Valid @RequestBody UpdatePaymentStatusRequest request) {
+  public ResponseEntity<Void> updateStatus(
+      @PathVariable Long paymentId, @Valid @RequestBody UpdatePaymentStatusRequest request) {
     paymentService.updateStatus(paymentId, request);
     return ResponseEntity.noContent().build();
   }
