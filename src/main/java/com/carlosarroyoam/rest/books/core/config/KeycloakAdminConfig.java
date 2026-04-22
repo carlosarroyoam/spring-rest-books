@@ -8,20 +8,14 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class KeycloakAdminConfig {
-  private final KeycloakAdminProps properties;
-
-  public KeycloakAdminConfig(KeycloakAdminProps properties) {
-    this.properties = properties;
-  }
-
   @Bean
-  Keycloak keycloak() {
+  Keycloak keycloak(KeycloakAdminProps keycloakProps) {
     return KeycloakBuilder.builder()
-        .serverUrl(properties.getServerUrl())
-        .realm(properties.getRealm())
-        .clientId(properties.getClientId())
-        .clientSecret(properties.getClientSecret())
-        .grantType(properties.getGrantType())
+        .serverUrl(keycloakProps.getServerUrl())
+        .realm(keycloakProps.getRealm())
+        .clientId(keycloakProps.getClientId())
+        .clientSecret(keycloakProps.getClientSecret())
+        .grantType(keycloakProps.getGrantType())
         .build();
   }
 }

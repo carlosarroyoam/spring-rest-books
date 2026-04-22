@@ -2,8 +2,6 @@ package com.carlosarroyoam.rest.books.core.config;
 
 import com.carlosarroyoam.rest.books.core.property.CorsProps;
 import com.carlosarroyoam.rest.books.core.security.AuthoritiesConverter;
-import com.carlosarroyoam.rest.books.core.security.CustomAccessDeniedHandler;
-import com.carlosarroyoam.rest.books.core.security.CustomAuthenticationEntryPoint;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +17,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -27,18 +27,12 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 @EnableMethodSecurity
 class WebSecurityConfig {
-  private final CorsProps corsProps;
-
-  public WebSecurityConfig(CorsProps corsProps) {
-    this.corsProps = corsProps;
-  }
-
   @Bean
   SecurityFilterChain securityFilterChain(
       HttpSecurity http,
       JwtAuthenticationConverter jwtAuthenticationConverter,
-      CustomAuthenticationEntryPoint authenticationEntryPoint,
-      CustomAccessDeniedHandler accessDeniedHandler)
+      AuthenticationEntryPoint authenticationEntryPoint,
+      AccessDeniedHandler accessDeniedHandler)
       throws Exception {
     http.csrf(CsrfConfigurer::disable)
         .cors(Customizer.withDefaults())
@@ -107,7 +101,7 @@ class WebSecurityConfig {
   }
 
   @Bean
-  CorsConfigurationSource corsConfigurationSource() {
+  CorsConfigurationSource corsConfigurationSource(CorsProps corsProps) {
     CorsConfiguration configuration = new CorsConfiguration();
     configuration.setAllowedOrigins(corsProps.getAllowedOrigins());
     configuration.setAllowedMethods(corsProps.getAllowedMethods());
