@@ -8,7 +8,6 @@ import java.util.Map;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
@@ -30,12 +29,13 @@ class WebSecurityConfig {
   @Bean
   SecurityFilterChain securityFilterChain(
       HttpSecurity http,
+      CorsConfigurationSource corsConfigurationSource,
       JwtAuthenticationConverter jwtAuthenticationConverter,
       AuthenticationEntryPoint authenticationEntryPoint,
       AccessDeniedHandler accessDeniedHandler)
       throws Exception {
     http.csrf(CsrfConfigurer::disable)
-        .cors(Customizer.withDefaults())
+        .cors(cors -> cors.configurationSource(corsConfigurationSource))
         .headers(headers -> headers.frameOptions(FrameOptionsConfig::sameOrigin))
         .sessionManagement(
             sessions -> sessions.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -106,6 +106,7 @@ class WebSecurityConfig {
     configuration.setAllowedOrigins(corsProps.getAllowedOrigins());
     configuration.setAllowedMethods(corsProps.getAllowedMethods());
     configuration.setAllowedHeaders(corsProps.getAllowedHeaders());
+    configuration.setExposedHeaders(corsProps.getExposedHeaders());
     configuration.setAllowCredentials(corsProps.getAllowCredentials());
 
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
