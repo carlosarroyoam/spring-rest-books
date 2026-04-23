@@ -32,10 +32,10 @@ CREATE TABLE book_authors (
 
 CREATE TABLE customers (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    first_name VARCHAR(128) NOT NULL,
-    last_name VARCHAR(128) NOT NULL,
-    email VARCHAR(128) NOT NULL UNIQUE,
-    username VARCHAR(128) NOT NULL UNIQUE,
+    first_name VARCHAR(64) NOT NULL,
+    last_name VARCHAR(64) NOT NULL,
+    email VARCHAR(64) NOT NULL UNIQUE,
+    username VARCHAR(64) NOT NULL UNIQUE,
     status VARCHAR(32) NOT NULL DEFAULT 'ACTIVE',
     created_at TIMESTAMP NOT NULL,
     updated_at TIMESTAMP NOT NULL,

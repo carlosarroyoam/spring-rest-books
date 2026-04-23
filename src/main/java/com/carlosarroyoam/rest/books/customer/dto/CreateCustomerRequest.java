@@ -13,11 +13,11 @@ import lombok.Setter;
 @Builder
 public class CreateCustomerRequest {
   @NotBlank(message = "First name should not be blank")
-  @Size(min = 3, max = 128, message = "First name should be between 3 and 128")
+  @Size(min = 3, max = 64, message = "First name should be between 3 and 64")
   private String firstName;
 
   @NotBlank(message = "Last name should not be blank")
-  @Size(min = 3, max = 128, message = "Last name should be between 3 and 128")
+  @Size(min = 3, max = 64, message = "Last name should be between 3 and 64")
   private String lastName;
 
   @NotNull(message = "Password should not be null")
@@ -26,10 +26,10 @@ public class CreateCustomerRequest {
 
   @NotBlank(message = "Email should not be blank")
   @Email(message = "Email should be an valid email address")
-  @Size(min = 3, max = 128, message = "Email should be between 3 and 128")
+  @Size(min = 3, max = 64, message = "Email should be between 3 and 64")
   private String email;
 
   @NotBlank(message = "Username should not be blank")
-  @Size(min = 3, max = 128, message = "Username should be between 3 and 128")
+  @Size(min = 3, max = 64, message = "Username should be between 3 and 64")
   private String username;
 }

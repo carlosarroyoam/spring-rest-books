@@ -11,10 +11,10 @@ import lombok.Setter;
 @Builder
 public class UpdateCustomerRequest {
   @NotBlank(message = "First name should not be blank")
-  @Size(min = 3, max = 128, message = "First name should be between 3 and 128")
+  @Size(min = 3, max = 64, message = "First name should be between 3 and 64")
   private String firstName;
 
   @NotBlank(message = "Last name should not be blank")
-  @Size(min = 3, max = 128, message = "Last name should be between 3 and 128")
+  @Size(min = 3, max = 64, message = "Last name should be between 3 and 64")
   private String lastName;
 }
