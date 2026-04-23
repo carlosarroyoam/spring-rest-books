@@ -9,13 +9,13 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class KeycloakAdminConfig {
   @Bean
-  Keycloak keycloak(KeycloakAdminProps keycloakProps) {
+  Keycloak keycloak(KeycloakAdminProps keycloakAdminProps) {
     return KeycloakBuilder.builder()
-        .serverUrl(keycloakProps.getServerUrl())
-        .realm(keycloakProps.getRealm())
-        .clientId(keycloakProps.getClientId())
-        .clientSecret(keycloakProps.getClientSecret())
-        .grantType(keycloakProps.getGrantType())
+        .serverUrl(keycloakAdminProps.getServerUrl())
+        .realm(keycloakAdminProps.getRealm())
+        .clientId(keycloakAdminProps.getClientId())
+        .clientSecret(keycloakAdminProps.getClientSecret())
+        .grantType(keycloakAdminProps.getGrantType())
         .build();
   }
 }
