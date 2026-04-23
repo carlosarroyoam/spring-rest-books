@@ -4,9 +4,11 @@ import com.carlosarroyoam.rest.books.customer.entity.CustomerStatus;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @Builder
 public class CustomerSpecs {
   @Size(min = 3, max = 128, message = "First name should be between 3 and 128")

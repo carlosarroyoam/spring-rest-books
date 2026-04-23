@@ -4,10 +4,12 @@ import com.carlosarroyoam.rest.books.shipment.entity.ShipmentStatus;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
-@Data
+@Getter
+@Setter
 @Builder
 public class ShipmentSpecs {
   @Size(max = 128, message = "Attention name should be max 128")

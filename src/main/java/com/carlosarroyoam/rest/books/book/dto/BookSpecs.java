@@ -6,9 +6,11 @@ import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.util.List;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @Builder
 public class BookSpecs {
   @Size(min = 10, max = 17, message = "Isbn should be between 10 and 17")

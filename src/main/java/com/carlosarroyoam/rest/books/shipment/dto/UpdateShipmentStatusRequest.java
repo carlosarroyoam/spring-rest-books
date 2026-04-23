@@ -2,14 +2,12 @@ package com.carlosarroyoam.rest.books.shipment.dto;
 
 import com.carlosarroyoam.rest.books.shipment.entity.ShipmentStatus;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
+@Setter
 @Builder
 public class UpdateShipmentStatusRequest {
   @NotNull(message = "Status should not be null")

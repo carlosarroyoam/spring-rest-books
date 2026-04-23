@@ -2,14 +2,12 @@ package com.carlosarroyoam.rest.books.payment.dto;
 
 import com.carlosarroyoam.rest.books.payment.entity.PaymentMethod;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
+@Setter
 @Builder
 public class CreatePaymentRequest {
   @NotNull(message = "Order id should not be null")

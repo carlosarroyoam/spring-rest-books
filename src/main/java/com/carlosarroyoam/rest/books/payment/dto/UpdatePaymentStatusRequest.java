@@ -2,14 +2,12 @@ package com.carlosarroyoam.rest.books.payment.dto;
 
 import com.carlosarroyoam.rest.books.payment.entity.PaymentStatus;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
+@Setter
 @Builder
 public class UpdatePaymentStatusRequest {
   @NotNull(message = "Status should not be null")
