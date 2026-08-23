@@ -17,6 +17,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+/**
+ * Contiene la lógica de negocio del {@link Cart} de un cliente: consulta, y alta, actualización o
+ * baja de sus {@link CartItem}.
+ */
 @Service
 public class CartService {
   private static final Logger log = LoggerFactory.getLogger(CartService.class);
@@ -33,12 +37,24 @@ public class CartService {
     this.bookRepository = bookRepository;
   }
 
+  /**
+   * Busca el carrito de un cliente.
+   *
+   * @param customerId id del cliente
+   * @return el carrito del cliente
+   */
   @Transactional(readOnly = true)
   public CartResponse findByCustomerId(Long customerId) {
     Cart cartByCustomerId = findCartByCustomerIdOrFail(customerId);
     return CartResponseMapper.INSTANCE.toDto(cartByCustomerId);
   }
 
+  /**
+   * Agrega un libro al carrito del cliente o actualiza su cantidad si ya estaba presente.
+   *
+   * @param customerId id del cliente dueño del carrito
+   * @param request libro y cantidad a agregar o actualizar
+   */
   @Transactional
   public void updateCartItem(Long customerId, UpdateCartItemRequest request) {
     Cart cartByCustomerId = findCartByCustomerIdOrFail(customerId);
@@ -64,6 +80,12 @@ public class CartService {
     cartItemRepository.save(cartItem);
   }
 
+  /**
+   * Elimina un ítem del carrito del cliente. No hace nada si el ítem no pertenece a su carrito.
+   *
+   * @param customerId id del cliente dueño del carrito
+   * @param cartItemId id del ítem a eliminar
+   */
   @Transactional
   public void deleteCartItem(Long customerId, Long cartItemId) {
     Cart cartByCustomerId = findCartByCustomerIdOrFail(customerId);
@@ -74,6 +96,12 @@ public class CartService {
         .ifPresent(cartItem -> cartItemRepository.deleteById(cartItem.getId()));
   }
 
+  /**
+   * Busca el carrito de un cliente o lanza {@code 404 Not Found} si no existe.
+   *
+   * @param customerId id del cliente
+   * @return el carrito del cliente
+   */
   private Cart findCartByCustomerIdOrFail(Long customerId) {
     return cartRepository
         .findByCustomerId(customerId)
@@ -85,6 +113,12 @@ public class CartService {
             });
   }
 
+  /**
+   * Busca un libro por id o lanza {@code 404 Not Found} si no existe.
+   *
+   * @param bookId id del libro a buscar
+   * @return el libro encontrado
+   */
   private Book findBookByIdOrFail(Long bookId) {
     return bookRepository
         .findById(bookId)

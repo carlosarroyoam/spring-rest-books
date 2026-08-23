@@ -16,6 +16,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Expone las operaciones REST sobre el carrito de compras del cliente autenticado, identificado
+ * mediante el claim {@link CustomClaimNames#CUSTOMER_ID} del JWT.
+ */
 @RestController
 @RequestMapping("/carts")
 public class CartController {
@@ -25,6 +29,12 @@ public class CartController {
     this.cartService = cartService;
   }
 
+  /**
+   * Consulta el carrito del cliente autenticado. Requiere rol {@code App/Customer}.
+   *
+   * @param jwt token del cliente autenticado
+   * @return el carrito del cliente
+   */
   @GetMapping(produces = "application/json")
   @PreAuthorize("hasRole('App/Customer')")
   public ResponseEntity<CartResponse> findByUsername(@AuthenticationPrincipal Jwt jwt) {
@@ -33,6 +43,13 @@ public class CartController {
     return ResponseEntity.ok(cartByUsername);
   }
 
+  /**
+   * Agrega o actualiza un ítem en el carrito del cliente autenticado. Requiere rol {@code
+   * App/Customer}.
+   *
+   * @param request libro y cantidad a agregar o actualizar
+   * @param jwt token del cliente autenticado
+   */
   @PutMapping(value = "/items", consumes = "application/json")
   @PreAuthorize("hasRole('App/Customer')")
   public ResponseEntity<Void> updateCartItem(
@@ -42,6 +59,12 @@ public class CartController {
     return ResponseEntity.noContent().build();
   }
 
+  /**
+   * Elimina un ítem del carrito del cliente autenticado. Requiere rol {@code App/Customer}.
+   *
+   * @param cartItemId id del ítem a eliminar
+   * @param jwt token del cliente autenticado
+   */
   @DeleteMapping(value = "/items/{cartItemId}")
   @PreAuthorize("hasRole('App/Customer')")
   public ResponseEntity<Void> deleteCartItem(

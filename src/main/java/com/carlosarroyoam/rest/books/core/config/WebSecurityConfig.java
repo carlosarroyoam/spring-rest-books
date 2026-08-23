@@ -23,9 +23,26 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+/**
+ * Configura la cadena de seguridad HTTP: CORS, sesiones sin estado, autenticación OAuth2 con JWT
+ * y el manejo de errores de autenticación y autorización.
+ */
 @Configuration
 @EnableMethodSecurity
 class WebSecurityConfig {
+
+  /**
+   * Define la cadena de filtros de seguridad: deshabilita CSRF, habilita CORS, fuerza sesiones sin
+   * estado y valida el JWT como resource server, dejando sin autenticación la lectura de libros y
+   * autores, el alta de clientes y los endpoints de infraestructura.
+   *
+   * @param http builder de configuración de seguridad HTTP
+   * @param corsConfigurationSource origen de la configuración de CORS
+   * @param jwtAuthenticationConverter conversor de JWT a token de autenticación
+   * @param authenticationEntryPoint manejador de peticiones no autenticadas
+   * @param accessDeniedHandler manejador de peticiones sin autorización suficiente
+   * @return la cadena de filtros de seguridad configurada
+   */
   @Bean
   SecurityFilterChain securityFilterChain(
       HttpSecurity http,
@@ -66,6 +83,12 @@ class WebSecurityConfig {
     return http.build();
   }
 
+  /**
+   * Extrae los roles de {@code realm_access} del token y los expone como {@code GrantedAuthority}
+   * con el prefijo {@code ROLE_}, descartando los roles por defecto de Keycloak.
+   *
+   * @return el conversor de authorities a partir de los claims del JWT
+   */
   @Bean
   AuthoritiesConverter authoritiesConverter() {
     return claims -> {
@@ -92,6 +115,13 @@ class WebSecurityConfig {
     };
   }
 
+  /**
+   * Ensambla el conversor de autenticación de Spring Security a partir de {@link
+   * AuthoritiesConverter}.
+   *
+   * @param authoritiesConverter conversor de los claims del JWT a authorities
+   * @return el conversor de autenticación configurado
+   */
   @Bean
   JwtAuthenticationConverter authenticationConverter(AuthoritiesConverter authoritiesConverter) {
     JwtAuthenticationConverter authenticationConverter = new JwtAuthenticationConverter();
@@ -100,6 +130,13 @@ class WebSecurityConfig {
     return authenticationConverter;
   }
 
+  /**
+   * Construye el origen de configuración de CORS a partir de {@link CorsProps}, aplicándola a
+   * todas las rutas.
+   *
+   * @param corsProps propiedades de configuración de CORS
+   * @return el origen de configuración de CORS
+   */
   @Bean
   CorsConfigurationSource corsConfigurationSource(CorsProps corsProps) {
     CorsConfiguration configuration = new CorsConfiguration();

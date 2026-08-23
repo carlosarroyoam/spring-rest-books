@@ -15,6 +15,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Representa un cliente registrado en la tienda, sincronizado con su usuario correspondiente en
+ * Keycloak. Soporta baja lógica mediante {@link CustomerStatus} y {@code deletedAt}.
+ */
 @Entity
 @Table(name = "customers")
 @Getter

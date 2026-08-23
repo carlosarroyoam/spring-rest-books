@@ -21,6 +21,11 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
+/**
+ * Traduce las excepciones no controladas de la aplicación a respuestas HTTP consistentes con
+ * {@link AppExceptionResponse}, delegando la construcción del cuerpo en {@link
+ * ApiExceptionResponseFactory}.
+ */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
   private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
@@ -30,6 +35,14 @@ public class GlobalExceptionHandler {
     this.apiExceptionResponseFactory = apiExceptionResponseFactory;
   }
 
+  /**
+   * Traduce una {@link ResponseStatusException} a una respuesta con el código de estado indicado
+   * en la propia excepción.
+   *
+   * @param ex excepción capturada
+   * @param request petición HTTP en curso
+   * @return la respuesta de error con el código de estado y mensaje de la excepción
+   */
   @ExceptionHandler({ResponseStatusException.class})
   public ResponseEntity<AppExceptionResponse> handleResponseStatus(
       ResponseStatusException ex, HttpServletRequest request) {
@@ -40,6 +53,13 @@ public class GlobalExceptionHandler {
     return ResponseEntity.status(status).body(appExceptionResponse);
   }
 
+  /**
+   * Traduce un cuerpo de petición ilegible o mal formado a {@code 400 Bad Request}.
+   *
+   * @param ex excepción capturada
+   * @param request petición HTTP en curso
+   * @return la respuesta de error con estado {@code 400 Bad Request}
+   */
   @ExceptionHandler({HttpMessageNotReadableException.class})
   public ResponseEntity<AppExceptionResponse> handleHttpMessageNotReadable(
       HttpMessageNotReadableException ex, HttpServletRequest request) {
@@ -50,6 +70,13 @@ public class GlobalExceptionHandler {
     return ResponseEntity.status(status).body(appExceptionResponse);
   }
 
+  /**
+   * Traduce un parámetro de tipo incompatible con el esperado a {@code 400 Bad Request}.
+   *
+   * @param ex excepción capturada
+   * @param request petición HTTP en curso
+   * @return la respuesta de error con estado {@code 400 Bad Request}
+   */
   @ExceptionHandler({MethodArgumentTypeMismatchException.class})
   public ResponseEntity<AppExceptionResponse> handleMethodArgumentTypeMismatch(
       MethodArgumentTypeMismatchException ex, HttpServletRequest request) {
@@ -60,6 +87,13 @@ public class GlobalExceptionHandler {
     return ResponseEntity.status(status).body(appExceptionResponse);
   }
 
+  /**
+   * Traduce una petición a una ruta sin handler registrado a {@code 404 Not Found}.
+   *
+   * @param ex excepción capturada
+   * @param request petición HTTP en curso
+   * @return la respuesta de error con estado {@code 404 Not Found}
+   */
   @ExceptionHandler({NoHandlerFoundException.class})
   public ResponseEntity<AppExceptionResponse> handleNoHandlerFound(
       NoHandlerFoundException ex, HttpServletRequest request) {
@@ -70,6 +104,13 @@ public class GlobalExceptionHandler {
     return ResponseEntity.status(status).body(appExceptionResponse);
   }
 
+  /**
+   * Traduce una petición a un recurso estático inexistente a {@code 404 Not Found}.
+   *
+   * @param ex excepción capturada
+   * @param request petición HTTP en curso
+   * @return la respuesta de error con estado {@code 404 Not Found}
+   */
   @ExceptionHandler({NoResourceFoundException.class})
   public ResponseEntity<AppExceptionResponse> handleNoResourceFound(
       NoResourceFoundException ex, HttpServletRequest request) {
@@ -80,6 +121,14 @@ public class GlobalExceptionHandler {
     return ResponseEntity.status(status).body(appExceptionResponse);
   }
 
+  /**
+   * Traduce el uso de un método HTTP no soportado por el endpoint a {@code 405 Method Not
+   * Allowed}.
+   *
+   * @param ex excepción capturada
+   * @param request petición HTTP en curso
+   * @return la respuesta de error con estado {@code 405 Method Not Allowed}
+   */
   @ExceptionHandler({HttpRequestMethodNotSupportedException.class})
   public ResponseEntity<AppExceptionResponse> handleMethodNotSupported(
       HttpRequestMethodNotSupportedException ex, HttpServletRequest request) {
@@ -90,6 +139,15 @@ public class GlobalExceptionHandler {
     return ResponseEntity.status(status).body(appExceptionResponse);
   }
 
+  /**
+   * Traduce un fallo de autenticación no capturado por {@link
+   * com.carlosarroyoam.rest.books.core.security.CustomAuthenticationEntryPoint} a {@code 401
+   * Unauthorized}.
+   *
+   * @param ex excepción capturada
+   * @param request petición HTTP en curso
+   * @return la respuesta de error con estado {@code 401 Unauthorized}
+   */
   @ExceptionHandler({AuthenticationException.class})
   public ResponseEntity<AppExceptionResponse> handleAuthenticationException(
       AuthenticationException ex, HttpServletRequest request) {
@@ -100,6 +158,15 @@ public class GlobalExceptionHandler {
     return ResponseEntity.status(status).body(appExceptionResponse);
   }
 
+  /**
+   * Traduce un fallo de autorización no capturado por {@link
+   * com.carlosarroyoam.rest.books.core.security.CustomAccessDeniedHandler} a {@code 403
+   * Forbidden}.
+   *
+   * @param ex excepción capturada
+   * @param request petición HTTP en curso
+   * @return la respuesta de error con estado {@code 403 Forbidden}
+   */
   @ExceptionHandler({AccessDeniedException.class})
   public ResponseEntity<AppExceptionResponse> handleAccessDeniedException(
       AccessDeniedException ex, HttpServletRequest request) {
@@ -110,6 +177,15 @@ public class GlobalExceptionHandler {
     return ResponseEntity.status(status).body(appExceptionResponse);
   }
 
+  /**
+   * Traduce errores de validación de {@code @Valid} a {@code 422 Unprocessable Entity}, incluyendo
+   * el detalle de los mensajes de error por campo.
+   *
+   * @param ex excepción capturada
+   * @param request petición HTTP en curso
+   * @return la respuesta de error con estado {@code 422 Unprocessable Entity} y el detalle por
+   *     campo
+   */
   @ExceptionHandler({MethodArgumentNotValidException.class})
   public ResponseEntity<AppExceptionResponse> handleMethodArgumentNotValid(
       MethodArgumentNotValidException ex, HttpServletRequest request) {
@@ -128,6 +204,14 @@ public class GlobalExceptionHandler {
     return ResponseEntity.status(status).body(appExceptionResponse);
   }
 
+  /**
+   * Captura cualquier excepción no controlada por los demás manejadores, la traduce a {@code 500
+   * Internal Server Error} y registra el detalle en el log.
+   *
+   * @param ex excepción capturada
+   * @param request petición HTTP en curso
+   * @return la respuesta de error con estado {@code 500 Internal Server Error}
+   */
   @ExceptionHandler({Exception.class})
   public ResponseEntity<AppExceptionResponse> handleException(
       Exception ex, HttpServletRequest request) {

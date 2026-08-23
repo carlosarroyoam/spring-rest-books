@@ -4,5 +4,6 @@ import com.carlosarroyoam.rest.books.order.entity.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
+/** Acceso a datos de {@link Order} mediante Spring Data JPA. */
 public interface OrderRepository
     extends JpaRepository<Order, Long>, JpaSpecificationExecutor<Order> {}

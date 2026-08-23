@@ -28,6 +28,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+/**
+ * Contiene la lógica de negocio de {@link Author}: búsqueda paginada con filtros, alta,
+ * actualización, baja lógica y consulta de libros asociados a través de {@link BookRepository}.
+ */
 @Service
 public class AuthorService {
   private static final Logger log = LoggerFactory.getLogger(AuthorService.class);
@@ -39,6 +43,13 @@ public class AuthorService {
     this.bookRepository = bookRepository;
   }
 
+  /**
+   * Busca autores de forma paginada aplicando los filtros de {@link AuthorSpecs}.
+   *
+   * @param authorSpecs filtros opcionales de búsqueda
+   * @param pageable configuración de página y orden
+   * @return la página de autores encontrados
+   */
   @Transactional(readOnly = true)
   public PagedResponse<AuthorResponse> findAll(AuthorSpecs authorSpecs, Pageable pageable) {
     Specification<Author> spec =
@@ -53,12 +64,24 @@ public class AuthorService {
         authors.map(AuthorResponseMapper.INSTANCE::toDto));
   }
 
+  /**
+   * Busca un autor por su id.
+   *
+   * @param authorId id del autor a buscar
+   * @return el autor encontrado
+   */
   @Transactional(readOnly = true)
   public AuthorResponse findById(Long authorId) {
     Author authorById = findAuthorByIdOrFail(authorId);
     return AuthorResponseMapper.INSTANCE.toDto(authorById);
   }
 
+  /**
+   * Crea un autor con estado {@code ACTIVE}.
+   *
+   * @param request datos del autor a crear
+   * @return el autor creado
+   */
   @Transactional
   public AuthorResponse create(CreateAuthorRequest request) {
     LocalDateTime now = LocalDateTime.now();
@@ -74,6 +97,12 @@ public class AuthorService {
     return AuthorResponseMapper.INSTANCE.toDto(authorRepository.save(author));
   }
 
+  /**
+   * Actualiza el nombre y la biografía de un autor existente.
+   *
+   * @param authorId id del autor a actualizar
+   * @param request nuevos datos del autor
+   */
   @Transactional
   public void update(Long authorId, UpdateAuthorRequest request) {
     LocalDateTime now = LocalDateTime.now();
@@ -84,6 +113,11 @@ public class AuthorService {
     authorRepository.save(authorById);
   }
 
+  /**
+   * Marca un autor como {@code DELETED} y registra la fecha de baja, sin eliminar el registro.
+   *
+   * @param authorId id del autor a eliminar
+   */
   @Transactional
   public void deleteById(Long authorId) {
     LocalDateTime now = LocalDateTime.now();
@@ -94,12 +128,24 @@ public class AuthorService {
     authorRepository.save(authorById);
   }
 
+  /**
+   * Lista los libros asociados a un autor.
+   *
+   * @param authorId id del autor
+   * @return los libros del autor
+   */
   @Transactional(readOnly = true)
   public List<BookResponse> findBooksByAuthorId(Long authorId) {
     List<Book> booksByAuthorId = bookRepository.findByAuthorId(authorId);
     return BookResponseMapper.INSTANCE.toDtos(booksByAuthorId);
   }
 
+  /**
+   * Busca un autor por id o lanza {@code 404 Not Found} si no existe.
+   *
+   * @param authorId id del autor a buscar
+   * @return el autor encontrado
+   */
   private Author findAuthorByIdOrFail(Long authorId) {
     return authorRepository
         .findById(authorId)

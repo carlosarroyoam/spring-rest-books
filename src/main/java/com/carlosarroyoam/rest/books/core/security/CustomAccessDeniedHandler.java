@@ -12,6 +12,11 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
 
+/**
+ * Traduce un {@link AccessDeniedException} a una respuesta {@code 403 Forbidden} con el cuerpo de
+ * {@link AppExceptionResponse}, ya que Spring Security no pasa este tipo de excepción por {@link
+ * com.carlosarroyoam.rest.books.core.exception.GlobalExceptionHandler}.
+ */
 @Component
 public class CustomAccessDeniedHandler implements AccessDeniedHandler {
   private final ApiExceptionResponseFactory apiExceptionResponseFactory;
@@ -23,6 +28,13 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
     this.mapper = mapper;
   }
 
+  /**
+   * Escribe en la respuesta un {@link AppExceptionResponse} con estado {@code 403 Forbidden}.
+   *
+   * @param request petición HTTP en curso
+   * @param response respuesta HTTP sobre la que se escribe el cuerpo de error
+   * @param ex excepción de acceso denegado capturada
+   */
   @Override
   public void handle(
       HttpServletRequest request, HttpServletResponse response, AccessDeniedException ex)

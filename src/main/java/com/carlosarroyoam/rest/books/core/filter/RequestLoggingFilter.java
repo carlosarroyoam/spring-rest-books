@@ -11,10 +11,19 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+/** Registra en el log el método, la ruta, el código de estado y la duración de cada petición HTTP. */
 @Component
 public class RequestLoggingFilter extends OncePerRequestFilter {
   private static final Logger log = LoggerFactory.getLogger(RequestLoggingFilter.class);
 
+  /**
+   * Ejecuta el resto de la cadena de filtros y registra en el log el resultado y la duración de
+   * la petición una vez completada.
+   *
+   * @param request petición HTTP en curso
+   * @param response respuesta HTTP en curso
+   * @param filterChain resto de la cadena de filtros a ejecutar
+   */
   @Override
   protected void doFilterInternal(
       @NonNull HttpServletRequest request,

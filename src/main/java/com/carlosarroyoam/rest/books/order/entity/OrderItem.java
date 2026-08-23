@@ -18,6 +18,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/** Representa un {@link Book} con su cantidad y precio dentro de una {@link Order}. */
 @Entity
 @Table(name = "order_items")
 @Getter

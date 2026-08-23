@@ -21,6 +21,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
+/**
+ * Expone las operaciones REST sobre {@link com.carlosarroyoam.rest.books.order.entity.Order}:
+ * listado paginado con filtros, consulta por id, alta y actualización. Todas las operaciones
+ * requieren rol {@code App/Admin}.
+ */
 @RestController
 @RequestMapping("/orders")
 public class OrderController {
@@ -30,6 +35,13 @@ public class OrderController {
     this.orderService = orderService;
   }
 
+  /**
+   * Lista órdenes de forma paginada, aplicando los filtros de {@link OrderSpecs}.
+   *
+   * @param orderSpecs filtros opcionales de búsqueda
+   * @param pageable configuración de página y orden
+   * @return la página de órdenes encontradas
+   */
   @GetMapping(produces = "application/json")
   @PreAuthorize("hasRole('App/Admin')")
   public ResponseEntity<PagedResponse<OrderResponse>> findAll(
@@ -39,6 +51,12 @@ public class OrderController {
     return ResponseEntity.ok(orders);
   }
 
+  /**
+   * Busca una orden por su id.
+   *
+   * @param orderId id de la orden a buscar
+   * @return la orden encontrada
+   */
   @GetMapping(value = "/{orderId}", produces = "application/json")
   @PreAuthorize("hasRole('App/Admin')")
   public ResponseEntity<OrderResponse> findById(@PathVariable Long orderId) {
@@ -46,6 +64,13 @@ public class OrderController {
     return ResponseEntity.ok(orderById);
   }
 
+  /**
+   * Crea una nueva orden.
+   *
+   * @param request datos de la orden a crear
+   * @param builder utilizado para construir la URI del recurso creado
+   * @return respuesta 201 con la cabecera {@code Location} de la orden creada
+   */
   @PostMapping(consumes = "application/json")
   @PreAuthorize("hasRole('App/Admin')")
   public ResponseEntity<Void> create(
@@ -56,6 +81,12 @@ public class OrderController {
     return ResponseEntity.created(uriComponents.toUri()).build();
   }
 
+  /**
+   * Actualiza la dirección de envío, la dirección de facturación y las notas de una orden.
+   *
+   * @param orderId id de la orden a actualizar
+   * @param request nuevos datos de la orden
+   */
   @PutMapping(value = "/{orderId}", consumes = "application/json")
   @PreAuthorize("hasRole('App/Admin')")
   public ResponseEntity<Void> update(

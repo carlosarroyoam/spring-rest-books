@@ -20,6 +20,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Representa el carrito de compras de un {@link Customer}, con relación {@code one-to-one} al
+ * cliente y {@code one-to-many} a sus {@link CartItem}.
+ */
 @Entity
 @Table(name = "carts")
 @Getter

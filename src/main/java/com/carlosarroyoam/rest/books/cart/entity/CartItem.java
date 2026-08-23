@@ -17,6 +17,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/** Representa un {@link Book} con su cantidad dentro de un {@link Cart}. */
 @Entity
 @Table(name = "cart_items")
 @Getter

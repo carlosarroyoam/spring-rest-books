@@ -24,6 +24,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
+/**
+ * Expone las operaciones REST sobre {@link com.carlosarroyoam.rest.books.book.entity.Book}:
+ * listado paginado con filtros, consulta por id, alta, actualización, baja lógica y consulta de
+ * autores asociados.
+ */
 @RestController
 @RequestMapping("/books")
 public class BookController {
@@ -33,6 +38,13 @@ public class BookController {
     this.bookService = bookService;
   }
 
+  /**
+   * Lista libros de forma paginada, aplicando los filtros de {@link BookSpecs}.
+   *
+   * @param bookSpecs filtros opcionales de búsqueda
+   * @param pageable configuración de página y orden
+   * @return la página de libros encontrados
+   */
   @GetMapping(produces = "application/json")
   public ResponseEntity<PagedResponse<BookResponse>> findAll(
       @Valid @ModelAttribute BookSpecs bookSpecs,
@@ -41,12 +53,25 @@ public class BookController {
     return ResponseEntity.ok(books);
   }
 
+  /**
+   * Busca un libro por su id.
+   *
+   * @param bookId id del libro a buscar
+   * @return el libro encontrado
+   */
   @GetMapping(value = "/{bookId}", produces = "application/json")
   public ResponseEntity<BookResponse> findById(@PathVariable Long bookId) {
     BookResponse bookById = bookService.findById(bookId);
     return ResponseEntity.ok(bookById);
   }
 
+  /**
+   * Crea un nuevo libro. Requiere rol {@code App/Admin}.
+   *
+   * @param request datos del libro a crear
+   * @param builder utilizado para construir la URI del recurso creado
+   * @return respuesta 201 con la cabecera {@code Location} del libro creado
+   */
   @PostMapping(consumes = "application/json")
   @PreAuthorize("hasRole('App/Admin')")
   public ResponseEntity<Void> create(
@@ -57,6 +82,12 @@ public class BookController {
     return ResponseEntity.created(uriComponents.toUri()).build();
   }
 
+  /**
+   * Actualiza los datos de un libro. Requiere rol {@code App/Admin}.
+   *
+   * @param bookId id del libro a actualizar
+   * @param request nuevos datos del libro
+   */
   @PutMapping(value = "/{bookId}", consumes = "application/json")
   @PreAuthorize("hasRole('App/Admin')")
   public ResponseEntity<Void> update(
@@ -65,6 +96,11 @@ public class BookController {
     return ResponseEntity.noContent().build();
   }
 
+  /**
+   * Elimina lógicamente un libro. Requiere rol {@code App/Admin}.
+   *
+   * @param bookId id del libro a eliminar
+   */
   @DeleteMapping("/{bookId}")
   @PreAuthorize("hasRole('App/Admin')")
   public ResponseEntity<Void> deleteById(@PathVariable Long bookId) {
@@ -72,6 +108,12 @@ public class BookController {
     return ResponseEntity.noContent().build();
   }
 
+  /**
+   * Lista los autores asociados a un libro.
+   *
+   * @param bookId id del libro
+   * @return los autores del libro
+   */
   @GetMapping(path = "/{bookId}/authors", produces = "application/json")
   public ResponseEntity<List<AuthorResponse>> findBookAuthors(@PathVariable Long bookId) {
     List<AuthorResponse> authors = bookService.findAuthorsByBookId(bookId);

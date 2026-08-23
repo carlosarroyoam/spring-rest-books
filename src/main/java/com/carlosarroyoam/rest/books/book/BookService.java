@@ -30,6 +30,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+/**
+ * Contiene la lógica de negocio de {@link Book}: búsqueda paginada con filtros, alta con
+ * validación de ISBN único, actualización, baja lógica y consulta de autores asociados a través
+ * de {@link AuthorRepository}.
+ */
 @Service
 public class BookService {
   private static final Logger log = LoggerFactory.getLogger(BookService.class);
@@ -41,6 +46,13 @@ public class BookService {
     this.authorRepository = authorRepository;
   }
 
+  /**
+   * Busca libros de forma paginada aplicando los filtros de {@link BookSpecs}.
+   *
+   * @param bookSpecs filtros opcionales de búsqueda
+   * @param pageable configuración de página y orden
+   * @return la página de libros encontrados
+   */
   @Transactional(readOnly = true)
   public PagedResponse<BookResponse> findAll(BookSpecs bookSpecs, Pageable pageable) {
     Specification<Book> spec =
@@ -63,12 +75,24 @@ public class BookService {
         books.map(BookResponseMapper.INSTANCE::toDto));
   }
 
+  /**
+   * Busca un libro por su id.
+   *
+   * @param bookId id del libro a buscar
+   * @return el libro encontrado
+   */
   @Transactional(readOnly = true)
   public BookResponse findById(Long bookId) {
     Book bookById = findBookByIdOrFail(bookId);
     return BookResponseMapper.INSTANCE.toDto(bookById);
   }
 
+  /**
+   * Crea un libro con estado {@code ACTIVE}, rechazando ISBN duplicados.
+   *
+   * @param request datos del libro a crear
+   * @return el libro creado
+   */
   @Transactional
   public BookResponse create(CreateBookRequest request) {
     if (bookRepository.existsByIsbn(request.getIsbn())) {
@@ -94,6 +118,12 @@ public class BookService {
     return BookResponseMapper.INSTANCE.toDto(bookRepository.save(book));
   }
 
+  /**
+   * Actualiza los datos de un libro existente.
+   *
+   * @param bookId id del libro a actualizar
+   * @param request nuevos datos del libro
+   */
   @Transactional
   public void update(Long bookId, UpdateBookRequest request) {
     LocalDateTime now = LocalDateTime.now();
@@ -108,6 +138,11 @@ public class BookService {
     bookRepository.save(bookById);
   }
 
+  /**
+   * Marca un libro como {@code DELETED} y registra la fecha de baja, sin eliminar el registro.
+   *
+   * @param bookId id del libro a eliminar
+   */
   @Transactional
   public void deleteById(Long bookId) {
     LocalDateTime now = LocalDateTime.now();
@@ -118,12 +153,24 @@ public class BookService {
     bookRepository.save(bookById);
   }
 
+  /**
+   * Lista los autores asociados a un libro.
+   *
+   * @param bookId id del libro
+   * @return los autores del libro
+   */
   @Transactional(readOnly = true)
   public List<AuthorResponse> findAuthorsByBookId(Long bookId) {
     List<Author> authorsByBookId = authorRepository.findByBookId(bookId);
     return AuthorResponseMapper.INSTANCE.toDtos(authorsByBookId);
   }
 
+  /**
+   * Busca un libro por id o lanza {@code 404 Not Found} si no existe.
+   *
+   * @param bookId id del libro a buscar
+   * @return el libro encontrado
+   */
   private Book findBookByIdOrFail(Long bookId) {
     return bookRepository
         .findById(bookId)

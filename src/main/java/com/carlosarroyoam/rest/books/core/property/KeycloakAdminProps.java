@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+/** Propiedades de conexión al Admin Client de Keycloak bajo el prefijo {@code keycloak.admin}. */
 @Component
 @ConfigurationProperties(prefix = "keycloak.admin")
 @Getter

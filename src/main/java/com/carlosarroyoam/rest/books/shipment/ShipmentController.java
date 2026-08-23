@@ -17,6 +17,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Expone las operaciones REST sobre {@link
+ * com.carlosarroyoam.rest.books.shipment.entity.Shipment}: listado paginado con filtros, consulta
+ * por id y actualización de estado. Todas las operaciones requieren rol {@code App/Admin}.
+ */
 @RestController
 @RequestMapping("/shipments")
 public class ShipmentController {
@@ -26,6 +31,13 @@ public class ShipmentController {
     this.shipmentService = shipmentService;
   }
 
+  /**
+   * Lista envíos de forma paginada, aplicando los filtros de {@link ShipmentSpecs}.
+   *
+   * @param shipmentSpecs filtros opcionales de búsqueda
+   * @param pageable configuración de página y orden
+   * @return la página de envíos encontrados
+   */
   @GetMapping(produces = "application/json")
   @PreAuthorize("hasRole('App/Admin')")
   public ResponseEntity<PagedResponse<ShipmentResponse>> findAll(
@@ -35,6 +47,12 @@ public class ShipmentController {
     return ResponseEntity.ok(shipments);
   }
 
+  /**
+   * Busca un envío por su id.
+   *
+   * @param shipmentId id del envío a buscar
+   * @return el envío encontrado
+   */
   @GetMapping(value = "/{shipmentId}", produces = "application/json")
   @PreAuthorize("hasRole('App/Admin')")
   public ResponseEntity<ShipmentResponse> findById(@PathVariable Long shipmentId) {
@@ -42,6 +60,12 @@ public class ShipmentController {
     return ResponseEntity.ok(shipmentById);
   }
 
+  /**
+   * Actualiza el estado de un envío.
+   *
+   * @param shipmentId id del envío a actualizar
+   * @param request nuevo estado del envío
+   */
   @PutMapping(value = "/{shipmentId}/status", consumes = "application/json")
   @PreAuthorize("hasRole('App/Admin')")
   public ResponseEntity<Void> updateStatus(

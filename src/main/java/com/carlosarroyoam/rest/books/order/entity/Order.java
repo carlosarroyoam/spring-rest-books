@@ -27,6 +27,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Representa una orden de compra de un {@link Customer}, con sus {@link OrderItem}, el {@link
+ * Payment} y el {@link Shipment} asociados.
+ */
 @Entity
 @Table(name = "orders")
 @Getter

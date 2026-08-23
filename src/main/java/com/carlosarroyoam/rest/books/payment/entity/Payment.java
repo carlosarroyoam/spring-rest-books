@@ -20,6 +20,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Representa el pago de una {@link Order}, con relación {@code one-to-one} a la orden pagada.
+ */
 @Entity
 @Table(name = "payments")
 @Getter

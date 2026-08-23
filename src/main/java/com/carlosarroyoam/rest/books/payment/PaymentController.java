@@ -21,6 +21,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
+/**
+ * Expone las operaciones REST sobre {@link com.carlosarroyoam.rest.books.payment.entity.Payment}:
+ * listado paginado con filtros, consulta por id, registro y actualización de estado. Todas las
+ * operaciones requieren rol {@code App/Admin}.
+ */
 @RestController
 @RequestMapping("/payments")
 public class PaymentController {
@@ -30,6 +35,13 @@ public class PaymentController {
     this.paymentService = paymentService;
   }
 
+  /**
+   * Lista pagos de forma paginada, aplicando los filtros de {@link PaymentSpecs}.
+   *
+   * @param paymentSpecs filtros opcionales de búsqueda
+   * @param pageable configuración de página y orden
+   * @return la página de pagos encontrados
+   */
   @GetMapping(produces = "application/json")
   @PreAuthorize("hasRole('App/Admin')")
   public ResponseEntity<PagedResponse<PaymentResponse>> findAll(
@@ -39,6 +51,12 @@ public class PaymentController {
     return ResponseEntity.ok(payments);
   }
 
+  /**
+   * Busca un pago por su id.
+   *
+   * @param paymentId id del pago a buscar
+   * @return el pago encontrado
+   */
   @GetMapping(value = "/{paymentId}", produces = "application/json")
   @PreAuthorize("hasRole('App/Admin')")
   public ResponseEntity<PaymentResponse> findById(@PathVariable Long paymentId) {
@@ -46,6 +64,13 @@ public class PaymentController {
     return ResponseEntity.ok(paymentById);
   }
 
+  /**
+   * Registra el pago de una orden.
+   *
+   * @param request datos del pago a registrar
+   * @param builder utilizado para construir la URI del recurso creado
+   * @return respuesta 201 con la cabecera {@code Location} del pago creado
+   */
   @PostMapping(consumes = "application/json")
   @PreAuthorize("hasRole('App/Admin')")
   public ResponseEntity<Void> create(
@@ -56,6 +81,12 @@ public class PaymentController {
     return ResponseEntity.created(uriComponents.toUri()).build();
   }
 
+  /**
+   * Actualiza el estado de un pago.
+   *
+   * @param paymentId id del pago a actualizar
+   * @param request nuevo estado del pago
+   */
   @PutMapping(value = "/{paymentId}/status", consumes = "application/json")
   @PreAuthorize("hasRole('App/Admin')")
   public ResponseEntity<Void> updateStatus(

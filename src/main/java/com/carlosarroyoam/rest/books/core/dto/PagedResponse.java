@@ -17,6 +17,7 @@ public class PagedResponse<T> {
   private List<T> items;
   private PaginationResponse pagination;
 
+  /** Convierte un {@link Page} de Spring Data en un {@link PagedResponse} con su paginación. */
   @Mapper(
       nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
       unmappedTargetPolicy = ReportingPolicy.IGNORE)

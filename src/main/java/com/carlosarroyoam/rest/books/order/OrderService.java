@@ -34,6 +34,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+/**
+ * Contiene la lógica de negocio de {@link Order}: búsqueda paginada con filtros, alta calculando
+ * subtotal, impuestos y total a partir de los {@link OrderItem}, y actualización de datos de
+ * envío y facturación.
+ */
 @Service
 public class OrderService {
   private static final Logger log = LoggerFactory.getLogger(OrderService.class);
@@ -53,6 +58,13 @@ public class OrderService {
     this.bookRepository = bookRepository;
   }
 
+  /**
+   * Busca órdenes de forma paginada aplicando los filtros de {@link OrderSpecs}.
+   *
+   * @param orderSpecs filtros opcionales de búsqueda
+   * @param pageable configuración de página y orden
+   * @return la página de órdenes encontradas
+   */
   @Transactional(readOnly = true)
   public PagedResponse<OrderResponse> findAll(OrderSpecs orderSpecs, Pageable pageable) {
     Specification<Order> spec =
@@ -77,12 +89,24 @@ public class OrderService {
         orders.map(OrderResponseMapper.INSTANCE::toDto));
   }
 
+  /**
+   * Busca una orden por su id.
+   *
+   * @param orderId id de la orden a buscar
+   * @return la orden encontrada
+   */
   @Transactional(readOnly = true)
   public OrderResponse findById(Long orderId) {
     Order orderById = findOrderByIdOrFail(orderId);
     return OrderResponseMapper.INSTANCE.toDto(orderById);
   }
 
+  /**
+   * Crea una orden con estado {@code PENDING}, calculando sus ítems, subtotal, impuestos y total.
+   *
+   * @param request datos de la orden a crear
+   * @return la orden creada
+   */
   @Transactional
   public OrderResponse create(CreateOrderRequest request) {
     Customer customerById = findCustomerByIdOrFail(request);
@@ -115,6 +139,12 @@ public class OrderService {
     return OrderResponseMapper.INSTANCE.toDto(orderRepository.save(order));
   }
 
+  /**
+   * Actualiza la dirección de envío, la dirección de facturación y las notas de una orden.
+   *
+   * @param orderId id de la orden a actualizar
+   * @param request nuevos datos de la orden
+   */
   @Transactional
   public void update(Long orderId, UpdateOrderRequest request) {
     LocalDateTime now = LocalDateTime.now();
@@ -126,6 +156,15 @@ public class OrderService {
     orderRepository.save(orderById);
   }
 
+  /**
+   * Construye los ítems de una orden a partir de los libros solicitados, fijando el precio
+   * unitario y total de cada uno según el precio actual del libro.
+   *
+   * @param requestItems libros y cantidades solicitados
+   * @param now fecha y hora a registrar en cada ítem
+   * @param order orden a la que pertenecerán los ítems
+   * @return los ítems construidos
+   */
   private List<OrderItem> buildOrderItems(
       List<CreateOrderItemRequest> requestItems, LocalDateTime now, Order order) {
     return requestItems.stream()
@@ -152,6 +191,12 @@ public class OrderService {
         .toList();
   }
 
+  /**
+   * Calcula el subtotal de una orden como la suma del precio total de sus ítems.
+   *
+   * @param items ítems de la orden
+   * @return el subtotal calculado
+   */
   private BigDecimal calculateSubtotal(List<OrderItem> items) {
     return items.stream()
         .map(OrderItem::getTotalPrice)
@@ -159,23 +204,53 @@ public class OrderService {
         .setScale(2, RoundingMode.HALF_UP);
   }
 
+  /**
+   * Calcula el impuesto de una orden aplicando la tasa fija {@link #TAX_RATE} al subtotal.
+   *
+   * @param subtotal subtotal de la orden
+   * @return el monto de impuesto calculado
+   */
   private BigDecimal calculateTaxAmount(BigDecimal subtotal) {
     return subtotal.multiply(TAX_RATE).setScale(2, RoundingMode.HALF_UP);
   }
 
+  /**
+   * Calcula el costo de envío de una orden.
+   *
+   * @return el costo de envío, actualmente fijo en {@link #DEFAULT_SHIPPING_AMOUNT}
+   */
   private BigDecimal calculateShippingAmount() {
     return DEFAULT_SHIPPING_AMOUNT.setScale(2, RoundingMode.HALF_UP);
   }
 
+  /**
+   * Calcula el total de una orden como la suma de subtotal, impuestos y envío.
+   *
+   * @param subtotal subtotal de la orden
+   * @param taxAmount monto de impuesto de la orden
+   * @param shippingAmount costo de envío de la orden
+   * @return el total calculado
+   */
   private BigDecimal calculateTotal(
       BigDecimal subtotal, BigDecimal taxAmount, BigDecimal shippingAmount) {
     return subtotal.add(taxAmount).add(shippingAmount).setScale(2, RoundingMode.HALF_UP);
   }
 
+  /**
+   * Genera un número de orden único con el prefijo {@code ORD-}.
+   *
+   * @return el número de orden generado
+   */
   private String generateOrderNumber() {
     return "ORD-" + UUID.randomUUID().toString().replace("-", "").substring(0, 8).toUpperCase();
   }
 
+  /**
+   * Busca una orden por id o lanza {@code 404 Not Found} si no existe.
+   *
+   * @param orderId id de la orden a buscar
+   * @return la orden encontrada
+   */
   private Order findOrderByIdOrFail(Long orderId) {
     return orderRepository
         .findById(orderId)
@@ -187,6 +262,12 @@ public class OrderService {
             });
   }
 
+  /**
+   * Busca el cliente de una orden por id o lanza {@code 404 Not Found} si no existe.
+   *
+   * @param request datos de la orden, con el id del cliente a buscar
+   * @return el cliente encontrado
+   */
   private Customer findCustomerByIdOrFail(CreateOrderRequest request) {
     return customerRepository
         .findById(request.getCustomerId())
@@ -198,6 +279,12 @@ public class OrderService {
             });
   }
 
+  /**
+   * Busca un libro por id o lanza {@code 404 Not Found} si no existe.
+   *
+   * @param bookId id del libro a buscar
+   * @return el libro encontrado
+   */
   private Book findBookByIdOrFail(Long bookId) {
     return bookRepository
         .findById(bookId)

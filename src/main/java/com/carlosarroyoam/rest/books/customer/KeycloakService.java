@@ -18,6 +18,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+/**
+ * Sincroniza los clientes de la API con Keycloak, creando el usuario correspondiente en el realm
+ * configurado a través del Admin Client.
+ */
 @Service
 public class KeycloakService {
   private final Keycloak keycloak;
@@ -28,6 +32,15 @@ public class KeycloakService {
     this.keycloakAdminProps = keycloakAdminProps;
   }
 
+  /**
+   * Crea en Keycloak el usuario asociado a un cliente recién registrado, con el rol {@code
+   * App/Customer}. No realiza ninguna acción si ya existe un usuario con el mismo nombre de
+   * usuario o correo electrónico.
+   *
+   * @param request datos del cliente recién creado
+   * @param customerId id del cliente en la base de datos de la API, almacenado como atributo del
+   *     usuario en Keycloak
+   */
   public void createUser(CreateCustomerRequest request, Long customerId) {
     UsersResource usersResource = keycloak.realm(keycloakAdminProps.getRealm()).users();
 

@@ -26,6 +26,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+/**
+ * Contiene la lógica de negocio de {@link Shipment}: búsqueda paginada con filtros, consulta por
+ * id y actualización de estado, reflejando el cambio en el estado de la {@link Order} asociada.
+ */
 @Service
 public class ShipmentService {
   private static final Logger log = LoggerFactory.getLogger(ShipmentService.class);
@@ -37,6 +41,13 @@ public class ShipmentService {
     this.orderRepository = orderRepository;
   }
 
+  /**
+   * Busca envíos de forma paginada aplicando los filtros de {@link ShipmentSpecs}.
+   *
+   * @param shipmentSpecs filtros opcionales de búsqueda
+   * @param pageable configuración de página y orden
+   * @return la página de envíos encontrados
+   */
   @Transactional(readOnly = true)
   public PagedResponse<ShipmentResponse> findAll(ShipmentSpecs shipmentSpecs, Pageable pageable) {
     Specification<Shipment> spec =
@@ -60,12 +71,24 @@ public class ShipmentService {
         shipments.map(ShipmentResponseMapper.INSTANCE::toDto));
   }
 
+  /**
+   * Busca un envío por su id.
+   *
+   * @param shipmentId id del envío a buscar
+   * @return el envío encontrado
+   */
   @Transactional(readOnly = true)
   public ShipmentResponse findById(Long shipmentId) {
     Shipment shipmentById = findShipmentByIdOrFail(shipmentId);
     return ShipmentResponseMapper.INSTANCE.toDto(shipmentById);
   }
 
+  /**
+   * Actualiza el estado de un envío y refleja el cambio en el estado de su orden asociada.
+   *
+   * @param shipmentId id del envío a actualizar
+   * @param request nuevo estado del envío
+   */
   @Transactional
   public void updateStatus(Long shipmentId, UpdateShipmentStatusRequest request) {
     LocalDateTime now = LocalDateTime.now();
@@ -80,6 +103,12 @@ public class ShipmentService {
     orderRepository.save(orderById);
   }
 
+  /**
+   * Busca un envío por id o lanza {@code 404 Not Found} si no existe.
+   *
+   * @param shipmentId id del envío a buscar
+   * @return el envío encontrado
+   */
   private Shipment findShipmentByIdOrFail(Long shipmentId) {
     return shipmentRepository
         .findById(shipmentId)
@@ -91,6 +120,13 @@ public class ShipmentService {
             });
   }
 
+  /**
+   * Resuelve el estado que debe tomar una orden a partir del nuevo estado de su envío.
+   *
+   * @param shipmentStatus nuevo estado del envío
+   * @param currentStatus estado actual de la orden, usado cuando el envío queda {@code PENDING}
+   * @return el estado que debe tomar la orden
+   */
   private OrderStatus resolveOrderStatusFromShipment(
       ShipmentStatus shipmentStatus, OrderStatus currentStatus) {
     return switch (shipmentStatus) {
@@ -101,6 +137,12 @@ public class ShipmentService {
     };
   }
 
+  /**
+   * Busca una orden por id o lanza {@code 404 Not Found} si no existe.
+   *
+   * @param orderId id de la orden a buscar
+   * @return la orden encontrada
+   */
   private Order findOrderByIdOrFail(Long orderId) {
     return orderRepository
         .findById(orderId)

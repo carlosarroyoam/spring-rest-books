@@ -38,6 +38,10 @@ public class OrderResponse {
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
 
+  /**
+   * Compone {@link OrderResponse} a partir de {@link Order}, incluyendo ítems, cliente, pago y
+   * envío.
+   */
   @Mapper(
       nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
       unmappedTargetPolicy = ReportingPolicy.IGNORE,

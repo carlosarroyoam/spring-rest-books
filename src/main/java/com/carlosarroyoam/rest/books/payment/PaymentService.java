@@ -31,6 +31,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+/**
+ * Contiene la lógica de negocio de {@link Payment}: búsqueda paginada con filtros, registro de un
+ * pago (con actualización del estado de la {@link Order} y creación del {@link Shipment} asociado
+ * si aún no existe) y actualización de estado.
+ */
 @Service
 public class PaymentService {
   private static final Logger log = LoggerFactory.getLogger(PaymentService.class);
@@ -47,6 +52,13 @@ public class PaymentService {
     this.shipmentRepository = shipmentRepository;
   }
 
+  /**
+   * Busca pagos de forma paginada aplicando los filtros de {@link PaymentSpecs}.
+   *
+   * @param paymentSpecs filtros opcionales de búsqueda
+   * @param pageable configuración de página y orden
+   * @return la página de pagos encontrados
+   */
   @Transactional(readOnly = true)
   public PagedResponse<PaymentResponse> findAll(PaymentSpecs paymentSpecs, Pageable pageable) {
     Specification<Payment> spec =
@@ -73,12 +85,26 @@ public class PaymentService {
         payments.map(PaymentResponseMapper.INSTANCE::toDto));
   }
 
+  /**
+   * Busca un pago por su id.
+   *
+   * @param paymentId id del pago a buscar
+   * @return el pago encontrado
+   */
   @Transactional(readOnly = true)
   public PaymentResponse findById(Long paymentId) {
     Payment paymentById = findPaymentByIdOrFail(paymentId);
     return PaymentResponseMapper.INSTANCE.toDto(paymentById);
   }
 
+  /**
+   * Registra el pago de una orden con estado {@code COMPLETED}, marca la orden como {@code
+   * CONFIRMED} y crea su envío si todavía no existe. Rechaza registrar un segundo pago para la
+   * misma orden.
+   *
+   * @param request datos del pago a registrar
+   * @return el pago creado
+   */
   @Transactional
   public PaymentResponse create(CreatePaymentRequest request) {
     Order orderById = findOrderByIdOrFail(request.getOrderId());
@@ -112,6 +138,12 @@ public class PaymentService {
     return PaymentResponseMapper.INSTANCE.toDto(savedPayment);
   }
 
+  /**
+   * Actualiza el estado de un pago y refleja el cambio en el estado de su orden asociada.
+   *
+   * @param paymentId id del pago a actualizar
+   * @param request nuevo estado del pago
+   */
   @Transactional
   public void updateStatus(Long paymentId, UpdatePaymentStatusRequest request) {
     LocalDateTime now = LocalDateTime.now();
@@ -126,6 +158,13 @@ public class PaymentService {
     orderRepository.save(orderById);
   }
 
+  /**
+   * Resuelve el estado que debe tomar una orden a partir del nuevo estado de su pago.
+   *
+   * @param paymentStatus nuevo estado del pago
+   * @param currentStatus estado actual de la orden, usado cuando el pago queda {@code PENDING}
+   * @return el estado que debe tomar la orden
+   */
   private OrderStatus resolveOrderStatusFromPayment(
       PaymentStatus paymentStatus, OrderStatus currentStatus) {
     return switch (paymentStatus) {
@@ -136,6 +175,11 @@ public class PaymentService {
     };
   }
 
+  /**
+   * Crea un envío con estado {@code PENDING} para la orden si todavía no tiene uno.
+   *
+   * @param order orden para la que se crea el envío
+   */
   private void createShipmentIfMissing(Order order) {
     if (shipmentRepository.findByOrderId(order.getId()).isPresent()) {
       return;
@@ -160,10 +204,21 @@ public class PaymentService {
     shipmentRepository.save(shipment);
   }
 
+  /**
+   * Genera un identificador de transacción único con el prefijo {@code PAY-}.
+   *
+   * @return el identificador de transacción generado
+   */
   private String generateTransactionId() {
     return "PAY-" + UUID.randomUUID().toString().replace("-", "").substring(0, 12).toUpperCase();
   }
 
+  /**
+   * Busca un pago por id o lanza {@code 404 Not Found} si no existe.
+   *
+   * @param paymentId id del pago a buscar
+   * @return el pago encontrado
+   */
   private Payment findPaymentByIdOrFail(Long paymentId) {
     return paymentRepository
         .findById(paymentId)
@@ -175,6 +230,12 @@ public class PaymentService {
             });
   }
 
+  /**
+   * Busca una orden por id o lanza {@code 404 Not Found} si no existe.
+   *
+   * @param orderId id de la orden a buscar
+   * @return la orden encontrada
+   */
   private Order findOrderByIdOrFail(Long orderId) {
     return orderRepository
         .findById(orderId)

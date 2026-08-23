@@ -23,6 +23,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+/**
+ * Contiene la lógica de negocio de {@link Customer}: búsqueda paginada con filtros, alta con
+ * validación de correo y nombre de usuario únicos y provisión del usuario en Keycloak a través de
+ * {@link KeycloakService}, actualización y baja lógica.
+ */
 @Service
 public class CustomerService {
   private static final Logger log = LoggerFactory.getLogger(CustomerService.class);
@@ -34,6 +39,13 @@ public class CustomerService {
     this.keycloakService = keycloakService;
   }
 
+  /**
+   * Busca clientes de forma paginada aplicando los filtros de {@link CustomerSpecs}.
+   *
+   * @param customerSpecs filtros opcionales de búsqueda
+   * @param pageable configuración de página y orden
+   * @return la página de clientes encontrados
+   */
   @Transactional(readOnly = true)
   public PagedResponse<CustomerResponse> findAll(CustomerSpecs customerSpecs, Pageable pageable) {
     Specification<Customer> spec =
@@ -51,12 +63,25 @@ public class CustomerService {
         customers.map(CustomerResponseMapper.INSTANCE::toDto));
   }
 
+  /**
+   * Busca un cliente por su id.
+   *
+   * @param customerId id del cliente a buscar
+   * @return el cliente encontrado
+   */
   @Transactional(readOnly = true)
   public CustomerResponse findById(Long customerId) {
     Customer customerById = findCustomerByIdOrFail(customerId);
     return CustomerResponseMapper.INSTANCE.toDto(customerById);
   }
 
+  /**
+   * Crea un cliente con estado {@code ACTIVE} y provisiona su usuario en Keycloak, rechazando
+   * nombre de usuario y correo electrónico duplicados.
+   *
+   * @param request datos del cliente a crear
+   * @return el cliente creado
+   */
   @Transactional
   public CustomerResponse create(CreateCustomerRequest request) {
     if (customerRepository.existsByUsername(request.getUsername())) {
@@ -88,6 +113,12 @@ public class CustomerService {
     return CustomerResponseMapper.INSTANCE.toDto(createdCustomer);
   }
 
+  /**
+   * Actualiza el nombre y apellido de un cliente existente.
+   *
+   * @param customerId id del cliente a actualizar
+   * @param request nuevos datos del cliente
+   */
   @Transactional
   public void update(Long customerId, UpdateCustomerRequest request) {
     LocalDateTime now = LocalDateTime.now();
@@ -98,6 +129,11 @@ public class CustomerService {
     customerRepository.save(customerById);
   }
 
+  /**
+   * Marca un cliente como {@code DELETED} y registra la fecha de baja, sin eliminar el registro.
+   *
+   * @param customerId id del cliente a eliminar
+   */
   @Transactional
   public void deleteById(Long customerId) {
     LocalDateTime now = LocalDateTime.now();
@@ -108,6 +144,12 @@ public class CustomerService {
     customerRepository.save(customerById);
   }
 
+  /**
+   * Busca un cliente por id o lanza {@code 404 Not Found} si no existe.
+   *
+   * @param customerId id del cliente a buscar
+   * @return el cliente encontrado
+   */
   private Customer findCustomerByIdOrFail(Long customerId) {
     return customerRepository
         .findById(customerId)

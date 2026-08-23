@@ -20,6 +20,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Representa un autor de libros. Mantiene una relación {@code many-to-many} con {@link Book} y
+ * soporta baja lógica mediante {@link AuthorStatus} y {@code deletedAt}.
+ */
 @Entity
 @Table(name = "authors")
 @Getter
