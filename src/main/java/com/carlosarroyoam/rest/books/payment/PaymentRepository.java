@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 /** Acceso a datos de {@link Payment} mediante Spring Data JPA. */
 public interface PaymentRepository
     extends JpaRepository<Payment, Long>, JpaSpecificationExecutor<Payment> {
-
   /**
    * Indica si existe un pago para la orden dada.
    *

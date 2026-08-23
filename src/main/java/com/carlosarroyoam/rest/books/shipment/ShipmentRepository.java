@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 /** Acceso a datos de {@link Shipment} mediante Spring Data JPA. */
 public interface ShipmentRepository
     extends JpaRepository<Shipment, Long>, JpaSpecificationExecutor<Shipment> {
-
   /**
    * Busca el envío de una orden.
    *

@@ -77,7 +77,9 @@ public class CustomerService {
 
   /**
    * Crea un cliente con estado {@code ACTIVE} y provisiona su usuario en Keycloak, rechazando
-   * nombre de usuario y correo electrónico duplicados.
+   * nombre de usuario y correo electrónico duplicados. Si la provisión en Keycloak falla (incluido
+   * el caso en que ya exista un usuario con el mismo nombre de usuario o correo electrónico), el
+   * alta del cliente se revierte por completo.
    *
    * @param request datos del cliente a crear
    * @return el cliente creado

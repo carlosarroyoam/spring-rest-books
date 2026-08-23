@@ -9,7 +9,6 @@ import org.springframework.data.jpa.repository.Query;
 /** Acceso a datos de {@link Author} mediante Spring Data JPA. */
 public interface AuthorRepository
     extends JpaRepository<Author, Long>, JpaSpecificationExecutor<Author> {
-
   /**
    * Busca los autores asociados a un libro.
    *

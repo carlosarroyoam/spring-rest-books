@@ -14,6 +14,8 @@ import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -24,6 +26,7 @@ import org.springframework.web.server.ResponseStatusException;
  */
 @Service
 public class KeycloakService {
+  private static final Logger log = LoggerFactory.getLogger(KeycloakService.class);
   private final Keycloak keycloak;
   private final KeycloakAdminProps keycloakAdminProps;
 
@@ -34,8 +37,9 @@ public class KeycloakService {
 
   /**
    * Crea en Keycloak el usuario asociado a un cliente recién registrado, con el rol {@code
-   * App/Customer}. No realiza ninguna acción si ya existe un usuario con el mismo nombre de
-   * usuario o correo electrónico.
+   * App/Customer}. Si ya existe un usuario con el mismo nombre de usuario o correo electrónico,
+   * se considera un estado inconsistente (el cliente ya fue validado como único en la base de
+   * datos local) y se rechaza la operación en lugar de omitirla en silencio.
    *
    * @param request datos del cliente recién creado
    * @param customerId id del cliente en la base de datos de la API, almacenado como atributo del
@@ -50,7 +54,15 @@ public class KeycloakService {
         usersResource.searchByEmail(request.getEmail(), true);
 
     if (!existingUsersByUsername.isEmpty() || !existingUsersByEmail.isEmpty()) {
-      return;
+      log.warn(
+          "{}: a Keycloak user already exists for username '{}' or email '{}', but customer {}"
+              + " passed the local uniqueness check",
+          AppMessages.USER_NOT_CREATED_EXCEPTION,
+          request.getUsername(),
+          request.getEmail(),
+          customerId);
+      throw new ResponseStatusException(
+          HttpStatus.INTERNAL_SERVER_ERROR, AppMessages.USER_NOT_CREATED_EXCEPTION);
     }
 
     Map<String, List<String>> attributes = new HashMap<>();
@@ -71,21 +83,64 @@ public class KeycloakService {
     user.setCredentials(Collections.singletonList(credential));
 
     try (Response response = usersResource.create(user)) {
-      if (Status.CREATED.getStatusCode() != response.getStatus()) {
+      if (Status.CREATED.getStatusCode() != response.getStatus()
+          || response.getLocation() == null) {
+        log.warn(
+            "{}: Keycloak responded with status {} and Location header {}",
+            AppMessages.USER_NOT_CREATED_EXCEPTION,
+            response.getStatus(),
+            response.getLocation());
         throw new ResponseStatusException(
             HttpStatus.INTERNAL_SERVER_ERROR, AppMessages.USER_NOT_CREATED_EXCEPTION);
       }
 
       String keycloakUserId = response.getLocation().getPath().replaceAll(".*/([^/]+)$", "$1");
 
-      RoleRepresentation role =
-          keycloak
-              .realm(keycloakAdminProps.getRealm())
-              .roles()
-              .get("App/Customer")
-              .toRepresentation();
+      try {
+        RoleRepresentation role =
+            keycloak
+                .realm(keycloakAdminProps.getRealm())
+                .roles()
+                .get("App/Customer")
+                .toRepresentation();
 
-      usersResource.get(keycloakUserId).roles().realmLevel().add(Collections.singletonList(role));
+        usersResource
+            .get(keycloakUserId)
+            .roles()
+            .realmLevel()
+            .add(Collections.singletonList(role));
+      } catch (RuntimeException ex) {
+        log.warn(
+            "{}: rolling back Keycloak user {} created for customer {} after role assignment"
+                + " failed",
+            AppMessages.USER_NOT_CREATED_EXCEPTION,
+            keycloakUserId,
+            customerId,
+            ex);
+        removeOrphanedUser(usersResource, keycloakUserId);
+        throw new ResponseStatusException(
+            HttpStatus.INTERNAL_SERVER_ERROR, AppMessages.USER_NOT_CREATED_EXCEPTION);
+      }
+    }
+  }
+
+  /**
+   * Elimina en Keycloak un usuario que quedó huérfano tras fallar un paso posterior a su creación
+   * (p. ej. la asignación de rol), evitando dejarlo sin la sincronización correspondiente en la
+   * base de datos local.
+   *
+   * @param usersResource recurso de usuarios del realm configurado
+   * @param keycloakUserId id del usuario a eliminar
+   */
+  private void removeOrphanedUser(UsersResource usersResource, String keycloakUserId) {
+    try {
+      usersResource.get(keycloakUserId).remove();
+    } catch (RuntimeException cleanupEx) {
+      log.warn(
+          "{}: failed to roll back orphaned Keycloak user {}, manual cleanup required",
+          AppMessages.USER_NOT_CREATED_EXCEPTION,
+          keycloakUserId,
+          cleanupEx);
     }
   }
 }

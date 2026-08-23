@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 /** Acceso a datos de {@link Customer} mediante Spring Data JPA. */
 public interface CustomerRepository
     extends JpaRepository<Customer, Long>, JpaSpecificationExecutor<Customer> {
-
   /**
    * Busca un cliente por su correo electrónico.
    *
