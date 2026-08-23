@@ -3,6 +3,7 @@ package com.carlosarroyoam.rest.books.support.security;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
+import org.jspecify.annotations.NonNull;
 import org.springframework.core.MethodParameter;
 import org.springframework.lang.Nullable;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -19,9 +20,9 @@ public class JwtArgumentResolver implements HandlerMethodArgumentResolver {
 
   @Override
   public Object resolveArgument(
-      MethodParameter parameter,
+      @NonNull MethodParameter parameter,
       @Nullable ModelAndViewContainer mavContainer,
-      NativeWebRequest webRequest,
+      @NonNull NativeWebRequest webRequest,
       @Nullable WebDataBinderFactory binderFactory) {
     Instant issuedAt = Instant.now();
     Map<String, Object> headers = Map.of("alg", "none");
