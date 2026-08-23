@@ -18,9 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Expone las operaciones REST sobre {@link
- * com.carlosarroyoam.rest.books.shipment.entity.Shipment}: listado paginado con filtros, consulta
- * por id y actualización de estado. Todas las operaciones requieren rol {@code App/Admin}.
+ * Expone las operaciones REST sobre {@link com.carlosarroyoam.rest.books.shipment.entity.Shipment}:
+ * listado paginado con filtros, consulta por id y actualización de estado. Todas las operaciones
+ * requieren rol {@code App/Admin}.
  */
 @RestController
 @RequestMapping("/shipments")

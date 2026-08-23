@@ -19,9 +19,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/**
- * Representa el envío de una {@link Order}, con relación {@code one-to-one} a la orden enviada.
- */
+/** Representa el envío de una {@link Order}, con relación {@code one-to-one} a la orden enviada. */
 @Entity
 @Table(name = "shipments")
 @Getter

@@ -31,8 +31,8 @@ public class ApiExceptionResponseFactory {
    * @param status código de estado HTTP a reportar
    * @param message mensaje de error
    * @param request petición HTTP en curso
-   * @param details detalles adicionales del error, por ejemplo mensajes por campo; puede ser
-   *     {@code null}
+   * @param details detalles adicionales del error, por ejemplo mensajes por campo; puede ser {@code
+   *     null}
    * @return la respuesta de error construida
    */
   public AppExceptionResponse build(

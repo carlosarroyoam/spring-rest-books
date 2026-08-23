@@ -31,9 +31,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
- * Contiene la lógica de negocio de {@link Book}: búsqueda paginada con filtros, alta con
- * validación de ISBN único, actualización, baja lógica y consulta de autores asociados a través
- * de {@link AuthorRepository}.
+ * Contiene la lógica de negocio de {@link Book}: búsqueda paginada con filtros, alta con validación
+ * de ISBN único, actualización, baja lógica y consulta de autores asociados a través de {@link
+ * AuthorRepository}.
  */
 @Service
 public class BookService {

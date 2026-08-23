@@ -24,8 +24,8 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 /**
- * Configura la cadena de seguridad HTTP: CORS, sesiones sin estado, autenticación OAuth2 con JWT
- * y el manejo de errores de autenticación y autorización.
+ * Configura la cadena de seguridad HTTP: CORS, sesiones sin estado, autenticación OAuth2 con JWT y
+ * el manejo de errores de autenticación y autorización.
  */
 @Configuration
 @EnableMethodSecurity
@@ -131,8 +131,8 @@ class WebSecurityConfig {
   }
 
   /**
-   * Construye el origen de configuración de CORS a partir de {@link CorsProps}, aplicándola a
-   * todas las rutas.
+   * Construye el origen de configuración de CORS a partir de {@link CorsProps}, aplicándola a todas
+   * las rutas.
    *
    * @param corsProps propiedades de configuración de CORS
    * @return el origen de configuración de CORS

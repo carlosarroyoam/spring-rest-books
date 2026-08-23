@@ -25,8 +25,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Representa un libro del catálogo. Mantiene una relación {@code many-to-many} con {@link Author}
- * y soporta baja lógica mediante {@link BookStatus} y {@code deletedAt}.
+ * Representa un libro del catálogo. Mantiene una relación {@code many-to-many} con {@link Author} y
+ * soporta baja lógica mediante {@link BookStatus} y {@code deletedAt}.
  */
 @Entity
 @Table(name = "books")

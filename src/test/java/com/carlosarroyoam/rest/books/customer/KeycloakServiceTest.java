@@ -68,7 +68,8 @@ class KeycloakServiceTest {
   @DisplayName(
       "Given a Keycloak user already exists by username, when create user, then throws internal"
           + " server error exception and does not create the user")
-  void givenExistingKeycloakUserByUsername_whenCreateUser_thenThrowsExceptionAndDoesNotCreateUser() {
+  void
+      givenExistingKeycloakUserByUsername_whenCreateUser_thenThrowsExceptionAndDoesNotCreateUser() {
     when(usersResource.searchByUsername(anyString(), anyBoolean()))
         .thenReturn(List.of(new UserRepresentation()));
     when(usersResource.searchByEmail(anyString(), anyBoolean())).thenReturn(List.of());

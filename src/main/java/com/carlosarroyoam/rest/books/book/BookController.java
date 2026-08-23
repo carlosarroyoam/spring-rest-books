@@ -25,9 +25,9 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 /**
- * Expone las operaciones REST sobre {@link com.carlosarroyoam.rest.books.book.entity.Book}:
- * listado paginado con filtros, consulta por id, alta, actualización, baja lógica y consulta de
- * autores asociados.
+ * Expone las operaciones REST sobre {@link com.carlosarroyoam.rest.books.book.entity.Book}: listado
+ * paginado con filtros, consulta por id, alta, actualización, baja lógica y consulta de autores
+ * asociados.
  */
 @RestController
 @RequestMapping("/books")

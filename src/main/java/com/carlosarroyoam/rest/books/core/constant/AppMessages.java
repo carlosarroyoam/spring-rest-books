@@ -6,7 +6,7 @@ public class AppMessages {
   private AppMessages() {
     throw new IllegalAccessError(ILLEGAL_ACCESS_EXCEPTION);
   }
-  
+
   public static final String ILLEGAL_ACCESS_EXCEPTION = "Illegal access to utility class";
 
   public static final String BOOK_NOT_FOUND_EXCEPTION = "Book not found";
@@ -28,5 +28,4 @@ public class AppMessages {
   public static final String PAYMENT_ALREADY_EXISTS_EXCEPTION = "Payment already exists for order";
 
   public static final String SHIPMENT_NOT_FOUND_EXCEPTION = "Shipment not found";
-
 }

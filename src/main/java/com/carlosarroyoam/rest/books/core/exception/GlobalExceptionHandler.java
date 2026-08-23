@@ -22,8 +22,8 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 /**
- * Traduce las excepciones no controladas de la aplicación a respuestas HTTP consistentes con
- * {@link AppExceptionResponse}, delegando la construcción del cuerpo en {@link
+ * Traduce las excepciones no controladas de la aplicación a respuestas HTTP consistentes con {@link
+ * AppExceptionResponse}, delegando la construcción del cuerpo en {@link
  * ApiExceptionResponseFactory}.
  */
 @RestControllerAdvice
@@ -36,8 +36,8 @@ public class GlobalExceptionHandler {
   }
 
   /**
-   * Traduce una {@link ResponseStatusException} a una respuesta con el código de estado indicado
-   * en la propia excepción.
+   * Traduce una {@link ResponseStatusException} a una respuesta con el código de estado indicado en
+   * la propia excepción.
    *
    * @param ex excepción capturada
    * @param request petición HTTP en curso
@@ -122,8 +122,7 @@ public class GlobalExceptionHandler {
   }
 
   /**
-   * Traduce el uso de un método HTTP no soportado por el endpoint a {@code 405 Method Not
-   * Allowed}.
+   * Traduce el uso de un método HTTP no soportado por el endpoint a {@code 405 Method Not Allowed}.
    *
    * @param ex excepción capturada
    * @param request petición HTTP en curso
@@ -160,8 +159,7 @@ public class GlobalExceptionHandler {
 
   /**
    * Traduce un fallo de autorización no capturado por {@link
-   * com.carlosarroyoam.rest.books.core.security.CustomAccessDeniedHandler} a {@code 403
-   * Forbidden}.
+   * com.carlosarroyoam.rest.books.core.security.CustomAccessDeniedHandler} a {@code 403 Forbidden}.
    *
    * @param ex excepción capturada
    * @param request petición HTTP en curso

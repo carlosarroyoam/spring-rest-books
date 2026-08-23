@@ -36,8 +36,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 /**
  * Contiene la lógica de negocio de {@link Order}: búsqueda paginada con filtros, alta calculando
- * subtotal, impuestos y total a partir de los {@link OrderItem}, y actualización de datos de
- * envío y facturación.
+ * subtotal, impuestos y total a partir de los {@link OrderItem}, y actualización de datos de envío
+ * y facturación.
  */
 @Service
 public class OrderService {
@@ -157,8 +157,8 @@ public class OrderService {
   }
 
   /**
-   * Construye los ítems de una orden a partir de los libros solicitados, fijando el precio
-   * unitario y total de cada uno según el precio actual del libro.
+   * Construye los ítems de una orden a partir de los libros solicitados, fijando el precio unitario
+   * y total de cada uno según el precio actual del libro.
    *
    * @param requestItems libros y cantidades solicitados
    * @param now fecha y hora a registrar en cada ítem

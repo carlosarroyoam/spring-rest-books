@@ -31,8 +31,8 @@ public class SpecificationBuilder<T> {
   /**
    * Combina todas las condiciones acumuladas con AND.
    *
-   * @return la especificación resultante, o una condición siempre verdadera si no se agregó
-   *     ninguna condición
+   * @return la especificación resultante, o una condición siempre verdadera si no se agregó ninguna
+   *     condición
    */
   public Specification<T> build() {
     return specs.stream().reduce(Specification::and).orElse((root, query, cb) -> cb.conjunction());
@@ -70,8 +70,8 @@ public class SpecificationBuilder<T> {
   }
 
   /**
-   * Agrega una condición de rango entre {@code min} y {@code max}. Si solo se define uno de los
-   * dos límites, agrega la condición equivalente de mayor-o-igual o menor-o-igual.
+   * Agrega una condición de rango entre {@code min} y {@code max}. Si solo se define uno de los dos
+   * límites, agrega la condición equivalente de mayor-o-igual o menor-o-igual.
    *
    * @param path función que obtiene el atributo a comparar
    * @param min límite inferior del rango, opcional

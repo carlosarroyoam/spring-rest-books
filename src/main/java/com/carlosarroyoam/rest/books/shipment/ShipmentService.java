@@ -27,8 +27,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
- * Contiene la lógica de negocio de {@link Shipment}: búsqueda paginada con filtros, consulta por
- * id y actualización de estado, reflejando el cambio en el estado de la {@link Order} asociada.
+ * Contiene la lógica de negocio de {@link Shipment}: búsqueda paginada con filtros, consulta por id
+ * y actualización de estado, reflejando el cambio en el estado de la {@link Order} asociada.
  */
 @Service
 public class ShipmentService {
