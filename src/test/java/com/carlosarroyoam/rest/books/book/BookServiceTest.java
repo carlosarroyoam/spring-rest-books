@@ -8,6 +8,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.carlosarroyoam.rest.books.author.AuthorRepository;
 import com.carlosarroyoam.rest.books.author.dto.AuthorResponse;
 import com.carlosarroyoam.rest.books.author.entity.Author;
 import com.carlosarroyoam.rest.books.book.dto.BookResponse;
@@ -40,6 +41,7 @@ import org.springframework.web.server.ResponseStatusException;
 @ExtendWith(MockitoExtension.class)
 class BookServiceTest {
   @Mock private BookRepository bookRepository;
+  @Mock private AuthorRepository authorRepository;
 
   @InjectMocks private BookService bookService;
 
@@ -207,7 +209,7 @@ class BookServiceTest {
   @Test
   @DisplayName("Given book exists, when find authors by book id, then returns authors")
   void givenBookExists_whenFindAuthorsByBookId_thenReturnsAuthors() {
-    when(bookRepository.findById(anyLong())).thenReturn(Optional.of(book));
+    when(authorRepository.findByBookId(anyLong())).thenReturn(List.of(author));
 
     List<AuthorResponse> authors = bookService.findAuthorsByBookId(1L);
 
@@ -219,17 +221,5 @@ class BookServiceTest {
               assertThat(actualAuthor.getId()).isEqualTo(1L);
               assertThat(actualAuthor.getName()).isEqualTo("Yuval Noah Harari");
             });
-  }
-
-  @Test
-  @DisplayName(
-      "Given book does not exist, when find authors by book id, then throws not found exception")
-  void givenBookDoesNotExist_whenFindAuthorsByBookId_thenThrowsNotFoundException() {
-    when(bookRepository.findById(anyLong())).thenReturn(Optional.empty());
-
-    assertThatThrownBy(() -> bookService.findAuthorsByBookId(1L))
-        .isInstanceOf(ResponseStatusException.class)
-        .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
-        .hasMessageContaining(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
   }
 }

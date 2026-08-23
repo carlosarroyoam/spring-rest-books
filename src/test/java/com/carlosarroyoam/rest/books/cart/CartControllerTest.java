@@ -11,8 +11,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.carlosarroyoam.rest.books.cart.dto.CartResponse;
 import com.carlosarroyoam.rest.books.cart.dto.UpdateCartItemRequest;
-import com.carlosarroyoam.rest.books.common.JwtArgumentResolver;
+import com.carlosarroyoam.rest.books.core.exception.ApiExceptionResponseFactory;
 import com.carlosarroyoam.rest.books.core.exception.GlobalExceptionHandler;
+import com.carlosarroyoam.rest.books.support.security.JwtArgumentResolver;
+import com.carlosarroyoam.rest.books.support.testutils.TestObjectMappers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,6 +24,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -36,12 +39,13 @@ class CartControllerTest {
 
   @BeforeEach
   void setup() {
-    mapper = new ObjectMapper();
-    mapper.findAndRegisterModules();
+    mapper = TestObjectMappers.snakeCase();
 
     mockMvc =
         MockMvcBuilders.standaloneSetup(cartController)
-            .setControllerAdvice(GlobalExceptionHandler.class)
+            .setControllerAdvice(new GlobalExceptionHandler(new ApiExceptionResponseFactory()))
+            .setMessageConverters(
+                new MappingJackson2HttpMessageConverter(TestObjectMappers.snakeCase()))
             .setCustomArgumentResolvers(new JwtArgumentResolver())
             .build();
   }

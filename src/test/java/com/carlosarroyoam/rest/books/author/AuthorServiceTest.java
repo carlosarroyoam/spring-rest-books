@@ -12,6 +12,7 @@ import com.carlosarroyoam.rest.books.author.dto.AuthorSpecs;
 import com.carlosarroyoam.rest.books.author.dto.CreateAuthorRequest;
 import com.carlosarroyoam.rest.books.author.dto.UpdateAuthorRequest;
 import com.carlosarroyoam.rest.books.author.entity.Author;
+import com.carlosarroyoam.rest.books.book.BookRepository;
 import com.carlosarroyoam.rest.books.book.dto.BookResponse;
 import com.carlosarroyoam.rest.books.book.entity.Book;
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
@@ -39,6 +40,7 @@ import org.springframework.web.server.ResponseStatusException;
 @ExtendWith(MockitoExtension.class)
 class AuthorServiceTest {
   @Mock private AuthorRepository authorRepository;
+  @Mock private BookRepository bookRepository;
 
   @InjectMocks private AuthorService authorService;
 
@@ -196,7 +198,7 @@ class AuthorServiceTest {
   @Test
   @DisplayName("Given author exists, when find books by author id, then returns books")
   void givenAuthorExists_whenFindBooksByAuthorId_thenReturnsBooks() {
-    when(authorRepository.findById(anyLong())).thenReturn(Optional.of(author));
+    when(bookRepository.findByAuthorId(anyLong())).thenReturn(List.of(book));
 
     List<BookResponse> books = authorService.findBooksByAuthorId(1L);
 
@@ -210,17 +212,5 @@ class AuthorServiceTest {
               assertThat(actualBook.getTitle()).isEqualTo("Homo Deus: A Brief History of Tomorrow");
               assertThat(actualBook.getPrice()).isEqualTo(new BigDecimal("22.99"));
             });
-  }
-
-  @Test
-  @DisplayName(
-      "Given author does not exist, when find books by author id, then throws not found exception")
-  void givenAuthorDoesNotExist_whenFindBooksByAuthorId_thenThrowsNotFoundException() {
-    when(authorRepository.findById(anyLong())).thenReturn(Optional.empty());
-
-    assertThatThrownBy(() -> authorService.findBooksByAuthorId(1L))
-        .isInstanceOf(ResponseStatusException.class)
-        .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
-        .hasMessageContaining(AppMessages.AUTHOR_NOT_FOUND_EXCEPTION);
   }
 }

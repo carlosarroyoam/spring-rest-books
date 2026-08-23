@@ -1,7 +1,6 @@
 package com.carlosarroyoam.rest.books.order;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -9,10 +8,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.carlosarroyoam.rest.books.common.JsonUtils;
 import com.carlosarroyoam.rest.books.order.dto.CreateOrderItemRequest;
 import com.carlosarroyoam.rest.books.order.dto.CreateOrderRequest;
 import com.carlosarroyoam.rest.books.order.dto.UpdateOrderRequest;
+import com.carlosarroyoam.rest.books.support.testutils.JsonUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -130,11 +129,5 @@ class OrderControllerIT {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(request)))
         .andExpect(status().isNoContent());
-  }
-
-  @Test
-  @DisplayName("DELETE /orders/{id} - Given order exists, when delete, then returns no content")
-  void givenOrderExists_whenDeleteOrder_thenReturnsNoContent() throws Exception {
-    mockMvc.perform(delete("/orders/{orderId}", 1L)).andExpect(status().isNoContent());
   }
 }

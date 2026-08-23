@@ -11,7 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.carlosarroyoam.rest.books.author.dto.CreateAuthorRequest;
 import com.carlosarroyoam.rest.books.author.dto.UpdateAuthorRequest;
-import com.carlosarroyoam.rest.books.common.JsonUtils;
+import com.carlosarroyoam.rest.books.support.testutils.JsonUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

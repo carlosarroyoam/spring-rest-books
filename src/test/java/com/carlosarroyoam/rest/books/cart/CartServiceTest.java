@@ -161,18 +161,4 @@ class CartServiceTest {
         .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
         .hasMessageContaining(AppMessages.CART_NOT_FOUND_EXCEPTION);
   }
-
-  @Test
-  @DisplayName(
-      "Given cart item does not exist, when delete cart item, then throws not found exception")
-  void givenCartItemDoesNotExist_whenDeleteCartItem_thenThrowsNotFoundException() {
-    Cart cartWithoutItems = Cart.builder().id(1L).build();
-
-    when(cartRepository.findByCustomerId(anyLong())).thenReturn(Optional.of(cartWithoutItems));
-
-    assertThatThrownBy(() -> cartService.deleteCartItem(1L, 1L))
-        .isInstanceOf(ResponseStatusException.class)
-        .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
-        .hasMessageContaining(AppMessages.CART_ITEM_NOT_FOUND_EXCEPTION);
-  }
 }

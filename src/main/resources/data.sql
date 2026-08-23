@@ -35,7 +35,7 @@ INSERT INTO order_items(order_id, book_id, quantity, unit_price, total_price, cr
 
 INSERT INTO payments(amount, method, status, transaction_id, order_id, created_at, updated_at) VALUES
 (53.34, 'CREDIT_CARD', 'COMPLETED', 'PAY-SEED-000001', 1, '2025-01-02 10:00:00', '2025-01-02 10:00:00'),
-(74.90, 'PAYPAL', 'COMPLETED', 'PAY-SEED-000002', 2, '2025-01-04 11:15:00', '2025-01-04 11:15:00');
+(74.90, 'BANK_TRANSFER', 'COMPLETED', 'PAY-SEED-000002', 2, '2025-01-04 11:15:00', '2025-01-04 11:15:00');
 
 INSERT INTO shipments(attention_name, address, phone, status, order_id, created_at, updated_at) VALUES
 ('Carlos Alberto Arroyo Martínez', '123 Main Street, Springfield', '5501011234', 'SHIPPED', 1, '2025-01-04 11:15:00', '2025-01-04 11:15:00'),

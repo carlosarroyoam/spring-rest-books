@@ -14,11 +14,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.carlosarroyoam.rest.books.core.dto.PagedResponse;
 import com.carlosarroyoam.rest.books.core.dto.PaginationResponse;
+import com.carlosarroyoam.rest.books.core.exception.ApiExceptionResponseFactory;
 import com.carlosarroyoam.rest.books.core.exception.GlobalExceptionHandler;
 import com.carlosarroyoam.rest.books.customer.dto.CreateCustomerRequest;
 import com.carlosarroyoam.rest.books.customer.dto.CustomerResponse;
 import com.carlosarroyoam.rest.books.customer.dto.CustomerSpecs;
 import com.carlosarroyoam.rest.books.customer.dto.UpdateCustomerRequest;
+import com.carlosarroyoam.rest.books.support.testutils.TestObjectMappers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,6 +33,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -45,12 +48,13 @@ class CustomerControllerTest {
 
   @BeforeEach
   void setup() {
-    mapper = new ObjectMapper();
-    mapper.findAndRegisterModules();
+    mapper = TestObjectMappers.snakeCase();
 
     mockMvc =
         MockMvcBuilders.standaloneSetup(customerController)
-            .setControllerAdvice(GlobalExceptionHandler.class)
+            .setControllerAdvice(new GlobalExceptionHandler(new ApiExceptionResponseFactory()))
+            .setMessageConverters(
+                new MappingJackson2HttpMessageConverter(TestObjectMappers.snakeCase()))
             .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
             .build();
   }
@@ -82,8 +86,8 @@ class CustomerControllerTest {
         .andExpect(jsonPath("$.items[0].id").value(1))
         .andExpect(jsonPath("$.pagination.page").value(0))
         .andExpect(jsonPath("$.pagination.size").value(25))
-        .andExpect(jsonPath("$.pagination.totalItems").value(1))
-        .andExpect(jsonPath("$.pagination.totalPages").value(1));
+        .andExpect(jsonPath("$.pagination.total_items").value(1))
+        .andExpect(jsonPath("$.pagination.total_pages").value(1));
   }
 
   @Test

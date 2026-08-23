@@ -1,4 +1,4 @@
-package com.carlosarroyoam.rest.books.common;
+package com.carlosarroyoam.rest.books.support.security;
 
 import java.time.Instant;
 import java.util.HashMap;

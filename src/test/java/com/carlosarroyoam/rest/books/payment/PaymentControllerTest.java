@@ -13,6 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.carlosarroyoam.rest.books.core.dto.PagedResponse;
 import com.carlosarroyoam.rest.books.core.dto.PaginationResponse;
+import com.carlosarroyoam.rest.books.core.exception.ApiExceptionResponseFactory;
 import com.carlosarroyoam.rest.books.core.exception.GlobalExceptionHandler;
 import com.carlosarroyoam.rest.books.payment.dto.CreatePaymentRequest;
 import com.carlosarroyoam.rest.books.payment.dto.PaymentResponse;
@@ -20,6 +21,7 @@ import com.carlosarroyoam.rest.books.payment.dto.PaymentSpecs;
 import com.carlosarroyoam.rest.books.payment.dto.UpdatePaymentStatusRequest;
 import com.carlosarroyoam.rest.books.payment.entity.PaymentMethod;
 import com.carlosarroyoam.rest.books.payment.entity.PaymentStatus;
+import com.carlosarroyoam.rest.books.support.testutils.TestObjectMappers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.math.BigDecimal;
 import java.util.List;
@@ -33,6 +35,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -47,12 +50,13 @@ class PaymentControllerTest {
 
   @BeforeEach
   void setup() {
-    mapper = new ObjectMapper();
-    mapper.findAndRegisterModules();
+    mapper = TestObjectMappers.snakeCase();
 
     mockMvc =
         MockMvcBuilders.standaloneSetup(paymentController)
-            .setControllerAdvice(GlobalExceptionHandler.class)
+            .setControllerAdvice(new GlobalExceptionHandler(new ApiExceptionResponseFactory()))
+            .setMessageConverters(
+                new MappingJackson2HttpMessageConverter(TestObjectMappers.snakeCase()))
             .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
             .build();
   }

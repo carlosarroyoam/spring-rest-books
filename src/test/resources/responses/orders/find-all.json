@@ -156,7 +156,7 @@
       "payment": {
         "id": 2,
         "amount": 74.90,
-        "method": "PAYPAL",
+        "method": "BANK_TRANSFER",
         "status": "COMPLETED",
         "transaction_id": "PAY-SEED-000002",
         "created_at": "2025-01-04T11:15:00",

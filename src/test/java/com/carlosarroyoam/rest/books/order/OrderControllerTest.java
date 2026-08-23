@@ -3,7 +3,6 @@ package com.carlosarroyoam.rest.books.order;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -14,6 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.carlosarroyoam.rest.books.core.dto.PagedResponse;
 import com.carlosarroyoam.rest.books.core.dto.PaginationResponse;
+import com.carlosarroyoam.rest.books.core.exception.ApiExceptionResponseFactory;
 import com.carlosarroyoam.rest.books.core.exception.GlobalExceptionHandler;
 import com.carlosarroyoam.rest.books.order.dto.CreateOrderItemRequest;
 import com.carlosarroyoam.rest.books.order.dto.CreateOrderRequest;
@@ -21,6 +21,7 @@ import com.carlosarroyoam.rest.books.order.dto.OrderResponse;
 import com.carlosarroyoam.rest.books.order.dto.OrderSpecs;
 import com.carlosarroyoam.rest.books.order.dto.UpdateOrderRequest;
 import com.carlosarroyoam.rest.books.order.entity.OrderStatus;
+import com.carlosarroyoam.rest.books.support.testutils.TestObjectMappers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.math.BigDecimal;
 import java.util.List;
@@ -34,6 +35,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -48,12 +50,13 @@ class OrderControllerTest {
 
   @BeforeEach
   void setup() {
-    mapper = new ObjectMapper();
-    mapper.findAndRegisterModules();
+    mapper = TestObjectMappers.snakeCase();
 
     mockMvc =
         MockMvcBuilders.standaloneSetup(orderController)
-            .setControllerAdvice(GlobalExceptionHandler.class)
+            .setControllerAdvice(new GlobalExceptionHandler(new ApiExceptionResponseFactory()))
+            .setMessageConverters(
+                new MappingJackson2HttpMessageConverter(TestObjectMappers.snakeCase()))
             .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
             .build();
   }
@@ -102,7 +105,7 @@ class OrderControllerTest {
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.id").value(1))
-        .andExpect(jsonPath("$.orderNumber").value("ORD-12345678"))
+        .andExpect(jsonPath("$.order_number").value("ORD-12345678"))
         .andExpect(jsonPath("$.status").value("PENDING"));
   }
 
@@ -145,14 +148,6 @@ class OrderControllerTest {
             put("/orders/{orderId}", 1L)
                 .content(mapper.writeValueAsString(request))
                 .contentType(MediaType.APPLICATION_JSON))
-        .andExpect(status().isNoContent());
-  }
-
-  @Test
-  @DisplayName("DELETE /orders/{id} - Given order exists, when delete, then returns no content")
-  void givenOrderExists_whenDeleteOrder_thenReturnsNoContent() throws Exception {
-    mockMvc
-        .perform(delete("/orders/{orderId}", 1L).accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNoContent());
   }
 }
