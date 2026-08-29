@@ -45,6 +45,22 @@ See `docs/openapi/api-docs.yaml` for OpenAPI specification.
 
 Schema defined in `src/main/resources/schema.sql` with initial data in `src/main/resources/data.sql`.
 
+## Logging
+
+Every log line emitted while serving an HTTP request is prefixed with a correlation block
+`[requestId username]`, populated automatically by two servlet filters and rendered by
+`src/main/resources/logback-spring.xml`:
+
+- `CorrelationIdFilter` reuses the inbound `X-Request-Id` header (or generates a UUID) and echoes it
+  back on the response.
+- `MdcUserContextFilter` adds the authenticated user, taken from the Keycloak JWT
+  `preferred_username` claim (falling back to `sub`); anonymous / `permitAll` requests render as
+  `anonymous`.
+
+Traces outside a request (startup, background threads) carry no block. A `401` for a missing or
+invalid token is resolved by Spring Security *before* `MdcUserContextFilter`, so those lines carry
+`requestId` but no username.
+
 ## Keycloak Notes
 Customer registration is not only a local database write. The application also provisions the user in Keycloak through `KeycloakService` and assigns the `App/Customer` realm role.
 

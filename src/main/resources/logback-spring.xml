@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Reutiliza la configuración de consola por defecto de Spring Boot y solo rellena su hueco de
+  correlación (LOG_CORRELATION_PATTERN) con un bloque construido a partir de las claves del MDC
+  pobladas por CorrelationIdFilter y MdcUserContextFilter: [traceId, username].
+
+  El bloque se envuelve en %replace(...) para que, cuando no hay requestId (logs de arranque, tareas
+  en segundo plano... cualquier traza fuera de una petición HTTP), desaparezca por completo del
+  patrón en vez de mostrarse vacío. El espacio separador va dentro del subpatrón de %replace, así
+  que no lo recorta el <property>.
+-->
+<configuration>
+  <property name="LOG_CORRELATION_PATTERN"
+      value="%replace([traceId=%X{requestId:-}, username=%X{username:-anonymous}] ){'\[traceId=, username=[^\]]*\] ', ''}"/>
+
+  <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+  <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+
+  <root level="INFO">
+    <appender-ref ref="CONSOLE"/>
+  </root>
+</configuration>

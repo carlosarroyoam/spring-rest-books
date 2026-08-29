@@ -1,5 +1,6 @@
 package com.carlosarroyoam.rest.books.core.config;
 
+import com.carlosarroyoam.rest.books.core.filter.MdcUserContextFilter;
 import com.carlosarroyoam.rest.books.core.property.CorsProps;
 import com.carlosarroyoam.rest.books.core.security.AuthoritiesConverter;
 import java.util.Collection;
@@ -16,6 +17,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
@@ -61,25 +63,25 @@ class WebSecurityConfig {
             ex -> {
               ex.authenticationEntryPoint(authenticationEntryPoint);
               ex.accessDeniedHandler(accessDeniedHandler);
-            });
+            })
+        .addFilterAfter(new MdcUserContextFilter(), BearerTokenAuthenticationFilter.class);
 
-    http.authorizeHttpRequests(
-        requests ->
-            requests
-                .requestMatchers(HttpMethod.GET, "/books/**")
-                .permitAll()
-                .requestMatchers(HttpMethod.GET, "/authors/**")
-                .permitAll()
-                .requestMatchers(HttpMethod.POST, "/customers")
-                .permitAll()
-                .requestMatchers("/h2-console/**")
-                .permitAll()
-                .requestMatchers("/actuator/**")
-                .permitAll()
-                .anyRequest()
-                .authenticated());
-
-    return http.build();
+    return http.authorizeHttpRequests(
+            requests ->
+                requests
+                    .requestMatchers(HttpMethod.GET, "/books/**")
+                    .permitAll()
+                    .requestMatchers(HttpMethod.GET, "/authors/**")
+                    .permitAll()
+                    .requestMatchers(HttpMethod.POST, "/customers")
+                    .permitAll()
+                    .requestMatchers("/h2-console/**")
+                    .permitAll()
+                    .requestMatchers("/actuator/**")
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated())
+        .build();
   }
 
   /**

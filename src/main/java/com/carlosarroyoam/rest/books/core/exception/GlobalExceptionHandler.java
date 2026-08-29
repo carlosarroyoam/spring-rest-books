@@ -184,8 +184,7 @@ public class GlobalExceptionHandler {
    */
   @ExceptionHandler({Exception.class})
   public ProblemDetail handleException(Exception ex, HttpServletRequest request) {
-    exceptionLogger.log(
-        HttpStatus.INTERNAL_SERVER_ERROR, "Unhandled exception", request, ex);
+    exceptionLogger.log(HttpStatus.INTERNAL_SERVER_ERROR, "Unhandled exception", request, ex);
     return problemDetailFactory.build(
         HttpStatus.INTERNAL_SERVER_ERROR, "Whoops! Something went wrong", request);
   }
