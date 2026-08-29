@@ -19,8 +19,8 @@ import com.carlosarroyoam.rest.books.book.dto.CreateBookRequest;
 import com.carlosarroyoam.rest.books.book.dto.UpdateBookRequest;
 import com.carlosarroyoam.rest.books.core.dto.PagedResponse;
 import com.carlosarroyoam.rest.books.core.dto.PaginationResponse;
-import com.carlosarroyoam.rest.books.core.exception.ApiExceptionResponseFactory;
 import com.carlosarroyoam.rest.books.core.exception.GlobalExceptionHandler;
+import com.carlosarroyoam.rest.books.core.exception.ProblemDetailFactory;
 import com.carlosarroyoam.rest.books.support.testutils.TestObjectMappers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.math.BigDecimal;
@@ -55,7 +55,7 @@ class BookControllerTest {
 
     mockMvc =
         MockMvcBuilders.standaloneSetup(bookController)
-            .setControllerAdvice(new GlobalExceptionHandler(new ApiExceptionResponseFactory()))
+            .setControllerAdvice(new GlobalExceptionHandler(new ProblemDetailFactory()))
             .setMessageConverters(
                 new MappingJackson2HttpMessageConverter(TestObjectMappers.snakeCase()))
             .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())

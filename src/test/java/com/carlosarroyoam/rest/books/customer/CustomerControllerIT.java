@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.carlosarroyoam.rest.books.customer.dto.CreateCustomerRequest;
@@ -113,6 +114,23 @@ class CustomerControllerIT {
                 .content(mapper.writeValueAsString(request)))
         .andExpect(status().isCreated())
         .andExpect(header().string("Location", "http://localhost/customers/3"));
+  }
+
+  @Test
+  @DisplayName(
+      "POST /customers - Given invalid customer data, when create, then returns problem detail")
+  void givenInvalidCustomerData_whenCreateCustomer_thenReturnsProblemDetail() throws Exception {
+    mockMvc
+        .perform(post("/customers").contentType(MediaType.APPLICATION_JSON).content("{}"))
+        .andExpect(status().isUnprocessableEntity())
+        .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+        .andExpect(jsonPath("$.type").value("about:blank"))
+        .andExpect(jsonPath("$.title").value("Unprocessable Entity"))
+        .andExpect(jsonPath("$.status").value(422))
+        .andExpect(jsonPath("$.detail").value("Invalid request data"))
+        .andExpect(jsonPath("$.instance").value("/customers"))
+        .andExpect(jsonPath("$.errors").isMap())
+        .andExpect(jsonPath("$.errors.username").isNotEmpty());
   }
 
   @Test

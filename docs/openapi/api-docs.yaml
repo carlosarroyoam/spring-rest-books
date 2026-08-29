@@ -2158,31 +2158,33 @@ components:
           type: integer
           description: Total number of pages available
 
-    AppExceptionResponse:
+    ProblemDetail:
       type: object
-      description: Standard error response returned when an application exception occurs
+      description: RFC 9457 problem detail returned when an error occurs
       properties:
-        message:
+        type:
           type: string
-          description: Human-readable error message
-        error:
+          format: uri
+          default: "about:blank"
+          description: URI reference identifying the problem type
+        title:
           type: string
-          description: Short error identifier or error type
+          description: Short human-readable summary (HTTP status reason phrase)
         status:
           type: integer
           description: HTTP status code associated with the error
-        details:
+        detail:
+          type: string
+          description: Human-readable explanation specific to this occurrence
+        instance:
+          type: string
+          format: uri
+          description: URI reference for this specific occurrence (the request path)
+        errors:
           type: object
-          description: Additional validation or error details
+          description: Per-field validation messages (present on 422 responses only)
           additionalProperties:
             type: string
-        path:
-          type: string
-          description: API endpoint path where the error occurred
-        timestamp:
-          type: string
-          format: date-time
-          description: Timestamp when the error was generated
 
   parameters:
     PageParam:
@@ -2224,44 +2226,44 @@ components:
     NotFound:
       description: Not found
       content:
-        application/json:
+        application/problem+json:
           schema:
-            $ref: "#/components/schemas/AppExceptionResponse"
+            $ref: "#/components/schemas/ProblemDetail"
 
     BadRequest:
       description: Bad request
       content:
-        application/json:
+        application/problem+json:
           schema:
-            $ref: "#/components/schemas/AppExceptionResponse"
+            $ref: "#/components/schemas/ProblemDetail"
 
     UnprocessableEntity:
       description: Unprocessable entity
       content:
-        application/json:
+        application/problem+json:
           schema:
-            $ref: "#/components/schemas/AppExceptionResponse"
+            $ref: "#/components/schemas/ProblemDetail"
 
     Unauthorized:
       description: Unauthorized
       content:
-        application/json:
+        application/problem+json:
           schema:
-            $ref: "#/components/schemas/AppExceptionResponse"
+            $ref: "#/components/schemas/ProblemDetail"
 
     Forbidden:
       description: Forbidden
       content:
-        application/json:
+        application/problem+json:
           schema:
-            $ref: "#/components/schemas/AppExceptionResponse"
+            $ref: "#/components/schemas/ProblemDetail"
 
     InternalServerError:
       description: Internal server error
       content:
-        application/json:
+        application/problem+json:
           schema:
-            $ref: "#/components/schemas/AppExceptionResponse"
+            $ref: "#/components/schemas/ProblemDetail"
 
   securitySchemes:
     BearerAuth:

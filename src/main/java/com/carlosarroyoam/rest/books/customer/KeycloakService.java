@@ -37,9 +37,9 @@ public class KeycloakService {
 
   /**
    * Crea en Keycloak el usuario asociado a un cliente recién registrado, con el rol {@code
-   * App/Customer}. Si ya existe un usuario con el mismo nombre de usuario o correo electrónico,
-   * se considera un estado inconsistente (el cliente ya fue validado como único en la base de
-   * datos local) y se rechaza la operación en lugar de omitirla en silencio.
+   * App/Customer}. Si ya existe un usuario con el mismo nombre de usuario o correo electrónico, se
+   * considera un estado inconsistente (el cliente ya fue validado como único en la base de datos
+   * local) y se rechaza la operación en lugar de omitirla en silencio.
    *
    * @param request datos del cliente recién creado
    * @param customerId id del cliente en la base de datos de la API, almacenado como atributo del
@@ -104,11 +104,7 @@ public class KeycloakService {
                 .get("App/Customer")
                 .toRepresentation();
 
-        usersResource
-            .get(keycloakUserId)
-            .roles()
-            .realmLevel()
-            .add(Collections.singletonList(role));
+        usersResource.get(keycloakUserId).roles().realmLevel().add(Collections.singletonList(role));
       } catch (RuntimeException ex) {
         log.warn(
             "{}: rolling back Keycloak user {} created for customer {} after role assignment"

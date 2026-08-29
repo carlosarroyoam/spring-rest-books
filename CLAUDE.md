@@ -48,9 +48,9 @@ Authorization is JWT-based (OAuth2 resource server) with Keycloak used for custo
   and `core/specification/SpecificationBuilder`) for filtered/paginated queries.
 - DTO/entity mapping is done with a nested MapStruct mapper interface inside each DTO class (e.g.
   `BookResponse.BookResponseMapper`), not as standalone mapper classes.
-- All uncaught exceptions are normalized by `core/exception/GlobalExceptionHandler` into
-  `AppExceptionResponse`, built via `ApiExceptionResponseFactory`. Domain/application errors should
-  be raised as `ResponseStatusException`.
+- All uncaught exceptions are normalized by `core/exception/GlobalExceptionHandler` into RFC 9457
+  `ProblemDetail` responses (`application/problem+json`), built via `ProblemDetailFactory`.
+  Domain/application errors should be raised as `ResponseStatusException`.
 - Security is enforced in two layers: request-level rules in `core/config/WebSecurityConfig` and
   method-level `@PreAuthorize` in services/controllers.
 - Realm roles from Keycloak JWTs are converted to `ROLE_*` authorities by `AuthoritiesConverter`
