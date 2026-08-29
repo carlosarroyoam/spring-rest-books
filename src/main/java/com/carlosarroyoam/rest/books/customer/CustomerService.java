@@ -1,6 +1,8 @@
 package com.carlosarroyoam.rest.books.customer;
 
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
+import com.carlosarroyoam.rest.books.core.exception.ResourceAlreadyExistsException;
+import com.carlosarroyoam.rest.books.core.exception.ResourceNotFoundException;
 import com.carlosarroyoam.rest.books.core.pagination.PagedResponse;
 import com.carlosarroyoam.rest.books.core.pagination.PagedResponse.PagedResponseMapper;
 import com.carlosarroyoam.rest.books.core.specification.SpecificationBuilder;
@@ -18,10 +20,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 /**
  * Contiene la lógica de negocio de {@link Customer}: búsqueda paginada con filtros, alta con
@@ -88,14 +88,12 @@ public class CustomerService {
   public CustomerResponse create(CreateCustomerRequest request) {
     if (customerRepository.existsByUsername(request.getUsername())) {
       log.warn(AppMessages.USERNAME_ALREADY_EXISTS_EXCEPTION);
-      throw new ResponseStatusException(
-          HttpStatus.BAD_REQUEST, AppMessages.USERNAME_ALREADY_EXISTS_EXCEPTION);
+      throw new ResourceAlreadyExistsException(AppMessages.USERNAME_ALREADY_EXISTS_EXCEPTION);
     }
 
     if (customerRepository.existsByEmail(request.getEmail())) {
       log.warn(AppMessages.EMAIL_ALREADY_EXISTS_EXCEPTION);
-      throw new ResponseStatusException(
-          HttpStatus.BAD_REQUEST, AppMessages.EMAIL_ALREADY_EXISTS_EXCEPTION);
+      throw new ResourceAlreadyExistsException(AppMessages.EMAIL_ALREADY_EXISTS_EXCEPTION);
     }
 
     LocalDateTime now = LocalDateTime.now();
@@ -158,8 +156,7 @@ public class CustomerService {
         .orElseThrow(
             () -> {
               log.warn(AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION);
-              return new ResponseStatusException(
-                  HttpStatus.NOT_FOUND, AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION);
+              return new ResourceNotFoundException(AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION);
             });
   }
 }

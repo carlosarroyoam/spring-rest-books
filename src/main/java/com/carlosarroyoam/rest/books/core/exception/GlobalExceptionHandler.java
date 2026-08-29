@@ -16,7 +16,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
@@ -35,17 +34,16 @@ public class GlobalExceptionHandler {
   }
 
   /**
-   * Traduce una {@link ResponseStatusException} a una respuesta con el código de estado indicado en
-   * la propia excepción.
+   * Traduce una {@link ApplicationException} de dominio/aplicación a una respuesta con el código de
+   * estado que fija la propia excepción.
    *
    * @param ex excepción capturada
    * @param request petición HTTP en curso
    * @return el {@link ProblemDetail} con el código de estado y mensaje de la excepción
    */
-  @ExceptionHandler({ResponseStatusException.class})
-  public ProblemDetail handleResponseStatus(
-      ResponseStatusException ex, HttpServletRequest request) {
-    return problemDetailFactory.build(ex.getStatusCode(), ex.getReason(), request);
+  @ExceptionHandler({ApplicationException.class})
+  public ProblemDetail handleAppException(ApplicationException ex, HttpServletRequest request) {
+    return problemDetailFactory.build(ex.getStatus(), ex.getMessage(), request);
   }
 
   /**

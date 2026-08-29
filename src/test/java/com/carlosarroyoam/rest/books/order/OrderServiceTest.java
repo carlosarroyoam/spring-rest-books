@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 import com.carlosarroyoam.rest.books.book.BookRepository;
 import com.carlosarroyoam.rest.books.book.entity.Book;
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
+import com.carlosarroyoam.rest.books.core.exception.ResourceNotFoundException;
 import com.carlosarroyoam.rest.books.core.pagination.PagedResponse;
 import com.carlosarroyoam.rest.books.customer.CustomerRepository;
 import com.carlosarroyoam.rest.books.customer.entity.Customer;
@@ -37,8 +38,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
@@ -151,9 +150,8 @@ class OrderServiceTest {
     when(orderRepository.findById(anyLong())).thenReturn(Optional.empty());
 
     assertThatThrownBy(() -> orderService.findById(1L))
-        .isInstanceOf(ResponseStatusException.class)
-        .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
-        .hasMessageContaining(AppMessages.ORDER_NOT_FOUND_EXCEPTION);
+        .isInstanceOf(ResourceNotFoundException.class)
+        .hasMessage(AppMessages.ORDER_NOT_FOUND_EXCEPTION);
   }
 
   @Test
@@ -206,9 +204,8 @@ class OrderServiceTest {
     when(customerRepository.findById(99L)).thenReturn(Optional.empty());
 
     assertThatThrownBy(() -> orderService.create(request))
-        .isInstanceOf(ResponseStatusException.class)
-        .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
-        .hasMessageContaining(AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION);
+        .isInstanceOf(ResourceNotFoundException.class)
+        .hasMessage(AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION);
   }
 
   @Test
@@ -226,9 +223,8 @@ class OrderServiceTest {
     when(bookRepository.findById(99L)).thenReturn(Optional.empty());
 
     assertThatThrownBy(() -> orderService.create(request))
-        .isInstanceOf(ResponseStatusException.class)
-        .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
-        .hasMessageContaining(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
+        .isInstanceOf(ResourceNotFoundException.class)
+        .hasMessage(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
   }
 
   @Test
@@ -257,8 +253,7 @@ class OrderServiceTest {
     when(orderRepository.findById(anyLong())).thenReturn(Optional.empty());
 
     assertThatThrownBy(() -> orderService.update(1L, UpdateOrderRequest.builder().build()))
-        .isInstanceOf(ResponseStatusException.class)
-        .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
-        .hasMessageContaining(AppMessages.ORDER_NOT_FOUND_EXCEPTION);
+        .isInstanceOf(ResourceNotFoundException.class)
+        .hasMessage(AppMessages.ORDER_NOT_FOUND_EXCEPTION);
   }
 }

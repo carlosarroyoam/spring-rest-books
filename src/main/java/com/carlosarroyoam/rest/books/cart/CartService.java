@@ -8,14 +8,13 @@ import com.carlosarroyoam.rest.books.cart.dto.UpdateCartItemRequest;
 import com.carlosarroyoam.rest.books.cart.entity.Cart;
 import com.carlosarroyoam.rest.books.cart.entity.CartItem;
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
+import com.carlosarroyoam.rest.books.core.exception.ResourceNotFoundException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 /**
  * Contiene la lógica de negocio del {@link Cart} de un cliente: consulta, y alta, actualización o
@@ -108,8 +107,7 @@ public class CartService {
         .orElseThrow(
             () -> {
               log.warn(AppMessages.CART_NOT_FOUND_EXCEPTION);
-              return new ResponseStatusException(
-                  HttpStatus.NOT_FOUND, AppMessages.CART_NOT_FOUND_EXCEPTION);
+              return new ResourceNotFoundException(AppMessages.CART_NOT_FOUND_EXCEPTION);
             });
   }
 
@@ -125,8 +123,7 @@ public class CartService {
         .orElseThrow(
             () -> {
               log.warn(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
-              return new ResponseStatusException(
-                  HttpStatus.NOT_FOUND, AppMessages.BOOK_NOT_FOUND_EXCEPTION);
+              return new ResourceNotFoundException(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
             });
   }
 }

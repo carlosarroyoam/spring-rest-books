@@ -9,6 +9,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
+import com.carlosarroyoam.rest.books.core.exception.ResourceAlreadyExistsException;
+import com.carlosarroyoam.rest.books.core.exception.ResourceNotFoundException;
 import com.carlosarroyoam.rest.books.core.pagination.PagedResponse;
 import com.carlosarroyoam.rest.books.customer.dto.CreateCustomerRequest;
 import com.carlosarroyoam.rest.books.customer.dto.CustomerResponse;
@@ -30,8 +32,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 
 @ExtendWith(MockitoExtension.class)
 class CustomerServiceTest {
@@ -98,9 +98,8 @@ class CustomerServiceTest {
     when(customerRepository.findById(any())).thenReturn(Optional.empty());
 
     assertThatThrownBy(() -> customerService.findById(1L))
-        .isInstanceOf(ResponseStatusException.class)
-        .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
-        .hasMessageContaining(AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION);
+        .isInstanceOf(ResourceNotFoundException.class)
+        .hasMessage(AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION);
   }
 
   @Test
@@ -137,9 +136,8 @@ class CustomerServiceTest {
     when(customerRepository.existsByUsername(any())).thenReturn(true);
 
     assertThatThrownBy(() -> customerService.create(request))
-        .isInstanceOf(ResponseStatusException.class)
-        .hasMessageContaining(HttpStatus.BAD_REQUEST.toString())
-        .hasMessageContaining(AppMessages.USERNAME_ALREADY_EXISTS_EXCEPTION);
+        .isInstanceOf(ResourceAlreadyExistsException.class)
+        .hasMessage(AppMessages.USERNAME_ALREADY_EXISTS_EXCEPTION);
   }
 
   @Test
@@ -150,9 +148,8 @@ class CustomerServiceTest {
     when(customerRepository.existsByEmail(any())).thenReturn(true);
 
     assertThatThrownBy(() -> customerService.create(request))
-        .isInstanceOf(ResponseStatusException.class)
-        .hasMessageContaining(HttpStatus.BAD_REQUEST.toString())
-        .hasMessageContaining(AppMessages.EMAIL_ALREADY_EXISTS_EXCEPTION);
+        .isInstanceOf(ResourceAlreadyExistsException.class)
+        .hasMessage(AppMessages.EMAIL_ALREADY_EXISTS_EXCEPTION);
   }
 
   @Test
@@ -180,9 +177,8 @@ class CustomerServiceTest {
     when(customerRepository.findById(any())).thenReturn(Optional.empty());
 
     assertThatThrownBy(() -> customerService.update(1L, request))
-        .isInstanceOf(ResponseStatusException.class)
-        .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
-        .hasMessageContaining(AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION);
+        .isInstanceOf(ResourceNotFoundException.class)
+        .hasMessage(AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION);
   }
 
   @Test
@@ -202,8 +198,7 @@ class CustomerServiceTest {
     when(customerRepository.findById(any())).thenReturn(Optional.empty());
 
     assertThatThrownBy(() -> customerService.deleteById(1L))
-        .isInstanceOf(ResponseStatusException.class)
-        .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
-        .hasMessageContaining(AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION);
+        .isInstanceOf(ResourceNotFoundException.class)
+        .hasMessage(AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION);
   }
 }

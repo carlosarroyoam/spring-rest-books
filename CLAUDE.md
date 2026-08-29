@@ -50,7 +50,12 @@ Authorization is JWT-based (OAuth2 resource server) with Keycloak used for custo
   `BookResponse.BookResponseMapper`), not as standalone mapper classes.
 - All uncaught exceptions are normalized by `core/exception/GlobalExceptionHandler` into RFC 9457
   `ProblemDetail` responses (`application/problem+json`), built via `ProblemDetailFactory`.
-  Domain/application errors should be raised as `ResponseStatusException`.
+  Domain/application errors are raised as subclasses of `core/exception/AppException`, each fixing
+  its own HTTP status: `ResourceNotFoundException` (404), `ResourceAlreadyExistsException` /
+  `ConflictException` (409), `BusinessException` / `ValidationException` (422),
+  `UnauthorizedException` (401), `ForbiddenException` (403), `InternalServerException` (500). Throw
+  with the plain `AppMessages` constant as the message; the service logs it (`log.warn`) and the
+  handler maps `getStatus()` / `getMessage()` onto the `ProblemDetail`.
 - Security is enforced in two layers: request-level rules in `core/config/WebSecurityConfig` and
   method-level `@PreAuthorize` in services/controllers.
 - Realm roles from Keycloak JWTs are converted to `ROLE_*` authorities by `AuthoritiesConverter`

@@ -30,7 +30,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 @EnableMethodSecurity
 class WebSecurityConfig {
-
   /**
    * Define la cadena de filtros de seguridad: deshabilita CSRF, habilita CORS, fuerza sesiones sin
    * estado y valida el JWT como resource server, dejando sin autenticación la lectura de libros y

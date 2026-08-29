@@ -10,6 +10,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
+import com.carlosarroyoam.rest.books.core.exception.InternalServerException;
 import com.carlosarroyoam.rest.books.core.property.KeycloakAdminProps;
 import com.carlosarroyoam.rest.books.customer.dto.CreateCustomerRequest;
 import jakarta.ws.rs.NotFoundException;
@@ -31,8 +32,6 @@ import org.keycloak.representations.idm.UserRepresentation;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 
 @ExtendWith(MockitoExtension.class)
 class KeycloakServiceTest {
@@ -75,9 +74,8 @@ class KeycloakServiceTest {
     when(usersResource.searchByEmail(anyString(), anyBoolean())).thenReturn(List.of());
 
     assertThatThrownBy(() -> keycloakService.createUser(request, 1L))
-        .isInstanceOf(ResponseStatusException.class)
-        .hasMessageContaining(HttpStatus.INTERNAL_SERVER_ERROR.toString())
-        .hasMessageContaining(AppMessages.USER_NOT_CREATED_EXCEPTION);
+        .isInstanceOf(InternalServerException.class)
+        .hasMessage(AppMessages.USER_NOT_CREATED_EXCEPTION);
 
     verify(usersResource, never()).create(any());
   }
@@ -92,9 +90,8 @@ class KeycloakServiceTest {
         .thenReturn(List.of(new UserRepresentation()));
 
     assertThatThrownBy(() -> keycloakService.createUser(request, 1L))
-        .isInstanceOf(ResponseStatusException.class)
-        .hasMessageContaining(HttpStatus.INTERNAL_SERVER_ERROR.toString())
-        .hasMessageContaining(AppMessages.USER_NOT_CREATED_EXCEPTION);
+        .isInstanceOf(InternalServerException.class)
+        .hasMessage(AppMessages.USER_NOT_CREATED_EXCEPTION);
 
     verify(usersResource, never()).create(any());
   }
@@ -113,9 +110,8 @@ class KeycloakServiceTest {
     when(usersResource.create(any())).thenReturn(response);
 
     assertThatThrownBy(() -> keycloakService.createUser(request, 1L))
-        .isInstanceOf(ResponseStatusException.class)
-        .hasMessageContaining(HttpStatus.INTERNAL_SERVER_ERROR.toString())
-        .hasMessageContaining(AppMessages.USER_NOT_CREATED_EXCEPTION);
+        .isInstanceOf(InternalServerException.class)
+        .hasMessage(AppMessages.USER_NOT_CREATED_EXCEPTION);
   }
 
   @Test
@@ -142,9 +138,8 @@ class KeycloakServiceTest {
     when(usersResource.get("abc-123")).thenReturn(userResource);
 
     assertThatThrownBy(() -> keycloakService.createUser(request, 1L))
-        .isInstanceOf(ResponseStatusException.class)
-        .hasMessageContaining(HttpStatus.INTERNAL_SERVER_ERROR.toString())
-        .hasMessageContaining(AppMessages.USER_NOT_CREATED_EXCEPTION);
+        .isInstanceOf(InternalServerException.class)
+        .hasMessage(AppMessages.USER_NOT_CREATED_EXCEPTION);
 
     verify(userResource).remove();
   }

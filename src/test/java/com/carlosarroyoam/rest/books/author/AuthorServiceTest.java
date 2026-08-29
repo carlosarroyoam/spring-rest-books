@@ -16,6 +16,7 @@ import com.carlosarroyoam.rest.books.book.BookRepository;
 import com.carlosarroyoam.rest.books.book.dto.BookResponse;
 import com.carlosarroyoam.rest.books.book.entity.Book;
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
+import com.carlosarroyoam.rest.books.core.exception.ResourceNotFoundException;
 import com.carlosarroyoam.rest.books.core.pagination.PagedResponse;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -34,8 +35,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 
 @ExtendWith(MockitoExtension.class)
 class AuthorServiceTest {
@@ -115,9 +114,8 @@ class AuthorServiceTest {
     when(authorRepository.findById(anyLong())).thenReturn(Optional.empty());
 
     assertThatThrownBy(() -> authorService.findById(1L))
-        .isInstanceOf(ResponseStatusException.class)
-        .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
-        .hasMessageContaining(AppMessages.AUTHOR_NOT_FOUND_EXCEPTION);
+        .isInstanceOf(ResourceNotFoundException.class)
+        .hasMessage(AppMessages.AUTHOR_NOT_FOUND_EXCEPTION);
   }
 
   @Test
@@ -169,9 +167,8 @@ class AuthorServiceTest {
     when(authorRepository.findById(anyLong())).thenReturn(Optional.empty());
 
     assertThatThrownBy(() -> authorService.update(1L, request))
-        .isInstanceOf(ResponseStatusException.class)
-        .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
-        .hasMessageContaining(AppMessages.AUTHOR_NOT_FOUND_EXCEPTION);
+        .isInstanceOf(ResourceNotFoundException.class)
+        .hasMessage(AppMessages.AUTHOR_NOT_FOUND_EXCEPTION);
   }
 
   @Test
@@ -190,9 +187,8 @@ class AuthorServiceTest {
     when(authorRepository.findById(anyLong())).thenReturn(Optional.empty());
 
     assertThatThrownBy(() -> authorService.deleteById(1L))
-        .isInstanceOf(ResponseStatusException.class)
-        .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
-        .hasMessageContaining(AppMessages.AUTHOR_NOT_FOUND_EXCEPTION);
+        .isInstanceOf(ResourceNotFoundException.class)
+        .hasMessage(AppMessages.AUTHOR_NOT_FOUND_EXCEPTION);
   }
 
   @Test

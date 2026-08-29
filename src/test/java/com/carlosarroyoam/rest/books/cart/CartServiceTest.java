@@ -14,6 +14,7 @@ import com.carlosarroyoam.rest.books.cart.dto.UpdateCartItemRequest;
 import com.carlosarroyoam.rest.books.cart.entity.Cart;
 import com.carlosarroyoam.rest.books.cart.entity.CartItem;
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
+import com.carlosarroyoam.rest.books.core.exception.ResourceNotFoundException;
 import com.carlosarroyoam.rest.books.customer.entity.Customer;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,8 +26,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 
 @ExtendWith(MockitoExtension.class)
 class CartServiceTest {
@@ -79,9 +78,8 @@ class CartServiceTest {
     when(cartRepository.findByCustomerId(anyLong())).thenReturn(Optional.empty());
 
     assertThatThrownBy(() -> cartService.findByCustomerId(1L))
-        .isInstanceOf(ResponseStatusException.class)
-        .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
-        .hasMessageContaining(AppMessages.CART_NOT_FOUND_EXCEPTION);
+        .isInstanceOf(ResourceNotFoundException.class)
+        .hasMessage(AppMessages.CART_NOT_FOUND_EXCEPTION);
   }
 
   @Test
@@ -122,9 +120,8 @@ class CartServiceTest {
     when(cartRepository.findByCustomerId(anyLong())).thenReturn(Optional.empty());
 
     assertThatThrownBy(() -> cartService.updateCartItem(1L, request))
-        .isInstanceOf(ResponseStatusException.class)
-        .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
-        .hasMessageContaining(AppMessages.CART_NOT_FOUND_EXCEPTION);
+        .isInstanceOf(ResourceNotFoundException.class)
+        .hasMessage(AppMessages.CART_NOT_FOUND_EXCEPTION);
   }
 
   @Test
@@ -136,9 +133,8 @@ class CartServiceTest {
     when(bookRepository.findById(anyLong())).thenReturn(Optional.empty());
 
     assertThatThrownBy(() -> cartService.updateCartItem(1L, request))
-        .isInstanceOf(ResponseStatusException.class)
-        .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
-        .hasMessageContaining(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
+        .isInstanceOf(ResourceNotFoundException.class)
+        .hasMessage(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
   }
 
   @Test
@@ -157,8 +153,7 @@ class CartServiceTest {
     when(cartRepository.findByCustomerId(anyLong())).thenReturn(Optional.empty());
 
     assertThatThrownBy(() -> cartService.deleteCartItem(1L, 1L))
-        .isInstanceOf(ResponseStatusException.class)
-        .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
-        .hasMessageContaining(AppMessages.CART_NOT_FOUND_EXCEPTION);
+        .isInstanceOf(ResourceNotFoundException.class)
+        .hasMessage(AppMessages.CART_NOT_FOUND_EXCEPTION);
   }
 }

@@ -14,6 +14,8 @@ import com.carlosarroyoam.rest.books.book.entity.Book;
 import com.carlosarroyoam.rest.books.book.entity.BookStatus;
 import com.carlosarroyoam.rest.books.book.entity.Book_;
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
+import com.carlosarroyoam.rest.books.core.exception.ResourceAlreadyExistsException;
+import com.carlosarroyoam.rest.books.core.exception.ResourceNotFoundException;
 import com.carlosarroyoam.rest.books.core.pagination.PagedResponse;
 import com.carlosarroyoam.rest.books.core.pagination.PagedResponse.PagedResponseMapper;
 import com.carlosarroyoam.rest.books.core.specification.SpecificationBuilder;
@@ -25,10 +27,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 /**
  * Contiene la lógica de negocio de {@link Book}: búsqueda paginada con filtros, alta con validación
@@ -97,8 +97,7 @@ public class BookService {
   public BookResponse create(CreateBookRequest request) {
     if (bookRepository.existsByIsbn(request.getIsbn())) {
       log.warn(AppMessages.ISBN_ALREADY_EXISTS_EXCEPTION);
-      throw new ResponseStatusException(
-          HttpStatus.BAD_REQUEST, AppMessages.ISBN_ALREADY_EXISTS_EXCEPTION);
+      throw new ResourceAlreadyExistsException(AppMessages.ISBN_ALREADY_EXISTS_EXCEPTION);
     }
 
     LocalDateTime now = LocalDateTime.now();
@@ -177,8 +176,7 @@ public class BookService {
         .orElseThrow(
             () -> {
               log.warn(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
-              return new ResponseStatusException(
-                  HttpStatus.NOT_FOUND, AppMessages.BOOK_NOT_FOUND_EXCEPTION);
+              return new ResourceNotFoundException(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
             });
   }
 }

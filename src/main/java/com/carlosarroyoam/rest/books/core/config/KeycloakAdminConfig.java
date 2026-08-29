@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Configuration;
 /** Configura el cliente administrativo de Keycloak usado para provisionar usuarios. */
 @Configuration
 public class KeycloakAdminConfig {
-
   /**
    * Crea el cliente administrativo de Keycloak a partir de {@link KeycloakAdminProps}.
    *

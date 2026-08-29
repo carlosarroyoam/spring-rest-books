@@ -10,7 +10,8 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
  * automaticamente.
  */
 public final class TestObjectMappers {
-  private TestObjectMappers() {
+    /** Constructor privado que impide instanciar la clase. */
+private TestObjectMappers() {
     throw new IllegalAccessError("Illegal access to utility class");
   }
 

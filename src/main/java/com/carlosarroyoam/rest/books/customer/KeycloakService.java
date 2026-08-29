@@ -1,6 +1,7 @@
 package com.carlosarroyoam.rest.books.customer;
 
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
+import com.carlosarroyoam.rest.books.core.exception.InternalServerException;
 import com.carlosarroyoam.rest.books.core.property.KeycloakAdminProps;
 import com.carlosarroyoam.rest.books.customer.dto.CreateCustomerRequest;
 import jakarta.ws.rs.core.Response;
@@ -16,9 +17,7 @@ import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 /**
  * Sincroniza los clientes de la API con Keycloak, creando el usuario correspondiente en el realm
@@ -61,8 +60,7 @@ public class KeycloakService {
           request.getUsername(),
           request.getEmail(),
           customerId);
-      throw new ResponseStatusException(
-          HttpStatus.INTERNAL_SERVER_ERROR, AppMessages.USER_NOT_CREATED_EXCEPTION);
+      throw new InternalServerException(AppMessages.USER_NOT_CREATED_EXCEPTION);
     }
 
     Map<String, List<String>> attributes = new HashMap<>();
@@ -90,8 +88,7 @@ public class KeycloakService {
             AppMessages.USER_NOT_CREATED_EXCEPTION,
             response.getStatus(),
             response.getLocation());
-        throw new ResponseStatusException(
-            HttpStatus.INTERNAL_SERVER_ERROR, AppMessages.USER_NOT_CREATED_EXCEPTION);
+        throw new InternalServerException(AppMessages.USER_NOT_CREATED_EXCEPTION);
       }
 
       String keycloakUserId = response.getLocation().getPath().replaceAll(".*/([^/]+)$", "$1");
@@ -114,8 +111,7 @@ public class KeycloakService {
             customerId,
             ex);
         removeOrphanedUser(usersResource, keycloakUserId);
-        throw new ResponseStatusException(
-            HttpStatus.INTERNAL_SERVER_ERROR, AppMessages.USER_NOT_CREATED_EXCEPTION);
+        throw new InternalServerException(AppMessages.USER_NOT_CREATED_EXCEPTION, ex);
       }
     }
   }

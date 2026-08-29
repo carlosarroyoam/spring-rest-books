@@ -92,8 +92,8 @@ class PaymentControllerIT {
 
   @Test
   @DisplayName(
-      "POST /payments - Given order with existing payment, when create, then returns bad request")
-  void givenOrderWithExistingPayment_whenCreatePayment_thenReturnsBadRequest() throws Exception {
+      "POST /payments - Given order with existing payment, when create, then returns conflict")
+  void givenOrderWithExistingPayment_whenCreatePayment_thenReturnsConflict() throws Exception {
     CreatePaymentRequest request =
         CreatePaymentRequest.builder().orderId(1L).method(PaymentMethod.CREDIT_CARD).build();
 
@@ -102,11 +102,11 @@ class PaymentControllerIT {
             post("/payments")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(request)))
-        .andExpect(status().isBadRequest())
+        .andExpect(status().isConflict())
         .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
         .andExpect(jsonPath("$.type").value("about:blank"))
-        .andExpect(jsonPath("$.title").value("Bad Request"))
-        .andExpect(jsonPath("$.status").value(400))
+        .andExpect(jsonPath("$.title").value("Conflict"))
+        .andExpect(jsonPath("$.status").value(409))
         .andExpect(jsonPath("$.detail").isNotEmpty())
         .andExpect(jsonPath("$.instance").value("/payments"))
         .andExpect(jsonPath("$.timestamp").doesNotExist());

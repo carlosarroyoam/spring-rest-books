@@ -1,6 +1,9 @@
 package com.carlosarroyoam.rest.books.core.constant;
 
-/** Mensajes de error reutilizados en excepciones y respuestas de error de la aplicación. */
+/**
+ * Constantes centralizadas con los mensajes de error usados en las excepciones de la API,
+ * reutilizadas entre los distintos servicios para mantener consistencia en las respuestas de error.
+ */
 public class AppMessages {
   public static final String ILLEGAL_ACCESS_EXCEPTION = "Illegal access to utility class";
 
@@ -24,7 +27,7 @@ public class AppMessages {
 
   public static final String SHIPMENT_NOT_FOUND_EXCEPTION = "Shipment not found";
 
-  /** Constructor privado: clase de constantes no instanciable. */
+  /** Constructor privado que impide instanciar la clase. */
   private AppMessages() {
     throw new IllegalAccessError(ILLEGAL_ACCESS_EXCEPTION);
   }

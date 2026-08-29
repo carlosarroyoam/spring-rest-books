@@ -8,6 +8,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
+import com.carlosarroyoam.rest.books.core.exception.ResourceAlreadyExistsException;
+import com.carlosarroyoam.rest.books.core.exception.ResourceNotFoundException;
 import com.carlosarroyoam.rest.books.core.pagination.PagedResponse;
 import com.carlosarroyoam.rest.books.order.OrderRepository;
 import com.carlosarroyoam.rest.books.order.entity.Order;
@@ -38,8 +40,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 
 @ExtendWith(MockitoExtension.class)
 class PaymentServiceTest {
@@ -115,9 +115,8 @@ class PaymentServiceTest {
     when(paymentRepository.findById(anyLong())).thenReturn(Optional.empty());
 
     assertThatThrownBy(() -> paymentService.findById(1L))
-        .isInstanceOf(ResponseStatusException.class)
-        .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
-        .hasMessageContaining(AppMessages.PAYMENT_NOT_FOUND_EXCEPTION);
+        .isInstanceOf(ResourceNotFoundException.class)
+        .hasMessage(AppMessages.PAYMENT_NOT_FOUND_EXCEPTION);
   }
 
   @Test
@@ -198,9 +197,8 @@ class PaymentServiceTest {
     when(orderRepository.findById(99L)).thenReturn(Optional.empty());
 
     assertThatThrownBy(() -> paymentService.create(request))
-        .isInstanceOf(ResponseStatusException.class)
-        .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
-        .hasMessageContaining(AppMessages.ORDER_NOT_FOUND_EXCEPTION);
+        .isInstanceOf(ResourceNotFoundException.class)
+        .hasMessage(AppMessages.ORDER_NOT_FOUND_EXCEPTION);
   }
 
   @Test
@@ -213,8 +211,7 @@ class PaymentServiceTest {
     when(paymentRepository.existsByOrderId(1L)).thenReturn(true);
 
     assertThatThrownBy(() -> paymentService.create(request))
-        .isInstanceOf(ResponseStatusException.class)
-        .hasMessageContaining(HttpStatus.BAD_REQUEST.toString())
-        .hasMessageContaining(AppMessages.PAYMENT_ALREADY_EXISTS_EXCEPTION);
+        .isInstanceOf(ResourceAlreadyExistsException.class)
+        .hasMessage(AppMessages.PAYMENT_ALREADY_EXISTS_EXCEPTION);
   }
 }

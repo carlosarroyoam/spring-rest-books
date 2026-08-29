@@ -17,6 +17,8 @@ import com.carlosarroyoam.rest.books.book.dto.CreateBookRequest;
 import com.carlosarroyoam.rest.books.book.dto.UpdateBookRequest;
 import com.carlosarroyoam.rest.books.book.entity.Book;
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
+import com.carlosarroyoam.rest.books.core.exception.ResourceAlreadyExistsException;
+import com.carlosarroyoam.rest.books.core.exception.ResourceNotFoundException;
 import com.carlosarroyoam.rest.books.core.pagination.PagedResponse;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -35,8 +37,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 
 @ExtendWith(MockitoExtension.class)
 class BookServiceTest {
@@ -108,9 +108,8 @@ class BookServiceTest {
     when(bookRepository.findById(anyLong())).thenReturn(Optional.empty());
 
     assertThatThrownBy(() -> bookService.findById(1L))
-        .isInstanceOf(ResponseStatusException.class)
-        .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
-        .hasMessageContaining(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
+        .isInstanceOf(ResourceNotFoundException.class)
+        .hasMessage(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
   }
 
   @Test
@@ -147,9 +146,8 @@ class BookServiceTest {
     when(bookRepository.existsByIsbn(anyString())).thenReturn(true);
 
     assertThatThrownBy(() -> bookService.create(request))
-        .isInstanceOf(ResponseStatusException.class)
-        .hasMessageContaining(HttpStatus.BAD_REQUEST.toString())
-        .hasMessageContaining(AppMessages.ISBN_ALREADY_EXISTS_EXCEPTION);
+        .isInstanceOf(ResourceAlreadyExistsException.class)
+        .hasMessage(AppMessages.ISBN_ALREADY_EXISTS_EXCEPTION);
   }
 
   @Test
@@ -180,9 +178,8 @@ class BookServiceTest {
     when(bookRepository.findById(anyLong())).thenReturn(Optional.empty());
 
     assertThatThrownBy(() -> bookService.update(1L, request))
-        .isInstanceOf(ResponseStatusException.class)
-        .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
-        .hasMessageContaining(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
+        .isInstanceOf(ResourceNotFoundException.class)
+        .hasMessage(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
   }
 
   @Test
@@ -201,9 +198,8 @@ class BookServiceTest {
     when(bookRepository.findById(anyLong())).thenReturn(Optional.empty());
 
     assertThatThrownBy(() -> bookService.deleteById(1L))
-        .isInstanceOf(ResponseStatusException.class)
-        .hasMessageContaining(HttpStatus.NOT_FOUND.toString())
-        .hasMessageContaining(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
+        .isInstanceOf(ResourceNotFoundException.class)
+        .hasMessage(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
   }
 
   @Test

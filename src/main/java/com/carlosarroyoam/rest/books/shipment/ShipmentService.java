@@ -1,6 +1,7 @@
 package com.carlosarroyoam.rest.books.shipment;
 
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
+import com.carlosarroyoam.rest.books.core.exception.ResourceNotFoundException;
 import com.carlosarroyoam.rest.books.core.pagination.PagedResponse;
 import com.carlosarroyoam.rest.books.core.pagination.PagedResponse.PagedResponseMapper;
 import com.carlosarroyoam.rest.books.core.specification.SpecificationBuilder;
@@ -21,10 +22,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 /**
  * Contiene la lógica de negocio de {@link Shipment}: búsqueda paginada con filtros, consulta por id
@@ -115,8 +114,7 @@ public class ShipmentService {
         .orElseThrow(
             () -> {
               log.warn(AppMessages.SHIPMENT_NOT_FOUND_EXCEPTION);
-              return new ResponseStatusException(
-                  HttpStatus.NOT_FOUND, AppMessages.SHIPMENT_NOT_FOUND_EXCEPTION);
+              return new ResourceNotFoundException(AppMessages.SHIPMENT_NOT_FOUND_EXCEPTION);
             });
   }
 
@@ -149,8 +147,7 @@ public class ShipmentService {
         .orElseThrow(
             () -> {
               log.warn(AppMessages.ORDER_NOT_FOUND_EXCEPTION);
-              return new ResponseStatusException(
-                  HttpStatus.NOT_FOUND, AppMessages.ORDER_NOT_FOUND_EXCEPTION);
+              return new ResourceNotFoundException(AppMessages.ORDER_NOT_FOUND_EXCEPTION);
             });
   }
 }
