@@ -1,6 +1,6 @@
 package com.carlosarroyoam.rest.books.shipment;
 
-import com.carlosarroyoam.rest.books.core.dto.PagedResponse;
+import com.carlosarroyoam.rest.books.core.pagination.PagedResponse;
 import com.carlosarroyoam.rest.books.shipment.dto.ShipmentResponse;
 import com.carlosarroyoam.rest.books.shipment.dto.ShipmentSpecs;
 import com.carlosarroyoam.rest.books.shipment.dto.UpdateShipmentStatusRequest;

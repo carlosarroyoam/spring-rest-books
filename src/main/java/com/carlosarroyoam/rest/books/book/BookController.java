@@ -5,7 +5,7 @@ import com.carlosarroyoam.rest.books.book.dto.BookResponse;
 import com.carlosarroyoam.rest.books.book.dto.BookSpecs;
 import com.carlosarroyoam.rest.books.book.dto.CreateBookRequest;
 import com.carlosarroyoam.rest.books.book.dto.UpdateBookRequest;
-import com.carlosarroyoam.rest.books.core.dto.PagedResponse;
+import com.carlosarroyoam.rest.books.core.pagination.PagedResponse;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.data.domain.Pageable;

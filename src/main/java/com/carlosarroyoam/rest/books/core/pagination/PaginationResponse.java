@@ -1,4 +1,4 @@
-package com.carlosarroyoam.rest.books.core.dto;
+package com.carlosarroyoam.rest.books.core.pagination;
 
 import lombok.Builder;
 import lombok.Getter;

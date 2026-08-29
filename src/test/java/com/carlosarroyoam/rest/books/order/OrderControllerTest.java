@@ -11,8 +11,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.carlosarroyoam.rest.books.core.dto.PagedResponse;
-import com.carlosarroyoam.rest.books.core.dto.PaginationResponse;
+import com.carlosarroyoam.rest.books.core.pagination.PagedResponse;
+import com.carlosarroyoam.rest.books.core.pagination.PaginationResponse;
 import com.carlosarroyoam.rest.books.core.exception.GlobalExceptionHandler;
 import com.carlosarroyoam.rest.books.core.exception.ProblemDetailFactory;
 import com.carlosarroyoam.rest.books.order.dto.CreateOrderItemRequest;

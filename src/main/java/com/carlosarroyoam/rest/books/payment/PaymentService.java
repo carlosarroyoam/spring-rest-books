@@ -1,8 +1,8 @@
 package com.carlosarroyoam.rest.books.payment;
 
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
-import com.carlosarroyoam.rest.books.core.dto.PagedResponse;
-import com.carlosarroyoam.rest.books.core.dto.PagedResponse.PagedResponseMapper;
+import com.carlosarroyoam.rest.books.core.pagination.PagedResponse;
+import com.carlosarroyoam.rest.books.core.pagination.PagedResponse.PagedResponseMapper;
 import com.carlosarroyoam.rest.books.core.specification.SpecificationBuilder;
 import com.carlosarroyoam.rest.books.order.OrderRepository;
 import com.carlosarroyoam.rest.books.order.entity.Order;

@@ -1,6 +1,6 @@
 package com.carlosarroyoam.rest.books.order;
 
-import com.carlosarroyoam.rest.books.core.dto.PagedResponse;
+import com.carlosarroyoam.rest.books.core.pagination.PagedResponse;
 import com.carlosarroyoam.rest.books.order.dto.CreateOrderRequest;
 import com.carlosarroyoam.rest.books.order.dto.OrderResponse;
 import com.carlosarroyoam.rest.books.order.dto.OrderSpecs;

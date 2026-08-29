@@ -1,6 +1,6 @@
 package com.carlosarroyoam.rest.books.payment;
 
-import com.carlosarroyoam.rest.books.core.dto.PagedResponse;
+import com.carlosarroyoam.rest.books.core.pagination.PagedResponse;
 import com.carlosarroyoam.rest.books.payment.dto.CreatePaymentRequest;
 import com.carlosarroyoam.rest.books.payment.dto.PaymentResponse;
 import com.carlosarroyoam.rest.books.payment.dto.PaymentSpecs;

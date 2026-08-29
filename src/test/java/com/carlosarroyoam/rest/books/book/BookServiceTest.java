@@ -17,7 +17,7 @@ import com.carlosarroyoam.rest.books.book.dto.CreateBookRequest;
 import com.carlosarroyoam.rest.books.book.dto.UpdateBookRequest;
 import com.carlosarroyoam.rest.books.book.entity.Book;
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
-import com.carlosarroyoam.rest.books.core.dto.PagedResponse;
+import com.carlosarroyoam.rest.books.core.pagination.PagedResponse;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;

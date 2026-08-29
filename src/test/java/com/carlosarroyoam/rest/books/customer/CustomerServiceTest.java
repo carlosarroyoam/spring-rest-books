@@ -9,7 +9,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
-import com.carlosarroyoam.rest.books.core.dto.PagedResponse;
+import com.carlosarroyoam.rest.books.core.pagination.PagedResponse;
 import com.carlosarroyoam.rest.books.customer.dto.CreateCustomerRequest;
 import com.carlosarroyoam.rest.books.customer.dto.CustomerResponse;
 import com.carlosarroyoam.rest.books.customer.dto.CustomerSpecs;
