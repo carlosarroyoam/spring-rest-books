@@ -60,7 +60,7 @@ public class ProblemDetailFactory {
    * @param request petición HTTP en curso
    * @return la ruta a incluir como {@code instance} en la respuesta de error
    */
-  private String resolvePath(HttpServletRequest request) {
+  String resolvePath(HttpServletRequest request) {
     Object uri = request.getAttribute("jakarta.servlet.error.request_uri");
     return uri != null ? uri.toString() : request.getRequestURI();
   }

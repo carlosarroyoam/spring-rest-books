@@ -10,8 +10,8 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
  * automaticamente.
  */
 public final class TestObjectMappers {
-    /** Constructor privado que impide instanciar la clase. */
-private TestObjectMappers() {
+  /** Constructor privado que impide instanciar la clase. */
+  private TestObjectMappers() {
     throw new IllegalAccessError("Illegal access to utility class");
   }
 
@@ -21,8 +21,8 @@ private TestObjectMappers() {
    * registra {@code ProblemDetailJacksonMixin}, necesario para serializar {@link
    * org.springframework.http.ProblemDetail} en la forma plana de RFC 9457; y descubre via SPI los
    * mismos modulos que registra Spring Boot ({@code java.time.*} y {@code
-   * jackson-module-parameter-names}, este ultimo necesario para deserializar DTOs con Lombok {@code
-   * @Builder} que no tienen constructor sin argumentos).
+   * jackson-module-parameter-names}, este ultimo necesario para deserializar DTOs con Lombok
+   * {@code @Builder} que no tienen constructor sin argumentos).
    *
    * @return el {@link ObjectMapper} configurado
    */

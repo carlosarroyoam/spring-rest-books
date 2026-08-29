@@ -19,8 +19,6 @@ import com.carlosarroyoam.rest.books.core.pagination.PagedResponse.PagedResponse
 import com.carlosarroyoam.rest.books.core.specification.SpecificationBuilder;
 import java.time.LocalDateTime;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -33,7 +31,6 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 public class AuthorService {
-  private static final Logger log = LoggerFactory.getLogger(AuthorService.class);
   private final AuthorRepository authorRepository;
   private final BookRepository bookRepository;
 
@@ -148,10 +145,6 @@ public class AuthorService {
   private Author findAuthorByIdOrFail(Long authorId) {
     return authorRepository
         .findById(authorId)
-        .orElseThrow(
-            () -> {
-              log.warn(AppMessages.AUTHOR_NOT_FOUND_EXCEPTION);
-              return new ResourceNotFoundException(AppMessages.AUTHOR_NOT_FOUND_EXCEPTION);
-            });
+        .orElseThrow(() -> new ResourceNotFoundException(AppMessages.AUTHOR_NOT_FOUND_EXCEPTION));
   }
 }

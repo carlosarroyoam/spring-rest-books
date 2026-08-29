@@ -8,8 +8,8 @@ import java.nio.charset.StandardCharsets;
 
 /** Lee fixtures JSON de respuesta esperada desde {@code src/test/resources/responses}. */
 public final class JsonUtils {
-    /** Constructor privado que impide instanciar la clase. */
-private JsonUtils() {
+  /** Constructor privado que impide instanciar la clase. */
+  private JsonUtils() {
     throw new IllegalAccessError(AppMessages.ILLEGAL_ACCESS_EXCEPTION);
   }
 

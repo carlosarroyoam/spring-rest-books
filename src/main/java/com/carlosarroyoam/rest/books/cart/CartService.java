@@ -11,8 +11,6 @@ import com.carlosarroyoam.rest.books.core.constant.AppMessages;
 import com.carlosarroyoam.rest.books.core.exception.ResourceNotFoundException;
 import java.time.LocalDateTime;
 import java.util.Optional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 public class CartService {
-  private static final Logger log = LoggerFactory.getLogger(CartService.class);
   private final CartRepository cartRepository;
   private final CartItemRepository cartItemRepository;
   private final BookRepository bookRepository;
@@ -104,11 +101,7 @@ public class CartService {
   private Cart findCartByCustomerIdOrFail(Long customerId) {
     return cartRepository
         .findByCustomerId(customerId)
-        .orElseThrow(
-            () -> {
-              log.warn(AppMessages.CART_NOT_FOUND_EXCEPTION);
-              return new ResourceNotFoundException(AppMessages.CART_NOT_FOUND_EXCEPTION);
-            });
+        .orElseThrow(() -> new ResourceNotFoundException(AppMessages.CART_NOT_FOUND_EXCEPTION));
   }
 
   /**
@@ -120,10 +113,6 @@ public class CartService {
   private Book findBookByIdOrFail(Long bookId) {
     return bookRepository
         .findById(bookId)
-        .orElseThrow(
-            () -> {
-              log.warn(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
-              return new ResourceNotFoundException(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
-            });
+        .orElseThrow(() -> new ResourceNotFoundException(AppMessages.BOOK_NOT_FOUND_EXCEPTION));
   }
 }

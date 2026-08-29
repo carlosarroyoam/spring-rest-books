@@ -1,5 +1,6 @@
 package com.carlosarroyoam.rest.books.core.security;
 
+import com.carlosarroyoam.rest.books.core.exception.ExceptionLogger;
 import com.carlosarroyoam.rest.books.core.exception.ProblemDetailFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,10 +21,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class CustomAccessDeniedHandler implements AccessDeniedHandler {
   private final ProblemDetailFactory problemDetailFactory;
+  private final ExceptionLogger exceptionLogger;
   private final ObjectMapper mapper;
 
-  public CustomAccessDeniedHandler(ProblemDetailFactory problemDetailFactory, ObjectMapper mapper) {
+  public CustomAccessDeniedHandler(
+      ProblemDetailFactory problemDetailFactory,
+      ExceptionLogger exceptionLogger,
+      ObjectMapper mapper) {
     this.problemDetailFactory = problemDetailFactory;
+    this.exceptionLogger = exceptionLogger;
     this.mapper = mapper;
   }
 
@@ -40,6 +46,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
       throws IOException {
     HttpStatus status = HttpStatus.FORBIDDEN;
     ProblemDetail problemDetail = problemDetailFactory.build(status, ex.getMessage(), request);
+    exceptionLogger.log(status, ex.getMessage(), request, ex);
 
     response.setStatus(status.value());
     response.setContentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE);

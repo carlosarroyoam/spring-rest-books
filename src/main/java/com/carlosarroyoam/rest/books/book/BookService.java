@@ -22,8 +22,6 @@ import com.carlosarroyoam.rest.books.core.specification.SpecificationBuilder;
 import jakarta.persistence.criteria.JoinType;
 import java.time.LocalDateTime;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -37,7 +35,6 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 public class BookService {
-  private static final Logger log = LoggerFactory.getLogger(BookService.class);
   private final BookRepository bookRepository;
   private final AuthorRepository authorRepository;
 
@@ -96,7 +93,6 @@ public class BookService {
   @Transactional
   public BookResponse create(CreateBookRequest request) {
     if (bookRepository.existsByIsbn(request.getIsbn())) {
-      log.warn(AppMessages.ISBN_ALREADY_EXISTS_EXCEPTION);
       throw new ResourceAlreadyExistsException(AppMessages.ISBN_ALREADY_EXISTS_EXCEPTION);
     }
 
@@ -173,10 +169,6 @@ public class BookService {
   private Book findBookByIdOrFail(Long bookId) {
     return bookRepository
         .findById(bookId)
-        .orElseThrow(
-            () -> {
-              log.warn(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
-              return new ResourceNotFoundException(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
-            });
+        .orElseThrow(() -> new ResourceNotFoundException(AppMessages.BOOK_NOT_FOUND_EXCEPTION));
   }
 }

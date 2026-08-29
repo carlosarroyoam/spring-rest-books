@@ -25,8 +25,6 @@ import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -40,7 +38,6 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 public class OrderService {
-  private static final Logger log = LoggerFactory.getLogger(OrderService.class);
   private static final BigDecimal TAX_RATE = new BigDecimal("0.16");
   private static final BigDecimal DEFAULT_SHIPPING_AMOUNT = new BigDecimal("0.00");
 
@@ -253,11 +250,7 @@ public class OrderService {
   private Order findOrderByIdOrFail(Long orderId) {
     return orderRepository
         .findById(orderId)
-        .orElseThrow(
-            () -> {
-              log.warn(AppMessages.ORDER_NOT_FOUND_EXCEPTION);
-              return new ResourceNotFoundException(AppMessages.ORDER_NOT_FOUND_EXCEPTION);
-            });
+        .orElseThrow(() -> new ResourceNotFoundException(AppMessages.ORDER_NOT_FOUND_EXCEPTION));
   }
 
   /**
@@ -269,11 +262,7 @@ public class OrderService {
   private Customer findCustomerByIdOrFail(CreateOrderRequest request) {
     return customerRepository
         .findById(request.getCustomerId())
-        .orElseThrow(
-            () -> {
-              log.warn(AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION);
-              return new ResourceNotFoundException(AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION);
-            });
+        .orElseThrow(() -> new ResourceNotFoundException(AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION));
   }
 
   /**
@@ -285,10 +274,6 @@ public class OrderService {
   private Book findBookByIdOrFail(Long bookId) {
     return bookRepository
         .findById(bookId)
-        .orElseThrow(
-            () -> {
-              log.warn(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
-              return new ResourceNotFoundException(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
-            });
+        .orElseThrow(() -> new ResourceNotFoundException(AppMessages.BOOK_NOT_FOUND_EXCEPTION));
   }
 }

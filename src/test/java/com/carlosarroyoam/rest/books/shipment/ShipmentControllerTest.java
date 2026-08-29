@@ -9,10 +9,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.carlosarroyoam.rest.books.core.pagination.PagedResponse;
-import com.carlosarroyoam.rest.books.core.pagination.PaginationResponse;
+import com.carlosarroyoam.rest.books.core.exception.ExceptionLogger;
 import com.carlosarroyoam.rest.books.core.exception.GlobalExceptionHandler;
 import com.carlosarroyoam.rest.books.core.exception.ProblemDetailFactory;
+import com.carlosarroyoam.rest.books.core.pagination.PagedResponse;
+import com.carlosarroyoam.rest.books.core.pagination.PaginationResponse;
 import com.carlosarroyoam.rest.books.shipment.dto.ShipmentResponse;
 import com.carlosarroyoam.rest.books.shipment.dto.ShipmentSpecs;
 import com.carlosarroyoam.rest.books.shipment.dto.UpdateShipmentStatusRequest;
@@ -49,7 +50,8 @@ class ShipmentControllerTest {
 
     mockMvc =
         MockMvcBuilders.standaloneSetup(shipmentController)
-            .setControllerAdvice(new GlobalExceptionHandler(new ProblemDetailFactory()))
+            .setControllerAdvice(
+                new GlobalExceptionHandler(new ProblemDetailFactory(), new ExceptionLogger()))
             .setMessageConverters(
                 new MappingJackson2HttpMessageConverter(TestObjectMappers.snakeCase()))
             .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())

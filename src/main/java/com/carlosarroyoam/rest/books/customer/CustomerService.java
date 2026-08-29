@@ -15,8 +15,6 @@ import com.carlosarroyoam.rest.books.customer.entity.Customer;
 import com.carlosarroyoam.rest.books.customer.entity.CustomerStatus;
 import com.carlosarroyoam.rest.books.customer.entity.Customer_;
 import java.time.LocalDateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -30,7 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 public class CustomerService {
-  private static final Logger log = LoggerFactory.getLogger(CustomerService.class);
   private final CustomerRepository customerRepository;
   private final KeycloakService keycloakService;
 
@@ -87,12 +84,10 @@ public class CustomerService {
   @Transactional
   public CustomerResponse create(CreateCustomerRequest request) {
     if (customerRepository.existsByUsername(request.getUsername())) {
-      log.warn(AppMessages.USERNAME_ALREADY_EXISTS_EXCEPTION);
       throw new ResourceAlreadyExistsException(AppMessages.USERNAME_ALREADY_EXISTS_EXCEPTION);
     }
 
     if (customerRepository.existsByEmail(request.getEmail())) {
-      log.warn(AppMessages.EMAIL_ALREADY_EXISTS_EXCEPTION);
       throw new ResourceAlreadyExistsException(AppMessages.EMAIL_ALREADY_EXISTS_EXCEPTION);
     }
 
@@ -153,10 +148,6 @@ public class CustomerService {
   private Customer findCustomerByIdOrFail(Long customerId) {
     return customerRepository
         .findById(customerId)
-        .orElseThrow(
-            () -> {
-              log.warn(AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION);
-              return new ResourceNotFoundException(AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION);
-            });
+        .orElseThrow(() -> new ResourceNotFoundException(AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION));
   }
 }

@@ -11,10 +11,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.carlosarroyoam.rest.books.core.pagination.PagedResponse;
-import com.carlosarroyoam.rest.books.core.pagination.PaginationResponse;
+import com.carlosarroyoam.rest.books.core.exception.ExceptionLogger;
 import com.carlosarroyoam.rest.books.core.exception.GlobalExceptionHandler;
 import com.carlosarroyoam.rest.books.core.exception.ProblemDetailFactory;
+import com.carlosarroyoam.rest.books.core.pagination.PagedResponse;
+import com.carlosarroyoam.rest.books.core.pagination.PaginationResponse;
 import com.carlosarroyoam.rest.books.order.dto.CreateOrderItemRequest;
 import com.carlosarroyoam.rest.books.order.dto.CreateOrderRequest;
 import com.carlosarroyoam.rest.books.order.dto.OrderResponse;
@@ -54,7 +55,8 @@ class OrderControllerTest {
 
     mockMvc =
         MockMvcBuilders.standaloneSetup(orderController)
-            .setControllerAdvice(new GlobalExceptionHandler(new ProblemDetailFactory()))
+            .setControllerAdvice(
+                new GlobalExceptionHandler(new ProblemDetailFactory(), new ExceptionLogger()))
             .setMessageConverters(
                 new MappingJackson2HttpMessageConverter(TestObjectMappers.snakeCase()))
             .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())

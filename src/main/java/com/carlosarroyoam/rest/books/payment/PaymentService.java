@@ -23,8 +23,6 @@ import com.carlosarroyoam.rest.books.shipment.entity.Shipment;
 import com.carlosarroyoam.rest.books.shipment.entity.ShipmentStatus;
 import java.time.LocalDateTime;
 import java.util.UUID;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -38,7 +36,6 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 public class PaymentService {
-  private static final Logger log = LoggerFactory.getLogger(PaymentService.class);
   private final PaymentRepository paymentRepository;
   private final OrderRepository orderRepository;
   private final ShipmentRepository shipmentRepository;
@@ -110,7 +107,6 @@ public class PaymentService {
     Order orderById = findOrderByIdOrFail(request.getOrderId());
 
     if (paymentRepository.existsByOrderId(orderById.getId())) {
-      log.warn(AppMessages.PAYMENT_ALREADY_EXISTS_EXCEPTION);
       throw new ResourceAlreadyExistsException(AppMessages.PAYMENT_ALREADY_EXISTS_EXCEPTION);
     }
 
@@ -221,11 +217,7 @@ public class PaymentService {
   private Payment findPaymentByIdOrFail(Long paymentId) {
     return paymentRepository
         .findById(paymentId)
-        .orElseThrow(
-            () -> {
-              log.warn(AppMessages.PAYMENT_NOT_FOUND_EXCEPTION);
-              return new ResourceNotFoundException(AppMessages.PAYMENT_NOT_FOUND_EXCEPTION);
-            });
+        .orElseThrow(() -> new ResourceNotFoundException(AppMessages.PAYMENT_NOT_FOUND_EXCEPTION));
   }
 
   /**
@@ -237,10 +229,6 @@ public class PaymentService {
   private Order findOrderByIdOrFail(Long orderId) {
     return orderRepository
         .findById(orderId)
-        .orElseThrow(
-            () -> {
-              log.warn(AppMessages.ORDER_NOT_FOUND_EXCEPTION);
-              return new ResourceNotFoundException(AppMessages.ORDER_NOT_FOUND_EXCEPTION);
-            });
+        .orElseThrow(() -> new ResourceNotFoundException(AppMessages.ORDER_NOT_FOUND_EXCEPTION));
   }
 }

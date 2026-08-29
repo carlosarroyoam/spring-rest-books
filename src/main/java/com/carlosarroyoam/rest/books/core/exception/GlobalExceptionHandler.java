@@ -3,8 +3,6 @@ package com.carlosarroyoam.rest.books.core.exception;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -26,11 +24,13 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
  */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-  private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
   private final ProblemDetailFactory problemDetailFactory;
+  private final ExceptionLogger exceptionLogger;
 
-  public GlobalExceptionHandler(ProblemDetailFactory problemDetailFactory) {
+  public GlobalExceptionHandler(
+      ProblemDetailFactory problemDetailFactory, ExceptionLogger exceptionLogger) {
     this.problemDetailFactory = problemDetailFactory;
+    this.exceptionLogger = exceptionLogger;
   }
 
   /**
@@ -43,6 +43,7 @@ public class GlobalExceptionHandler {
    */
   @ExceptionHandler({ApplicationException.class})
   public ProblemDetail handleAppException(ApplicationException ex, HttpServletRequest request) {
+    exceptionLogger.log(ex.getStatus(), ex.getMessage(), request, ex);
     return problemDetailFactory.build(ex.getStatus(), ex.getMessage(), request);
   }
 
@@ -56,6 +57,7 @@ public class GlobalExceptionHandler {
   @ExceptionHandler({HttpMessageNotReadableException.class})
   public ProblemDetail handleHttpMessageNotReadable(
       HttpMessageNotReadableException ex, HttpServletRequest request) {
+    exceptionLogger.log(HttpStatus.BAD_REQUEST, ex.getMessage(), request, ex);
     return problemDetailFactory.build(HttpStatus.BAD_REQUEST, ex.getMessage(), request);
   }
 
@@ -69,6 +71,7 @@ public class GlobalExceptionHandler {
   @ExceptionHandler({MethodArgumentTypeMismatchException.class})
   public ProblemDetail handleMethodArgumentTypeMismatch(
       MethodArgumentTypeMismatchException ex, HttpServletRequest request) {
+    exceptionLogger.log(HttpStatus.BAD_REQUEST, ex.getMessage(), request, ex);
     return problemDetailFactory.build(HttpStatus.BAD_REQUEST, ex.getMessage(), request);
   }
 
@@ -82,6 +85,7 @@ public class GlobalExceptionHandler {
   @ExceptionHandler({NoHandlerFoundException.class})
   public ProblemDetail handleNoHandlerFound(
       NoHandlerFoundException ex, HttpServletRequest request) {
+    exceptionLogger.log(HttpStatus.NOT_FOUND, ex.getMessage(), request, ex);
     return problemDetailFactory.build(HttpStatus.NOT_FOUND, ex.getMessage(), request);
   }
 
@@ -95,6 +99,7 @@ public class GlobalExceptionHandler {
   @ExceptionHandler({NoResourceFoundException.class})
   public ProblemDetail handleNoResourceFound(
       NoResourceFoundException ex, HttpServletRequest request) {
+    exceptionLogger.log(HttpStatus.NOT_FOUND, ex.getMessage(), request, ex);
     return problemDetailFactory.build(HttpStatus.NOT_FOUND, ex.getMessage(), request);
   }
 
@@ -108,6 +113,7 @@ public class GlobalExceptionHandler {
   @ExceptionHandler({HttpRequestMethodNotSupportedException.class})
   public ProblemDetail handleMethodNotSupported(
       HttpRequestMethodNotSupportedException ex, HttpServletRequest request) {
+    exceptionLogger.log(HttpStatus.METHOD_NOT_ALLOWED, ex.getMessage(), request, ex);
     return problemDetailFactory.build(HttpStatus.METHOD_NOT_ALLOWED, ex.getMessage(), request);
   }
 
@@ -123,6 +129,7 @@ public class GlobalExceptionHandler {
   @ExceptionHandler({AuthenticationException.class})
   public ProblemDetail handleAuthenticationException(
       AuthenticationException ex, HttpServletRequest request) {
+    exceptionLogger.log(HttpStatus.UNAUTHORIZED, ex.getMessage(), request, ex);
     return problemDetailFactory.build(HttpStatus.UNAUTHORIZED, ex.getMessage(), request);
   }
 
@@ -137,6 +144,7 @@ public class GlobalExceptionHandler {
   @ExceptionHandler({AccessDeniedException.class})
   public ProblemDetail handleAccessDeniedException(
       AccessDeniedException ex, HttpServletRequest request) {
+    exceptionLogger.log(HttpStatus.FORBIDDEN, ex.getMessage(), request, ex);
     return problemDetailFactory.build(HttpStatus.FORBIDDEN, ex.getMessage(), request);
   }
 
@@ -160,6 +168,8 @@ public class GlobalExceptionHandler {
                     FieldError::getDefaultMessage,
                     (existing, replacement) -> existing));
 
+    exceptionLogger.log(
+        HttpStatus.UNPROCESSABLE_ENTITY, "Invalid request data " + errors.keySet(), request, ex);
     return problemDetailFactory.build(
         HttpStatus.UNPROCESSABLE_ENTITY, "Invalid request data", request, errors);
   }
@@ -174,8 +184,8 @@ public class GlobalExceptionHandler {
    */
   @ExceptionHandler({Exception.class})
   public ProblemDetail handleException(Exception ex, HttpServletRequest request) {
-    log.error("Whoops! Something went wrong: ", ex);
-
+    exceptionLogger.log(
+        HttpStatus.INTERNAL_SERVER_ERROR, "Unhandled exception", request, ex);
     return problemDetailFactory.build(
         HttpStatus.INTERNAL_SERVER_ERROR, "Whoops! Something went wrong", request);
   }

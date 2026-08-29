@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.carlosarroyoam.rest.books.cart.dto.CartResponse;
 import com.carlosarroyoam.rest.books.cart.dto.UpdateCartItemRequest;
+import com.carlosarroyoam.rest.books.core.exception.ExceptionLogger;
 import com.carlosarroyoam.rest.books.core.exception.GlobalExceptionHandler;
 import com.carlosarroyoam.rest.books.core.exception.ProblemDetailFactory;
 import com.carlosarroyoam.rest.books.support.security.JwtArgumentResolver;
@@ -43,7 +44,8 @@ class CartControllerTest {
 
     mockMvc =
         MockMvcBuilders.standaloneSetup(cartController)
-            .setControllerAdvice(new GlobalExceptionHandler(new ProblemDetailFactory()))
+            .setControllerAdvice(
+                new GlobalExceptionHandler(new ProblemDetailFactory(), new ExceptionLogger()))
             .setMessageConverters(
                 new MappingJackson2HttpMessageConverter(TestObjectMappers.snakeCase()))
             .setCustomArgumentResolvers(new JwtArgumentResolver())

@@ -108,8 +108,7 @@ public class KeycloakService {
                 + " failed",
             AppMessages.USER_NOT_CREATED_EXCEPTION,
             keycloakUserId,
-            customerId,
-            ex);
+            customerId);
         removeOrphanedUser(usersResource, keycloakUserId);
         throw new InternalServerException(AppMessages.USER_NOT_CREATED_EXCEPTION, ex);
       }
