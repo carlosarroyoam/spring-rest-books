@@ -12,20 +12,24 @@ Authorization is JWT-based (OAuth2 resource server) with Keycloak used for custo
 
 - Build: `./mvnw.cmd clean package` (or `./mvnw` on non-Windows)
 - Run locally: `./mvnw.cmd spring-boot:run` — server starts on `http://localhost:8081`
-- Run all tests: `./mvnw.cmd test`
+- Run unit tests: `./mvnw.cmd test` — this runs `*ServiceTest` / `*ControllerTest` only;
+  `*ControllerIT` integration tests are NOT picked up by the default run.
+- Run an integration test: `./mvnw.cmd test -Dtest=BookControllerIT` (must be named explicitly)
 - Run a single test class: `./mvnw.cmd test -Dtest=BookServiceTest`
-- Run a single test method: `./mvnw.cmd test -Dtest=BookServiceTest#shouldFindById`
+- Run a single test method: `./mvnw.cmd test -Dtest=BookServiceTest#givenBookExists_whenFindById_thenReturnsBook`
 
 ## Repository Layout
 
 - `src/main/java/com/carlosarroyoam/rest/books`
   - Feature modules: `author`, `book`, `customer`, `cart`, `order`, `payment`, `shipment`
-  - `core`: cross-cutting infrastructure — security, config, exception handling, shared DTOs,
-    constants, JPA specification helpers
+  - `core`: cross-cutting infrastructure — `config` (security/web), `constant` (`AppMessages`),
+    `exception` handling, `filter` (request filters), `pagination`, `property`, `security`,
+    `specification`
 - `src/main/resources`
   - `application.properties`: default local runtime config (port `8081`, H2, CORS, Keycloak client)
   - `application-test.properties`: integration-test config
   - `schema.sql`, `data.sql`: database bootstrap (no migration tool; schema managed by hand)
+  - `logback-spring.xml`: logging config (console pattern includes the MDC correlation id)
 - `src/test/java/com/carlosarroyoam/rest/books`
   - `*ServiceTest`: Mockito-based unit tests for business logic
   - `*ControllerTest`: MockMvc slice tests with mocked services
@@ -56,11 +60,15 @@ Authorization is JWT-based (OAuth2 resource server) with Keycloak used for custo
   `UnauthorizedException` (401), `ForbiddenException` (403), `InternalServerException` (500). Throw
   with the plain `AppMessages` constant as the message; the service logs it (`log.warn`) and the
   handler maps `getStatus()` / `getMessage()` onto the `ProblemDetail`.
+- Every request is assigned a correlation id exposed in the MDC as `requestId` by
+  `core/filter/CorrelationIdFilter` (reuses/returns the `X-Request-Id` header, runs at
+  `HIGHEST_PRECEDENCE`); `core/filter/MdcUserContextFilter` adds authenticated-user context to
+  the MDC. Log through SLF4J so these keys appear in output.
 - Security is enforced in two layers: request-level rules in `core/config/WebSecurityConfig` and
   method-level `@PreAuthorize` in services/controllers.
 - Realm roles from Keycloak JWTs are converted to `ROLE_*` authorities by `AuthoritiesConverter`
   (drops Keycloak default/offline/uma roles).
-- Pagination responses are wrapped in `core/dto/PagedResponse`.
+- Pagination responses are wrapped in `core/pagination/PagedResponse`.
 - Jackson is configured globally for snake_case JSON (`spring.jackson.property-naming-strategy`).
 - Javadoc in this codebase is written in Spanish; match that convention when adding Javadoc.
 
@@ -80,4 +88,4 @@ When changing behavior in a module, update the matching layers together:
 - `*ServiceTest` for business-rule changes
 - `*ControllerTest` for HTTP contract changes (status codes, request/response shape)
 - `*ControllerIT` plus the corresponding JSON fixture under `src/test/resources/responses/<module>`
-  for end-to-end behavior
+  for end-to-end behavior (run these explicitly with `-Dtest`, they are not in the default run)
