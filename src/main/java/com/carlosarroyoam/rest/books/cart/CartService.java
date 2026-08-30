@@ -10,7 +10,6 @@ import com.carlosarroyoam.rest.books.cart.entity.CartItem;
 import com.carlosarroyoam.rest.books.core.constant.AppMessages;
 import com.carlosarroyoam.rest.books.core.exception.ResourceNotFoundException;
 import java.time.LocalDateTime;
-import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,20 +55,18 @@ public class CartService {
     Cart cartByCustomerId = findCartByCustomerIdOrFail(customerId);
     Book bookById = findBookByIdOrFail(request.getBookId());
 
-    Optional<CartItem> cartItemOptional =
+    CartItem cartItem =
         cartByCustomerId.getItems().stream()
             .filter(item -> item.getBook().getId().equals(request.getBookId()))
-            .findFirst();
-
-    CartItem cartItem =
-        cartItemOptional.orElseGet(
-            () ->
-                CartItem.builder()
-                    .book(bookById)
-                    .quantity(request.getQuantity())
-                    .addedAt(LocalDateTime.now())
-                    .cart(cartByCustomerId)
-                    .build());
+            .findFirst()
+            .orElseGet(
+                () ->
+                    CartItem.builder()
+                        .book(bookById)
+                        .quantity(request.getQuantity())
+                        .addedAt(LocalDateTime.now())
+                        .cart(cartByCustomerId)
+                        .build());
 
     cartItem.setQuantity(request.getQuantity());
     cartItem.setAddedAt(LocalDateTime.now());
