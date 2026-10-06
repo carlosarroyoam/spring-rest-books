@@ -71,7 +71,7 @@ The server starts on `http://localhost:8081`.
 
 ## Database Schema
 
-Schema defined in `src/main/resources/schema.sql` with initial data in `src/main/resources/data.sql`.
+Schema defined in `database/schema.sql` with initial data in `database/data.sql`.
 
 ## Keycloak Notes
 

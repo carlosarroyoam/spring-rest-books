@@ -28,8 +28,11 @@ Authorization is JWT-based (OAuth2 resource server) with Keycloak used for custo
 - `src/main/resources`
   - `application.properties`: default local runtime config (port `8081`, H2, CORS, Keycloak client)
   - `application-test.properties`: integration-test config
-  - `schema.sql`, `data.sql`: database bootstrap (no migration tool; schema managed by hand)
   - `logback-spring.xml`: logging config (console pattern includes the MDC correlation id)
+- `database/schema.sql`, `database/data.sql`: database bootstrap (no migration tool; schema managed
+  by hand); `pom.xml` adds `database` as an extra Maven resources directory so these land on the
+  classpath root alongside `src/main/resources`, where Spring Boot's default
+  `classpath:schema.sql`/`classpath:data.sql` detection picks them up
 - `src/test/java/com/carlosarroyoam/rest/books`
   - `*ServiceTest`: Mockito-based unit tests for business logic
   - `*ControllerTest`: MockMvc slice tests with mocked services
