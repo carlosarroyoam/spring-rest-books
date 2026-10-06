@@ -1,3 +1,7 @@
+-- =============================================
+-- Spring REST Books - Seed data
+-- =============================================
+
 INSERT INTO authors(name, bio, status, created_at, updated_at) VALUES 
 ('Yuval Noah Harari', 'Israeli public intellectual, historian and professor in the Department of History at Hebrew University of Jerusalem. Known for his books on the history of humankind.', 'ACTIVE', '2025-01-01 00:00:00', '2025-01-01 00:00:00'),
 ('Itzik Yahav', 'Senior software engineer and author specializing in C# and .NET development with over 15 years of experience in enterprise software design.', 'ACTIVE', '2025-01-01 00:00:00', '2025-01-01 00:00:00');

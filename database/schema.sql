@@ -1,3 +1,7 @@
+-- =============================================
+-- Spring REST Books - MySQL Schema
+-- =============================================
+
 CREATE TABLE authors (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(128) NOT NULL,
