@@ -12,9 +12,10 @@ Authorization is JWT-based (OAuth2 resource server) with Keycloak used for custo
 
 - Build: `./mvnw.cmd clean package` (or `./mvnw` on non-Windows)
 - Run locally: `./mvnw.cmd spring-boot:run` — server starts on `http://localhost:8081`
-- Run unit tests: `./mvnw.cmd test` — this runs `*ServiceTest` / `*ControllerTest` only;
-  `*ControllerIT` integration tests are NOT picked up by the default run.
-- Run an integration test: `./mvnw.cmd test -Dtest=BookControllerIT` (must be named explicitly)
+- Run unit tests: `./mvnw.cmd test` — runs `*ServiceTest` / `*ControllerTest` only (Surefire);
+  `*ControllerIT` classes are run by Failsafe in the `integration-test` phase.
+- Run all tests including integration tests: `./mvnw.cmd verify`
+- Run one integration test: `./mvnw.cmd test -Dtest=BookControllerIT`
 - Run a single test class: `./mvnw.cmd test -Dtest=BookServiceTest`
 - Run a single test method: `./mvnw.cmd test -Dtest=BookServiceTest#givenBookExists_whenFindById_thenReturnsBook`
 
@@ -27,8 +28,8 @@ Authorization is JWT-based (OAuth2 resource server) with Keycloak used for custo
     `specification`
 - `src/main/resources`
   - `application.properties`: default local runtime config (port `8081`, H2, CORS, Keycloak client)
-  - `application-test.properties`: integration-test config
   - `logback-spring.xml`: logging config (console pattern includes the MDC correlation id)
+- `src/test/resources/application-test.properties`: integration-test config
 - `database/schema.sql`, `database/data.sql`: database bootstrap (no migration tool; schema managed
   by hand); `pom.xml` adds `database` as an extra Maven resources directory so these land on the
   classpath root alongside `src/main/resources`, where Spring Boot's default
@@ -57,12 +58,13 @@ Authorization is JWT-based (OAuth2 resource server) with Keycloak used for custo
   `BookResponse.BookResponseMapper`), not as standalone mapper classes.
 - All uncaught exceptions are normalized by `core/exception/GlobalExceptionHandler` into RFC 9457
   `ProblemDetail` responses (`application/problem+json`), built via `ProblemDetailFactory`.
-  Domain/application errors are raised as subclasses of `core/exception/AppException`, each fixing
+  Domain/application errors are raised as subclasses of `core/exception/ApplicationException`, each fixing
   its own HTTP status: `ResourceNotFoundException` (404), `ResourceAlreadyExistsException` /
   `ConflictException` (409), `BusinessException` / `ValidationException` (422),
   `UnauthorizedException` (401), `ForbiddenException` (403), `InternalServerException` (500). Throw
-  with the plain `AppMessages` constant as the message; the service logs it (`log.warn`) and the
-  handler maps `getStatus()` / `getMessage()` onto the `ProblemDetail`.
+  with the plain `AppMessages` constant as the message. The handler logs it once through
+  `ExceptionLogger` (WARN without a stack trace for 4xx, ERROR with one for 5xx) and maps
+  `getStatus()` / `getMessage()` onto the `ProblemDetail`; don't also log it in the service.
 - Every request is assigned a correlation id exposed in the MDC as `requestId` by
   `core/filter/CorrelationIdFilter` (reuses/returns the `X-Request-Id` header, runs at
   `HIGHEST_PRECEDENCE`); `core/filter/MdcUserContextFilter` adds authenticated-user context to
@@ -91,4 +93,4 @@ When changing behavior in a module, update the matching layers together:
 - `*ServiceTest` for business-rule changes
 - `*ControllerTest` for HTTP contract changes (status codes, request/response shape)
 - `*ControllerIT` plus the corresponding JSON fixture under `src/test/resources/responses/<module>`
-  for end-to-end behavior (run these explicitly with `-Dtest`, they are not in the default run)
+  for end-to-end behavior (`./mvnw.cmd verify` runs them; `./mvnw.cmd test` does not)
