@@ -7,10 +7,12 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.annotation.Validated;
 
 /** Propiedades de configuración de CORS bajo el prefijo {@code application.cors}. */
 @Component
 @ConfigurationProperties(prefix = "application.cors")
+@Validated 
 @Getter
 @Setter
 public class CorsProps {
