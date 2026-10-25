@@ -27,7 +27,7 @@ Authorization is JWT-based (OAuth2 resource server) with Keycloak used for custo
     `exception` handling, `filter` (request filters), `pagination`, `property`, `security`,
     `specification`
 - `src/main/resources`
-  - `application.properties`: default local runtime config (port `8081`, H2, CORS, Keycloak client)
+  - `app.properties`: default local runtime config (port `8081`, H2, CORS, Keycloak client)
   - `logback-spring.xml`: logging config (console pattern includes the MDC correlation id)
 - `src/test/resources/application-test.properties`: integration-test config
 - `database/schema.sql`, `database/data.sql`: database bootstrap (no migration tool; schema managed
@@ -84,7 +84,7 @@ Authorization is JWT-based (OAuth2 resource server) with Keycloak used for custo
 - Customer creation has both a local DB effect and a Keycloak side effect via `KeycloakService`,
   which provisions the user and assigns the `App/Customer` realm role — treat it as a two-system
   write when touching customer registration.
-- `application.properties` contains a Keycloak client secret for local dev; do not introduce real
+- `app.properties` contains a Keycloak client secret for local dev; do not introduce real
   secrets alongside it.
 
 ## Test Strategy

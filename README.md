@@ -82,7 +82,7 @@ Public endpoints (`GET /books/**`, `GET /authors/**`, `POST /customers`) work wi
 
 Customer registration is not only a local database write: the application also provisions the
 user in Keycloak through `KeycloakService` and assigns the `App/Customer` realm role, so a
-reachable Keycloak with admin credentials configured in `application.properties` is required for
+reachable Keycloak with admin credentials configured in `app.properties` is required for
 that flow.
 
 ## License
