@@ -75,7 +75,7 @@ public class ShipmentService {
    */
   @Transactional(readOnly = true)
   public ShipmentResponse findById(Long shipmentId) {
-    Shipment shipmentById = findShipmentByIdOrFail(shipmentId);
+    Shipment shipmentById = findShipmentById(shipmentId);
     return ShipmentResponseMapper.INSTANCE.toDto(shipmentById);
   }
 
@@ -88,12 +88,12 @@ public class ShipmentService {
   @Transactional
   public void updateStatus(Long shipmentId, UpdateShipmentStatusRequest request) {
     LocalDateTime now = LocalDateTime.now();
-    Shipment shipmentById = findShipmentByIdOrFail(shipmentId);
+    Shipment shipmentById = findShipmentById(shipmentId);
     shipmentById.setStatus(request.getStatus());
     shipmentById.setUpdatedAt(now);
     shipmentRepository.save(shipmentById);
 
-    Order orderById = findOrderByIdOrFail(shipmentById.getOrder().getId());
+    Order orderById = findOrderById(shipmentById.getOrder().getId());
     orderById.setStatus(resolveOrderStatusFromShipment(request.getStatus(), orderById.getStatus()));
     orderById.setUpdatedAt(now);
     orderRepository.save(orderById);
@@ -105,10 +105,22 @@ public class ShipmentService {
    * @param shipmentId id del envío a buscar
    * @return el envío encontrado
    */
-  private Shipment findShipmentByIdOrFail(Long shipmentId) {
+  private Shipment findShipmentById(Long shipmentId) {
     return shipmentRepository
         .findById(shipmentId)
         .orElseThrow(() -> new ResourceNotFoundException(AppMessages.SHIPMENT_NOT_FOUND_EXCEPTION));
+  }
+
+  /**
+   * Busca una orden por id o lanza {@code 404 Not Found} si no existe.
+   *
+   * @param orderId id de la orden a buscar
+   * @return la orden encontrada
+   */
+  private Order findOrderById(Long orderId) {
+    return orderRepository
+        .findById(orderId)
+        .orElseThrow(() -> new ResourceNotFoundException(AppMessages.ORDER_NOT_FOUND_EXCEPTION));
   }
 
   /**
@@ -126,17 +138,5 @@ public class ShipmentService {
       case CANCELLED, RETURNED -> OrderStatus.CANCELLED;
       case PENDING -> currentStatus == null ? OrderStatus.PENDING : currentStatus;
     };
-  }
-
-  /**
-   * Busca una orden por id o lanza {@code 404 Not Found} si no existe.
-   *
-   * @param orderId id de la orden a buscar
-   * @return la orden encontrada
-   */
-  private Order findOrderByIdOrFail(Long orderId) {
-    return orderRepository
-        .findById(orderId)
-        .orElseThrow(() -> new ResourceNotFoundException(AppMessages.ORDER_NOT_FOUND_EXCEPTION));
   }
 }

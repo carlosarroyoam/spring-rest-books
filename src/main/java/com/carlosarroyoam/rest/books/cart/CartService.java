@@ -40,7 +40,7 @@ public class CartService {
    */
   @Transactional(readOnly = true)
   public CartResponse findByCustomerId(Long customerId) {
-    Cart cartByCustomerId = findCartByCustomerIdOrFail(customerId);
+    Cart cartByCustomerId = findCartByCustomerId(customerId);
     return CartResponseMapper.INSTANCE.toDto(cartByCustomerId);
   }
 
@@ -52,8 +52,8 @@ public class CartService {
    */
   @Transactional
   public void updateCartItem(Long customerId, UpdateCartItemRequest request) {
-    Cart cartByCustomerId = findCartByCustomerIdOrFail(customerId);
-    Book bookById = findBookByIdOrFail(request.getBookId());
+    Cart cartByCustomerId = findCartByCustomerId(customerId);
+    Book bookById = findBookById(request.getBookId());
 
     CartItem cartItem =
         cartByCustomerId.getItems().stream()
@@ -81,7 +81,7 @@ public class CartService {
    */
   @Transactional
   public void deleteCartItem(Long customerId, Long cartItemId) {
-    Cart cartByCustomerId = findCartByCustomerIdOrFail(customerId);
+    Cart cartByCustomerId = findCartByCustomerId(customerId);
 
     cartByCustomerId.getItems().stream()
         .filter(item -> item.getId().equals(cartItemId))
@@ -95,7 +95,7 @@ public class CartService {
    * @param customerId id del cliente
    * @return el carrito del cliente
    */
-  private Cart findCartByCustomerIdOrFail(Long customerId) {
+  private Cart findCartByCustomerId(Long customerId) {
     return cartRepository
         .findByCustomerId(customerId)
         .orElseThrow(() -> new ResourceNotFoundException(AppMessages.CART_NOT_FOUND_EXCEPTION));
@@ -107,7 +107,7 @@ public class CartService {
    * @param bookId id del libro a buscar
    * @return el libro encontrado
    */
-  private Book findBookByIdOrFail(Long bookId) {
+  private Book findBookById(Long bookId) {
     return bookRepository
         .findById(bookId)
         .orElseThrow(() -> new ResourceNotFoundException(AppMessages.BOOK_NOT_FOUND_EXCEPTION));

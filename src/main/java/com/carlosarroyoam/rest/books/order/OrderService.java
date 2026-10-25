@@ -93,7 +93,7 @@ public class OrderService {
    */
   @Transactional(readOnly = true)
   public OrderResponse findById(Long orderId) {
-    Order orderById = findOrderByIdOrFail(orderId);
+    Order orderById = findOrderById(orderId);
     return OrderResponseMapper.INSTANCE.toDto(orderById);
   }
 
@@ -105,7 +105,7 @@ public class OrderService {
    */
   @Transactional
   public OrderResponse create(CreateOrderRequest request) {
-    Customer customerById = findCustomerByIdOrFail(request);
+    Customer customerById = findCustomerById(request);
 
     LocalDateTime now = LocalDateTime.now();
     Order order =
@@ -144,7 +144,7 @@ public class OrderService {
   @Transactional
   public void update(Long orderId, UpdateOrderRequest request) {
     LocalDateTime now = LocalDateTime.now();
-    Order orderById = findOrderByIdOrFail(orderId);
+    Order orderById = findOrderById(orderId);
     orderById.setShippingAddress(request.getShippingAddress());
     orderById.setBillingAddress(request.getBillingAddress());
     orderById.setNotes(request.getNotes());
@@ -166,7 +166,7 @@ public class OrderService {
     return requestItems.stream()
         .map(
             item -> {
-              Book bookById = findBookByIdOrFail(item.getBookId());
+              Book bookById = findBookById(item.getBookId());
 
               BigDecimal unitPrice = bookById.getPrice().setScale(2, RoundingMode.HALF_UP);
               BigDecimal totalPrice =
@@ -247,7 +247,7 @@ public class OrderService {
    * @param orderId id de la orden a buscar
    * @return la orden encontrada
    */
-  private Order findOrderByIdOrFail(Long orderId) {
+  private Order findOrderById(Long orderId) {
     return orderRepository
         .findById(orderId)
         .orElseThrow(() -> new ResourceNotFoundException(AppMessages.ORDER_NOT_FOUND_EXCEPTION));
@@ -259,7 +259,7 @@ public class OrderService {
    * @param request datos de la orden, con el id del cliente a buscar
    * @return el cliente encontrado
    */
-  private Customer findCustomerByIdOrFail(CreateOrderRequest request) {
+  private Customer findCustomerById(CreateOrderRequest request) {
     return customerRepository
         .findById(request.getCustomerId())
         .orElseThrow(() -> new ResourceNotFoundException(AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION));
@@ -271,7 +271,7 @@ public class OrderService {
    * @param bookId id del libro a buscar
    * @return el libro encontrado
    */
-  private Book findBookByIdOrFail(Long bookId) {
+  private Book findBookById(Long bookId) {
     return bookRepository
         .findById(bookId)
         .orElseThrow(() -> new ResourceNotFoundException(AppMessages.BOOK_NOT_FOUND_EXCEPTION));

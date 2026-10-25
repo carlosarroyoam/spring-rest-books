@@ -68,7 +68,7 @@ public class CustomerService {
    */
   @Transactional(readOnly = true)
   public CustomerResponse findById(Long customerId) {
-    Customer customerById = findCustomerByIdOrFail(customerId);
+    Customer customerById = findCustomerById(customerId);
     return CustomerResponseMapper.INSTANCE.toDto(customerById);
   }
 
@@ -117,7 +117,7 @@ public class CustomerService {
   @Transactional
   public void update(Long customerId, UpdateCustomerRequest request) {
     LocalDateTime now = LocalDateTime.now();
-    Customer customerById = findCustomerByIdOrFail(customerId);
+    Customer customerById = findCustomerById(customerId);
     customerById.setFirstName(request.getFirstName());
     customerById.setLastName(request.getLastName());
     customerById.setUpdatedAt(now);
@@ -132,7 +132,7 @@ public class CustomerService {
   @Transactional
   public void deleteById(Long customerId) {
     LocalDateTime now = LocalDateTime.now();
-    Customer customerById = findCustomerByIdOrFail(customerId);
+    Customer customerById = findCustomerById(customerId);
     customerById.setStatus(CustomerStatus.DELETED);
     customerById.setUpdatedAt(now);
     customerById.setDeletedAt(now);
@@ -145,7 +145,7 @@ public class CustomerService {
    * @param customerId id del cliente a buscar
    * @return el cliente encontrado
    */
-  private Customer findCustomerByIdOrFail(Long customerId) {
+  private Customer findCustomerById(Long customerId) {
     return customerRepository
         .findById(customerId)
         .orElseThrow(() -> new ResourceNotFoundException(AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION));

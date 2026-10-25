@@ -90,7 +90,7 @@ public class PaymentService {
    */
   @Transactional(readOnly = true)
   public PaymentResponse findById(Long paymentId) {
-    Payment paymentById = findPaymentByIdOrFail(paymentId);
+    Payment paymentById = findPaymentById(paymentId);
     return PaymentResponseMapper.INSTANCE.toDto(paymentById);
   }
 
@@ -104,7 +104,7 @@ public class PaymentService {
    */
   @Transactional
   public PaymentResponse create(CreatePaymentRequest request) {
-    Order orderById = findOrderByIdOrFail(request.getOrderId());
+    Order orderById = findOrderById(request.getOrderId());
 
     if (paymentRepository.existsByOrderId(orderById.getId())) {
       throw new ResourceAlreadyExistsException(AppMessages.PAYMENT_ALREADY_EXISTS_EXCEPTION);
@@ -142,12 +142,12 @@ public class PaymentService {
   @Transactional
   public void updateStatus(Long paymentId, UpdatePaymentStatusRequest request) {
     LocalDateTime now = LocalDateTime.now();
-    Payment paymentById = findPaymentByIdOrFail(paymentId);
+    Payment paymentById = findPaymentById(paymentId);
     paymentById.setStatus(request.getStatus());
     paymentById.setUpdatedAt(now);
     paymentRepository.save(paymentById);
 
-    Order orderById = findOrderByIdOrFail(paymentById.getOrder().getId());
+    Order orderById = findOrderById(paymentById.getOrder().getId());
     orderById.setStatus(resolveOrderStatusFromPayment(request.getStatus(), orderById.getStatus()));
     orderById.setUpdatedAt(now);
     orderRepository.save(orderById);
@@ -214,7 +214,7 @@ public class PaymentService {
    * @param paymentId id del pago a buscar
    * @return el pago encontrado
    */
-  private Payment findPaymentByIdOrFail(Long paymentId) {
+  private Payment findPaymentById(Long paymentId) {
     return paymentRepository
         .findById(paymentId)
         .orElseThrow(() -> new ResourceNotFoundException(AppMessages.PAYMENT_NOT_FOUND_EXCEPTION));
@@ -226,7 +226,7 @@ public class PaymentService {
    * @param orderId id de la orden a buscar
    * @return la orden encontrada
    */
-  private Order findOrderByIdOrFail(Long orderId) {
+  private Order findOrderById(Long orderId) {
     return orderRepository
         .findById(orderId)
         .orElseThrow(() -> new ResourceNotFoundException(AppMessages.ORDER_NOT_FOUND_EXCEPTION));

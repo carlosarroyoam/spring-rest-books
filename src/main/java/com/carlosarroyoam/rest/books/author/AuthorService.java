@@ -68,7 +68,7 @@ public class AuthorService {
    */
   @Transactional(readOnly = true)
   public AuthorResponse findById(Long authorId) {
-    Author authorById = findAuthorByIdOrFail(authorId);
+    Author authorById = findAuthorById(authorId);
     return AuthorResponseMapper.INSTANCE.toDto(authorById);
   }
 
@@ -102,7 +102,7 @@ public class AuthorService {
   @Transactional
   public void update(Long authorId, UpdateAuthorRequest request) {
     LocalDateTime now = LocalDateTime.now();
-    Author authorById = findAuthorByIdOrFail(authorId);
+    Author authorById = findAuthorById(authorId);
     authorById.setName(request.getName());
     authorById.setBio(request.getBio());
     authorById.setUpdatedAt(now);
@@ -117,7 +117,7 @@ public class AuthorService {
   @Transactional
   public void deleteById(Long authorId) {
     LocalDateTime now = LocalDateTime.now();
-    Author authorById = findAuthorByIdOrFail(authorId);
+    Author authorById = findAuthorById(authorId);
     authorById.setStatus(AuthorStatus.DELETED);
     authorById.setUpdatedAt(now);
     authorById.setDeletedAt(now);
@@ -142,7 +142,7 @@ public class AuthorService {
    * @param authorId id del autor a buscar
    * @return el autor encontrado
    */
-  private Author findAuthorByIdOrFail(Long authorId) {
+  private Author findAuthorById(Long authorId) {
     return authorRepository
         .findById(authorId)
         .orElseThrow(() -> new ResourceNotFoundException(AppMessages.AUTHOR_NOT_FOUND_EXCEPTION));

@@ -80,7 +80,7 @@ public class BookService {
    */
   @Transactional(readOnly = true)
   public BookResponse findById(Long bookId) {
-    Book bookById = findBookByIdOrFail(bookId);
+    Book bookById = findBookById(bookId);
     return BookResponseMapper.INSTANCE.toDto(bookById);
   }
 
@@ -122,7 +122,7 @@ public class BookService {
   @Transactional
   public void update(Long bookId, UpdateBookRequest request) {
     LocalDateTime now = LocalDateTime.now();
-    Book bookById = findBookByIdOrFail(bookId);
+    Book bookById = findBookById(bookId);
     bookById.setIsbn(request.getIsbn());
     bookById.setTitle(request.getTitle());
     bookById.setCoverUrl(request.getCoverUrl());
@@ -141,7 +141,7 @@ public class BookService {
   @Transactional
   public void deleteById(Long bookId) {
     LocalDateTime now = LocalDateTime.now();
-    Book bookById = findBookByIdOrFail(bookId);
+    Book bookById = findBookById(bookId);
     bookById.setStatus(BookStatus.DELETED);
     bookById.setUpdatedAt(now);
     bookById.setDeletedAt(now);
@@ -166,7 +166,7 @@ public class BookService {
    * @param bookId id del libro a buscar
    * @return el libro encontrado
    */
-  private Book findBookByIdOrFail(Long bookId) {
+  private Book findBookById(Long bookId) {
     return bookRepository
         .findById(bookId)
         .orElseThrow(() -> new ResourceNotFoundException(AppMessages.BOOK_NOT_FOUND_EXCEPTION));
