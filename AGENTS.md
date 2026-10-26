@@ -27,7 +27,8 @@ Authorization is JWT-based (OAuth2 resource server) with Keycloak used for custo
     `exception` handling, `filter` (request filters), `pagination`, `property`, `security`,
     `specification`
 - `src/main/resources`
-  - `app.properties`: default local runtime config (port `8081`, H2, CORS, Keycloak client)
+  - `application.properties`: default local runtime config (port `8081`, H2, CORS, Keycloak client)
+  - `messages.properties`: texts for the error message keys defined in `AppMessages`
   - `logback-spring.xml`: logging config (console pattern includes the MDC correlation id)
 - `src/test/resources/application-test.properties`: integration-test config
 - `database/schema.sql`, `database/data.sql`: database bootstrap (no migration tool; schema managed
@@ -62,9 +63,11 @@ Authorization is JWT-based (OAuth2 resource server) with Keycloak used for custo
   its own HTTP status: `ResourceNotFoundException` (404), `ResourceAlreadyExistsException` /
   `ConflictException` (409), `BusinessException` / `ValidationException` (422),
   `UnauthorizedException` (401), `ForbiddenException` (403), `InternalServerException` (500). Throw
-  with the plain `AppMessages` constant as the message. The handler logs it once through
-  `ExceptionLogger` (WARN without a stack trace for 4xx, ERROR with one for 5xx) and maps
-  `getStatus()` / `getMessage()` onto the `ProblemDetail`; don't also log it in the service.
+  with the plain `AppMessages` constant as the message: it is a key into `messages.properties`
+  (add the text there when adding a constant), resolved by the handler through `MessageSource`.
+  The handler logs it once through `ExceptionLogger` (WARN without a stack trace for 4xx, ERROR
+  with one for 5xx) and maps `getStatus()` and the resolved text onto the `ProblemDetail`; don't
+  also log it in the service.
 - Every request is assigned a correlation id exposed in the MDC as `requestId` by
   `core/filter/CorrelationIdFilter` (reuses/returns the `X-Request-Id` header, runs at
   `HIGHEST_PRECEDENCE`); `core/filter/MdcUserContextFilter` adds authenticated-user context to
@@ -84,7 +87,7 @@ Authorization is JWT-based (OAuth2 resource server) with Keycloak used for custo
 - Customer creation has both a local DB effect and a Keycloak side effect via `KeycloakService`,
   which provisions the user and assigns the `App/Customer` realm role — treat it as a two-system
   write when touching customer registration.
-- `app.properties` contains a Keycloak client secret for local dev; do not introduce real
+- `application.properties` contains a Keycloak client secret for local dev; do not introduce real
   secrets alongside it.
 
 ## Test Strategy

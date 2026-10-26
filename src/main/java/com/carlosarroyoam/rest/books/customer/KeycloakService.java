@@ -54,9 +54,8 @@ public class KeycloakService {
 
     if (!existingUsersByUsername.isEmpty() || !existingUsersByEmail.isEmpty()) {
       log.warn(
-          "{}: a Keycloak user already exists for username '{}' or email '{}', but customer {}"
-              + " passed the local uniqueness check",
-          AppMessages.USER_NOT_CREATED_EXCEPTION,
+          "User not created: a Keycloak user already exists for username '{}' or email '{}', but"
+              + " customer {} passed the local uniqueness check",
           request.getUsername(),
           request.getEmail(),
           customerId);
@@ -84,8 +83,7 @@ public class KeycloakService {
       if (Status.CREATED.getStatusCode() != response.getStatus()
           || response.getLocation() == null) {
         log.warn(
-            "{}: Keycloak responded with status {} and Location header {}",
-            AppMessages.USER_NOT_CREATED_EXCEPTION,
+            "User not created: Keycloak responded with status {} and Location header {}",
             response.getStatus(),
             response.getLocation());
         throw new InternalServerException(AppMessages.USER_NOT_CREATED_EXCEPTION);
@@ -104,9 +102,8 @@ public class KeycloakService {
         usersResource.get(keycloakUserId).roles().realmLevel().add(Collections.singletonList(role));
       } catch (RuntimeException ex) {
         log.warn(
-            "{}: rolling back Keycloak user {} created for customer {} after role assignment"
-                + " failed",
-            AppMessages.USER_NOT_CREATED_EXCEPTION,
+            "User not created: rolling back Keycloak user {} created for customer {} after role"
+                + " assignment failed",
             keycloakUserId,
             customerId);
         removeOrphanedUser(usersResource, keycloakUserId);
@@ -128,8 +125,7 @@ public class KeycloakService {
       usersResource.get(keycloakUserId).remove();
     } catch (RuntimeException cleanupEx) {
       log.warn(
-          "{}: failed to roll back orphaned Keycloak user {}, manual cleanup required",
-          AppMessages.USER_NOT_CREATED_EXCEPTION,
+          "User not created: failed to roll back orphaned Keycloak user {}, manual cleanup required",
           keycloakUserId,
           cleanupEx);
     }

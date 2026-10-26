@@ -21,6 +21,7 @@ import com.carlosarroyoam.rest.books.customer.dto.CreateCustomerRequest;
 import com.carlosarroyoam.rest.books.customer.dto.CustomerResponse;
 import com.carlosarroyoam.rest.books.customer.dto.CustomerSpecs;
 import com.carlosarroyoam.rest.books.customer.dto.UpdateCustomerRequest;
+import com.carlosarroyoam.rest.books.support.testutils.TestMessageSources;
 import com.carlosarroyoam.rest.books.support.testutils.TestObjectMappers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
@@ -54,7 +55,10 @@ class CustomerControllerTest {
     mockMvc =
         MockMvcBuilders.standaloneSetup(customerController)
             .setControllerAdvice(
-                new GlobalExceptionHandler(new ProblemDetailFactory(), new ExceptionLogger()))
+                new GlobalExceptionHandler(
+                    new ProblemDetailFactory(),
+                    new ExceptionLogger(),
+                    TestMessageSources.messages()))
             .setMessageConverters(
                 new MappingJackson2HttpMessageConverter(TestObjectMappers.snakeCase()))
             .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())

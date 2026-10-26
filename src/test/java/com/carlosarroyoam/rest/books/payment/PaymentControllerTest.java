@@ -22,6 +22,7 @@ import com.carlosarroyoam.rest.books.payment.dto.PaymentSpecs;
 import com.carlosarroyoam.rest.books.payment.dto.UpdatePaymentStatusRequest;
 import com.carlosarroyoam.rest.books.payment.entity.PaymentMethod;
 import com.carlosarroyoam.rest.books.payment.entity.PaymentStatus;
+import com.carlosarroyoam.rest.books.support.testutils.TestMessageSources;
 import com.carlosarroyoam.rest.books.support.testutils.TestObjectMappers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.math.BigDecimal;
@@ -56,7 +57,10 @@ class PaymentControllerTest {
     mockMvc =
         MockMvcBuilders.standaloneSetup(paymentController)
             .setControllerAdvice(
-                new GlobalExceptionHandler(new ProblemDetailFactory(), new ExceptionLogger()))
+                new GlobalExceptionHandler(
+                    new ProblemDetailFactory(),
+                    new ExceptionLogger(),
+                    TestMessageSources.messages()))
             .setMessageConverters(
                 new MappingJackson2HttpMessageConverter(TestObjectMappers.snakeCase()))
             .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())

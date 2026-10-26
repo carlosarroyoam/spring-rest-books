@@ -3,6 +3,8 @@ package com.carlosarroyoam.rest.books.core.exception;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -26,16 +28,21 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 public class GlobalExceptionHandler {
   private final ProblemDetailFactory problemDetailFactory;
   private final ExceptionLogger exceptionLogger;
+  private final MessageSource messageSource;
 
   public GlobalExceptionHandler(
-      ProblemDetailFactory problemDetailFactory, ExceptionLogger exceptionLogger) {
+      ProblemDetailFactory problemDetailFactory,
+      ExceptionLogger exceptionLogger,
+      MessageSource messageSource) {
     this.problemDetailFactory = problemDetailFactory;
     this.exceptionLogger = exceptionLogger;
+    this.messageSource = messageSource;
   }
 
   /**
    * Traduce una {@link ApplicationException} de dominio/aplicación a una respuesta con el código de
-   * estado que fija la propia excepción.
+   * estado que fija la propia excepción. El mensaje de la excepción se interpreta como una clave de
+   * {@code messages.properties}; si no existe, se usa tal cual.
    *
    * @param ex excepción capturada
    * @param request petición HTTP en curso
@@ -43,8 +50,11 @@ public class GlobalExceptionHandler {
    */
   @ExceptionHandler({ApplicationException.class})
   public ProblemDetail handleAppException(ApplicationException ex, HttpServletRequest request) {
-    exceptionLogger.log(ex.getStatus(), ex.getMessage(), request, ex);
-    return problemDetailFactory.build(ex.getStatus(), ex.getMessage(), request);
+    String detail =
+        messageSource.getMessage(
+            ex.getMessage(), null, ex.getMessage(), LocaleContextHolder.getLocale());
+    exceptionLogger.log(ex.getStatus(), detail, request, ex);
+    return problemDetailFactory.build(ex.getStatus(), detail, request);
   }
 
   /**

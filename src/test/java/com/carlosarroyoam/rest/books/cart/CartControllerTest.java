@@ -15,6 +15,7 @@ import com.carlosarroyoam.rest.books.core.exception.ExceptionLogger;
 import com.carlosarroyoam.rest.books.core.exception.GlobalExceptionHandler;
 import com.carlosarroyoam.rest.books.core.exception.ProblemDetailFactory;
 import com.carlosarroyoam.rest.books.support.security.JwtArgumentResolver;
+import com.carlosarroyoam.rest.books.support.testutils.TestMessageSources;
 import com.carlosarroyoam.rest.books.support.testutils.TestObjectMappers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -45,7 +46,10 @@ class CartControllerTest {
     mockMvc =
         MockMvcBuilders.standaloneSetup(cartController)
             .setControllerAdvice(
-                new GlobalExceptionHandler(new ProblemDetailFactory(), new ExceptionLogger()))
+                new GlobalExceptionHandler(
+                    new ProblemDetailFactory(),
+                    new ExceptionLogger(),
+                    TestMessageSources.messages()))
             .setMessageConverters(
                 new MappingJackson2HttpMessageConverter(TestObjectMappers.snakeCase()))
             .setCustomArgumentResolvers(new JwtArgumentResolver())

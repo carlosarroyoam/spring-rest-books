@@ -22,6 +22,7 @@ import com.carlosarroyoam.rest.books.core.exception.GlobalExceptionHandler;
 import com.carlosarroyoam.rest.books.core.exception.ProblemDetailFactory;
 import com.carlosarroyoam.rest.books.core.pagination.PagedResponse;
 import com.carlosarroyoam.rest.books.core.pagination.PaginationResponse;
+import com.carlosarroyoam.rest.books.support.testutils.TestMessageSources;
 import com.carlosarroyoam.rest.books.support.testutils.TestObjectMappers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
@@ -55,7 +56,10 @@ class AuthorControllerTest {
     mockMvc =
         MockMvcBuilders.standaloneSetup(authorController)
             .setControllerAdvice(
-                new GlobalExceptionHandler(new ProblemDetailFactory(), new ExceptionLogger()))
+                new GlobalExceptionHandler(
+                    new ProblemDetailFactory(),
+                    new ExceptionLogger(),
+                    TestMessageSources.messages()))
             .setMessageConverters(
                 new MappingJackson2HttpMessageConverter(TestObjectMappers.snakeCase()))
             .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())

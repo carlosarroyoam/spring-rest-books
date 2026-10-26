@@ -22,6 +22,7 @@ import com.carlosarroyoam.rest.books.order.dto.OrderResponse;
 import com.carlosarroyoam.rest.books.order.dto.OrderSpecs;
 import com.carlosarroyoam.rest.books.order.dto.UpdateOrderRequest;
 import com.carlosarroyoam.rest.books.order.entity.OrderStatus;
+import com.carlosarroyoam.rest.books.support.testutils.TestMessageSources;
 import com.carlosarroyoam.rest.books.support.testutils.TestObjectMappers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.math.BigDecimal;
@@ -56,7 +57,10 @@ class OrderControllerTest {
     mockMvc =
         MockMvcBuilders.standaloneSetup(orderController)
             .setControllerAdvice(
-                new GlobalExceptionHandler(new ProblemDetailFactory(), new ExceptionLogger()))
+                new GlobalExceptionHandler(
+                    new ProblemDetailFactory(),
+                    new ExceptionLogger(),
+                    TestMessageSources.messages()))
             .setMessageConverters(
                 new MappingJackson2HttpMessageConverter(TestObjectMappers.snakeCase()))
             .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
