@@ -163,3 +163,7 @@ Each feature module has the same shape:
 - When you change behavior, update every layer it touches: the `*ServiceTest` for business rules,
   the `*ControllerTest` for the HTTP contract, the `*ControllerIT` plus its fixture for end-to-end
   behavior, and `docs/openapi/api-docs.yaml` when the contract changes.
+
+## Javadoc
+
+All Javadoc is written in **Spanish**. Rules: third-person present-tense first sentence, `@throws` only for domain exceptions thrown by `UserService`/`AuthService`, REST methods guarded by `@RolesAllowed` end their first sentence with "Requiere rol {@code X}.", no `@author`/`@since`.
