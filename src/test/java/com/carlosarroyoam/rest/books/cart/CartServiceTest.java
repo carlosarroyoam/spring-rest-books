@@ -13,7 +13,7 @@ import com.carlosarroyoam.rest.books.cart.dto.CartResponse;
 import com.carlosarroyoam.rest.books.cart.dto.UpdateCartItemRequest;
 import com.carlosarroyoam.rest.books.cart.entity.Cart;
 import com.carlosarroyoam.rest.books.cart.entity.CartItem;
-import com.carlosarroyoam.rest.books.core.constant.AppMessages;
+import com.carlosarroyoam.rest.books.core.constant.MessageKeys;
 import com.carlosarroyoam.rest.books.core.exception.ResourceNotFoundException;
 import com.carlosarroyoam.rest.books.customer.entity.Customer;
 import java.time.LocalDateTime;
@@ -79,7 +79,7 @@ class CartServiceTest {
 
     assertThatThrownBy(() -> cartService.findByCustomerId(1L))
         .isInstanceOf(ResourceNotFoundException.class)
-        .hasMessage(AppMessages.CART_NOT_FOUND_EXCEPTION);
+        .hasMessage(MessageKeys.CART_NOT_FOUND_EXCEPTION);
   }
 
   @Test
@@ -121,7 +121,7 @@ class CartServiceTest {
 
     assertThatThrownBy(() -> cartService.updateCartItem(1L, request))
         .isInstanceOf(ResourceNotFoundException.class)
-        .hasMessage(AppMessages.CART_NOT_FOUND_EXCEPTION);
+        .hasMessage(MessageKeys.CART_NOT_FOUND_EXCEPTION);
   }
 
   @Test
@@ -134,7 +134,7 @@ class CartServiceTest {
 
     assertThatThrownBy(() -> cartService.updateCartItem(1L, request))
         .isInstanceOf(ResourceNotFoundException.class)
-        .hasMessage(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
+        .hasMessage(MessageKeys.BOOK_NOT_FOUND_EXCEPTION);
   }
 
   @Test
@@ -154,6 +154,6 @@ class CartServiceTest {
 
     assertThatThrownBy(() -> cartService.deleteCartItem(1L, 1L))
         .isInstanceOf(ResourceNotFoundException.class)
-        .hasMessage(AppMessages.CART_NOT_FOUND_EXCEPTION);
+        .hasMessage(MessageKeys.CART_NOT_FOUND_EXCEPTION);
   }
 }

@@ -1,6 +1,6 @@
 package com.carlosarroyoam.rest.books.customer;
 
-import com.carlosarroyoam.rest.books.core.constant.AppMessages;
+import com.carlosarroyoam.rest.books.core.constant.MessageKeys;
 import com.carlosarroyoam.rest.books.core.exception.InternalServerException;
 import com.carlosarroyoam.rest.books.core.property.KeycloakAdminProps;
 import com.carlosarroyoam.rest.books.customer.dto.CreateCustomerRequest;
@@ -59,7 +59,7 @@ public class KeycloakService {
           request.getUsername(),
           request.getEmail(),
           customerId);
-      throw new InternalServerException(AppMessages.USER_NOT_CREATED_EXCEPTION);
+      throw new InternalServerException(MessageKeys.USER_NOT_CREATED_EXCEPTION);
     }
 
     Map<String, List<String>> attributes = new HashMap<>();
@@ -86,7 +86,7 @@ public class KeycloakService {
             "User not created: Keycloak responded with status {} and Location header {}",
             response.getStatus(),
             response.getLocation());
-        throw new InternalServerException(AppMessages.USER_NOT_CREATED_EXCEPTION);
+        throw new InternalServerException(MessageKeys.USER_NOT_CREATED_EXCEPTION);
       }
 
       String keycloakUserId = response.getLocation().getPath().replaceAll(".*/([^/]+)$", "$1");
@@ -107,7 +107,7 @@ public class KeycloakService {
             keycloakUserId,
             customerId);
         removeOrphanedUser(usersResource, keycloakUserId);
-        throw new InternalServerException(AppMessages.USER_NOT_CREATED_EXCEPTION, ex);
+        throw new InternalServerException(MessageKeys.USER_NOT_CREATED_EXCEPTION, ex);
       }
     }
   }

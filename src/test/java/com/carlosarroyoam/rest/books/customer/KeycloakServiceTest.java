@@ -9,7 +9,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.carlosarroyoam.rest.books.core.constant.AppMessages;
+import com.carlosarroyoam.rest.books.core.constant.MessageKeys;
 import com.carlosarroyoam.rest.books.core.exception.InternalServerException;
 import com.carlosarroyoam.rest.books.core.property.KeycloakAdminProps;
 import com.carlosarroyoam.rest.books.customer.dto.CreateCustomerRequest;
@@ -75,7 +75,7 @@ class KeycloakServiceTest {
 
     assertThatThrownBy(() -> keycloakService.createUser(request, 1L))
         .isInstanceOf(InternalServerException.class)
-        .hasMessage(AppMessages.USER_NOT_CREATED_EXCEPTION);
+        .hasMessage(MessageKeys.USER_NOT_CREATED_EXCEPTION);
 
     verify(usersResource, never()).create(any());
   }
@@ -91,7 +91,7 @@ class KeycloakServiceTest {
 
     assertThatThrownBy(() -> keycloakService.createUser(request, 1L))
         .isInstanceOf(InternalServerException.class)
-        .hasMessage(AppMessages.USER_NOT_CREATED_EXCEPTION);
+        .hasMessage(MessageKeys.USER_NOT_CREATED_EXCEPTION);
 
     verify(usersResource, never()).create(any());
   }
@@ -111,7 +111,7 @@ class KeycloakServiceTest {
 
     assertThatThrownBy(() -> keycloakService.createUser(request, 1L))
         .isInstanceOf(InternalServerException.class)
-        .hasMessage(AppMessages.USER_NOT_CREATED_EXCEPTION);
+        .hasMessage(MessageKeys.USER_NOT_CREATED_EXCEPTION);
   }
 
   @Test
@@ -139,7 +139,7 @@ class KeycloakServiceTest {
 
     assertThatThrownBy(() -> keycloakService.createUser(request, 1L))
         .isInstanceOf(InternalServerException.class)
-        .hasMessage(AppMessages.USER_NOT_CREATED_EXCEPTION);
+        .hasMessage(MessageKeys.USER_NOT_CREATED_EXCEPTION);
 
     verify(userResource).remove();
   }

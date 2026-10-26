@@ -1,6 +1,6 @@
 package com.carlosarroyoam.rest.books.payment;
 
-import com.carlosarroyoam.rest.books.core.constant.AppMessages;
+import com.carlosarroyoam.rest.books.core.constant.MessageKeys;
 import com.carlosarroyoam.rest.books.core.exception.ResourceAlreadyExistsException;
 import com.carlosarroyoam.rest.books.core.exception.ResourceNotFoundException;
 import com.carlosarroyoam.rest.books.core.pagination.PagedResponse;
@@ -107,7 +107,7 @@ public class PaymentService {
     Order orderById = findOrderById(request.getOrderId());
 
     if (paymentRepository.existsByOrderId(orderById.getId())) {
-      throw new ResourceAlreadyExistsException(AppMessages.PAYMENT_ALREADY_EXISTS_EXCEPTION);
+      throw new ResourceAlreadyExistsException(MessageKeys.PAYMENT_ALREADY_EXISTS_EXCEPTION);
     }
 
     LocalDateTime now = LocalDateTime.now();
@@ -217,7 +217,7 @@ public class PaymentService {
   private Payment findPaymentById(Long paymentId) {
     return paymentRepository
         .findById(paymentId)
-        .orElseThrow(() -> new ResourceNotFoundException(AppMessages.PAYMENT_NOT_FOUND_EXCEPTION));
+        .orElseThrow(() -> new ResourceNotFoundException(MessageKeys.PAYMENT_NOT_FOUND_EXCEPTION));
   }
 
   /**
@@ -229,6 +229,6 @@ public class PaymentService {
   private Order findOrderById(Long orderId) {
     return orderRepository
         .findById(orderId)
-        .orElseThrow(() -> new ResourceNotFoundException(AppMessages.ORDER_NOT_FOUND_EXCEPTION));
+        .orElseThrow(() -> new ResourceNotFoundException(MessageKeys.ORDER_NOT_FOUND_EXCEPTION));
   }
 }

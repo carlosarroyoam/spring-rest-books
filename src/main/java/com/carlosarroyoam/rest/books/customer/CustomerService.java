@@ -1,6 +1,6 @@
 package com.carlosarroyoam.rest.books.customer;
 
-import com.carlosarroyoam.rest.books.core.constant.AppMessages;
+import com.carlosarroyoam.rest.books.core.constant.MessageKeys;
 import com.carlosarroyoam.rest.books.core.exception.ResourceAlreadyExistsException;
 import com.carlosarroyoam.rest.books.core.exception.ResourceNotFoundException;
 import com.carlosarroyoam.rest.books.core.pagination.PagedResponse;
@@ -84,11 +84,11 @@ public class CustomerService {
   @Transactional
   public CustomerResponse create(CreateCustomerRequest request) {
     if (customerRepository.existsByUsername(request.getUsername())) {
-      throw new ResourceAlreadyExistsException(AppMessages.USERNAME_ALREADY_EXISTS_EXCEPTION);
+      throw new ResourceAlreadyExistsException(MessageKeys.USERNAME_ALREADY_EXISTS_EXCEPTION);
     }
 
     if (customerRepository.existsByEmail(request.getEmail())) {
-      throw new ResourceAlreadyExistsException(AppMessages.EMAIL_ALREADY_EXISTS_EXCEPTION);
+      throw new ResourceAlreadyExistsException(MessageKeys.EMAIL_ALREADY_EXISTS_EXCEPTION);
     }
 
     LocalDateTime now = LocalDateTime.now();
@@ -148,6 +148,6 @@ public class CustomerService {
   private Customer findCustomerById(Long customerId) {
     return customerRepository
         .findById(customerId)
-        .orElseThrow(() -> new ResourceNotFoundException(AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION));
+        .orElseThrow(() -> new ResourceNotFoundException(MessageKeys.CUSTOMER_NOT_FOUND_EXCEPTION));
   }
 }

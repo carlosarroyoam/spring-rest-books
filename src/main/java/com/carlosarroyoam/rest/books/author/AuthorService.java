@@ -12,7 +12,7 @@ import com.carlosarroyoam.rest.books.book.BookRepository;
 import com.carlosarroyoam.rest.books.book.dto.BookResponse;
 import com.carlosarroyoam.rest.books.book.dto.BookResponse.BookResponseMapper;
 import com.carlosarroyoam.rest.books.book.entity.Book;
-import com.carlosarroyoam.rest.books.core.constant.AppMessages;
+import com.carlosarroyoam.rest.books.core.constant.MessageKeys;
 import com.carlosarroyoam.rest.books.core.exception.ResourceNotFoundException;
 import com.carlosarroyoam.rest.books.core.pagination.PagedResponse;
 import com.carlosarroyoam.rest.books.core.pagination.PagedResponse.PagedResponseMapper;
@@ -145,6 +145,6 @@ public class AuthorService {
   private Author findAuthorById(Long authorId) {
     return authorRepository
         .findById(authorId)
-        .orElseThrow(() -> new ResourceNotFoundException(AppMessages.AUTHOR_NOT_FOUND_EXCEPTION));
+        .orElseThrow(() -> new ResourceNotFoundException(MessageKeys.AUTHOR_NOT_FOUND_EXCEPTION));
   }
 }

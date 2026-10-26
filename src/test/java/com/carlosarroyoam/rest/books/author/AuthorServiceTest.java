@@ -15,7 +15,7 @@ import com.carlosarroyoam.rest.books.author.entity.Author;
 import com.carlosarroyoam.rest.books.book.BookRepository;
 import com.carlosarroyoam.rest.books.book.dto.BookResponse;
 import com.carlosarroyoam.rest.books.book.entity.Book;
-import com.carlosarroyoam.rest.books.core.constant.AppMessages;
+import com.carlosarroyoam.rest.books.core.constant.MessageKeys;
 import com.carlosarroyoam.rest.books.core.exception.ResourceNotFoundException;
 import com.carlosarroyoam.rest.books.core.pagination.PagedResponse;
 import java.math.BigDecimal;
@@ -115,7 +115,7 @@ class AuthorServiceTest {
 
     assertThatThrownBy(() -> authorService.findById(1L))
         .isInstanceOf(ResourceNotFoundException.class)
-        .hasMessage(AppMessages.AUTHOR_NOT_FOUND_EXCEPTION);
+        .hasMessage(MessageKeys.AUTHOR_NOT_FOUND_EXCEPTION);
   }
 
   @Test
@@ -168,7 +168,7 @@ class AuthorServiceTest {
 
     assertThatThrownBy(() -> authorService.update(1L, request))
         .isInstanceOf(ResourceNotFoundException.class)
-        .hasMessage(AppMessages.AUTHOR_NOT_FOUND_EXCEPTION);
+        .hasMessage(MessageKeys.AUTHOR_NOT_FOUND_EXCEPTION);
   }
 
   @Test
@@ -188,7 +188,7 @@ class AuthorServiceTest {
 
     assertThatThrownBy(() -> authorService.deleteById(1L))
         .isInstanceOf(ResourceNotFoundException.class)
-        .hasMessage(AppMessages.AUTHOR_NOT_FOUND_EXCEPTION);
+        .hasMessage(MessageKeys.AUTHOR_NOT_FOUND_EXCEPTION);
   }
 
   @Test

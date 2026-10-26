@@ -7,7 +7,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.carlosarroyoam.rest.books.core.constant.AppMessages;
+import com.carlosarroyoam.rest.books.core.constant.MessageKeys;
 import com.carlosarroyoam.rest.books.core.exception.ResourceNotFoundException;
 import com.carlosarroyoam.rest.books.core.pagination.PagedResponse;
 import com.carlosarroyoam.rest.books.order.OrderRepository;
@@ -111,6 +111,6 @@ class ShipmentServiceTest {
 
     assertThatThrownBy(() -> shipmentService.findById(1L))
         .isInstanceOf(ResourceNotFoundException.class)
-        .hasMessage(AppMessages.SHIPMENT_NOT_FOUND_EXCEPTION);
+        .hasMessage(MessageKeys.SHIPMENT_NOT_FOUND_EXCEPTION);
   }
 }

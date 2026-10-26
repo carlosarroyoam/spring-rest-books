@@ -2,7 +2,7 @@ package com.carlosarroyoam.rest.books.order;
 
 import com.carlosarroyoam.rest.books.book.BookRepository;
 import com.carlosarroyoam.rest.books.book.entity.Book;
-import com.carlosarroyoam.rest.books.core.constant.AppMessages;
+import com.carlosarroyoam.rest.books.core.constant.MessageKeys;
 import com.carlosarroyoam.rest.books.core.exception.ResourceNotFoundException;
 import com.carlosarroyoam.rest.books.core.pagination.PagedResponse;
 import com.carlosarroyoam.rest.books.core.pagination.PagedResponse.PagedResponseMapper;
@@ -250,7 +250,7 @@ public class OrderService {
   private Order findOrderById(Long orderId) {
     return orderRepository
         .findById(orderId)
-        .orElseThrow(() -> new ResourceNotFoundException(AppMessages.ORDER_NOT_FOUND_EXCEPTION));
+        .orElseThrow(() -> new ResourceNotFoundException(MessageKeys.ORDER_NOT_FOUND_EXCEPTION));
   }
 
   /**
@@ -262,7 +262,7 @@ public class OrderService {
   private Customer findCustomerById(CreateOrderRequest request) {
     return customerRepository
         .findById(request.getCustomerId())
-        .orElseThrow(() -> new ResourceNotFoundException(AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION));
+        .orElseThrow(() -> new ResourceNotFoundException(MessageKeys.CUSTOMER_NOT_FOUND_EXCEPTION));
   }
 
   /**
@@ -274,6 +274,6 @@ public class OrderService {
   private Book findBookById(Long bookId) {
     return bookRepository
         .findById(bookId)
-        .orElseThrow(() -> new ResourceNotFoundException(AppMessages.BOOK_NOT_FOUND_EXCEPTION));
+        .orElseThrow(() -> new ResourceNotFoundException(MessageKeys.BOOK_NOT_FOUND_EXCEPTION));
   }
 }

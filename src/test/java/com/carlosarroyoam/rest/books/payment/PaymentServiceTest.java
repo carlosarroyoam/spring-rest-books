@@ -7,7 +7,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.carlosarroyoam.rest.books.core.constant.AppMessages;
+import com.carlosarroyoam.rest.books.core.constant.MessageKeys;
 import com.carlosarroyoam.rest.books.core.exception.ResourceAlreadyExistsException;
 import com.carlosarroyoam.rest.books.core.exception.ResourceNotFoundException;
 import com.carlosarroyoam.rest.books.core.pagination.PagedResponse;
@@ -116,7 +116,7 @@ class PaymentServiceTest {
 
     assertThatThrownBy(() -> paymentService.findById(1L))
         .isInstanceOf(ResourceNotFoundException.class)
-        .hasMessage(AppMessages.PAYMENT_NOT_FOUND_EXCEPTION);
+        .hasMessage(MessageKeys.PAYMENT_NOT_FOUND_EXCEPTION);
   }
 
   @Test
@@ -198,7 +198,7 @@ class PaymentServiceTest {
 
     assertThatThrownBy(() -> paymentService.create(request))
         .isInstanceOf(ResourceNotFoundException.class)
-        .hasMessage(AppMessages.ORDER_NOT_FOUND_EXCEPTION);
+        .hasMessage(MessageKeys.ORDER_NOT_FOUND_EXCEPTION);
   }
 
   @Test
@@ -212,6 +212,6 @@ class PaymentServiceTest {
 
     assertThatThrownBy(() -> paymentService.create(request))
         .isInstanceOf(ResourceAlreadyExistsException.class)
-        .hasMessage(AppMessages.PAYMENT_ALREADY_EXISTS_EXCEPTION);
+        .hasMessage(MessageKeys.PAYMENT_ALREADY_EXISTS_EXCEPTION);
   }
 }

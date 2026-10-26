@@ -1,6 +1,6 @@
 package com.carlosarroyoam.rest.books.support.testutils;
 
-import com.carlosarroyoam.rest.books.core.constant.AppMessages;
+import com.carlosarroyoam.rest.books.core.constant.CommonConstants;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
@@ -10,7 +10,7 @@ import java.nio.charset.StandardCharsets;
 public final class JsonUtils {
   /** Constructor privado que impide instanciar la clase. */
   private JsonUtils() {
-    throw new IllegalAccessError(AppMessages.ILLEGAL_ACCESS_EXCEPTION);
+    throw new IllegalAccessError(CommonConstants.ILLEGAL_ACCESS_EXCEPTION);
   }
 
   /**

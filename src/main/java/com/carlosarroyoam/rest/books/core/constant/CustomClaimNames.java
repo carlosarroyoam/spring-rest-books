@@ -6,6 +6,6 @@ public class CustomClaimNames {
 
   /** Constructor privado: clase de constantes no instanciable. */
   private CustomClaimNames() {
-    throw new IllegalAccessError(AppMessages.ILLEGAL_ACCESS_EXCEPTION);
+    throw new IllegalAccessError(CommonConstants.ILLEGAL_ACCESS_EXCEPTION);
   }
 }

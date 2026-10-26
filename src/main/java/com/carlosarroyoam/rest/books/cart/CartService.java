@@ -7,7 +7,7 @@ import com.carlosarroyoam.rest.books.cart.dto.CartResponse.CartResponseMapper;
 import com.carlosarroyoam.rest.books.cart.dto.UpdateCartItemRequest;
 import com.carlosarroyoam.rest.books.cart.entity.Cart;
 import com.carlosarroyoam.rest.books.cart.entity.CartItem;
-import com.carlosarroyoam.rest.books.core.constant.AppMessages;
+import com.carlosarroyoam.rest.books.core.constant.MessageKeys;
 import com.carlosarroyoam.rest.books.core.exception.ResourceNotFoundException;
 import java.time.LocalDateTime;
 import org.springframework.stereotype.Service;
@@ -98,7 +98,7 @@ public class CartService {
   private Cart findCartByCustomerId(Long customerId) {
     return cartRepository
         .findByCustomerId(customerId)
-        .orElseThrow(() -> new ResourceNotFoundException(AppMessages.CART_NOT_FOUND_EXCEPTION));
+        .orElseThrow(() -> new ResourceNotFoundException(MessageKeys.CART_NOT_FOUND_EXCEPTION));
   }
 
   /**
@@ -110,6 +110,6 @@ public class CartService {
   private Book findBookById(Long bookId) {
     return bookRepository
         .findById(bookId)
-        .orElseThrow(() -> new ResourceNotFoundException(AppMessages.BOOK_NOT_FOUND_EXCEPTION));
+        .orElseThrow(() -> new ResourceNotFoundException(MessageKeys.BOOK_NOT_FOUND_EXCEPTION));
   }
 }

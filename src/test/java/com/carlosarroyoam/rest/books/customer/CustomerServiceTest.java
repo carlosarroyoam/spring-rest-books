@@ -8,7 +8,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.carlosarroyoam.rest.books.core.constant.AppMessages;
+import com.carlosarroyoam.rest.books.core.constant.MessageKeys;
 import com.carlosarroyoam.rest.books.core.exception.ResourceAlreadyExistsException;
 import com.carlosarroyoam.rest.books.core.exception.ResourceNotFoundException;
 import com.carlosarroyoam.rest.books.core.pagination.PagedResponse;
@@ -99,7 +99,7 @@ class CustomerServiceTest {
 
     assertThatThrownBy(() -> customerService.findById(1L))
         .isInstanceOf(ResourceNotFoundException.class)
-        .hasMessage(AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION);
+        .hasMessage(MessageKeys.CUSTOMER_NOT_FOUND_EXCEPTION);
   }
 
   @Test
@@ -137,7 +137,7 @@ class CustomerServiceTest {
 
     assertThatThrownBy(() -> customerService.create(request))
         .isInstanceOf(ResourceAlreadyExistsException.class)
-        .hasMessage(AppMessages.USERNAME_ALREADY_EXISTS_EXCEPTION);
+        .hasMessage(MessageKeys.USERNAME_ALREADY_EXISTS_EXCEPTION);
   }
 
   @Test
@@ -149,7 +149,7 @@ class CustomerServiceTest {
 
     assertThatThrownBy(() -> customerService.create(request))
         .isInstanceOf(ResourceAlreadyExistsException.class)
-        .hasMessage(AppMessages.EMAIL_ALREADY_EXISTS_EXCEPTION);
+        .hasMessage(MessageKeys.EMAIL_ALREADY_EXISTS_EXCEPTION);
   }
 
   @Test
@@ -178,7 +178,7 @@ class CustomerServiceTest {
 
     assertThatThrownBy(() -> customerService.update(1L, request))
         .isInstanceOf(ResourceNotFoundException.class)
-        .hasMessage(AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION);
+        .hasMessage(MessageKeys.CUSTOMER_NOT_FOUND_EXCEPTION);
   }
 
   @Test
@@ -199,6 +199,6 @@ class CustomerServiceTest {
 
     assertThatThrownBy(() -> customerService.deleteById(1L))
         .isInstanceOf(ResourceNotFoundException.class)
-        .hasMessage(AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION);
+        .hasMessage(MessageKeys.CUSTOMER_NOT_FOUND_EXCEPTION);
   }
 }

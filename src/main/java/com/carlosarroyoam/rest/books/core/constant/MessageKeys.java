@@ -6,9 +6,7 @@ package com.carlosarroyoam.rest.books.core.constant;
  * error. El texto de cada clave vive en {@code messages.properties} y lo resuelve {@link
  * com.carlosarroyoam.rest.books.core.exception.GlobalExceptionHandler}.
  */
-public class AppMessages {
-  public static final String ILLEGAL_ACCESS_EXCEPTION = "Illegal access to utility class";
-
+public class MessageKeys {
   public static final String BOOK_NOT_FOUND_EXCEPTION = "book.not-found";
   public static final String ISBN_ALREADY_EXISTS_EXCEPTION = "book.isbn.already-exists";
 
@@ -16,8 +14,7 @@ public class AppMessages {
 
   public static final String CUSTOMER_NOT_FOUND_EXCEPTION = "customer.not-found";
   public static final String EMAIL_ALREADY_EXISTS_EXCEPTION = "customer.email.already-exists";
-  public static final String USERNAME_ALREADY_EXISTS_EXCEPTION =
-      "customer.username.already-exists";
+  public static final String USERNAME_ALREADY_EXISTS_EXCEPTION = "customer.username.already-exists";
   public static final String USER_NOT_CREATED_EXCEPTION = "customer.user-not-created";
 
   public static final String CART_NOT_FOUND_EXCEPTION = "cart.not-found";
@@ -31,7 +28,7 @@ public class AppMessages {
   public static final String SHIPMENT_NOT_FOUND_EXCEPTION = "shipment.not-found";
 
   /** Constructor privado que impide instanciar la clase. */
-  private AppMessages() {
-    throw new IllegalAccessError(ILLEGAL_ACCESS_EXCEPTION);
+  private MessageKeys() {
+    throw new IllegalAccessError(CommonConstants.ILLEGAL_ACCESS_EXCEPTION);
   }
 }

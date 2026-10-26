@@ -1,6 +1,6 @@
 package com.carlosarroyoam.rest.books.shipment;
 
-import com.carlosarroyoam.rest.books.core.constant.AppMessages;
+import com.carlosarroyoam.rest.books.core.constant.MessageKeys;
 import com.carlosarroyoam.rest.books.core.exception.ResourceNotFoundException;
 import com.carlosarroyoam.rest.books.core.pagination.PagedResponse;
 import com.carlosarroyoam.rest.books.core.pagination.PagedResponse.PagedResponseMapper;
@@ -108,7 +108,7 @@ public class ShipmentService {
   private Shipment findShipmentById(Long shipmentId) {
     return shipmentRepository
         .findById(shipmentId)
-        .orElseThrow(() -> new ResourceNotFoundException(AppMessages.SHIPMENT_NOT_FOUND_EXCEPTION));
+        .orElseThrow(() -> new ResourceNotFoundException(MessageKeys.SHIPMENT_NOT_FOUND_EXCEPTION));
   }
 
   /**
@@ -120,7 +120,7 @@ public class ShipmentService {
   private Order findOrderById(Long orderId) {
     return orderRepository
         .findById(orderId)
-        .orElseThrow(() -> new ResourceNotFoundException(AppMessages.ORDER_NOT_FOUND_EXCEPTION));
+        .orElseThrow(() -> new ResourceNotFoundException(MessageKeys.ORDER_NOT_FOUND_EXCEPTION));
   }
 
   /**

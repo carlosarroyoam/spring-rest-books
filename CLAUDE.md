@@ -37,7 +37,7 @@ src/main/java/com/carlosarroyoam/rest/books/
   author/ book/ cart/ customer/ order/ payment/ shipment/   feature modules
   core/
     config/         WebSecurityConfig, KeycloakAdminConfig
-    constant/       AppMessages (message keys), CustomClaimNames
+    constant/       CommonConstants, MessageKeys, CustomClaimNames
     exception/      ApplicationException hierarchy, GlobalExceptionHandler,
                     ProblemDetailFactory, ExceptionLogger
     filter/         CorrelationIdFilter, MdcUserContextFilter, RequestLoggingFilter
@@ -102,7 +102,7 @@ Each feature module has the same shape:
   its HTTP status: `ResourceNotFoundException` 404, `ResourceAlreadyExistsException` and
   `ConflictException` 409, `BusinessException` and `ValidationException` 422,
   `UnauthorizedException` 401, `ForbiddenException` 403, `InternalServerException` 500.
-- Throw them with an `AppMessages` constant, which is a key into `messages.properties` (for example
+- Throw them with an `MessageKeys` constant, which is a key into `messages.properties` (for example
   `book.not-found`). When you add a constant, add its text to `messages.properties`.
   `GlobalExceptionHandler` resolves the key through `MessageSource` (fixed `en_US` locale) and falls
   back to the raw string.

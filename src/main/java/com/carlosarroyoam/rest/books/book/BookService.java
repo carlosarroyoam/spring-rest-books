@@ -13,7 +13,7 @@ import com.carlosarroyoam.rest.books.book.dto.UpdateBookRequest;
 import com.carlosarroyoam.rest.books.book.entity.Book;
 import com.carlosarroyoam.rest.books.book.entity.BookStatus;
 import com.carlosarroyoam.rest.books.book.entity.Book_;
-import com.carlosarroyoam.rest.books.core.constant.AppMessages;
+import com.carlosarroyoam.rest.books.core.constant.MessageKeys;
 import com.carlosarroyoam.rest.books.core.exception.ResourceAlreadyExistsException;
 import com.carlosarroyoam.rest.books.core.exception.ResourceNotFoundException;
 import com.carlosarroyoam.rest.books.core.pagination.PagedResponse;
@@ -93,7 +93,7 @@ public class BookService {
   @Transactional
   public BookResponse create(CreateBookRequest request) {
     if (bookRepository.existsByIsbn(request.getIsbn())) {
-      throw new ResourceAlreadyExistsException(AppMessages.ISBN_ALREADY_EXISTS_EXCEPTION);
+      throw new ResourceAlreadyExistsException(MessageKeys.ISBN_ALREADY_EXISTS_EXCEPTION);
     }
 
     LocalDateTime now = LocalDateTime.now();
@@ -169,6 +169,6 @@ public class BookService {
   private Book findBookById(Long bookId) {
     return bookRepository
         .findById(bookId)
-        .orElseThrow(() -> new ResourceNotFoundException(AppMessages.BOOK_NOT_FOUND_EXCEPTION));
+        .orElseThrow(() -> new ResourceNotFoundException(MessageKeys.BOOK_NOT_FOUND_EXCEPTION));
   }
 }

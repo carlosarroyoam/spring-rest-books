@@ -2,7 +2,7 @@ package com.carlosarroyoam.rest.books.core.exception;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.carlosarroyoam.rest.books.core.constant.AppMessages;
+import com.carlosarroyoam.rest.books.core.constant.MessageKeys;
 import com.carlosarroyoam.rest.books.support.testutils.TestMessageSources;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -30,7 +30,7 @@ class GlobalExceptionHandlerTest {
   @Test
   void givenMessageKey_whenHandleAppException_thenDetailIsResolvedText() {
     ResourceNotFoundException ex =
-        new ResourceNotFoundException(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
+        new ResourceNotFoundException(MessageKeys.BOOK_NOT_FOUND_EXCEPTION);
 
     ProblemDetail problemDetail = handler.handleAppException(ex, request);
 
@@ -48,9 +48,9 @@ class GlobalExceptionHandlerTest {
   }
 
   @Test
-  void givenAppMessagesKeys_whenResolve_thenEveryKeyHasEntryInMessagesProperties()
+  void givenMessagesKeys_whenResolve_thenEveryKeyHasEntryInMessagesProperties()
       throws IllegalAccessException {
-    for (Field field : AppMessages.class.getDeclaredFields()) {
+    for (Field field : MessageKeys.class.getDeclaredFields()) {
       if (!Modifier.isPublic(field.getModifiers())
           || field.getName().equals("ILLEGAL_ACCESS_EXCEPTION")) {
         continue;

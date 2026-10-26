@@ -16,7 +16,7 @@ import com.carlosarroyoam.rest.books.book.dto.BookSpecs;
 import com.carlosarroyoam.rest.books.book.dto.CreateBookRequest;
 import com.carlosarroyoam.rest.books.book.dto.UpdateBookRequest;
 import com.carlosarroyoam.rest.books.book.entity.Book;
-import com.carlosarroyoam.rest.books.core.constant.AppMessages;
+import com.carlosarroyoam.rest.books.core.constant.MessageKeys;
 import com.carlosarroyoam.rest.books.core.exception.ResourceAlreadyExistsException;
 import com.carlosarroyoam.rest.books.core.exception.ResourceNotFoundException;
 import com.carlosarroyoam.rest.books.core.pagination.PagedResponse;
@@ -109,7 +109,7 @@ class BookServiceTest {
 
     assertThatThrownBy(() -> bookService.findById(1L))
         .isInstanceOf(ResourceNotFoundException.class)
-        .hasMessage(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
+        .hasMessage(MessageKeys.BOOK_NOT_FOUND_EXCEPTION);
   }
 
   @Test
@@ -147,7 +147,7 @@ class BookServiceTest {
 
     assertThatThrownBy(() -> bookService.create(request))
         .isInstanceOf(ResourceAlreadyExistsException.class)
-        .hasMessage(AppMessages.ISBN_ALREADY_EXISTS_EXCEPTION);
+        .hasMessage(MessageKeys.ISBN_ALREADY_EXISTS_EXCEPTION);
   }
 
   @Test
@@ -179,7 +179,7 @@ class BookServiceTest {
 
     assertThatThrownBy(() -> bookService.update(1L, request))
         .isInstanceOf(ResourceNotFoundException.class)
-        .hasMessage(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
+        .hasMessage(MessageKeys.BOOK_NOT_FOUND_EXCEPTION);
   }
 
   @Test
@@ -199,7 +199,7 @@ class BookServiceTest {
 
     assertThatThrownBy(() -> bookService.deleteById(1L))
         .isInstanceOf(ResourceNotFoundException.class)
-        .hasMessage(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
+        .hasMessage(MessageKeys.BOOK_NOT_FOUND_EXCEPTION);
   }
 
   @Test

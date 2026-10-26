@@ -9,7 +9,7 @@ import static org.mockito.Mockito.when;
 
 import com.carlosarroyoam.rest.books.book.BookRepository;
 import com.carlosarroyoam.rest.books.book.entity.Book;
-import com.carlosarroyoam.rest.books.core.constant.AppMessages;
+import com.carlosarroyoam.rest.books.core.constant.MessageKeys;
 import com.carlosarroyoam.rest.books.core.exception.ResourceNotFoundException;
 import com.carlosarroyoam.rest.books.core.pagination.PagedResponse;
 import com.carlosarroyoam.rest.books.customer.CustomerRepository;
@@ -151,7 +151,7 @@ class OrderServiceTest {
 
     assertThatThrownBy(() -> orderService.findById(1L))
         .isInstanceOf(ResourceNotFoundException.class)
-        .hasMessage(AppMessages.ORDER_NOT_FOUND_EXCEPTION);
+        .hasMessage(MessageKeys.ORDER_NOT_FOUND_EXCEPTION);
   }
 
   @Test
@@ -205,7 +205,7 @@ class OrderServiceTest {
 
     assertThatThrownBy(() -> orderService.create(request))
         .isInstanceOf(ResourceNotFoundException.class)
-        .hasMessage(AppMessages.CUSTOMER_NOT_FOUND_EXCEPTION);
+        .hasMessage(MessageKeys.CUSTOMER_NOT_FOUND_EXCEPTION);
   }
 
   @Test
@@ -224,7 +224,7 @@ class OrderServiceTest {
 
     assertThatThrownBy(() -> orderService.create(request))
         .isInstanceOf(ResourceNotFoundException.class)
-        .hasMessage(AppMessages.BOOK_NOT_FOUND_EXCEPTION);
+        .hasMessage(MessageKeys.BOOK_NOT_FOUND_EXCEPTION);
   }
 
   @Test
@@ -254,6 +254,6 @@ class OrderServiceTest {
 
     assertThatThrownBy(() -> orderService.update(1L, UpdateOrderRequest.builder().build()))
         .isInstanceOf(ResourceNotFoundException.class)
-        .hasMessage(AppMessages.ORDER_NOT_FOUND_EXCEPTION);
+        .hasMessage(MessageKeys.ORDER_NOT_FOUND_EXCEPTION);
   }
 }
