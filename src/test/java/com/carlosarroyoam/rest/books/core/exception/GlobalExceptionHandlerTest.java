@@ -51,8 +51,7 @@ class GlobalExceptionHandlerTest {
   void givenMessagesKeys_whenResolve_thenEveryKeyHasEntryInMessagesProperties()
       throws IllegalAccessException {
     for (Field field : MessageKeys.class.getDeclaredFields()) {
-      if (!Modifier.isPublic(field.getModifiers())
-          || field.getName().equals("ILLEGAL_ACCESS_ERROR")) {
+      if (!Modifier.isPublic(field.getModifiers())) {
         continue;
       }
       String key = (String) field.get(null);
