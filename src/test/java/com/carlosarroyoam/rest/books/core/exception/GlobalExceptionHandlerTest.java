@@ -52,7 +52,7 @@ class GlobalExceptionHandlerTest {
       throws IllegalAccessException {
     for (Field field : MessageKeys.class.getDeclaredFields()) {
       if (!Modifier.isPublic(field.getModifiers())
-          || field.getName().equals("ILLEGAL_ACCESS_EXCEPTION")) {
+          || field.getName().equals("ILLEGAL_ACCESS_ERROR")) {
         continue;
       }
       String key = (String) field.get(null);

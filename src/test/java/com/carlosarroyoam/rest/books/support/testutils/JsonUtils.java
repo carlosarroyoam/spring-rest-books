@@ -10,7 +10,7 @@ import java.nio.charset.StandardCharsets;
 public final class JsonUtils {
   /** Constructor privado que impide instanciar la clase. */
   private JsonUtils() {
-    throw new IllegalAccessError(CommonConstants.ILLEGAL_ACCESS_EXCEPTION);
+    throw new IllegalAccessError(CommonConstants.ILLEGAL_ACCESS_ERROR);
   }
 
   /**

@@ -29,6 +29,6 @@ public class MessageKeys {
 
   /** Constructor privado que impide instanciar la clase. */
   private MessageKeys() {
-    throw new IllegalAccessError(CommonConstants.ILLEGAL_ACCESS_EXCEPTION);
+    throw new IllegalAccessError(CommonConstants.ILLEGAL_ACCESS_ERROR);
   }
 }
