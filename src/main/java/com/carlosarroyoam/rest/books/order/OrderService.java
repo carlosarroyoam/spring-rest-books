@@ -164,26 +164,25 @@ public class OrderService {
   private List<OrderItem> buildOrderItems(
       List<CreateOrderItemRequest> requestItems, LocalDateTime now, Order order) {
     return requestItems.stream()
-        .map(
-            item -> {
-              Book bookById = findBookById(item.getBookId());
+        .map(item -> {
+          Book bookById = findBookById(item.getBookId());
 
-              BigDecimal unitPrice = bookById.getPrice().setScale(2, RoundingMode.HALF_UP);
-              BigDecimal totalPrice =
-                  unitPrice
-                      .multiply(BigDecimal.valueOf(item.getQuantity()))
-                      .setScale(2, RoundingMode.HALF_UP);
+          BigDecimal unitPrice = bookById.getPrice().setScale(2, RoundingMode.HALF_UP);
+          BigDecimal totalPrice =
+              unitPrice
+                  .multiply(BigDecimal.valueOf(item.getQuantity()))
+                  .setScale(2, RoundingMode.HALF_UP);
 
-              return OrderItem.builder()
-                  .quantity(item.getQuantity())
-                  .unitPrice(unitPrice)
-                  .totalPrice(totalPrice)
-                  .book(bookById)
-                  .order(order)
-                  .createdAt(now)
-                  .updatedAt(now)
-                  .build();
-            })
+          return OrderItem.builder()
+              .quantity(item.getQuantity())
+              .unitPrice(unitPrice)
+              .totalPrice(totalPrice)
+              .book(bookById)
+              .order(order)
+              .createdAt(now)
+              .updatedAt(now)
+              .build();
+        })
         .toList();
   }
 

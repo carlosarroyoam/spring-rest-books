@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
  * la validación de Bean Validation. Se traduce a {@code 422 Unprocessable Entity}.
  */
 public class ValidationException extends ApplicationException {
-  public ValidationException(String message) {
-    super(HttpStatus.UNPROCESSABLE_ENTITY, message);
+  public ValidationException(String key, Object... args) {
+    super(HttpStatus.UNPROCESSABLE_ENTITY, key, args);
   }
 }

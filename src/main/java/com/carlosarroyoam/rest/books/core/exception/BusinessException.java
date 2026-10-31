@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
  * traduce a {@code 422 Unprocessable Entity}.
  */
 public class BusinessException extends ApplicationException {
-  public BusinessException(String message) {
-    super(HttpStatus.UNPROCESSABLE_ENTITY, message);
+  public BusinessException(String key, Object... args) {
+    super(HttpStatus.UNPROCESSABLE_ENTITY, key, args);
   }
 }

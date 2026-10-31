@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
  * {@code 409 Conflict}.
  */
 public class ConflictException extends ApplicationException {
-  public ConflictException(String message) {
-    super(HttpStatus.CONFLICT, message);
+  public ConflictException(String key, Object... args) {
+    super(HttpStatus.CONFLICT, key, args);
   }
 }

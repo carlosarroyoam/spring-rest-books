@@ -59,28 +59,26 @@ class WebSecurityConfig {
             sessions -> sessions.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .oauth2ResourceServer(
             oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter)))
-        .exceptionHandling(
-            ex -> {
-              ex.authenticationEntryPoint(authenticationEntryPoint);
-              ex.accessDeniedHandler(accessDeniedHandler);
-            })
+        .exceptionHandling(ex -> {
+          ex.authenticationEntryPoint(authenticationEntryPoint);
+          ex.accessDeniedHandler(accessDeniedHandler);
+        })
         .addFilterAfter(new MdcUserContextFilter(), BearerTokenAuthenticationFilter.class);
 
-    return http.authorizeHttpRequests(
-            requests ->
-                requests
-                    .requestMatchers(HttpMethod.GET, "/books/**")
-                    .permitAll()
-                    .requestMatchers(HttpMethod.GET, "/authors/**")
-                    .permitAll()
-                    .requestMatchers(HttpMethod.POST, "/customers")
-                    .permitAll()
-                    .requestMatchers("/h2-console/**")
-                    .permitAll()
-                    .requestMatchers("/actuator/**")
-                    .permitAll()
-                    .anyRequest()
-                    .authenticated())
+    return http.authorizeHttpRequests(requests ->
+            requests
+                .requestMatchers(HttpMethod.GET, "/books/**")
+                .permitAll()
+                .requestMatchers(HttpMethod.GET, "/authors/**")
+                .permitAll()
+                .requestMatchers(HttpMethod.POST, "/customers")
+                .permitAll()
+                .requestMatchers("/h2-console/**")
+                .permitAll()
+                .requestMatchers("/actuator/**")
+                .permitAll()
+                .anyRequest()
+                .authenticated())
         .build();
   }
 

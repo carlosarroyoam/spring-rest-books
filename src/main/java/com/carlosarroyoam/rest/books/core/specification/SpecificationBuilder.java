@@ -62,9 +62,8 @@ public class SpecificationBuilder<T> {
    */
   public SpecificationBuilder<T> likeIfPresent(Function<Root<T>, Path<String>> path, String value) {
     if (value != null && !value.isBlank()) {
-      specs.add(
-          (root, query, cb) ->
-              cb.like(cb.lower(path.apply(root)), "%" + value.toLowerCase() + "%"));
+      specs.add((root, query, cb) ->
+          cb.like(cb.lower(path.apply(root)), "%" + value.toLowerCase() + "%"));
     }
     return this;
   }

@@ -59,14 +59,13 @@ public class CartService {
         cartByCustomerId.getItems().stream()
             .filter(item -> item.getBook().getId().equals(request.getBookId()))
             .findFirst()
-            .orElseGet(
-                () ->
-                    CartItem.builder()
-                        .book(bookById)
-                        .quantity(request.getQuantity())
-                        .addedAt(LocalDateTime.now())
-                        .cart(cartByCustomerId)
-                        .build());
+            .orElseGet(() ->
+                CartItem.builder()
+                    .book(bookById)
+                    .quantity(request.getQuantity())
+                    .addedAt(LocalDateTime.now())
+                    .cart(cartByCustomerId)
+                    .build());
 
     cartItem.setQuantity(request.getQuantity());
     cartItem.setAddedAt(LocalDateTime.now());

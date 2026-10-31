@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
  * a {@code 403 Forbidden}.
  */
 public class ForbiddenException extends ApplicationException {
-  public ForbiddenException(String message) {
-    super(HttpStatus.FORBIDDEN, message);
+  public ForbiddenException(String key, Object... args) {
+    super(HttpStatus.FORBIDDEN, key, args);
   }
 }

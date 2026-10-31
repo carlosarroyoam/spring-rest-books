@@ -8,6 +8,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Locale;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
@@ -32,7 +33,7 @@ class GlobalExceptionHandlerTest {
     ResourceNotFoundException ex =
         new ResourceNotFoundException(MessageKeys.BOOK_NOT_FOUND_EXCEPTION);
 
-    ProblemDetail problemDetail = handler.handleAppException(ex, request);
+    ProblemDetail problemDetail = handler.handleApplicationException(ex, request);
 
     assertThat(problemDetail.getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
     assertThat(problemDetail.getDetail()).isEqualTo("Book not found");
@@ -42,9 +43,19 @@ class GlobalExceptionHandlerTest {
   void givenUnknownKey_whenHandleAppException_thenDetailIsMessageAsIs() {
     ResourceNotFoundException ex = new ResourceNotFoundException("Some literal message");
 
-    ProblemDetail problemDetail = handler.handleAppException(ex, request);
+    ProblemDetail problemDetail = handler.handleApplicationException(ex, request);
 
     assertThat(problemDetail.getDetail()).isEqualTo("Some literal message");
+  }
+
+  @Test
+  @DisplayName("Interpola los argumentos de la excepción en el mensaje")
+  void givenMessageKeyWithArgs_whenHandleAppException_thenDetailHasArgsInterpolated() {
+    ResourceNotFoundException ex = new ResourceNotFoundException("Item {0} not found", 42);
+
+    ProblemDetail problemDetail = handler.handleApplicationException(ex, request);
+
+    assertThat(problemDetail.getDetail()).isEqualTo("Item 42 not found");
   }
 
   @Test

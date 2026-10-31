@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
  * Unauthorized}.
  */
 public class UnauthorizedException extends ApplicationException {
-  public UnauthorizedException(String message) {
-    super(HttpStatus.UNAUTHORIZED, message);
+  public UnauthorizedException(String key, Object... args) {
+    super(HttpStatus.UNAUTHORIZED, key, args);
   }
 }

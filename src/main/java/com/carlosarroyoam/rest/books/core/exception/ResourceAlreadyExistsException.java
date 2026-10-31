@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
  * electrónico, pago de una orden). Se traduce a {@code 409 Conflict}.
  */
 public class ResourceAlreadyExistsException extends ApplicationException {
-  public ResourceAlreadyExistsException(String message) {
-    super(HttpStatus.CONFLICT, message);
+  public ResourceAlreadyExistsException(String key, Object... args) {
+    super(HttpStatus.CONFLICT, key, args);
   }
 }
