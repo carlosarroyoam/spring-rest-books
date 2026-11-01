@@ -25,40 +25,6 @@ Use the Maven wrapper (`./mvnw.cmd` on Windows, `./mvnw` elsewhere).
 - One test method: `./mvnw.cmd test -Dtest=BookServiceTest#givenBookExists_whenFindBookById_thenReturnsBook`
 - One integration test: `./mvnw.cmd verify -Dit.test=BookControllerIT`
 
-## Directory Layout
-
-```
-database/                  schema.sql, data.sql (added to the classpath root as a Maven resource dir)
-docs/openapi/api-docs.yaml hand-maintained OpenAPI 3.1 contract
-docs/postman/              Postman collection
-docs/javadoc-conventions.md  Javadoc style guide (Spanish)
-docs/testing-conventions.md  Testing conventions guide
-realm-export.json          Keycloak realm for local development
-src/main/java/com/carlosarroyoam/rest/books/
-  BookServiceApplication.java
-  author/ book/ cart/ customer/ order/ payment/ shipment/   feature modules
-  core/
-    config/         WebSecurityConfig, KeycloakAdminConfig
-    constant/       CommonConstants, MessageKeys, CustomClaimNames
-    exception/      ApplicationException hierarchy, GlobalExceptionHandler,
-                    ProblemDetailFactory, ExceptionLogger
-    filter/         CorrelationIdFilter, MdcUserContextFilter, RequestLoggingFilter
-    pagination/     PagedResponse, PaginationResponse
-    property/       CorsProps (app.cors.*), KeycloakAdminProps (keycloak.admin.*)
-    security/       AuthoritiesConverter, CustomAuthenticationEntryPoint, CustomAccessDeniedHandler
-    specification/  SpecificationBuilder
-src/main/resources/        application.properties, messages.properties, logback-spring.xml
-src/test/java/.../books/
-  <module>/                *ServiceTest, *ControllerTest, *ControllerIT
-  core/exception/          GlobalExceptionHandlerTest
-  support/security/        JwtArgumentResolver
-  support/testutils/       JsonUtils, TestMessageSources, TestObjectMappers
-src/test/resources/
-  application-test.properties
-  responses/<module>/      expected JSON payloads for the ITs
-  mappings/, __files/      WireMock stubs for the Keycloak Admin API
-```
-
 ## Module Structure
 
 Each feature module has the same shape:
@@ -156,16 +122,10 @@ Each feature module has the same shape:
 
 ## Testing
 
-Full guide: `docs/testing-conventions.md`. Key rules:
+Full guide: `docs/testing-conventions.md`. Per-layer test rules (naming, `*ServiceTest`,
+`*ControllerTest`, `*ControllerIT`) live in `src/test/CLAUDE.md` and load when working under
+`src/test`. Key rule:
 
-- Test methods are named `given<State>_when<Action>_then<Outcome>`.
-- `*ServiceTest`: Mockito unit tests (`@ExtendWith(MockitoExtension.class)`).
-- `*ControllerTest`: standalone MockMvc with mocked services, the real `GlobalExceptionHandler`
-  (built from `TestMessageSources.messages()`), and `TestObjectMappers.snakeCase()`.
-- `*ControllerIT`: `@SpringBootTest(RANDOM_PORT)`, `@ActiveProfiles("test")`, `@Transactional`,
-  MockMvc with Spring Security and a mocked `jwt()` that carries `ROLE_App/Admin` or
-  `ROLE_App/Customer`. WireMock on port 8089 stands in for Keycloak. Responses are compared against
-  the JSON fixtures in `src/test/resources/responses/<module>/`.
 - When you change behavior, update every layer it touches: the `*ServiceTest` for business rules,
   the `*ControllerTest` for the HTTP contract, the `*ControllerIT` plus its fixture for end-to-end
   behavior, and `docs/openapi/api-docs.yaml` when the contract changes.
