@@ -117,8 +117,7 @@ class CustomerControllerIT {
   }
 
   @Test
-  @DisplayName(
-      "GET /customers/{id} - Given customer role, when find by id, then returns forbidden")
+  @DisplayName("GET /customers/{id} - Given customer role, when find by id, then returns forbidden")
   void givenCustomerRole_whenFindCustomerById_thenReturnsForbidden() throws Exception {
     mockMvc
         .perform(get("/customers/{customerId}", 1L).with(customerJwt()))
@@ -249,8 +248,7 @@ class CustomerControllerIT {
   }
 
   @Test
-  @DisplayName(
-      "DELETE /customers/{id} - Given customer role, when delete, then returns forbidden")
+  @DisplayName("DELETE /customers/{id} - Given customer role, when delete, then returns forbidden")
   void givenCustomerRole_whenDeleteCustomer_thenReturnsForbidden() throws Exception {
     mockMvc
         .perform(delete("/customers/{customerId}", 1L).with(customerJwt()))

@@ -63,8 +63,7 @@ class GlobalExceptionHandlerTest {
   }
 
   @Test
-  @DisplayName(
-      "Given message keys, when resolve, then every key has entry in messages.properties")
+  @DisplayName("Given message keys, when resolve, then every key has entry in messages.properties")
   void givenMessagesKeys_whenResolve_thenEveryKeyHasEntryInMessagesProperties()
       throws IllegalAccessException {
     for (Field field : MessageKeys.class.getDeclaredFields()) {

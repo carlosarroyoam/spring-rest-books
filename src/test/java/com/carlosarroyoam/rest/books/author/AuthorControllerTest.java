@@ -182,9 +182,7 @@ class AuthorControllerTest {
   void givenInvalidAuthorData_whenUpdateAuthor_thenReturnsUnprocessableEntity() throws Exception {
     mockMvc
         .perform(
-            put("/authors/{authorId}", 1L)
-                .content("{}")
-                .contentType(MediaType.APPLICATION_JSON))
+            put("/authors/{authorId}", 1L).content("{}").contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isUnprocessableEntity())
         .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
         .andExpect(jsonPath("$.status").value(422))
