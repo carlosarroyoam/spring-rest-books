@@ -12,6 +12,7 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
+/** Representación de un autor devuelta por la API. */
 @Getter
 @Setter
 @Builder

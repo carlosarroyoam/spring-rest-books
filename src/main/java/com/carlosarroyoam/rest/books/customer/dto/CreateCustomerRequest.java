@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+/** Datos requeridos para registrar un cliente. */
 @Getter
 @Setter
 @Builder

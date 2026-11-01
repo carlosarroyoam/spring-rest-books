@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+/** Filtros opcionales para listar autores, enlazados desde los parámetros de consulta. */
 @Getter
 @Setter
 @Builder

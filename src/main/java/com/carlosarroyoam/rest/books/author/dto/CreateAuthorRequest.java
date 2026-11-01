@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+/** Datos requeridos para crear un autor. */
 @Getter
 @Setter
 @Builder

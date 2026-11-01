@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+/** Filtros opcionales para listar libros, enlazados desde los parámetros de consulta. */
 @Getter
 @Setter
 @Builder

@@ -31,6 +31,8 @@ Use the Maven wrapper (`./mvnw.cmd` on Windows, `./mvnw` elsewhere).
 database/                  schema.sql, data.sql (added to the classpath root as a Maven resource dir)
 docs/openapi/api-docs.yaml hand-maintained OpenAPI 3.1 contract
 docs/postman/              Postman collection
+docs/javadoc-conventions.md  Javadoc style guide (Spanish)
+docs/testing-conventions.md  Testing conventions guide
 realm-export.json          Keycloak realm for local development
 src/main/java/com/carlosarroyoam/rest/books/
   BookServiceApplication.java
@@ -154,6 +156,8 @@ Each feature module has the same shape:
 
 ## Testing
 
+Full guide: `docs/testing-conventions.md`. Key rules:
+
 - Test methods are named `given<State>_when<Action>_then<Outcome>`.
 - `*ServiceTest`: Mockito unit tests (`@ExtendWith(MockitoExtension.class)`).
 - `*ControllerTest`: standalone MockMvc with mocked services, the real `GlobalExceptionHandler`
@@ -168,4 +172,11 @@ Each feature module has the same shape:
 
 ## Javadoc
 
-All Javadoc is written in **Spanish**. Rules: third-person present-tense first sentence, `@throws` only for domain exceptions thrown by `UserService`/`AuthService`, REST methods guarded by `@RolesAllowed` end their first sentence with "Requiere rol {@code X}.", no `@author`/`@since`.
+Full guide: `docs/javadoc-conventions.md`. Key rules:
+
+third-person present-tense first sentence ending in a period; `@param`/`@return` on every
+controller and service method (lowercase noun phrase, no trailing period); REST methods guarded by
+`@PreAuthorize` say "Requiere rol {@code App/Admin}." (or `App/Customer`) after the first sentence;
+errors are described in prose (for example "o lanza {@code 404 Not Found}"), never with `@throws`;
+no `@author`/`@since`/`@see`. DTO classes get a one-line class-level Javadoc (no Javadoc on their fields or nested MapStruct
+mappers); entity fields and test methods carry no Javadoc.

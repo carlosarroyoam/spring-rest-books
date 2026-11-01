@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
+/** Filtros opcionales para listar órdenes, enlazados desde los parámetros de consulta. */
 @Getter
 @Setter
 @Builder

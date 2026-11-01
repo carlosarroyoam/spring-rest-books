@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+/** Datos requeridos para registrar el pago de una orden. */
 @Getter
 @Setter
 @Builder

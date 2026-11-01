@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+/** Datos requeridos para actualizar las direcciones y las notas de una orden. */
 @Getter
 @Setter
 @Builder

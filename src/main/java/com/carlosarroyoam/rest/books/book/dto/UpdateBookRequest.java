@@ -11,6 +11,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+/** Datos requeridos para actualizar un libro. */
 @Getter
 @Setter
 @Builder

@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
+/** Datos requeridos para crear un libro. */
 @Getter
 @Setter
 @NoArgsConstructor

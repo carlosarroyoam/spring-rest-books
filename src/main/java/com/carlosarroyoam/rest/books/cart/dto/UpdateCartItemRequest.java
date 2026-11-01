@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+/** Datos requeridos para agregar un libro al carrito o actualizar su cantidad. */
 @Getter
 @Setter
 @Builder

@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+/** Libro y cantidad de un ítem dentro de {@link CreateOrderRequest}. */
 @Getter
 @Setter
 @Builder

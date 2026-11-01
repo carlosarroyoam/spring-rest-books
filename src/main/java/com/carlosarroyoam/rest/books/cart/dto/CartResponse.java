@@ -13,6 +13,7 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
+/** Representación de un carrito devuelta por la API, incluyendo sus ítems y su cliente. */
 @Getter
 @Setter
 @Builder

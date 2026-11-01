@@ -14,6 +14,7 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
+/** Representación de un ítem de orden devuelta por la API, incluyendo su libro. */
 @Getter
 @Setter
 @Builder

@@ -10,6 +10,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+/** Datos requeridos para crear una orden, incluyendo los ítems que la componen. */
 @Getter
 @Setter
 @Builder

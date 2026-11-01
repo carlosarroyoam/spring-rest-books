@@ -17,6 +17,7 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
+/** Representación de una orden devuelta por la API, incluyendo ítems, cliente, pago y envío. */
 @Getter
 @Setter
 @Builder
