@@ -2,6 +2,7 @@ package com.carlosarroyoam.rest.books.book;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -17,9 +18,11 @@ import com.carlosarroyoam.rest.books.book.dto.BookResponse;
 import com.carlosarroyoam.rest.books.book.dto.BookSpecs;
 import com.carlosarroyoam.rest.books.book.dto.CreateBookRequest;
 import com.carlosarroyoam.rest.books.book.dto.UpdateBookRequest;
+import com.carlosarroyoam.rest.books.core.constant.MessageKeys;
 import com.carlosarroyoam.rest.books.core.exception.ExceptionLogger;
 import com.carlosarroyoam.rest.books.core.exception.GlobalExceptionHandler;
 import com.carlosarroyoam.rest.books.core.exception.ProblemDetailFactory;
+import com.carlosarroyoam.rest.books.core.exception.ResourceNotFoundException;
 import com.carlosarroyoam.rest.books.core.pagination.PagedResponse;
 import com.carlosarroyoam.rest.books.core.pagination.PaginationResponse;
 import com.carlosarroyoam.rest.books.support.testutils.TestMessageSources;
@@ -110,6 +113,23 @@ class BookControllerTest {
   }
 
   @Test
+  @DisplayName(
+      "GET /books/{id} - Given book does not exist, when find by id, then returns not found")
+  void givenBookDoesNotExist_whenFindBookById_thenReturnsNotFound() throws Exception {
+    when(bookService.findById(anyLong()))
+        .thenThrow(new ResourceNotFoundException(MessageKeys.BOOK_NOT_FOUND_EXCEPTION));
+
+    mockMvc
+        .perform(get("/books/{bookId}", 99L).accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isNotFound())
+        .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+        .andExpect(jsonPath("$.status").value(404))
+        .andExpect(jsonPath("$.title").value("Not Found"))
+        .andExpect(jsonPath("$.detail").value("Book not found"))
+        .andExpect(jsonPath("$.instance").value("/books/99"));
+  }
+
+  @Test
   @DisplayName("POST /books - Given valid book data, when create, then returns created")
   void givenValidBookData_whenCreateBook_thenReturnsCreated() throws Exception {
     CreateBookRequest request =
@@ -136,6 +156,25 @@ class BookControllerTest {
   }
 
   @Test
+  @DisplayName("POST /books - Given invalid book data, when create, then returns problem detail")
+  void givenInvalidBookData_whenCreateBook_thenReturnsUnprocessableEntity() throws Exception {
+    mockMvc
+        .perform(post("/books").content("{}").contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isUnprocessableEntity())
+        .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+        .andExpect(jsonPath("$.status").value(422))
+        .andExpect(jsonPath("$.title").value("Unprocessable Entity"))
+        .andExpect(jsonPath("$.detail").value("Invalid request data"))
+        .andExpect(jsonPath("$.instance").value("/books"))
+        .andExpect(jsonPath("$.errors").isMap())
+        .andExpect(jsonPath("$.errors.isbn").value("ISBN should not be blank"))
+        .andExpect(jsonPath("$.errors.title").value("Title should not be blank"))
+        .andExpect(jsonPath("$.errors.price").value("Price should not be null"));
+
+    verifyNoInteractions(bookService);
+  }
+
+  @Test
   @DisplayName("PUT /books/{id} - Given valid book data, when update, then returns no content")
   void givenValidBookData_whenUpdateBook_thenReturnsNoContent() throws Exception {
     UpdateBookRequest request =
@@ -154,6 +193,23 @@ class BookControllerTest {
                 .content(mapper.writeValueAsString(request))
                 .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isNoContent());
+  }
+
+  @Test
+  @DisplayName(
+      "PUT /books/{id} - Given invalid book data, when update, then returns problem detail")
+  void givenInvalidBookData_whenUpdateBook_thenReturnsUnprocessableEntity() throws Exception {
+    mockMvc
+        .perform(put("/books/{bookId}", 1L).content("{}").contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isUnprocessableEntity())
+        .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+        .andExpect(jsonPath("$.status").value(422))
+        .andExpect(jsonPath("$.detail").value("Invalid request data"))
+        .andExpect(jsonPath("$.instance").value("/books/1"))
+        .andExpect(jsonPath("$.errors").isMap())
+        .andExpect(jsonPath("$.errors.isbn").value("ISBN should not be blank"));
+
+    verifyNoInteractions(bookService);
   }
 
   @Test

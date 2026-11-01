@@ -2,6 +2,7 @@ package com.carlosarroyoam.rest.books.order;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -11,9 +12,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.carlosarroyoam.rest.books.core.constant.MessageKeys;
 import com.carlosarroyoam.rest.books.core.exception.ExceptionLogger;
 import com.carlosarroyoam.rest.books.core.exception.GlobalExceptionHandler;
 import com.carlosarroyoam.rest.books.core.exception.ProblemDetailFactory;
+import com.carlosarroyoam.rest.books.core.exception.ResourceNotFoundException;
 import com.carlosarroyoam.rest.books.core.pagination.PagedResponse;
 import com.carlosarroyoam.rest.books.core.pagination.PaginationResponse;
 import com.carlosarroyoam.rest.books.order.dto.CreateOrderItemRequest;
@@ -115,6 +118,23 @@ class OrderControllerTest {
   }
 
   @Test
+  @DisplayName(
+      "GET /orders/{id} - Given order does not exist, when find by id, then returns not found")
+  void givenOrderDoesNotExist_whenFindOrderById_thenReturnsNotFound() throws Exception {
+    when(orderService.findById(anyLong()))
+        .thenThrow(new ResourceNotFoundException(MessageKeys.ORDER_NOT_FOUND_EXCEPTION));
+
+    mockMvc
+        .perform(get("/orders/{orderId}", 99L).accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isNotFound())
+        .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+        .andExpect(jsonPath("$.status").value(404))
+        .andExpect(jsonPath("$.title").value("Not Found"))
+        .andExpect(jsonPath("$.detail").value("Order not found"))
+        .andExpect(jsonPath("$.instance").value("/orders/99"));
+  }
+
+  @Test
   @DisplayName("POST /orders - Given valid order data, when create, then returns created")
   void givenValidOrderData_whenCreateOrder_thenReturnsCreated() throws Exception {
     CreateOrderRequest request =
@@ -139,6 +159,26 @@ class OrderControllerTest {
   }
 
   @Test
+  @DisplayName("POST /orders - Given invalid order data, when create, then returns problem detail")
+  void givenInvalidOrderData_whenCreateOrder_thenReturnsUnprocessableEntity() throws Exception {
+    mockMvc
+        .perform(post("/orders").content("{}").contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isUnprocessableEntity())
+        .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+        .andExpect(jsonPath("$.status").value(422))
+        .andExpect(jsonPath("$.title").value("Unprocessable Entity"))
+        .andExpect(jsonPath("$.detail").value("Invalid request data"))
+        .andExpect(jsonPath("$.instance").value("/orders"))
+        .andExpect(jsonPath("$.errors").isMap())
+        .andExpect(jsonPath("$.errors.customerId").value("Customer id should not be null"))
+        .andExpect(
+            jsonPath("$.errors.shippingAddress").value("Shipping address should not be blank"))
+        .andExpect(jsonPath("$.errors.items").value("Items should not be empty"));
+
+    verifyNoInteractions(orderService);
+  }
+
+  @Test
   @DisplayName("PUT /orders/{id} - Given valid order data, when update, then returns no content")
   void givenValidOrderData_whenUpdateOrder_thenReturnsNoContent() throws Exception {
     UpdateOrderRequest request =
@@ -154,5 +194,26 @@ class OrderControllerTest {
                 .content(mapper.writeValueAsString(request))
                 .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isNoContent());
+  }
+
+  @Test
+  @DisplayName(
+      "PUT /orders/{id} - Given invalid order data, when update, then returns problem detail")
+  void givenInvalidOrderData_whenUpdateOrder_thenReturnsUnprocessableEntity() throws Exception {
+    mockMvc
+        .perform(put("/orders/{orderId}", 1L).content("{}").contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isUnprocessableEntity())
+        .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+        .andExpect(jsonPath("$.status").value(422))
+        .andExpect(jsonPath("$.title").value("Unprocessable Entity"))
+        .andExpect(jsonPath("$.detail").value("Invalid request data"))
+        .andExpect(jsonPath("$.instance").value("/orders/1"))
+        .andExpect(jsonPath("$.errors").isMap())
+        .andExpect(
+            jsonPath("$.errors.shippingAddress").value("Shipping address should not be blank"))
+        .andExpect(
+            jsonPath("$.errors.billingAddress").value("Billing address should not be blank"));
+
+    verifyNoInteractions(orderService);
   }
 }

@@ -30,6 +30,7 @@ class GlobalExceptionHandlerTest {
   }
 
   @Test
+  @DisplayName("Given message key, when handle app exception, then detail is resolved text")
   void givenMessageKey_whenHandleAppException_thenDetailIsResolvedText() {
     ResourceNotFoundException ex =
         new ResourceNotFoundException(MessageKeys.BOOK_NOT_FOUND_EXCEPTION);
@@ -41,6 +42,7 @@ class GlobalExceptionHandlerTest {
   }
 
   @Test
+  @DisplayName("Given unknown key, when handle app exception, then detail is message as is")
   void givenUnknownKey_whenHandleAppException_thenDetailIsMessageAsIs() {
     ResourceNotFoundException ex = new ResourceNotFoundException("Some literal message");
 
@@ -50,7 +52,8 @@ class GlobalExceptionHandlerTest {
   }
 
   @Test
-  @DisplayName("Interpola los argumentos de la excepción en el mensaje")
+  @DisplayName(
+      "Given message key with args, when handle app exception, then detail has args interpolated")
   void givenMessageKeyWithArgs_whenHandleAppException_thenDetailHasArgsInterpolated() {
     ResourceNotFoundException ex = new ResourceNotFoundException("Item {0} not found", 42);
 
@@ -60,6 +63,8 @@ class GlobalExceptionHandlerTest {
   }
 
   @Test
+  @DisplayName(
+      "Given message keys, when resolve, then every key has entry in messages.properties")
   void givenMessagesKeys_whenResolve_thenEveryKeyHasEntryInMessagesProperties()
       throws IllegalAccessException {
     for (Field field : MessageKeys.class.getDeclaredFields()) {

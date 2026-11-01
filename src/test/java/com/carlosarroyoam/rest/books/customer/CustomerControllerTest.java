@@ -2,6 +2,7 @@ package com.carlosarroyoam.rest.books.customer;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -12,9 +13,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.carlosarroyoam.rest.books.core.constant.MessageKeys;
 import com.carlosarroyoam.rest.books.core.exception.ExceptionLogger;
 import com.carlosarroyoam.rest.books.core.exception.GlobalExceptionHandler;
 import com.carlosarroyoam.rest.books.core.exception.ProblemDetailFactory;
+import com.carlosarroyoam.rest.books.core.exception.ResourceNotFoundException;
 import com.carlosarroyoam.rest.books.core.pagination.PagedResponse;
 import com.carlosarroyoam.rest.books.core.pagination.PaginationResponse;
 import com.carlosarroyoam.rest.books.customer.dto.CreateCustomerRequest;
@@ -111,6 +114,24 @@ class CustomerControllerTest {
   }
 
   @Test
+  @DisplayName(
+      "GET /customers/{id} - Given customer does not exist, when find by id, then returns not"
+          + " found")
+  void givenCustomerDoesNotExist_whenFindCustomerById_thenReturnsNotFound() throws Exception {
+    when(customerService.findById(anyLong()))
+        .thenThrow(new ResourceNotFoundException(MessageKeys.CUSTOMER_NOT_FOUND_EXCEPTION));
+
+    mockMvc
+        .perform(get("/customers/{customerId}", 99L).accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isNotFound())
+        .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+        .andExpect(jsonPath("$.status").value(404))
+        .andExpect(jsonPath("$.title").value("Not Found"))
+        .andExpect(jsonPath("$.detail").value("Customer not found"))
+        .andExpect(jsonPath("$.instance").value("/customers/99"));
+  }
+
+  @Test
   @DisplayName("POST /customers - Given valid customer data, when create, then returns created")
   void givenValidCustomerData_whenCreateCustomer_thenReturnsCreated() throws Exception {
     CreateCustomerRequest request =
@@ -137,6 +158,27 @@ class CustomerControllerTest {
 
   @Test
   @DisplayName(
+      "POST /customers - Given invalid customer data, when create, then returns problem detail")
+  void givenInvalidCustomerData_whenCreateCustomer_thenReturnsUnprocessableEntity()
+      throws Exception {
+    mockMvc
+        .perform(post("/customers").content("{}").contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isUnprocessableEntity())
+        .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+        .andExpect(jsonPath("$.status").value(422))
+        .andExpect(jsonPath("$.title").value("Unprocessable Entity"))
+        .andExpect(jsonPath("$.detail").value("Invalid request data"))
+        .andExpect(jsonPath("$.instance").value("/customers"))
+        .andExpect(jsonPath("$.errors").isMap())
+        .andExpect(jsonPath("$.errors.username").value("Username should not be blank"))
+        .andExpect(jsonPath("$.errors.email").value("Email should not be blank"))
+        .andExpect(jsonPath("$.errors.password").value("Password should not be null"));
+
+    verifyNoInteractions(customerService);
+  }
+
+  @Test
+  @DisplayName(
       "PUT /customers/{id} - Given valid customer data, when update, then returns no content")
   void givenValidCustomerData_whenUpdateCustomer_thenReturnsNoContent() throws Exception {
     UpdateCustomerRequest request =
@@ -151,6 +193,29 @@ class CustomerControllerTest {
                 .content(mapper.writeValueAsString(request))
                 .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isNoContent());
+  }
+
+  @Test
+  @DisplayName(
+      "PUT /customers/{id} - Given invalid customer data, when update, then returns problem"
+          + " detail")
+  void givenInvalidCustomerData_whenUpdateCustomer_thenReturnsUnprocessableEntity()
+      throws Exception {
+    mockMvc
+        .perform(
+            put("/customers/{customerId}", 1L)
+                .content("{}")
+                .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isUnprocessableEntity())
+        .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+        .andExpect(jsonPath("$.status").value(422))
+        .andExpect(jsonPath("$.detail").value("Invalid request data"))
+        .andExpect(jsonPath("$.instance").value("/customers/1"))
+        .andExpect(jsonPath("$.errors").isMap())
+        .andExpect(jsonPath("$.errors.firstName").value("First name should not be blank"))
+        .andExpect(jsonPath("$.errors.lastName").value("Last name should not be blank"));
+
+    verifyNoInteractions(customerService);
   }
 
   @Test

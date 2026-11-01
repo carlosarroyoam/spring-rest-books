@@ -2,6 +2,7 @@ package com.carlosarroyoam.rest.books.shipment;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -9,9 +10,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.carlosarroyoam.rest.books.core.constant.MessageKeys;
 import com.carlosarroyoam.rest.books.core.exception.ExceptionLogger;
 import com.carlosarroyoam.rest.books.core.exception.GlobalExceptionHandler;
 import com.carlosarroyoam.rest.books.core.exception.ProblemDetailFactory;
+import com.carlosarroyoam.rest.books.core.exception.ResourceNotFoundException;
 import com.carlosarroyoam.rest.books.core.pagination.PagedResponse;
 import com.carlosarroyoam.rest.books.core.pagination.PaginationResponse;
 import com.carlosarroyoam.rest.books.shipment.dto.ShipmentResponse;
@@ -114,6 +117,24 @@ class ShipmentControllerTest {
 
   @Test
   @DisplayName(
+      "GET /shipments/{id} - Given shipment does not exist, when find by id, then returns not"
+          + " found")
+  void givenShipmentDoesNotExist_whenFindShipmentById_thenReturnsNotFound() throws Exception {
+    when(shipmentService.findById(anyLong()))
+        .thenThrow(new ResourceNotFoundException(MessageKeys.SHIPMENT_NOT_FOUND_EXCEPTION));
+
+    mockMvc
+        .perform(get("/shipments/{shipmentId}", 99L).accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isNotFound())
+        .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+        .andExpect(jsonPath("$.status").value(404))
+        .andExpect(jsonPath("$.title").value("Not Found"))
+        .andExpect(jsonPath("$.detail").value("Shipment not found"))
+        .andExpect(jsonPath("$.instance").value("/shipments/99"));
+  }
+
+  @Test
+  @DisplayName(
       "PUT /shipments/{id}/status - Given valid status, when update, then returns no content")
   void givenValidStatus_whenUpdateShipmentStatus_thenReturnsNoContent() throws Exception {
     UpdateShipmentStatusRequest request =
@@ -125,5 +146,27 @@ class ShipmentControllerTest {
                 .content(mapper.writeValueAsString(request))
                 .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isNoContent());
+  }
+
+  @Test
+  @DisplayName(
+      "PUT /shipments/{id}/status - Given invalid status, when update, then returns problem detail")
+  void givenInvalidStatus_whenUpdateShipmentStatus_thenReturnsUnprocessableEntity()
+      throws Exception {
+    mockMvc
+        .perform(
+            put("/shipments/{shipmentId}/status", 1L)
+                .content("{}")
+                .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isUnprocessableEntity())
+        .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+        .andExpect(jsonPath("$.status").value(422))
+        .andExpect(jsonPath("$.title").value("Unprocessable Entity"))
+        .andExpect(jsonPath("$.detail").value("Invalid request data"))
+        .andExpect(jsonPath("$.instance").value("/shipments/1/status"))
+        .andExpect(jsonPath("$.errors").isMap())
+        .andExpect(jsonPath("$.errors.status").value("Status should not be null"));
+
+    verifyNoInteractions(shipmentService);
   }
 }

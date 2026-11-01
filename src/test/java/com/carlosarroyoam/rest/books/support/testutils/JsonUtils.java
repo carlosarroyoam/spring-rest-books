@@ -21,7 +21,7 @@ public final class JsonUtils {
    * @return el contenido del fixture como cadena UTF-8
    */
   public static String readJson(String path) {
-    String resourcePath = "responses/" + path;
+    String resourcePath = "responses/" + (path.startsWith("/") ? path.substring(1) : path);
 
     try (InputStream inputStream =
         JsonUtils.class.getClassLoader().getResourceAsStream(resourcePath)) {

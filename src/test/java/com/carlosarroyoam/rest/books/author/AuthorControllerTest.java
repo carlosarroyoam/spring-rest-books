@@ -2,6 +2,7 @@ package com.carlosarroyoam.rest.books.author;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -17,9 +18,11 @@ import com.carlosarroyoam.rest.books.author.dto.AuthorSpecs;
 import com.carlosarroyoam.rest.books.author.dto.CreateAuthorRequest;
 import com.carlosarroyoam.rest.books.author.dto.UpdateAuthorRequest;
 import com.carlosarroyoam.rest.books.book.dto.BookResponse;
+import com.carlosarroyoam.rest.books.core.constant.MessageKeys;
 import com.carlosarroyoam.rest.books.core.exception.ExceptionLogger;
 import com.carlosarroyoam.rest.books.core.exception.GlobalExceptionHandler;
 import com.carlosarroyoam.rest.books.core.exception.ProblemDetailFactory;
+import com.carlosarroyoam.rest.books.core.exception.ResourceNotFoundException;
 import com.carlosarroyoam.rest.books.core.pagination.PagedResponse;
 import com.carlosarroyoam.rest.books.core.pagination.PaginationResponse;
 import com.carlosarroyoam.rest.books.support.testutils.TestMessageSources;
@@ -108,6 +111,23 @@ class AuthorControllerTest {
   }
 
   @Test
+  @DisplayName(
+      "GET /authors/{id} - Given author does not exist, when find by id, then returns not found")
+  void givenAuthorDoesNotExist_whenFindAuthorById_thenReturnsNotFound() throws Exception {
+    when(authorService.findById(anyLong()))
+        .thenThrow(new ResourceNotFoundException(MessageKeys.AUTHOR_NOT_FOUND_EXCEPTION));
+
+    mockMvc
+        .perform(get("/authors/{authorId}", 99L).accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isNotFound())
+        .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+        .andExpect(jsonPath("$.status").value(404))
+        .andExpect(jsonPath("$.title").value("Not Found"))
+        .andExpect(jsonPath("$.detail").value("Author not found"))
+        .andExpect(jsonPath("$.instance").value("/authors/99"));
+  }
+
+  @Test
   @DisplayName("POST /authors - Given valid author data, when create, then returns created")
   void givenValidAuthorData_whenCreateAuthor_thenReturnsCreated() throws Exception {
     CreateAuthorRequest request = CreateAuthorRequest.builder().name("Yuval Noah Harari").build();
@@ -126,6 +146,24 @@ class AuthorControllerTest {
   }
 
   @Test
+  @DisplayName(
+      "POST /authors - Given invalid author data, when create, then returns problem detail")
+  void givenInvalidAuthorData_whenCreateAuthor_thenReturnsUnprocessableEntity() throws Exception {
+    mockMvc
+        .perform(post("/authors").content("{}").contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isUnprocessableEntity())
+        .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+        .andExpect(jsonPath("$.status").value(422))
+        .andExpect(jsonPath("$.title").value("Unprocessable Entity"))
+        .andExpect(jsonPath("$.detail").value("Invalid request data"))
+        .andExpect(jsonPath("$.instance").value("/authors"))
+        .andExpect(jsonPath("$.errors").isMap())
+        .andExpect(jsonPath("$.errors.name").value("Name should not be blank"));
+
+    verifyNoInteractions(authorService);
+  }
+
+  @Test
   @DisplayName("PUT /authors/{id} - Given valid author data, when update, then returns no content")
   void givenValidAuthorData_whenUpdateAuthor_thenReturnsNoContent() throws Exception {
     UpdateAuthorRequest request = UpdateAuthorRequest.builder().name("Yuval Noah Harari").build();
@@ -136,6 +174,27 @@ class AuthorControllerTest {
                 .content(mapper.writeValueAsString(request))
                 .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isNoContent());
+  }
+
+  @Test
+  @DisplayName(
+      "PUT /authors/{id} - Given invalid author data, when update, then returns problem detail")
+  void givenInvalidAuthorData_whenUpdateAuthor_thenReturnsUnprocessableEntity() throws Exception {
+    mockMvc
+        .perform(
+            put("/authors/{authorId}", 1L)
+                .content("{}")
+                .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isUnprocessableEntity())
+        .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+        .andExpect(jsonPath("$.status").value(422))
+        .andExpect(jsonPath("$.title").value("Unprocessable Entity"))
+        .andExpect(jsonPath("$.detail").value("Invalid request data"))
+        .andExpect(jsonPath("$.instance").value("/authors/1"))
+        .andExpect(jsonPath("$.errors").isMap())
+        .andExpect(jsonPath("$.errors.name").value("Name should not be blank"));
+
+    verifyNoInteractions(authorService);
   }
 
   @Test
