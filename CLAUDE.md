@@ -122,19 +122,13 @@ Each feature module has the same shape:
 
 ## Testing
 
-Full guide: `docs/testing-conventions.md`. Per-layer test rules (naming, `*ServiceTest`,
-`*ControllerTest`, `*ControllerIT`) live in `src/test/CLAUDE.md` and load when working under
-`src/test`. Key rule:
-
 - When you change behavior, update every layer it touches: the `*ServiceTest` for business rules,
   the `*ControllerTest` for the HTTP contract, the `*ControllerIT` plus its fixture for end-to-end
   behavior, and `docs/openapi/api-docs.yaml` when the contract changes.
 
 ## Javadoc
 
-Full guide: `docs/javadoc-conventions.md`. Key rules:
-
-third-person present-tense first sentence ending in a period; `@param`/`@return` on every
+Key rules: third-person present-tense first sentence ending in a period; `@param`/`@return` on every
 controller and service method (lowercase noun phrase, no trailing period); REST methods guarded by
 `@PreAuthorize` say "Requiere rol {@code App/Admin}." (or `App/Customer`) after the first sentence;
 errors are described in prose (for example "o lanza {@code 404 Not Found}"), never with `@throws`;
