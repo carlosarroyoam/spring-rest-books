@@ -25,7 +25,10 @@ import com.carlosarroyoam.rest.books.shipment.ShipmentRepository;
 import com.carlosarroyoam.rest.books.shipment.entity.Shipment;
 import com.carlosarroyoam.rest.books.shipment.entity.ShipmentStatus;
 import java.math.BigDecimal;
+import java.time.Clock;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,6 +38,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -44,11 +48,9 @@ import org.springframework.data.jpa.domain.Specification;
 @ExtendWith(MockitoExtension.class)
 class PaymentServiceTest {
   @Mock private PaymentRepository paymentRepository;
-
   @Mock private OrderRepository orderRepository;
-
   @Mock private ShipmentRepository shipmentRepository;
-
+  @Spy private Clock clock = Clock.fixed(Instant.parse("2025-01-01T10:00:00Z"), ZoneOffset.UTC);
   @InjectMocks private PaymentService paymentService;
 
   private Payment payment;
@@ -56,7 +58,7 @@ class PaymentServiceTest {
 
   @BeforeEach
   void setUp() {
-    LocalDateTime now = LocalDateTime.now();
+    LocalDateTime now = LocalDateTime.now(clock);
 
     order =
         Order.builder()
@@ -128,12 +130,11 @@ class PaymentServiceTest {
     when(orderRepository.findById(1L)).thenReturn(Optional.of(order));
     when(paymentRepository.existsByOrderId(1L)).thenReturn(false);
     when(paymentRepository.save(any(Payment.class)))
-        .thenAnswer(
-            invocation -> {
-              Payment savedPayment = invocation.getArgument(0);
-              savedPayment.setId(1L);
-              return savedPayment;
-            });
+        .thenAnswer(invocation -> {
+          Payment savedPayment = invocation.getArgument(0);
+          savedPayment.setId(1L);
+          return savedPayment;
+        });
     when(shipmentRepository.findByOrderId(1L)).thenReturn(Optional.empty());
 
     PaymentResponse paymentResponse = paymentService.create(request);

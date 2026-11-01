@@ -17,7 +17,10 @@ import com.carlosarroyoam.rest.books.customer.dto.CustomerResponse;
 import com.carlosarroyoam.rest.books.customer.dto.CustomerSpecs;
 import com.carlosarroyoam.rest.books.customer.dto.UpdateCustomerRequest;
 import com.carlosarroyoam.rest.books.customer.entity.Customer;
+import java.time.Clock;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,6 +30,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -36,16 +40,15 @@ import org.springframework.data.jpa.domain.Specification;
 @ExtendWith(MockitoExtension.class)
 class CustomerServiceTest {
   @Mock private CustomerRepository customerRepository;
-
   @Mock private KeycloakService keycloakService;
-
+  @Spy private Clock clock = Clock.fixed(Instant.parse("2025-01-01T10:00:00Z"), ZoneOffset.UTC);
   @InjectMocks private CustomerService customerService;
 
   private Customer customer;
 
   @BeforeEach
   void setUp() {
-    LocalDateTime now = LocalDateTime.now();
+    LocalDateTime now = LocalDateTime.now(clock);
 
     customer =
         Customer.builder()

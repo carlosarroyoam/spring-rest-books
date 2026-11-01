@@ -16,6 +16,7 @@ import com.carlosarroyoam.rest.books.shipment.dto.UpdateShipmentStatusRequest;
 import com.carlosarroyoam.rest.books.shipment.entity.Shipment;
 import com.carlosarroyoam.rest.books.shipment.entity.ShipmentStatus;
 import com.carlosarroyoam.rest.books.shipment.entity.Shipment_;
+import java.time.Clock;
 import java.time.LocalDateTime;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,10 +32,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class ShipmentService {
   private final ShipmentRepository shipmentRepository;
   private final OrderRepository orderRepository;
+  private final Clock clock;
 
-  public ShipmentService(ShipmentRepository shipmentRepository, OrderRepository orderRepository) {
+  public ShipmentService(
+      ShipmentRepository shipmentRepository, OrderRepository orderRepository, Clock clock) {
     this.shipmentRepository = shipmentRepository;
     this.orderRepository = orderRepository;
+    this.clock = clock;
   }
 
   /**
@@ -87,7 +91,7 @@ public class ShipmentService {
    */
   @Transactional
   public void updateStatus(Long shipmentId, UpdateShipmentStatusRequest request) {
-    LocalDateTime now = LocalDateTime.now();
+    LocalDateTime now = LocalDateTime.now(clock);
     Shipment shipmentById = findShipmentById(shipmentId);
     shipmentById.setStatus(request.getStatus());
     shipmentById.setUpdatedAt(now);

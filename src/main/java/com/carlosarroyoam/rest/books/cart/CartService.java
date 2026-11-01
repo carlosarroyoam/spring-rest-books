@@ -9,6 +9,7 @@ import com.carlosarroyoam.rest.books.cart.entity.Cart;
 import com.carlosarroyoam.rest.books.cart.entity.CartItem;
 import com.carlosarroyoam.rest.books.core.constant.MessageKeys;
 import com.carlosarroyoam.rest.books.core.exception.ResourceNotFoundException;
+import java.time.Clock;
 import java.time.LocalDateTime;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,14 +23,17 @@ public class CartService {
   private final CartRepository cartRepository;
   private final CartItemRepository cartItemRepository;
   private final BookRepository bookRepository;
+  private final Clock clock;
 
   public CartService(
       CartRepository cartRepository,
       CartItemRepository cartItemRepository,
-      BookRepository bookRepository) {
+      BookRepository bookRepository,
+      Clock clock) {
     this.cartRepository = cartRepository;
     this.cartItemRepository = cartItemRepository;
     this.bookRepository = bookRepository;
+    this.clock = clock;
   }
 
   /**
@@ -63,12 +67,12 @@ public class CartService {
                 CartItem.builder()
                     .book(bookById)
                     .quantity(request.getQuantity())
-                    .addedAt(LocalDateTime.now())
+                    .addedAt(LocalDateTime.now(clock))
                     .cart(cartByCustomerId)
                     .build());
 
     cartItem.setQuantity(request.getQuantity());
-    cartItem.setAddedAt(LocalDateTime.now());
+    cartItem.setAddedAt(LocalDateTime.now(clock));
     cartItemRepository.save(cartItem);
   }
 

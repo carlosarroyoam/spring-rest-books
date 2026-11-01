@@ -20,6 +20,7 @@ import com.carlosarroyoam.rest.books.core.pagination.PagedResponse;
 import com.carlosarroyoam.rest.books.core.pagination.PagedResponse.PagedResponseMapper;
 import com.carlosarroyoam.rest.books.core.specification.SpecificationBuilder;
 import jakarta.persistence.criteria.JoinType;
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.data.domain.Page;
@@ -37,10 +38,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class BookService {
   private final BookRepository bookRepository;
   private final AuthorRepository authorRepository;
+  private final Clock clock;
 
-  public BookService(BookRepository bookRepository, AuthorRepository authorRepository) {
+  public BookService(
+      BookRepository bookRepository, AuthorRepository authorRepository, Clock clock) {
     this.bookRepository = bookRepository;
     this.authorRepository = authorRepository;
+    this.clock = clock;
   }
 
   /**
@@ -96,7 +100,7 @@ public class BookService {
       throw new ResourceAlreadyExistsException(MessageKeys.ISBN_ALREADY_EXISTS_EXCEPTION);
     }
 
-    LocalDateTime now = LocalDateTime.now();
+    LocalDateTime now = LocalDateTime.now(clock);
     Book book =
         Book.builder()
             .isbn(request.getIsbn())
@@ -121,7 +125,7 @@ public class BookService {
    */
   @Transactional
   public void update(Long bookId, UpdateBookRequest request) {
-    LocalDateTime now = LocalDateTime.now();
+    LocalDateTime now = LocalDateTime.now(clock);
     Book bookById = findBookById(bookId);
     bookById.setIsbn(request.getIsbn());
     bookById.setTitle(request.getTitle());
@@ -140,7 +144,7 @@ public class BookService {
    */
   @Transactional
   public void deleteById(Long bookId) {
-    LocalDateTime now = LocalDateTime.now();
+    LocalDateTime now = LocalDateTime.now(clock);
     Book bookById = findBookById(bookId);
     bookById.setStatus(BookStatus.DELETED);
     bookById.setUpdatedAt(now);

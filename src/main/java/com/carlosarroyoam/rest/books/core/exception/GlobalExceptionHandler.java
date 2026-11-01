@@ -50,7 +50,8 @@ public class GlobalExceptionHandler {
    * @return el {@link ProblemDetail} con el código de estado y mensaje de la excepción
    */
   @ExceptionHandler({ApplicationException.class})
-  public ProblemDetail handleApplicationException(ApplicationException ex, HttpServletRequest request) {
+  public ProblemDetail handleApplicationException(
+      ApplicationException ex, HttpServletRequest request) {
     String detail =
         messageSource.getMessage(
             ex.getKey(), ex.getArgs(), ex.getKey(), LocaleContextHolder.getLocale());

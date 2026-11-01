@@ -78,8 +78,10 @@ Each feature module has the same shape:
 - **Services** own business rules and transactions: `@Transactional(readOnly = true)` on reads,
   `@Transactional` on writes. Lookups by id go through a private `find<Entity>ById` helper that
   throws `ResourceNotFoundException`. Deletes are soft: they set the status to `DELETED` and fill
-  `deletedAt`/`updatedAt`. Timestamps come from `LocalDateTime.now()` and entities are built with
-  Lombok `@Builder`.
+  `deletedAt`/`updatedAt`. Timestamps come from the injected `Clock` bean (`ClockConfig`) via
+  `LocalDateTime.now(clock)`, never from a bare `LocalDateTime.now()`, and entities are built with
+  Lombok `@Builder`. `*ServiceTest` classes keep `@InjectMocks` and supply a fixed `Clock` through a
+  `@Spy` field.
 - **Dependency injection** uses explicit constructors with `private final` fields (no
   `@RequiredArgsConstructor`, no field injection).
 - **Mapping** uses a MapStruct mapper nested inside each response DTO (e.g.

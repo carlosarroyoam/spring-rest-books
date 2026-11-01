@@ -33,9 +33,7 @@ import org.springframework.web.context.WebApplicationContext;
 @Transactional
 class CartControllerIT {
   @Autowired private WebApplicationContext webApplicationContext;
-
   @Autowired private ObjectMapper mapper;
-
   @Autowired private MockMvc mockMvc;
 
   @BeforeEach
@@ -47,10 +45,9 @@ class CartControllerIT {
                 get("/")
                     .with(
                         jwt()
-                            .jwt(
-                                jwt ->
-                                    jwt.claim("preferred_username", "carroyom")
-                                        .claim("customer_id", 1L))
+                            .jwt(jwt ->
+                                jwt.claim("preferred_username", "carroyom")
+                                    .claim("customer_id", 1L))
                             .authorities(new SimpleGrantedAuthority("ROLE_App/Customer"))))
             .build();
   }

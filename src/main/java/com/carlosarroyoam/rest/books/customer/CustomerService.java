@@ -14,6 +14,7 @@ import com.carlosarroyoam.rest.books.customer.dto.UpdateCustomerRequest;
 import com.carlosarroyoam.rest.books.customer.entity.Customer;
 import com.carlosarroyoam.rest.books.customer.entity.CustomerStatus;
 import com.carlosarroyoam.rest.books.customer.entity.Customer_;
+import java.time.Clock;
 import java.time.LocalDateTime;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,10 +31,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class CustomerService {
   private final CustomerRepository customerRepository;
   private final KeycloakService keycloakService;
+  private final Clock clock;
 
-  public CustomerService(CustomerRepository customerRepository, KeycloakService keycloakService) {
+  public CustomerService(
+      CustomerRepository customerRepository, KeycloakService keycloakService, Clock clock) {
     this.customerRepository = customerRepository;
     this.keycloakService = keycloakService;
+    this.clock = clock;
   }
 
   /**
@@ -91,7 +95,7 @@ public class CustomerService {
       throw new ResourceAlreadyExistsException(MessageKeys.EMAIL_ALREADY_EXISTS_EXCEPTION);
     }
 
-    LocalDateTime now = LocalDateTime.now();
+    LocalDateTime now = LocalDateTime.now(clock);
     Customer customer =
         Customer.builder()
             .firstName(request.getFirstName())
@@ -116,7 +120,7 @@ public class CustomerService {
    */
   @Transactional
   public void update(Long customerId, UpdateCustomerRequest request) {
-    LocalDateTime now = LocalDateTime.now();
+    LocalDateTime now = LocalDateTime.now(clock);
     Customer customerById = findCustomerById(customerId);
     customerById.setFirstName(request.getFirstName());
     customerById.setLastName(request.getLastName());
@@ -131,7 +135,7 @@ public class CustomerService {
    */
   @Transactional
   public void deleteById(Long customerId) {
-    LocalDateTime now = LocalDateTime.now();
+    LocalDateTime now = LocalDateTime.now(clock);
     Customer customerById = findCustomerById(customerId);
     customerById.setStatus(CustomerStatus.DELETED);
     customerById.setUpdatedAt(now);

@@ -23,7 +23,10 @@ import com.carlosarroyoam.rest.books.order.entity.Order;
 import com.carlosarroyoam.rest.books.order.entity.OrderItem;
 import com.carlosarroyoam.rest.books.order.entity.OrderStatus;
 import java.math.BigDecimal;
+import java.time.Clock;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,6 +36,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -42,11 +46,9 @@ import org.springframework.data.jpa.domain.Specification;
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
   @Mock private OrderRepository orderRepository;
-
   @Mock private CustomerRepository customerRepository;
-
   @Mock private BookRepository bookRepository;
-
+  @Spy private Clock clock = Clock.fixed(Instant.parse("2025-01-01T10:00:00Z"), ZoneOffset.UTC);
   @InjectMocks private OrderService orderService;
 
   private Order order;
@@ -55,7 +57,7 @@ class OrderServiceTest {
 
   @BeforeEach
   void setUp() {
-    LocalDateTime now = LocalDateTime.now();
+    LocalDateTime now = LocalDateTime.now(clock);
 
     customer =
         Customer.builder()
@@ -169,13 +171,12 @@ class OrderServiceTest {
     when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
     when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
     when(orderRepository.save(any(Order.class)))
-        .thenAnswer(
-            invocation -> {
-              Order savedOrder = invocation.getArgument(0);
-              savedOrder.setId(1L);
-              savedOrder.getItems().forEach(item -> item.setId(1L));
-              return savedOrder;
-            });
+        .thenAnswer(invocation -> {
+          Order savedOrder = invocation.getArgument(0);
+          savedOrder.setId(1L);
+          savedOrder.getItems().forEach(item -> item.setId(1L));
+          return savedOrder;
+        });
 
     OrderResponse orderResponse = orderService.create(request);
 

@@ -43,12 +43,11 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 @ExtendWith(MockitoExtension.class)
 class PaymentControllerTest {
+  @Mock private PaymentService paymentService;
+  @InjectMocks private PaymentController paymentController;
+
   private ObjectMapper mapper;
   private MockMvc mockMvc;
-
-  @Mock private PaymentService paymentService;
-
-  @InjectMocks private PaymentController paymentController;
 
   @BeforeEach
   void setup() {

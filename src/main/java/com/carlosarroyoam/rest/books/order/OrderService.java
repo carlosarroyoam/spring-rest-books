@@ -22,6 +22,7 @@ import com.carlosarroyoam.rest.books.order.entity.OrderStatus;
 import com.carlosarroyoam.rest.books.order.entity.Order_;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -44,14 +45,17 @@ public class OrderService {
   private final OrderRepository orderRepository;
   private final CustomerRepository customerRepository;
   private final BookRepository bookRepository;
+  private final Clock clock;
 
   public OrderService(
       OrderRepository orderRepository,
       CustomerRepository customerRepository,
-      BookRepository bookRepository) {
+      BookRepository bookRepository,
+      Clock clock) {
     this.orderRepository = orderRepository;
     this.customerRepository = customerRepository;
     this.bookRepository = bookRepository;
+    this.clock = clock;
   }
 
   /**
@@ -107,7 +111,7 @@ public class OrderService {
   public OrderResponse create(CreateOrderRequest request) {
     Customer customerById = findCustomerById(request);
 
-    LocalDateTime now = LocalDateTime.now();
+    LocalDateTime now = LocalDateTime.now(clock);
     Order order =
         Order.builder()
             .orderNumber(generateOrderNumber())
@@ -143,7 +147,7 @@ public class OrderService {
    */
   @Transactional
   public void update(Long orderId, UpdateOrderRequest request) {
-    LocalDateTime now = LocalDateTime.now();
+    LocalDateTime now = LocalDateTime.now(clock);
     Order orderById = findOrderById(orderId);
     orderById.setShippingAddress(request.getShippingAddress());
     orderById.setBillingAddress(request.getBillingAddress());

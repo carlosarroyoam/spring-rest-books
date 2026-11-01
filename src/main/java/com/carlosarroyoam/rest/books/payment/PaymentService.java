@@ -21,6 +21,7 @@ import com.carlosarroyoam.rest.books.payment.entity.Payment_;
 import com.carlosarroyoam.rest.books.shipment.ShipmentRepository;
 import com.carlosarroyoam.rest.books.shipment.entity.Shipment;
 import com.carlosarroyoam.rest.books.shipment.entity.ShipmentStatus;
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
@@ -39,14 +40,17 @@ public class PaymentService {
   private final PaymentRepository paymentRepository;
   private final OrderRepository orderRepository;
   private final ShipmentRepository shipmentRepository;
+  private final Clock clock;
 
   public PaymentService(
       PaymentRepository paymentRepository,
       OrderRepository orderRepository,
-      ShipmentRepository shipmentRepository) {
+      ShipmentRepository shipmentRepository,
+      Clock clock) {
     this.paymentRepository = paymentRepository;
     this.orderRepository = orderRepository;
     this.shipmentRepository = shipmentRepository;
+    this.clock = clock;
   }
 
   /**
@@ -110,7 +114,7 @@ public class PaymentService {
       throw new ResourceAlreadyExistsException(MessageKeys.PAYMENT_ALREADY_EXISTS_EXCEPTION);
     }
 
-    LocalDateTime now = LocalDateTime.now();
+    LocalDateTime now = LocalDateTime.now(clock);
     Payment payment =
         Payment.builder()
             .amount(orderById.getTotal())
@@ -141,7 +145,7 @@ public class PaymentService {
    */
   @Transactional
   public void updateStatus(Long paymentId, UpdatePaymentStatusRequest request) {
-    LocalDateTime now = LocalDateTime.now();
+    LocalDateTime now = LocalDateTime.now(clock);
     Payment paymentById = findPaymentById(paymentId);
     paymentById.setStatus(request.getStatus());
     paymentById.setUpdatedAt(now);
@@ -185,7 +189,7 @@ public class PaymentService {
             ? null
             : order.getCustomer().getFirstName() + " " + order.getCustomer().getLastName();
 
-    LocalDateTime now = LocalDateTime.now();
+    LocalDateTime now = LocalDateTime.now(clock);
     Shipment shipment =
         Shipment.builder()
             .attentionName(attentionName)

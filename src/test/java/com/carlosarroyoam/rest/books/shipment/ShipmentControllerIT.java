@@ -33,9 +33,7 @@ import org.springframework.web.context.WebApplicationContext;
 @Transactional
 class ShipmentControllerIT {
   @Autowired private WebApplicationContext webApplicationContext;
-
   @Autowired private ObjectMapper mapper;
-
   @Autowired private MockMvc mockMvc;
 
   @BeforeEach

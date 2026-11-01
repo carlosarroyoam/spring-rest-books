@@ -44,12 +44,11 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 @ExtendWith(MockitoExtension.class)
 class BookControllerTest {
+  @Mock private BookService bookService;
+  @InjectMocks private BookController bookController;
+
   private ObjectMapper mapper;
   private MockMvc mockMvc;
-
-  @Mock private BookService bookService;
-
-  @InjectMocks private BookController bookController;
 
   @BeforeEach
   void setup() {

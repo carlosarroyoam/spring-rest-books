@@ -32,7 +32,8 @@ public abstract class ApplicationException extends RuntimeException {
   }
 
   /**
-   * Crea la excepción con el estado HTTP, la clave del mensaje, la causa y los argumentos indicados.
+   * Crea la excepción con el estado HTTP, la clave del mensaje, la causa y los argumentos
+   * indicados.
    *
    * @param status el estado HTTP con el que debe responderse
    * @param key la clave del mensaje en {@code messages.properties}

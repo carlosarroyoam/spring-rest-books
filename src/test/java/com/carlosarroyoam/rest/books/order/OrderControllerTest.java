@@ -43,12 +43,11 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 @ExtendWith(MockitoExtension.class)
 class OrderControllerTest {
+  @Mock private OrderService orderService;
+  @InjectMocks private OrderController orderController;
+
   private ObjectMapper mapper;
   private MockMvc mockMvc;
-
-  @Mock private OrderService orderService;
-
-  @InjectMocks private OrderController orderController;
 
   @BeforeEach
   void setup() {

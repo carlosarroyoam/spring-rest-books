@@ -40,9 +40,7 @@ import org.wiremock.spring.EnableWireMock;
 @Transactional
 class CustomerControllerIT {
   @Autowired private WebApplicationContext webApplicationContext;
-
   @Autowired private ObjectMapper mapper;
-
   @Autowired private MockMvc mockMvc;
 
   @BeforeEach

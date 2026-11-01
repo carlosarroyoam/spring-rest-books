@@ -32,12 +32,11 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 @ExtendWith(MockitoExtension.class)
 class CartControllerTest {
+  @Mock private CartService cartService;
+  @InjectMocks private CartController cartController;
+
   private ObjectMapper mapper;
   private MockMvc mockMvc;
-
-  @Mock private CartService cartService;
-
-  @InjectMocks private CartController cartController;
 
   @BeforeEach
   void setup() {

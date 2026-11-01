@@ -38,12 +38,11 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 @ExtendWith(MockitoExtension.class)
 class ShipmentControllerTest {
+  @Mock private ShipmentService shipmentService;
+  @InjectMocks private ShipmentController shipmentController;
+
   private ObjectMapper mapper;
   private MockMvc mockMvc;
-
-  @Mock private ShipmentService shipmentService;
-
-  @InjectMocks private ShipmentController shipmentController;
 
   @BeforeEach
   void setup() {

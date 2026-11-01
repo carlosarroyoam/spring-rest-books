@@ -24,7 +24,8 @@ class GlobalExceptionHandlerTest {
   void setUp() {
     messageSource = TestMessageSources.messages();
     handler =
-        new GlobalExceptionHandler(new ProblemDetailFactory(), new ExceptionLogger(), messageSource);
+        new GlobalExceptionHandler(
+            new ProblemDetailFactory(), new ExceptionLogger(), messageSource);
     request = new MockHttpServletRequest("GET", "/books/1");
   }
 

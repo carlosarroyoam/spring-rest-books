@@ -1,5 +1,6 @@
 package com.carlosarroyoam.rest.books.support.testutils;
 
+import com.carlosarroyoam.rest.books.core.constant.CommonConstants;
 import java.nio.charset.StandardCharsets;
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.ResourceBundleMessageSource;
@@ -12,7 +13,7 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 public final class TestMessageSources {
   /** Constructor privado que impide instanciar la clase. */
   private TestMessageSources() {
-    throw new IllegalAccessError("Illegal access to utility class");
+    throw new IllegalAccessError(CommonConstants.ILLEGAL_ACCESS_ERROR);
   }
 
   /**

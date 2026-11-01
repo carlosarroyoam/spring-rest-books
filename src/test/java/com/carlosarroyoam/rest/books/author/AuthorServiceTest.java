@@ -19,8 +19,11 @@ import com.carlosarroyoam.rest.books.core.constant.MessageKeys;
 import com.carlosarroyoam.rest.books.core.exception.ResourceNotFoundException;
 import com.carlosarroyoam.rest.books.core.pagination.PagedResponse;
 import java.math.BigDecimal;
+import java.time.Clock;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,6 +33,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -40,7 +44,7 @@ import org.springframework.data.jpa.domain.Specification;
 class AuthorServiceTest {
   @Mock private AuthorRepository authorRepository;
   @Mock private BookRepository bookRepository;
-
+  @Spy private Clock clock = Clock.fixed(Instant.parse("2025-01-01T10:00:00Z"), ZoneOffset.UTC);
   @InjectMocks private AuthorService authorService;
 
   private Author author;
@@ -48,7 +52,7 @@ class AuthorServiceTest {
 
   @BeforeEach
   void setUp() {
-    LocalDateTime now = LocalDateTime.now();
+    LocalDateTime now = LocalDateTime.now(clock);
 
     book =
         Book.builder()
@@ -201,12 +205,11 @@ class AuthorServiceTest {
     assertThat(books)
         .hasSize(1)
         .first()
-        .satisfies(
-            actualBook -> {
-              assertThat(actualBook.getId()).isEqualTo(1L);
-              assertThat(actualBook.getIsbn()).isEqualTo("978-1-3035-0529-4");
-              assertThat(actualBook.getTitle()).isEqualTo("Homo Deus: A Brief History of Tomorrow");
-              assertThat(actualBook.getPrice()).isEqualTo(new BigDecimal("22.99"));
-            });
+        .satisfies(actualBook -> {
+          assertThat(actualBook.getId()).isEqualTo(1L);
+          assertThat(actualBook.getIsbn()).isEqualTo("978-1-3035-0529-4");
+          assertThat(actualBook.getTitle()).isEqualTo("Homo Deus: A Brief History of Tomorrow");
+          assertThat(actualBook.getPrice()).isEqualTo(new BigDecimal("22.99"));
+        });
   }
 }

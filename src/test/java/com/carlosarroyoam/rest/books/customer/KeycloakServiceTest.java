@@ -36,13 +36,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class KeycloakServiceTest {
   @Mock private Keycloak keycloak;
-
   @Mock private KeycloakAdminProps keycloakAdminProps;
-
   @Mock private RealmResource realmResource;
-
   @Mock private UsersResource usersResource;
-
   @InjectMocks private KeycloakService keycloakService;
 
   private CreateCustomerRequest request;

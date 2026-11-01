@@ -21,8 +21,11 @@ import com.carlosarroyoam.rest.books.core.exception.ResourceAlreadyExistsExcepti
 import com.carlosarroyoam.rest.books.core.exception.ResourceNotFoundException;
 import com.carlosarroyoam.rest.books.core.pagination.PagedResponse;
 import java.math.BigDecimal;
+import java.time.Clock;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,6 +35,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -42,7 +46,7 @@ import org.springframework.data.jpa.domain.Specification;
 class BookServiceTest {
   @Mock private BookRepository bookRepository;
   @Mock private AuthorRepository authorRepository;
-
+  @Spy private Clock clock = Clock.fixed(Instant.parse("2025-01-01T10:00:00Z"), ZoneOffset.UTC);
   @InjectMocks private BookService bookService;
 
   private Book book;
@@ -50,7 +54,7 @@ class BookServiceTest {
 
   @BeforeEach
   void setUp() {
-    LocalDateTime now = LocalDateTime.now();
+    LocalDateTime now = LocalDateTime.now(clock);
 
     author =
         Author.builder().id(1L).name("Yuval Noah Harari").createdAt(now).updatedAt(now).build();
@@ -212,10 +216,9 @@ class BookServiceTest {
     assertThat(authors)
         .hasSize(1)
         .first()
-        .satisfies(
-            actualAuthor -> {
-              assertThat(actualAuthor.getId()).isEqualTo(1L);
-              assertThat(actualAuthor.getName()).isEqualTo("Yuval Noah Harari");
-            });
+        .satisfies(actualAuthor -> {
+          assertThat(actualAuthor.getId()).isEqualTo(1L);
+          assertThat(actualAuthor.getName()).isEqualTo("Yuval Noah Harari");
+        });
   }
 }

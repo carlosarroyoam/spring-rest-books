@@ -17,6 +17,7 @@ import com.carlosarroyoam.rest.books.core.exception.ResourceNotFoundException;
 import com.carlosarroyoam.rest.books.core.pagination.PagedResponse;
 import com.carlosarroyoam.rest.books.core.pagination.PagedResponse.PagedResponseMapper;
 import com.carlosarroyoam.rest.books.core.specification.SpecificationBuilder;
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.data.domain.Page;
@@ -33,10 +34,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthorService {
   private final AuthorRepository authorRepository;
   private final BookRepository bookRepository;
+  private final Clock clock;
 
-  public AuthorService(AuthorRepository authorRepository, BookRepository bookRepository) {
+  public AuthorService(
+      AuthorRepository authorRepository, BookRepository bookRepository, Clock clock) {
     this.authorRepository = authorRepository;
     this.bookRepository = bookRepository;
+    this.clock = clock;
   }
 
   /**
@@ -80,7 +84,7 @@ public class AuthorService {
    */
   @Transactional
   public AuthorResponse create(CreateAuthorRequest request) {
-    LocalDateTime now = LocalDateTime.now();
+    LocalDateTime now = LocalDateTime.now(clock);
     Author author =
         Author.builder()
             .name(request.getName())
@@ -101,7 +105,7 @@ public class AuthorService {
    */
   @Transactional
   public void update(Long authorId, UpdateAuthorRequest request) {
-    LocalDateTime now = LocalDateTime.now();
+    LocalDateTime now = LocalDateTime.now(clock);
     Author authorById = findAuthorById(authorId);
     authorById.setName(request.getName());
     authorById.setBio(request.getBio());
@@ -116,7 +120,7 @@ public class AuthorService {
    */
   @Transactional
   public void deleteById(Long authorId) {
-    LocalDateTime now = LocalDateTime.now();
+    LocalDateTime now = LocalDateTime.now(clock);
     Author authorById = findAuthorById(authorId);
     authorById.setStatus(AuthorStatus.DELETED);
     authorById.setUpdatedAt(now);

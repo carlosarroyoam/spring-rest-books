@@ -41,12 +41,11 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 @ExtendWith(MockitoExtension.class)
 class CustomerControllerTest {
+  @Mock private CustomerService customerService;
+  @InjectMocks private CustomerController customerController;
+
   private ObjectMapper mapper;
   private MockMvc mockMvc;
-
-  @Mock private CustomerService customerService;
-
-  @InjectMocks private CustomerController customerController;
 
   @BeforeEach
   void setup() {
