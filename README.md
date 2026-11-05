@@ -5,7 +5,7 @@ Spring REST Books is a Spring Boot 3.5 REST API for a bookstore domain. The appl
 ## Technology Stack
 
 - **Framework:** Spring Boot 3.5
-- **Language:** Java 17
+- **Language:** Java 25
 - **Database:** H2 in-memory
 - **ORM:** Spring Data JPA
 - **Security:** Spring Security / OAuth2 resource server (JWT), Keycloak
@@ -36,7 +36,7 @@ See [`pom.xml`](pom.xml) for exact versions.
 
 ## Prerequisites
 
-- Java 17+
+- Java 25+
 - Maven 3.8+ (or use the bundled `./mvnw` / `./mvnw.cmd` wrapper)
 - A running Keycloak instance for authenticated endpoints (see [Keycloak Notes](#keycloak-notes))
 

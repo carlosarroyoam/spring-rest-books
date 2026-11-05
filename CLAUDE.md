@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-Spring REST Books is a Java 17 / Spring Boot 3.5 (parent `3.5.16`) REST API for a bookstore
+Spring REST Books is a Java 25 / Spring Boot 3.5 (parent `3.5.16`) REST API for a bookstore
 domain: books, authors, customers, carts, orders, payments, and shipments. It is an OAuth2 resource
 server that validates Keycloak-issued JWTs, and it uses the Keycloak Admin Client to provision
 customers. Persistence is an in-memory H2 database via Spring Data JPA. Lombok, MapStruct and the
