@@ -1,6 +1,8 @@
 # Spring REST Books
 
-Spring REST Books is a Spring Boot 3.5 REST API for a bookstore domain. The application currently covers catalog management, customer registration, shopping carts, orders, payments, and shipments, with JWT-based authorization and Keycloak integration for customer provisioning.
+Spring REST Books is a Spring Boot 3.5 REST API for a bookstore domain. The application currently covers catalog
+management, customer registration, shopping carts, orders, payments, and shipments, with JWT-based authorization and
+Keycloak integration for customer provisioning.
 
 ## Technology Stack
 

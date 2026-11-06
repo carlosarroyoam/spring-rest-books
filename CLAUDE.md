@@ -132,5 +132,6 @@ Key rules: third-person present-tense first sentence ending in a period; `@param
 controller and service method (lowercase noun phrase, no trailing period); REST methods guarded by
 `@PreAuthorize` say "Requiere rol {@code App/Admin}." (or `App/Customer`) after the first sentence;
 errors are described in prose (for example "o lanza {@code 404 Not Found}"), never with `@throws`;
-no `@author`/`@since`/`@see`. DTO classes get a one-line class-level Javadoc (no Javadoc on their fields or nested MapStruct
+no `@author`/`@since`/`@see`. DTO classes get a one-line class-level Javadoc (no Javadoc on their fields or nested
+MapStruct
 mappers); entity fields and test methods carry no Javadoc.
