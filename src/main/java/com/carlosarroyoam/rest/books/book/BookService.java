@@ -161,7 +161,7 @@ public class BookService {
   @Transactional(readOnly = true)
   public List<AuthorResponse> findAuthorsByBookId(Long bookId) {
     List<Author> authorsByBookId = authorRepository.findByBookId(bookId);
-    return AuthorResponseMapper.INSTANCE.toDtos(authorsByBookId);
+    return AuthorResponseMapper.INSTANCE.toDtoList(authorsByBookId);
   }
 
   /**

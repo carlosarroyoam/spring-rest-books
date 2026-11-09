@@ -33,6 +33,6 @@ public class AuthorResponse {
 
     AuthorResponse toDto(Author entity);
 
-    List<AuthorResponse> toDtos(List<Author> entities);
+    List<AuthorResponse> toDtoList(List<Author> entities);
   }
 }

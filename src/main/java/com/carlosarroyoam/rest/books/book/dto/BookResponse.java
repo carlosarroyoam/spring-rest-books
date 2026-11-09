@@ -43,6 +43,6 @@ public class BookResponse {
 
     BookResponse toDto(Book entity);
 
-    List<BookResponse> toDtos(List<Book> entities);
+    List<BookResponse> toDtoList(List<Book> entities);
   }
 }

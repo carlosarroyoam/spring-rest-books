@@ -76,7 +76,7 @@ class ShipmentServiceTest {
 
     assertThat(response).isNotNull();
     assertThat(response.getItems()).hasSize(1);
-    assertThat(response.getItems().get(0).getId()).isEqualTo(1L);
+    assertThat(response.getItems().getFirst().getId()).isEqualTo(1L);
   }
 
   @Test

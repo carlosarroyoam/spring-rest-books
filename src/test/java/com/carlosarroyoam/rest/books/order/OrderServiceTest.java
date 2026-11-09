@@ -127,7 +127,7 @@ class OrderServiceTest {
 
     assertThat(response).isNotNull();
     assertThat(response.getItems()).hasSize(1);
-    assertThat(response.getItems().get(0).getId()).isEqualTo(1L);
+    assertThat(response.getItems().getFirst().getId()).isEqualTo(1L);
     assertThat(response.getPagination().getPage()).isZero();
     assertThat(response.getPagination().getSize()).isEqualTo(25);
     assertThat(response.getPagination().getTotalItems()).isEqualTo(1);
@@ -188,7 +188,7 @@ class OrderServiceTest {
     assertThat(orderResponse.getShippingAmount()).isEqualByComparingTo("0.00");
     assertThat(orderResponse.getTotal()).isEqualByComparingTo("53.34");
     assertThat(orderResponse.getItems()).hasSize(1);
-    assertThat(orderResponse.getItems().get(0).getUnitPrice()).isEqualByComparingTo("22.99");
+    assertThat(orderResponse.getItems().getFirst().getUnitPrice()).isEqualByComparingTo("22.99");
   }
 
   @Test

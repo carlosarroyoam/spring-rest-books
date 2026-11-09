@@ -35,6 +35,6 @@ public class CustomerResponse {
 
     CustomerResponse toDto(Customer entity);
 
-    List<CustomerResponse> toDtos(List<Customer> entities);
+    List<CustomerResponse> toDtoList(List<Customer> entities);
   }
 }

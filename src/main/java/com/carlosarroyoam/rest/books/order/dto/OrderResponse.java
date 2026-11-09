@@ -57,6 +57,6 @@ public class OrderResponse {
 
     OrderResponse toDto(Order entity);
 
-    List<OrderResponse> toDtos(List<Order> entities);
+    List<OrderResponse> toDtoList(List<Order> entities);
   }
 }
